@@ -1,0 +1,36 @@
+name: Initialize Wiki
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  init-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Initialize wiki
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Configure git
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          # Create wiki repo
+          mkdir /tmp/wiki
+          cd /tmp/wiki
+          git init -b master
+          
+          # Copy all wiki pages
+          cp $GITHUB_WORKSPACE/docs/wiki/*.md .
+          
+          git add -A
+          git commit -m "Initialize wiki from docs/wiki"
+          
+          # Push using the GitHub token
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.wiki.git"
+          git push -u origin master
