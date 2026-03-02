@@ -2,30 +2,24 @@
 
 The wiki source of truth lives in `docs/wiki/` within the main repository. Changes should be made there and then synced to the GitHub Wiki.
 
-## Sync from repo to GitHub Wiki
+## Automatic sync (GitHub Actions)
+
+The `sync-wiki` workflow (`.github/workflows/sync-wiki.yml`) runs automatically on every push to `main` that modifies `docs/wiki/**`. It can also be triggered manually from the Actions tab.
+
+## Manual sync (local script)
 
 ```bash
-# Clone the GitHub Wiki repo (first time only)
-git clone https://github.com/dobrician/1on1.wiki.git /tmp/1on1-wiki
-
-# Copy wiki content
-cp docs/wiki/*.md /tmp/1on1-wiki/
-
-# Commit and push
-cd /tmp/1on1-wiki
-git add -A
-git commit -m "Sync wiki from main repo"
-git push
-
-# Clean up
-rm -rf /tmp/1on1-wiki
+./scripts/sync-wiki.sh
 ```
 
-## One-liner sync
+## First-time setup
 
-```bash
-git clone https://github.com/dobrician/1on1.wiki.git /tmp/1on1-wiki && cp docs/wiki/*.md /tmp/1on1-wiki/ && cd /tmp/1on1-wiki && git add -A && git commit -m "Sync wiki from main repo" && git push && rm -rf /tmp/1on1-wiki
-```
+GitHub requires the first wiki page to be created via the web UI before the wiki git repo exists. This is a one-time step:
+
+1. Go to https://github.com/dobrician/1on1/wiki
+2. Click **Create the first page**
+3. Click **Save page**
+4. Trigger the `sync-wiki` workflow from the Actions tab (or run `./scripts/sync-wiki.sh`)
 
 ## When to sync
 
