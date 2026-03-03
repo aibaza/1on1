@@ -29,10 +29,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **USER-01**: Admin can invite users to the organization via email
 - [x] **USER-02**: Invited user receives email with magic link to set password and join
-- [ ] **USER-03**: User can edit their profile (first name, last name, job title, avatar)
-- [ ] **USER-04**: Admin can assign roles: admin, manager, or member
-- [ ] **USER-05**: Each user can have a manager_id establishing reporting lines (org chart)
-- [ ] **USER-06**: Admin can deactivate a user (soft delete preserving historical data)
+- [x] **USER-03**: User can edit their profile (first name, last name, job title, avatar)
+- [x] **USER-04**: Admin can assign roles: admin, manager, or member
+- [x] **USER-05**: Each user can have a manager_id establishing reporting lines (org chart)
+- [x] **USER-06**: Admin can deactivate a user (soft delete preserving historical data)
 
 ### Team Management
 
@@ -147,7 +147,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **SEC-01**: Private notes encrypted at rest with AES-256-GCM, per-tenant keys derived via HKDF
 - [x] **SEC-02**: Encryption key versioning for rotation support
 - [x] **SEC-03**: RBAC enforced at API route level — members see only their sessions, managers see their reports, admins see organization-wide
-- [ ] **SEC-04**: Resource-level authorization checks beyond role (verify user is manager/report on specific series)
+- [x] **SEC-04**: Resource-level authorization checks beyond role (verify user is manager/report on specific series)
 - [x] **SEC-05**: Tenant ID always derived from authenticated session, never from request parameters
 - [x] **SEC-06**: Audit log records significant events (invites, deactivations, data exports, settings changes)
 
@@ -214,10 +214,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ORG-05 | Phase 2 | Pending |
 | USER-01 | Phase 3 | Complete |
 | USER-02 | Phase 3 | Complete |
-| USER-03 | Phase 3 | Pending |
-| USER-04 | Phase 3 | Pending |
-| USER-05 | Phase 3 | Pending |
-| USER-06 | Phase 3 | Pending |
+| USER-03 | Phase 3 | Complete |
+| USER-04 | Phase 3 | Complete |
+| USER-05 | Phase 3 | Complete |
+| USER-06 | Phase 3 | Complete |
 | TEAM-01 | Phase 3 | Pending |
 | TEAM-02 | Phase 3 | Pending |
 | TEAM-03 | Phase 3 | Pending |
@@ -296,7 +296,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEC-01 | Phase 1 | Complete |
 | SEC-02 | Phase 1 | Complete |
 | SEC-03 | Phase 3 | Complete |
-| SEC-04 | Phase 3 | Pending |
+| SEC-04 | Phase 3 | Complete |
 | SEC-05 | Phase 1 | Complete |
 | SEC-06 | Phase 3 | Complete |
 

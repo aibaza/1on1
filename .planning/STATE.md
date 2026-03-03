@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed 03-02-PLAN.md
-last_updated: "2026-03-03T16:55:20.661Z"
-last_activity: 2026-03-03 -- Plan 03-02 completed (invite send/accept/resend APIs, email template, dialog, onboarding)
+status: in_progress
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-03-03T16:55:00Z"
+last_activity: 2026-03-03 -- Plan 03-03 completed (people directory, user management APIs, data table, inline editing)
 progress:
   total_phases: 10
   completed_phases: 2
   total_plans: 10
-  completed_plans: 8
-  percent: 21
+  completed_plans: 9
+  percent: 24
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 ## Current Position
 
 Phase: 3 of 10 (User & Team Management)
-Plan: 2 of 4 in current phase -- COMPLETE
-Status: Plan 03-02 complete -- Invite flow (API routes, email template, onboarding page)
-Last activity: 2026-03-03 -- Plan 03-02 completed (invite send/accept/resend APIs, email template, dialog, onboarding)
+Plan: 3 of 4 in current phase -- COMPLETE
+Status: Plan 03-03 complete -- People directory with data table, inline editing, user management APIs
+Last activity: 2026-03-03 -- Plan 03-03 completed (people directory, user management APIs, data table, inline editing)
 
-Progress: [▓▓▓▓▓▓░░░░] 21%
+Progress: [▓▓▓▓▓▓░░░░] 24%
 
 ## Performance Metrics
 
@@ -45,14 +45,16 @@ Progress: [▓▓▓▓▓▓░░░░] 21%
 |-------|-------|-------|----------|
 | 01-foundation-infrastructure | 3 | 18 min | 6 min |
 | 02-authentication-organization | 3 | 59 min | 20 min |
-| 03-user-team-management | 1 | 5 min | 5 min |
+| 03-user-team-management | 3 | 17 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (6 min), 02-01 (10 min), 02-02 (4 min), 02-03 (45 min), 03-01 (5 min)
+- Last 5 plans: 02-01 (10 min), 02-02 (4 min), 02-03 (45 min), 03-01 (5 min), 03-02 (6 min)
 - Trend: consistent
 
 *Updated after each plan completion*
+
 | Phase 03 P02 | 6min | 2 tasks | 8 files |
+| Phase 03 P03 | 6min | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -96,6 +98,10 @@ Recent decisions affecting current work:
 - [Phase 03]: Accept endpoint uses adminDb with manual SET LOCAL for RLS (no session for unauthenticated users)
 - [Phase 03]: Email verified automatically on invite acceptance (trusted invite link)
 - [Phase 03]: 2-step wizard validates password fields before advancing to profile step
+- [03-03]: Client-side filtering for v1: Server Component fetches all users, TanStack Table handles sorting/filtering/pagination
+- [03-03]: URL-based tab navigation: /people for People tab, /teams for Teams tab
+- [03-03]: Profile editing on dedicated page, ProfileSheet is read-only quick view
+- [03-03]: PATCH endpoint dispatches on body keys (role, managerId, isActive, profile fields)
 
 ### Pending Todos
 
@@ -110,6 +116,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-03T16:55:20.657Z
-Stopped at: Completed 03-02-PLAN.md
-Resume file: None
+Last session: 2026-03-03
+Stopped at: Completed 03-03-PLAN.md
+Resume file: .planning/phases/03-user-team-management/03-03-SUMMARY.md
