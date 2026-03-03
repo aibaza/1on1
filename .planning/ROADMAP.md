@@ -35,12 +35,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. PostgreSQL database has all schema tables with RLS policies enforced via a dedicated app role (not neondb_owner)
   4. Private note encryption round-trips correctly (encrypt, store, decrypt) with key versioning
   5. Every database query runs inside a withTenantContext() wrapper that sets tenant_id via SET LOCAL
-**Plans**: TBD
+**Plans**: 3 plans in 3 waves (sequential -- each layer builds on the previous)
 
 Plans:
-- [ ] 01-01: Project scaffolding and local Docker environment
-- [ ] 01-02: Database schema, RLS policies, and tenant context wrapper
-- [ ] 01-03: Encryption infrastructure and Vercel deployment
+- [ ] 01-01-PLAN.md -- Project scaffolding with Bun, Docker Compose blue-green setup (Wave 1)
+- [ ] 01-02-PLAN.md -- Complete Drizzle schema, RLS policies, tenant context wrapper (Wave 2)
+- [ ] 01-03-PLAN.md -- Encryption infrastructure, seed data, Vercel deployment (Wave 3)
 
 ### Phase 2: Authentication & Organization
 **Goal**: Users can securely create accounts, sign in through multiple methods, and register organizations with full tenant isolation
