@@ -17,6 +17,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Auth.js route handler at `/api/auth/[...nextauth]`
 - OAuth sign-in callback blocks users without existing records (must be invited or register org first)
 - Environment variables for AUTH_SECRET, OAuth providers, and Resend email in `.env.example`
+- Email sending infrastructure with Resend API and lazy-initialized client (`src/lib/email/send.ts`)
+- React Email templates for verification and password reset emails
+- Server actions: `registerAction`, `verifyEmailAction`, `forgotPasswordAction`, `resetPasswordAction`, `logoutAction`
+- Registration creates tenant + admin user in single DB transaction, then auto-signs-in
+- Forgot-password prevents email enumeration (always returns success)
+- Auth pages with shadcn/ui: login, register, verify-email, forgot-password, reset-password
+- Auth layout with centered card design and authenticated-user redirect
+- OAuth buttons (Google, Microsoft) on login page
+- shadcn/ui components: Button, Input, Label, Card
 - Next.js 15 project scaffolded with Bun, TypeScript strict mode, Tailwind CSS v4, and shadcn/ui
 - Drizzle ORM configuration with Neon serverless driver and WebSocket fallback
 - Package scripts: `dev` (port 4300), `build`, `lint`, `typecheck`, `db:generate`, `db:migrate`, `db:seed`, `db:studio`
