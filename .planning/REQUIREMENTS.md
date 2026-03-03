@@ -13,8 +13,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **AUTH-02**: User receives email verification after signup
 - [x] **AUTH-03**: User can reset password via time-limited email link
 - [x] **AUTH-04**: User session persists across browser refresh (HTTP-only cookies)
-- [ ] **AUTH-05**: User can sign in with Google OAuth
-- [ ] **AUTH-06**: User can sign in with Microsoft OAuth
+- [x] **AUTH-05**: User can sign in with Google OAuth
+- [x] **AUTH-06**: User can sign in with Microsoft OAuth
 - [x] **AUTH-07**: User can log out from any page
 
 ### Organization & Multi-Tenancy
@@ -204,8 +204,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-02 | Phase 2 | Complete |
 | AUTH-03 | Phase 2 | Complete |
 | AUTH-04 | Phase 2 | Complete |
-| AUTH-05 | Phase 2 | Pending |
-| AUTH-06 | Phase 2 | Pending |
+| AUTH-05 | Phase 2 | Complete |
+| AUTH-06 | Phase 2 | Complete |
 | AUTH-07 | Phase 2 | Complete |
 | ORG-01 | Phase 2 | Pending |
 | ORG-02 | Phase 1 | Complete |
