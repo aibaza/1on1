@@ -276,6 +276,29 @@ export async function resetPasswordAction(formData: FormData) {
   }
 }
 
+export async function resendVerificationEmailAction() {
+  const { auth } = await import("@/lib/auth/config");
+  const session = await auth();
+  if (!session) return { error: "Not authenticated" };
+
+  if (session.user.emailVerified) {
+    return { error: "Email already verified" };
+  }
+
+  try {
+    // Delete any existing verification tokens for this user
+    await adminDb
+      .delete(emailVerificationTokens)
+      .where(eq(emailVerificationTokens.userId, session.user.id));
+
+    const baseUrl = await getBaseUrl();
+    await sendVerificationEmail(session.user.email!, session.user.id, baseUrl);
+    return { success: true };
+  } catch {
+    return { error: "Failed to send verification email. Please try again." };
+  }
+}
+
 export async function logoutAction() {
   await signOut({ redirectTo: "/login" });
 }

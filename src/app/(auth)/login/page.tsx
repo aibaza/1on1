@@ -80,15 +80,7 @@ export default function LoginPage() {
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                href="/forgot-password"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Forgot password?
-              </Link>
-            </div>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               name="password"
@@ -96,6 +88,13 @@ export default function LoginPage() {
               required
               autoComplete="current-password"
             />
+            <Link
+              href="/forgot-password"
+              tabIndex={-1}
+              className="inline-block text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Forgot password?
+            </Link>
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>

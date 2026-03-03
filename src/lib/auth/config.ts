@@ -83,13 +83,25 @@ const config = {
       }
       return true;
     },
-    jwt({ token, user }) {
+    async jwt({ token, user }) {
       if (user) {
         token.tenantId = user.tenantId;
         token.role = user.role;
         token.userId = user.id!;
         token.emailVerified = user.emailVerified ?? null;
       }
+
+      // Re-check DB when email is still unverified — once verified, stays cached
+      if (!token.emailVerified && token.userId) {
+        const dbUser = await adminDb.query.users.findFirst({
+          where: (u, { eq }) => eq(u.id, token.userId),
+          columns: { emailVerified: true },
+        });
+        if (dbUser?.emailVerified) {
+          token.emailVerified = dbUser.emailVerified;
+        }
+      }
+
       return token;
     },
     session({ session, token }) {

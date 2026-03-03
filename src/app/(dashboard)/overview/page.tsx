@@ -1,5 +1,8 @@
 import { auth } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
+import { adminDb } from "@/lib/db";
+import { tenants } from "@/lib/db/schema";
 import {
   Card,
   CardContent,
@@ -8,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LogoutButton } from "@/components/auth/logout-button";
+import { EmailVerificationBanner } from "@/components/auth/email-verification-banner";
 
 export default async function OverviewPage() {
   const session = await auth();
@@ -15,17 +19,14 @@ export default async function OverviewPage() {
 
   const { user } = session;
 
+  const tenant = await adminDb.query.tenants.findFirst({
+    where: eq(tenants.id, user.tenantId),
+    columns: { name: true },
+  });
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-16">
-      {/* Email verification banner */}
-      {!user.emailVerified && (
-        <div className="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-200">
-          <p>
-            Please verify your email address. Check your inbox for a
-            verification link.
-          </p>
-        </div>
-      )}
+      {!user.emailVerified && <EmailVerificationBanner />}
 
       <Card>
         <CardHeader>
@@ -48,7 +49,7 @@ export default async function OverviewPage() {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Organization</span>
-              <span className="font-mono text-xs">{user.tenantId}</span>
+              <span>{tenant?.name ?? "Unknown"}</span>
             </div>
           </div>
 
