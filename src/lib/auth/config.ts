@@ -15,6 +15,7 @@ import bcrypt from "bcryptjs";
 import { signInSchema } from "@/lib/validations/auth";
 
 const config = {
+  trustHost: true,
   // Cast adapter to work around @auth/core version mismatch between
   // next-auth and @auth/drizzle-adapter (0.41.0 vs 0.41.1)
   adapter: DrizzleAdapter(adminDb, {

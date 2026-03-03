@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,28 +17,24 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { registerAction } from "@/lib/auth/actions";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [orgType, setOrgType] = useState("for_profit");
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleSubmit(formData: FormData) {
     setError("");
     setLoading(true);
 
     try {
-      const formData = new FormData(e.currentTarget);
       formData.set("orgType", orgType);
       const result = await registerAction(formData);
 
       if (result?.error) {
         setError(result.error);
-      } else if (result?.success) {
-        router.push("/overview");
       }
+      // On success, registerAction redirects server-side
     } catch {
-      setError("Registration failed. Please try again.");
+      // Redirect errors are re-thrown and handled by Next.js
     } finally {
       setLoading(false);
     }
@@ -56,7 +51,7 @@ export default function RegisterPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form action={handleSubmit} className="space-y-4">
           {error && (
             <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
               {error}

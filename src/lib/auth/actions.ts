@@ -12,11 +12,51 @@ import bcrypt from "bcryptjs";
 import { eq, and, lt } from "drizzle-orm";
 import {
   registerSchema,
+  signInSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
 } from "@/lib/validations/auth";
 import { sendVerificationEmail, sendPasswordResetEmail } from "@/lib/email/send";
 import { randomBytes } from "crypto";
+import { headers } from "next/headers";
+
+async function getBaseUrl(): Promise<string> {
+  const h = await headers();
+  const forwardedProto = h.get("x-forwarded-proto");
+  const forwardedHost = h.get("x-forwarded-host") || h.get("host");
+  if (forwardedHost) {
+    const proto = forwardedProto || "https";
+    return `${proto}://${forwardedHost}`;
+  }
+  return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+}
+
+export async function loginAction(formData: FormData) {
+  try {
+    const data = signInSchema.parse({
+      email: formData.get("email"),
+      password: formData.get("password"),
+    });
+
+    await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirectTo: "/overview",
+    });
+  } catch (error: unknown) {
+    // Auth.js signIn throws a redirect on success — re-throw it
+    if (
+      error &&
+      typeof error === "object" &&
+      "digest" in error &&
+      typeof (error as { digest: unknown }).digest === "string" &&
+      (error as { digest: string }).digest.startsWith("NEXT_REDIRECT")
+    ) {
+      throw error;
+    }
+    return { error: "Invalid email or password" };
+  }
+}
 
 export async function registerAction(formData: FormData) {
   try {
@@ -90,20 +130,19 @@ export async function registerAction(formData: FormData) {
 
     // Send verification email (non-blocking -- don't fail registration if email fails)
     try {
-      await sendVerificationEmail(result.user.email, result.user.id);
+      const baseUrl = await getBaseUrl();
+      await sendVerificationEmail(result.user.email, result.user.id, baseUrl);
     } catch {
       // Email send failure is non-critical during registration
       console.error("Failed to send verification email");
     }
 
-    // Sign in immediately
+    // Sign in immediately and redirect to overview
     await signIn("credentials", {
       email: data.email,
       password: data.password,
-      redirect: false,
+      redirectTo: "/overview",
     });
-
-    return { success: true };
   } catch (error: unknown) {
     // Auth.js signIn throws a redirect on success — re-throw it
     if (
@@ -173,7 +212,8 @@ export async function forgotPasswordAction(formData: FormData) {
 
     if (user) {
       try {
-        await sendPasswordResetEmail(user.email, user.id);
+        const baseUrl = await getBaseUrl();
+        await sendPasswordResetEmail(user.email, user.id, baseUrl);
       } catch {
         console.error("Failed to send password reset email");
       }
@@ -237,19 +277,13 @@ export async function resetPasswordAction(formData: FormData) {
 }
 
 export async function logoutAction() {
-  try {
-    await signOut({ redirect: false });
-    return { success: true };
-  } catch (error: unknown) {
-    if (
-      error &&
-      typeof error === "object" &&
-      "digest" in error &&
-      typeof (error as { digest: unknown }).digest === "string" &&
-      (error as { digest: string }).digest.startsWith("NEXT_REDIRECT")
-    ) {
-      throw error;
-    }
-    return { success: true };
-  }
+  await signOut({ redirectTo: "/login" });
+}
+
+export async function signInWithGoogle() {
+  await signIn("google", { redirectTo: "/overview" });
+}
+
+export async function signInWithMicrosoft() {
+  await signIn("microsoft-entra-id", { redirectTo: "/overview" });
 }

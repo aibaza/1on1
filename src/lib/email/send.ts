@@ -34,7 +34,8 @@ function getEmailFrom(): string {
 
 export async function sendVerificationEmail(
   email: string,
-  userId: string
+  userId: string,
+  baseUrl?: string
 ) {
   const token = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
@@ -45,7 +46,8 @@ export async function sendVerificationEmail(
     expiresAt,
   });
 
-  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`;
+  const appUrl = baseUrl || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const verifyUrl = `${appUrl}/verify-email?token=${token}`;
   const html = await render(VerificationEmail({ verifyUrl }));
 
   await getTransport().sendMail({
@@ -58,7 +60,8 @@ export async function sendVerificationEmail(
 
 export async function sendPasswordResetEmail(
   email: string,
-  userId: string
+  userId: string,
+  baseUrl?: string
 ) {
   const token = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
@@ -69,7 +72,8 @@ export async function sendPasswordResetEmail(
     expiresAt,
   });
 
-  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
+  const appUrl = baseUrl || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const resetUrl = `${appUrl}/reset-password?token=${token}`;
   const html = await render(PasswordResetEmail({ resetUrl }));
 
   await getTransport().sendMail({
