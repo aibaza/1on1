@@ -67,8 +67,8 @@ export function QuestionForm({
     setValue,
     watch,
     formState: { errors },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = useForm<QuestionFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- zodResolver type mismatch with RHF v7
     resolver: zodResolver(questionSchema) as any,
     defaultValues: {
       questionText: question?.questionText ?? "",
