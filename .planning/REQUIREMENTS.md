@@ -36,10 +36,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Team Management
 
-- [ ] **TEAM-01**: Admin or manager can create teams with name, description, and team lead
-- [ ] **TEAM-02**: Admin or manager can add/remove members to teams
-- [ ] **TEAM-03**: Teams support lead and member roles
-- [ ] **TEAM-04**: A user can belong to multiple teams
+- [x] **TEAM-01**: Admin or manager can create teams with name, description, and team lead
+- [x] **TEAM-02**: Admin or manager can add/remove members to teams
+- [x] **TEAM-03**: Teams support lead and member roles
+- [x] **TEAM-04**: A user can belong to multiple teams
 
 ### Questionnaire Templates
 
@@ -218,10 +218,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | USER-04 | Phase 3 | Complete |
 | USER-05 | Phase 3 | Complete |
 | USER-06 | Phase 3 | Complete |
-| TEAM-01 | Phase 3 | Pending |
-| TEAM-02 | Phase 3 | Pending |
-| TEAM-03 | Phase 3 | Pending |
-| TEAM-04 | Phase 3 | Pending |
+| TEAM-01 | Phase 3 | Complete |
+| TEAM-02 | Phase 3 | Complete |
+| TEAM-03 | Phase 3 | Complete |
+| TEAM-04 | Phase 3 | Complete |
 | TMPL-01 | Phase 4 | Pending |
 | TMPL-02 | Phase 4 | Pending |
 | TMPL-03 | Phase 4 | Pending |

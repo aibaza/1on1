@@ -5,8 +5,8 @@
 Implementation follows a phase-based roadmap managed via the [GSD workflow](https://github.com/cyanheads/claude-gsd). Each phase delivers a coherent, verifiable capability. Phases execute sequentially with some parallelization opportunities after Phase 5.
 
 **Total phases**: 10
-**Completed**: 2/10 (Phases 1-2)
-**Current**: Phase 3 — User & Team Management
+**Completed**: 3/10 (Phases 1-3)
+**Current**: Phase 4 — Questionnaire Templates
 
 ## Phase Summary
 
@@ -14,8 +14,8 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 |-------|------|-------|--------|--------------|
 | [[Phase-01]] | Foundation & Infrastructure | Next.js scaffold, Docker, Drizzle schema, RLS, encryption | Complete | None |
 | [[Phase-02]] | Authentication & Organization | Auth flows, org registration, multi-tenancy, settings | Complete | Phase 1 |
-| [[Phase-03]] | User & Team Management | Invites, profiles, RBAC, teams, reporting lines, audit log | Next | Phase 2 |
-| [[Phase-04]] | Questionnaire Templates | Template builder, 6 question types, versioning, conditional logic | Not Started | Phase 3 |
+| [[Phase-03]] | User & Team Management | Invites, profiles, RBAC, teams, reporting lines, audit log | Complete | Phase 2 |
+| [[Phase-04]] | Questionnaire Templates | Template builder, 6 question types, versioning, conditional logic | Next | Phase 3 |
 | [[Phase-05]] | Meeting Series & Session Wizard | Series lifecycle, step-by-step wizard, context panel, notes | Not Started | Phase 4 |
 | [[Phase-06]] | Action Items & Session History | Action tracking, carry-over, session timeline, full-text search | Not Started | Phase 5 |
 | [[Phase-07]] | AI Pipeline | Session summaries, pre-session nudges, embeddings, Inngest | Not Started | Phase 5 |
