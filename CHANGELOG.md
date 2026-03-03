@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Template editor page (`/templates/[id]`) with full question management: add, edit, remove questions with all 6 answer types
+- New template page (`/templates/new`) for creating templates from scratch (admin/manager only)
+- Template editor component with metadata form (name, description, category), questions list, and actions toolbar
+- Question card component showing question text, answer type badge, category badge, required indicator, and conditional logic badge
+- Question form dialog with answer type selection, per-type configuration, and required toggle
+- Answer config form with per-type configuration: rating labels, multiple choice options with add/remove, mood emoji labels
+- Template actions toolbar: Publish/Unpublish toggle, Set as Default (admin-only), Duplicate, Archive with confirmation
+- Read-only mode for member role (no edit controls visible)
 - Template versioning-aware PATCH endpoint: detects session usage, increments version, archives old questions when template is in use
 - Template duplicate API (`POST /api/templates/[id]/duplicate`): deep-copies template + questions with new UUIDs, remaps conditional references
 - Template set-default API (`PUT /api/templates/[id]/default`): atomically sets one default per tenant (admin-only)
