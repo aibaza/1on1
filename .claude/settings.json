@@ -28,6 +28,11 @@
             "type": "command",
             "command": "/home/dc/work/1on1/scripts/changelog-hook.sh",
             "statusMessage": "Checking changelog..."
+          },
+          {
+            "type": "command",
+            "command": "/home/dc/work/1on1/scripts/wiki-phase-hook.sh",
+            "statusMessage": "Checking phase wiki..."
           }
         ]
       }
