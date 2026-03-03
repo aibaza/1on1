@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in-progress
-last_updated: "2026-03-03T10:47:14Z"
+last_updated: "2026-03-03T14:30:00Z"
 progress:
   total_phases: 10
   completed_phases: 1
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 ## Current Position
 
 Phase: 2 of 10 (Authentication & Organization)
-Plan: 2 of 3 in current phase -- COMPLETE
-Status: Plan 02-02 complete -- Route protection, OAuth buttons, dashboard shell
-Last activity: 2026-03-03 -- Plan 02-02 completed (route protection & OAuth)
+Plan: 3 of 3 in current phase -- COMPLETE
+Status: Plan 02-03 complete -- Org type, settings page, server-side auth redirects
+Last activity: 2026-03-03 -- Plan 02-03 completed (org type, settings, reverse proxy fixes)
 
 Progress: [▓▓▓▓▓░░░░░] 17%
 
@@ -41,7 +41,7 @@ Progress: [▓▓▓▓▓░░░░░] 17%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-infrastructure | 3 | 18 min | 6 min |
-| 02-authentication-organization | 2 | 14 min | 7 min |
+| 02-authentication-organization | 3 | 59 min | 20 min |
 
 **Recent Trend:**
 - Last 5 plans: 01-02 (4 min), 01-03 (6 min), 02-01 (10 min), 02-02 (4 min)
@@ -78,6 +78,12 @@ Recent decisions affecting current work:
 - [02-02]: proxy.ts uses Next.js 16 convention (export const proxy) -- confirmed server looks for proxy first, then middleware
 - [02-02]: Dashboard layout validates session server-side as defense-in-depth (CVE-2025-29927 mitigation)
 - [02-02]: emailVerified added to JWT/session for verification status display in dashboard
+- [02-03]: org_type is a dedicated column, not JSONB settings — structural property affecting business logic
+- [02-03]: All auth flows use server actions with server-side redirects — no client-side next-auth/react URL construction
+- [02-03]: trustHost: true in Auth.js config + X-Forwarded-Host/Proto reading in proxy.ts for reverse proxy
+- [02-03]: Switched from Resend to nodemailer — works with any SMTP provider (smtp2go)
+- [02-03]: Email base URLs derived from request headers, not hardcoded NEXT_PUBLIC_APP_URL
+- [02-03]: orgType immutable after registration (set once, read-only in settings page)
 
 ### Pending Todos
 
