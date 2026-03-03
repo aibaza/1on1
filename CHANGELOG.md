@@ -40,3 +40,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - HKDF key derivation from master key to per-tenant encryption keys (`deriveTenantKey`)
 - Encrypt/decrypt functions with key versioning for rotation support (`encryptNote`, `decryptNote`)
 - 11 encryption unit tests covering round-trips, key isolation, unicode, and tampering detection
+- Idempotent seed script with two tenants: Acme Corp (7 users, 2 teams, 2 templates, 3 series, 3 sessions) and Beta Inc (3 users, 1 template, 1 series)
+- Seed data includes realistic session answers, action items, and encrypted private notes
+- `SEED_DATABASE_URL` environment variable for superuser seed connection (bypasses RLS)
+- `pg` (node-postgres) driver for seed script local PostgreSQL connection
