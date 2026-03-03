@@ -27,8 +27,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### User Management
 
-- [ ] **USER-01**: Admin can invite users to the organization via email
-- [ ] **USER-02**: Invited user receives email with magic link to set password and join
+- [x] **USER-01**: Admin can invite users to the organization via email
+- [x] **USER-02**: Invited user receives email with magic link to set password and join
 - [ ] **USER-03**: User can edit their profile (first name, last name, job title, avatar)
 - [ ] **USER-04**: Admin can assign roles: admin, manager, or member
 - [ ] **USER-05**: Each user can have a manager_id establishing reporting lines (org chart)
@@ -212,8 +212,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ORG-03 | Phase 1 | Complete |
 | ORG-04 | Phase 2 | Pending |
 | ORG-05 | Phase 2 | Pending |
-| USER-01 | Phase 3 | Pending |
-| USER-02 | Phase 3 | Pending |
+| USER-01 | Phase 3 | Complete |
+| USER-02 | Phase 3 | Complete |
 | USER-03 | Phase 3 | Pending |
 | USER-04 | Phase 3 | Pending |
 | USER-05 | Phase 3 | Pending |

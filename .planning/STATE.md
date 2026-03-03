@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in_progress
-stopped_at: Plan 03-01 complete -- Infrastructure foundation
-last_updated: "2026-03-03T16:45:08Z"
-last_activity: 2026-03-03 -- Plan 03-01 completed (schemas, RBAC, audit, sidebar, validations)
+status: completed
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-03-03T16:55:20.661Z"
+last_activity: 2026-03-03 -- Plan 03-02 completed (invite send/accept/resend APIs, email template, dialog, onboarding)
 progress:
   total_phases: 10
   completed_phases: 2
   total_plans: 10
-  completed_plans: 7
+  completed_plans: 8
   percent: 21
 ---
 
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 ## Current Position
 
 Phase: 3 of 10 (User & Team Management)
-Plan: 1 of 4 in current phase -- COMPLETE
-Status: Plan 03-01 complete -- Infrastructure foundation (schemas, RBAC, audit, sidebar, validations)
-Last activity: 2026-03-03 -- Plan 03-01 completed (schemas, RBAC, audit, sidebar, validations)
+Plan: 2 of 4 in current phase -- COMPLETE
+Status: Plan 03-02 complete -- Invite flow (API routes, email template, onboarding page)
+Last activity: 2026-03-03 -- Plan 03-02 completed (invite send/accept/resend APIs, email template, dialog, onboarding)
 
 Progress: [▓▓▓▓▓▓░░░░] 21%
 
@@ -52,6 +52,7 @@ Progress: [▓▓▓▓▓▓░░░░] 21%
 - Trend: consistent
 
 *Updated after each plan completion*
+| Phase 03 P02 | 6min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -92,6 +93,9 @@ Recent decisions affecting current work:
 - [03-01]: invite_token has no DELETE RLS policy: invites expire or get accepted, never deleted
 - [03-01]: TransactionClient type exported from tenant-context.ts for audit helper reuse
 - [03-01]: Sidebar has three nav items: Overview, People, Settings (minimal for v1)
+- [Phase 03]: Accept endpoint uses adminDb with manual SET LOCAL for RLS (no session for unauthenticated users)
+- [Phase 03]: Email verified automatically on invite acceptance (trusted invite link)
+- [Phase 03]: 2-step wizard validates password fields before advancing to profile step
 
 ### Pending Todos
 
@@ -106,6 +110,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-03
-Stopped at: Completed 03-01-PLAN.md
-Resume file: .planning/phases/03-user-team-management/03-01-SUMMARY.md
+Last session: 2026-03-03T16:55:20.657Z
+Stopped at: Completed 03-02-PLAN.md
+Resume file: None
