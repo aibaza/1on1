@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Audit log API: `GET /api/audit-log` with server-side pagination, action type filter, date range filter, and search (admin-only)
+- Audit log page (`/settings/audit-log`) with expandable detail rows, pagination, and filters
+- Sidebar updated with role-based navigation: Settings section (Company, Audit Log) visible to admins only
 - Team CRUD API: `GET/POST /api/teams` for listing and creating teams with member counts and manager info
 - Team detail API: `GET/PATCH/DELETE /api/teams/[id]` for viewing, updating, and deleting teams (admin-only delete)
 - Team members API: `POST/DELETE /api/teams/[id]/members` for adding and removing team members
@@ -58,6 +61,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Toast notifications (Sonner) in dashboard layout
 
 ### Changed
+- Sidebar navigation restructured: main section (Overview, People) and Settings section (Company, Audit Log) with role-based visibility
 - Dashboard layout now includes sidebar navigation and TanStack Query provider
 - `proxy.ts` allows unauthenticated access to `/invite/*` paths for invite acceptance flow
 - `TransactionClient` type exported from `tenant-context.ts` for use by audit log helper
