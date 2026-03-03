@@ -26,6 +26,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Auth layout with centered card design and authenticated-user redirect
 - OAuth buttons (Google, Microsoft) on login page
 - shadcn/ui components: Button, Input, Label, Card
+- Drizzle migration for auth tables and user schema changes (`0002_clear_la_nuit.sql`)
+- RLS policies on `account` and `auth_session` tables (tenant isolation via user JOIN)
+- Token tables (`verification_token`, `email_verification_token`, `password_reset_token`) accessible without tenant context
+- `app_user` role grants for all new auth tables
 - Next.js 15 project scaffolded with Bun, TypeScript strict mode, Tailwind CSS v4, and shadcn/ui
 - Drizzle ORM configuration with Neon serverless driver and WebSocket fallback
 - Package scripts: `dev` (port 4300), `build`, `lint`, `typecheck`, `db:generate`, `db:migrate`, `db:seed`, `db:studio`
