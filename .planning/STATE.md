@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 3 context captured -- Ready for planning
-last_updated: "2026-03-03T15:44:38.916Z"
-last_activity: 2026-03-03 -- Plan 02-03 completed (org type, settings, reverse proxy fixes)
+status: in_progress
+stopped_at: Plan 03-01 complete -- Infrastructure foundation
+last_updated: "2026-03-03T16:45:08Z"
+last_activity: 2026-03-03 -- Plan 03-01 completed (schemas, RBAC, audit, sidebar, validations)
 progress:
   total_phases: 10
   completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
-  percent: 17
+  total_plans: 10
+  completed_plans: 7
+  percent: 21
 ---
 
 # Project State
@@ -21,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-03)
 
 **Core value:** The AI context layer that makes every meeting smarter than the last
-**Current focus:** Phase 2 - Authentication & Organization
+**Current focus:** Phase 3 - User & Team Management
 
 ## Current Position
 
-Phase: 2 of 10 (Authentication & Organization)
-Plan: 3 of 3 in current phase -- COMPLETE
-Status: Plan 02-03 complete -- Org type, settings page, server-side auth redirects
-Last activity: 2026-03-03 -- Plan 02-03 completed (org type, settings, reverse proxy fixes)
+Phase: 3 of 10 (User & Team Management)
+Plan: 1 of 4 in current phase -- COMPLETE
+Status: Plan 03-01 complete -- Infrastructure foundation (schemas, RBAC, audit, sidebar, validations)
+Last activity: 2026-03-03 -- Plan 03-01 completed (schemas, RBAC, audit, sidebar, validations)
 
-Progress: [▓▓▓▓▓░░░░░] 17%
+Progress: [▓▓▓▓▓▓░░░░] 21%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 6 min
-- Total execution time: 0.53 hours
+- Total plans completed: 7
+- Average duration: 12 min
+- Total execution time: 1.38 hours
 
 **By Phase:**
 
@@ -45,9 +45,10 @@ Progress: [▓▓▓▓▓░░░░░] 17%
 |-------|-------|-------|----------|
 | 01-foundation-infrastructure | 3 | 18 min | 6 min |
 | 02-authentication-organization | 3 | 59 min | 20 min |
+| 03-user-team-management | 1 | 5 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (4 min), 01-03 (6 min), 02-01 (10 min), 02-02 (4 min)
+- Last 5 plans: 01-03 (6 min), 02-01 (10 min), 02-02 (4 min), 02-03 (45 min), 03-01 (5 min)
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -87,6 +88,10 @@ Recent decisions affecting current work:
 - [02-03]: Switched from Resend to nodemailer — works with any SMTP provider (smtp2go)
 - [02-03]: Email base URLs derived from request headers, not hardcoded NEXT_PUBLIC_APP_URL
 - [02-03]: orgType immutable after registration (set once, read-only in settings page)
+- [03-01]: audit_log is immutable: RLS policies allow SELECT/INSERT only, no UPDATE/DELETE
+- [03-01]: invite_token has no DELETE RLS policy: invites expire or get accepted, never deleted
+- [03-01]: TransactionClient type exported from tenant-context.ts for audit helper reuse
+- [03-01]: Sidebar has three nav items: Overview, People, Settings (minimal for v1)
 
 ### Pending Todos
 
@@ -102,5 +107,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Phase 3 context captured -- Ready for planning
-Resume file: .planning/phases/03-user-team-management/03-CONTEXT.md
+Stopped at: Completed 03-01-PLAN.md
+Resume file: .planning/phases/03-user-team-management/03-01-SUMMARY.md
