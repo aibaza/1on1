@@ -20,8 +20,8 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Organization & Multi-Tenancy
 
 - [ ] **ORG-01**: Admin can register a new organization with name, slug, and admin account
-- [ ] **ORG-02**: Organization data is fully isolated via tenant_id on all tables
-- [ ] **ORG-03**: PostgreSQL Row-Level Security enforces tenant isolation at the database level
+- [x] **ORG-02**: Organization data is fully isolated via tenant_id on all tables
+- [x] **ORG-03**: PostgreSQL Row-Level Security enforces tenant isolation at the database level
 - [ ] **ORG-04**: Organization admin can configure settings (timezone, default cadence, default duration)
 - [ ] **ORG-05**: Organization type supports both for-profit and non-profit models
 
@@ -148,7 +148,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **SEC-02**: Encryption key versioning for rotation support
 - [ ] **SEC-03**: RBAC enforced at API route level — members see only their sessions, managers see their reports, admins see organization-wide
 - [ ] **SEC-04**: Resource-level authorization checks beyond role (verify user is manager/report on specific series)
-- [ ] **SEC-05**: Tenant ID always derived from authenticated session, never from request parameters
+- [x] **SEC-05**: Tenant ID always derived from authenticated session, never from request parameters
 - [ ] **SEC-06**: Audit log records significant events (invites, deactivations, data exports, settings changes)
 
 ## v2 Requirements
@@ -208,8 +208,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-06 | Phase 2 | Pending |
 | AUTH-07 | Phase 2 | Pending |
 | ORG-01 | Phase 2 | Pending |
-| ORG-02 | Phase 1 | Pending |
-| ORG-03 | Phase 1 | Pending |
+| ORG-02 | Phase 1 | Complete |
+| ORG-03 | Phase 1 | Complete |
 | ORG-04 | Phase 2 | Pending |
 | ORG-05 | Phase 2 | Pending |
 | USER-01 | Phase 3 | Pending |
@@ -297,7 +297,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEC-02 | Phase 1 | Pending |
 | SEC-03 | Phase 3 | Pending |
 | SEC-04 | Phase 3 | Pending |
-| SEC-05 | Phase 1 | Pending |
+| SEC-05 | Phase 1 | Complete |
 | SEC-06 | Phase 3 | Pending |
 
 **Coverage:**
