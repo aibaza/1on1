@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- `audit_log` Drizzle schema with tenant/action and tenant/actor composite indexes
+- `invite_token` Drizzle schema with tenant+email unique index and 7-day expiry support
+- RLS policies for `audit_log` (SELECT/INSERT only, immutable) and `invite_token` (SELECT/INSERT/UPDATE)
+- Zod validation schemas for user management: `inviteUsersSchema`, `acceptInviteSchema`, `updateProfileSchema`, `updateUserRoleSchema`, `assignManagerSchema`
+- Zod validation schemas for team management: `createTeamSchema`, `updateTeamSchema`, `addTeamMembersSchema`, `removeTeamMemberSchema`
+- npm packages: `@tanstack/react-table`, `@tanstack/react-query`, `react-hook-form`, `@hookform/resolvers`
+- 15 shadcn/ui components: table, dialog, dropdown-menu, tabs, avatar, sonner, sheet, textarea, checkbox, command, popover, tooltip, skeleton, form, pagination
+
 ### Changed
 - Wiki overhauled: replaced 15-sprint tracking with 10-phase roadmap matching GSD workflow
 - `CLAUDE.md` updated: project status, email tech stack (Nodemailer), sprint references replaced with phase references
