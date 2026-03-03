@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Logout button client component using `signOut()` from `next-auth/react`
 - Root page (`/`) redirects to `/overview`
 - `emailVerified` field added to JWT token and session for verification status display
+- Google and Microsoft OAuth buttons with branded SVG icons on login page
+- OAuth error messages: AccessDenied (no account found) and OAuthAccountNotLinked (different sign-in method)
 - Auth.js v5 (next-auth@beta) with Credentials provider, Google OAuth, and Microsoft Entra ID
 - Drizzle adapter integration with custom user table mapping (`@auth/drizzle-adapter`)
 - JWT session strategy with `tenantId`, `role`, and `userId` on session token
