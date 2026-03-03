@@ -72,10 +72,10 @@ Plans:
 **Plans**: 4 plans in 3 waves (Wave 1: foundation, Wave 2: invites + people in parallel, Wave 3: teams + audit)
 
 Plans:
-- [ ] 03-01-PLAN.md -- Foundation: deps, schemas (audit_log, invite_tokens), RBAC/audit helpers, sidebar, query provider (Wave 1)
-- [ ] 03-02-PLAN.md -- Invite flow: send bulk invites, email template, 2-step onboarding acceptance (Wave 2)
-- [ ] 03-03-PLAN.md -- People directory: data table, inline role/manager editing, profile, deactivation (Wave 2)
-- [ ] 03-04-PLAN.md -- Teams: card grid, detail page, member management, audit log viewer (Wave 3)
+- [x] 03-01-PLAN.md -- Foundation: deps, schemas (audit_log, invite_tokens), RBAC/audit helpers, sidebar, query provider (Wave 1)
+- [x] 03-02-PLAN.md -- Invite flow: send bulk invites, email template, 2-step onboarding acceptance (Wave 2)
+- [x] 03-03-PLAN.md -- People directory: data table, inline role/manager editing, profile, deactivation (Wave 2)
+- [x] 03-04-PLAN.md -- Teams: card grid, detail page, member management, audit log viewer (Wave 3)
 
 ### Phase 4: Questionnaire Templates
 **Goal**: Managers and admins can design structured questionnaire templates that capture typed, categorized data across 6 question formats
@@ -90,8 +90,8 @@ Plans:
 **Plans**: 3 plans in 2 waves (Wave 1: CRUD foundation, Wave 2: editor + DnD/conditional in parallel)
 
 Plans:
-- [ ] 04-01-PLAN.md -- Schema migration, Zod validations, API CRUD, template list page, sidebar (Wave 1)
-- [ ] 04-02-PLAN.md -- Template editor, versioning, duplication, archival, default setting (Wave 2)
+- [x] 04-01-PLAN.md -- Schema migration, Zod validations, API CRUD, template list page, sidebar (Wave 1)
+- [x] 04-02-PLAN.md -- Template editor, versioning, duplication, archival, default setting (Wave 2)
 - [ ] 04-03-PLAN.md -- Drag-and-drop reordering and conditional logic (Wave 2)
 
 ### Phase 5: Meeting Series & Session Wizard

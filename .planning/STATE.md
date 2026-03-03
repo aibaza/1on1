@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-03T19:46:12Z"
-last_activity: 2026-03-03 -- Plan 04-01 completed (template CRUD API, list page, sidebar nav)
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-03-03T19:58:38.843Z"
+last_activity: 2026-03-03 -- Plan 04-02 completed (template editor, versioning, duplication, publish/default)
 progress:
   total_phases: 10
   completed_phases: 3
   total_plans: 13
-  completed_plans: 11
+  completed_plans: 12
   percent: 33
 ---
 
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 ## Current Position
 
 Phase: 4 of 10 (Questionnaire Templates)
-Plan: 1 of 3 in current phase -- COMPLETE
-Status: Plan 04-01 complete -- Template CRUD foundation built
-Last activity: 2026-03-03 -- Plan 04-01 completed (template CRUD API, list page, sidebar nav)
+Plan: 2 of 3 in current phase -- COMPLETE
+Status: Plan 04-02 complete -- Template editor with versioning and lifecycle operations
+Last activity: 2026-03-03 -- Plan 04-02 completed (template editor, versioning, duplication, publish/default)
 
 Progress: [▓▓▓▓▓▓▓░░░] 33%
 
@@ -58,6 +58,7 @@ Progress: [▓▓▓▓▓▓▓░░░] 33%
 | Phase 03 P03 | 6min | 2 tasks | 13 files |
 | Phase 03 P04 | 7min | 2 tasks | 15 files |
 | Phase 04 P01 | 5min | 2 tasks | 11 files |
+| Phase 04 P02 | 7 | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -113,6 +114,9 @@ Recent decisions affecting current work:
 - [04-01]: Answer config validation at API level: multiple_choice enforces min 2 non-empty string options
 - [04-01]: Template list uses LEFT JOIN with COUNT for question counts, filtering archived questions
 - [04-01]: DELETE endpoint on templates is archive (soft-delete), unsetting is_default if needed
+- [Phase 04]: Versioning only triggers when template has sessions AND questions changed -- unused templates update in place
+- [Phase 04]: Duplicate uses two-pass approach: insert all questions for new IDs, then remap conditional references
+- [Phase 04]: Questions managed in local React state (not RHF field arrays), saved in batch via single PATCH
 
 ### Pending Todos
 
@@ -127,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-03
-Stopped at: Completed 04-01-PLAN.md
-Resume file: .planning/phases/04-questionnaire-templates/04-01-SUMMARY.md
+Last session: 2026-03-03T19:58:38.840Z
+Stopped at: Completed 04-02-PLAN.md
+Resume file: None
