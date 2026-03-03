@@ -51,8 +51,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **TMPL-06**: Admin can mark one template as the organization default
 - [x] **TMPL-07**: User can duplicate an existing template
 - [x] **TMPL-08**: User can archive a template (hide from active use, preserve history)
-- [ ] **TMPL-09**: User can reorder questions within a template via drag-and-drop
-- [ ] **TMPL-10**: User can configure conditional logic — show/hide questions based on previous answers (operators: eq, neq, lt, gt, lte, gte)
+- [x] **TMPL-09**: User can reorder questions within a template via drag-and-drop
+- [x] **TMPL-10**: User can configure conditional logic — show/hide questions based on previous answers (operators: eq, neq, lt, gt, lte, gte)
 
 ### Meeting Series
 
@@ -230,8 +230,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TMPL-06 | Phase 4 | Complete |
 | TMPL-07 | Phase 4 | Complete |
 | TMPL-08 | Phase 4 | Complete |
-| TMPL-09 | Phase 4 | Pending |
-| TMPL-10 | Phase 4 | Pending |
+| TMPL-09 | Phase 4 | Complete |
+| TMPL-10 | Phase 4 | Complete |
 | MEET-01 | Phase 5 | Pending |
 | MEET-02 | Phase 5 | Pending |
 | MEET-03 | Phase 5 | Pending |
