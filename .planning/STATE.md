@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 ## Current Position
 
 Phase: 1 of 10 (Foundation & Infrastructure)
-Plan: 2 of 3 in current phase
-Status: Executing
-Last activity: 2026-03-03 -- Completed 01-02 database schema, RLS policies, tenant context
+Plan: 3 of 3 in current phase
+Status: Checkpoint (human-verify) -- awaiting user verification of Phase 1 end-to-end
+Last activity: 2026-03-03 -- Completed 01-03 encryption infrastructure, seed data (Tasks 1-2); Task 3 checkpoint pending
 
-Progress: [▓▓░░░░░░░░] 7%
+Progress: [▓▓▓░░░░░░░] 10%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+- Total plans completed: 3
 - Average duration: 6 min
-- Total execution time: 0.20 hours
+- Total execution time: 0.30 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation-infrastructure | 2 | 12 min | 6 min |
+| 01-foundation-infrastructure | 3 | 18 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (8 min), 01-02 (4 min)
-- Trend: accelerating
+- Last 5 plans: 01-01 (8 min), 01-02 (4 min), 01-03 (6 min)
+- Trend: consistent
 
 *Updated after each plan completion*
 
@@ -48,6 +48,9 @@ Recent decisions affecting current work:
 - [01-02]: Applied migrations via psql instead of drizzle-kit migrate (Neon driver cannot connect to local PostgreSQL)
 - [01-02]: Private note RLS uses RESTRICTIVE tenant + permissive author-only (AND logic)
 - [01-02]: Junction table RLS via subquery JOIN to parent table for tenant isolation
+- [01-03]: Used node-postgres (pg) for seed script instead of Neon driver (WebSocket not available locally)
+- [01-03]: Deterministic UUIDs in seed data for idempotent re-runs via onConflictDoUpdate
+- [01-03]: Seed connects as postgres superuser via SEED_DATABASE_URL to bypass RLS
 - [Roadmap]: AI ships in v1 (phases 7-8), not deferred to v3 -- core product differentiator
 - [Roadmap]: Phases 6, 7, 9 can execute in parallel after Phase 5 (all depend only on Phase 5)
 - [Roadmap]: Google Calendar integration deferred to v2 per REQUIREMENTS.md (not in v1 scope)
@@ -67,5 +70,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Completed 01-02-PLAN.md
-Resume file: .planning/phases/01-foundation-infrastructure/01-02-SUMMARY.md
+Stopped at: 01-03-PLAN.md Task 3 checkpoint:human-verify (Tasks 1-2 committed, awaiting user verification)
+Resume file: .planning/phases/01-foundation-infrastructure/01-03-SUMMARY.md
