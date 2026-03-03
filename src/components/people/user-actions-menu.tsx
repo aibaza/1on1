@@ -1,0 +1,156 @@
+"use client";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { MoreHorizontal, UserX, UserCheck, Send, Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
+
+interface UserActionsMenuProps {
+  user: {
+    id: string;
+    email: string;
+    status: "active" | "pending" | "deactivated";
+  };
+  currentUserRole: string;
+  currentUserId: string;
+}
+
+export function UserActionsMenu({
+  user,
+  currentUserRole,
+  currentUserId,
+}: UserActionsMenuProps) {
+  const queryClient = useQueryClient();
+  const isAdmin = currentUserRole === "admin";
+  const isSelf = user.id === currentUserId;
+
+  const deactivateMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/users/${user.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to deactivate user");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("User deactivated");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const reactivateMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/users/${user.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isActive: true }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to reactivate user");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("User reactivated");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const resendInviteMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/invites/resend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to resend invite");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("Invite resent");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  return (
+    <div onClick={(e) => e.stopPropagation()}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem asChild>
+            <Link href={`/people/${user.id}`}>
+              <Eye className="mr-2 h-4 w-4" />
+              View Profile
+            </Link>
+          </DropdownMenuItem>
+
+          {isAdmin && user.status === "pending" && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => resendInviteMutation.mutate()}
+                disabled={resendInviteMutation.isPending}
+              >
+                <Send className="mr-2 h-4 w-4" />
+                Resend Invite
+              </DropdownMenuItem>
+            </>
+          )}
+
+          {isAdmin && user.status === "active" && !isSelf && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => deactivateMutation.mutate()}
+                disabled={deactivateMutation.isPending}
+                className="text-destructive focus:text-destructive"
+              >
+                <UserX className="mr-2 h-4 w-4" />
+                Deactivate
+              </DropdownMenuItem>
+            </>
+          )}
+
+          {isAdmin && user.status === "deactivated" && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => reactivateMutation.mutate()}
+                disabled={reactivateMutation.isPending}
+              >
+                <UserCheck className="mr-2 h-4 w-4" />
+                Reactivate
+              </DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}

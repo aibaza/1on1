@@ -21,6 +21,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Circular manager assignment prevention: walks up manager chain (max 10 levels) before allowing assignment
 - Last-admin guard: prevents demoting or deactivating the last admin in an organization
 - Audit logging for all user mutations: `role_changed`, `manager_assigned`, `profile_updated`, `user_deactivated`, `user_reactivated`
+- People directory page (`/people`) with sortable/filterable TanStack Table showing all organization users
+- People table columns: name (with avatar), email, role (inline editing), teams (badges), manager (combobox), status (badge), actions (kebab menu)
+- Inline role editing via `RoleSelect` component with optimistic updates (admin-only)
+- Inline manager assignment via `ManagerSelect` combobox with search (admin-only)
+- User actions kebab menu: view profile, deactivate, reactivate, resend invite (role-conditional)
+- Profile sheet (slide-in panel) opens on table row click with user summary and "View Full Profile" link
+- Profile detail page (`/people/[id]`) with user info, team badges, and edit form (self or admin)
+- Profile edit form with React Hook Form + Zod validation for firstName, lastName, jobTitle
+- People/Teams tab navigation component using URL-based routing
+- Search filter: filters table by name, email, or job title
+- Role, team, and status dropdown filters with client-side filtering
+- Table pagination (20 rows per page) with Previous/Next controls
+- Pending invites appear in the people table with "Pending" status badge
 - `audit_log` Drizzle schema with tenant/action and tenant/actor composite indexes
 - `invite_token` Drizzle schema with tenant+email unique index and 7-day expiry support
 - RLS policies for `audit_log` (SELECT/INSERT only, immutable) and `invite_token` (SELECT/INSERT/UPDATE)
