@@ -6,7 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Database connection module (`src/lib/db/index.ts`) switched from Neon serverless driver to `node-postgres` (pg) for local development compatibility
+- Email infrastructure switched from Resend to Nodemailer (SMTP-based) for self-hosted flexibility
+- Auth flows (`auth/config.ts`, `auth/actions.ts`, `email/send.ts`) now use `adminDb` (superuser connection) to bypass RLS for registration, login, password reset, and email verification
+- Environment variables: replaced `RESEND_API_KEY` with SMTP configuration (`SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USERNAME`, `SMTP_PASSWORD`)
+
+### Fixed
+- Auth.js redirect detection in `registerAction` and `logoutAction` now uses digest-based check for Next.js compatibility
+
 ### Added
+- `adminDb` export in `src/lib/db/index.ts` -- superuser database connection for auth flows that operate outside tenant context
+- `DATABASE_ADMIN_URL` environment variable for admin database connection
+- `nodemailer` and `@react-email/render` dependencies for SMTP-based email sending
 - Organization type (`org_type`) enum and column on tenant table: `for_profit` and `non_profit`
 - Organization type selector (radio buttons) on registration page between company name and personal info
 - `orgType` field in registration schema and action -- tenants created with correct org type

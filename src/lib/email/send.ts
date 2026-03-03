@@ -1,8 +1,9 @@
 "use server";
 
-import { Resend } from "resend";
+import { createTransport } from "nodemailer";
+import { render } from "@react-email/render";
 import { randomBytes } from "crypto";
-import { db } from "@/lib/db";
+import { adminDb } from "@/lib/db";
 import {
   emailVerificationTokens,
   passwordResetTokens,
@@ -10,17 +11,25 @@ import {
 import { VerificationEmail } from "./templates/verification";
 import { PasswordResetEmail } from "./templates/password-reset";
 
-// Lazy-initialize Resend client to avoid build-time errors when API key is not set
-let _resend: Resend | null = null;
-function getResend(): Resend {
-  if (!_resend) {
-    _resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy-initialize SMTP transport
+let _transport: ReturnType<typeof createTransport> | null = null;
+function getTransport() {
+  if (!_transport) {
+    _transport = createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT || 587),
+      secure: process.env.SMTP_SECURE === "ssl",
+      auth: {
+        user: process.env.SMTP_USERNAME,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
   }
-  return _resend;
+  return _transport;
 }
 
 function getEmailFrom(): string {
-  return process.env.EMAIL_FROM || "1on1 <onboarding@resend.dev>";
+  return process.env.EMAIL_FROM || "1on1 <noreply@example.com>";
 }
 
 export async function sendVerificationEmail(
@@ -30,19 +39,20 @@ export async function sendVerificationEmail(
   const token = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-  await db.insert(emailVerificationTokens).values({
+  await adminDb.insert(emailVerificationTokens).values({
     userId,
     token,
     expiresAt,
   });
 
   const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`;
+  const html = await render(VerificationEmail({ verifyUrl }));
 
-  await getResend().emails.send({
+  await getTransport().sendMail({
     from: getEmailFrom(),
     to: email,
     subject: "Verify your email address",
-    react: VerificationEmail({ verifyUrl }),
+    html,
   });
 }
 
@@ -53,18 +63,19 @@ export async function sendPasswordResetEmail(
   const token = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
-  await db.insert(passwordResetTokens).values({
+  await adminDb.insert(passwordResetTokens).values({
     userId,
     token,
     expiresAt,
   });
 
   const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
+  const html = await render(PasswordResetEmail({ resetUrl }));
 
-  await getResend().emails.send({
+  await getTransport().sendMail({
     from: getEmailFrom(),
     to: email,
     subject: "Reset your password",
-    react: PasswordResetEmail({ resetUrl }),
+    html,
   });
 }

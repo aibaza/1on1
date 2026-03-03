@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { adminDb } from "@/lib/db";
 import {
   tenants,
   users,
@@ -30,7 +30,7 @@ export async function registerAction(formData: FormData) {
     });
 
     // Check if email already exists (any tenant)
-    const existingUser = await db.query.users.findFirst({
+    const existingUser = await adminDb.query.users.findFirst({
       where: (u, { eq: e }) => e(u.email, data.email),
     });
 
@@ -45,7 +45,7 @@ export async function registerAction(formData: FormData) {
       .replace(/^-|-$/g, "");
 
     // Check slug uniqueness
-    const existingTenant = await db.query.tenants.findFirst({
+    const existingTenant = await adminDb.query.tenants.findFirst({
       where: (t, { eq: e }) => e(t.slug, slug),
     });
 
@@ -57,7 +57,7 @@ export async function registerAction(formData: FormData) {
     const passwordHash = await bcrypt.hash(data.password, 12);
 
     // Create tenant + admin user in single transaction
-    const result = await db.transaction(async (tx) => {
+    const result = await adminDb.transaction(async (tx) => {
       const [tenant] = await tx
         .insert(tenants)
         .values({
@@ -104,8 +104,15 @@ export async function registerAction(formData: FormData) {
     });
 
     return { success: true };
-  } catch (error) {
-    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+  } catch (error: unknown) {
+    // Auth.js signIn throws a redirect on success — re-throw it
+    if (
+      error &&
+      typeof error === "object" &&
+      "digest" in error &&
+      typeof (error as { digest: unknown }).digest === "string" &&
+      (error as { digest: string }).digest.startsWith("NEXT_REDIRECT")
+    ) {
       throw error;
     }
     console.error("Registration error:", error);
@@ -116,7 +123,7 @@ export async function registerAction(formData: FormData) {
 export async function verifyEmailAction(token: string) {
   try {
     // Look up token
-    const [tokenRecord] = await db
+    const [tokenRecord] = await adminDb
       .select()
       .from(emailVerificationTokens)
       .where(eq(emailVerificationTokens.token, token))
@@ -129,20 +136,20 @@ export async function verifyEmailAction(token: string) {
     // Check if expired
     if (tokenRecord.expiresAt < new Date()) {
       // Clean up expired token
-      await db
+      await adminDb
         .delete(emailVerificationTokens)
         .where(eq(emailVerificationTokens.id, tokenRecord.id));
       return { error: "Verification link has expired. Please request a new one." };
     }
 
     // Mark user email as verified
-    await db
+    await adminDb
       .update(users)
       .set({ emailVerified: new Date() })
       .where(eq(users.id, tokenRecord.userId));
 
     // Delete the used token
-    await db
+    await adminDb
       .delete(emailVerificationTokens)
       .where(eq(emailVerificationTokens.id, tokenRecord.id));
 
@@ -160,7 +167,7 @@ export async function forgotPasswordAction(formData: FormData) {
     });
 
     // Look up user by email -- always return success (prevent email enumeration)
-    const user = await db.query.users.findFirst({
+    const user = await adminDb.query.users.findFirst({
       where: (u, { eq: e }) => e(u.email, data.email),
     });
 
@@ -191,7 +198,7 @@ export async function resetPasswordAction(formData: FormData) {
     });
 
     // Look up token
-    const [tokenRecord] = await db
+    const [tokenRecord] = await adminDb
       .select()
       .from(passwordResetTokens)
       .where(eq(passwordResetTokens.token, data.token))
@@ -203,7 +210,7 @@ export async function resetPasswordAction(formData: FormData) {
 
     // Check if expired
     if (tokenRecord.expiresAt < new Date()) {
-      await db
+      await adminDb
         .delete(passwordResetTokens)
         .where(eq(passwordResetTokens.id, tokenRecord.id));
       return { error: "Reset link has expired. Please request a new one." };
@@ -213,13 +220,13 @@ export async function resetPasswordAction(formData: FormData) {
     const passwordHash = await bcrypt.hash(data.password, 12);
 
     // Update user's password
-    await db
+    await adminDb
       .update(users)
       .set({ passwordHash })
       .where(eq(users.id, tokenRecord.userId));
 
     // Delete ALL password reset tokens for this user
-    await db
+    await adminDb
       .delete(passwordResetTokens)
       .where(eq(passwordResetTokens.userId, tokenRecord.userId));
 
@@ -233,8 +240,14 @@ export async function logoutAction() {
   try {
     await signOut({ redirect: false });
     return { success: true };
-  } catch (error) {
-    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+  } catch (error: unknown) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "digest" in error &&
+      typeof (error as { digest: unknown }).digest === "string" &&
+      (error as { digest: string }).digest.startsWith("NEXT_REDIRECT")
+    ) {
       throw error;
     }
     return { success: true };

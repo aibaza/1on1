@@ -1,12 +1,6 @@
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { Pool, neonConfig } from "@neondatabase/serverless";
-import ws from "ws";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 import * as schema from "./schema";
-
-// Node.js environments (local dev) need WebSocket polyfill
-if (typeof globalThis.WebSocket === "undefined") {
-  neonConfig.webSocketConstructor = ws;
-}
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL!,
@@ -14,3 +8,11 @@ const pool = new Pool({
 
 export const db = drizzle(pool, { schema });
 export type Database = typeof db;
+
+// Admin connection bypasses RLS — used for auth flows (registration, login,
+// password reset) that operate outside tenant context.
+const adminPool = new Pool({
+  connectionString: process.env.DATABASE_ADMIN_URL || process.env.SEED_DATABASE_URL!,
+});
+
+export const adminDb = drizzle(adminPool, { schema });

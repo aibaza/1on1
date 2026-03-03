@@ -4,7 +4,7 @@ import Google from "next-auth/providers/google";
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
 import Credentials from "next-auth/providers/credentials";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { db } from "@/lib/db";
+import { adminDb } from "@/lib/db";
 import {
   users,
   accounts,
@@ -17,7 +17,7 @@ import { signInSchema } from "@/lib/validations/auth";
 const config = {
   // Cast adapter to work around @auth/core version mismatch between
   // next-auth and @auth/drizzle-adapter (0.41.0 vs 0.41.1)
-  adapter: DrizzleAdapter(db, {
+  adapter: DrizzleAdapter(adminDb, {
     usersTable: users,
     accountsTable: accounts,
     sessionsTable: authSessions,
@@ -41,7 +41,7 @@ const config = {
           await signInSchema.parseAsync(credentials);
 
         // Look up user by email (no tenant context during login)
-        const user = await db.query.users.findFirst({
+        const user = await adminDb.query.users.findFirst({
           where: (u, { eq, and }) =>
             and(eq(u.email, email), eq(u.isActive, true)),
         });
@@ -69,7 +69,7 @@ const config = {
         account?.provider === "google" ||
         account?.provider === "microsoft-entra-id"
       ) {
-        const existingUser = await db.query.users.findFirst({
+        const existingUser = await adminDb.query.users.findFirst({
           where: (u, { eq }) => eq(u.email, user.email!),
         });
 
