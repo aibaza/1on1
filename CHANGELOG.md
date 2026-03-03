@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Invite acceptance API: `POST /api/invites/accept` creates user account from invite token (public endpoint)
 - Invite resend API: `POST /api/invites/resend` generates new token and resends invite email (admin-only)
 - Invite email template (`src/lib/email/templates/invite.tsx`) matching existing email design system
+- Invite dialog component (`src/components/people/invite-dialog.tsx`) with multi-email textarea and role selector
+- Invite acceptance page (`/invite/[token]`) with 2-step onboarding: password setup, then profile info
+- Auto-sign-in after invite acceptance: new users land directly in the dashboard
 - User management API: `GET /api/users` returns all users with team memberships and pending invites merged
 - User detail API: `GET /api/users/[id]` fetches single user with manager name and team memberships
 - User update API: `PATCH /api/users/[id]` handles role changes (admin-only), manager assignment (admin-only), profile updates (self or admin), and reactivation (admin-only)
