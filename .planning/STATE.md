@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 08-04-PLAN.md
-last_updated: "2026-03-04T19:52:11Z"
-last_activity: 2026-03-04 -- Plan 08-04 completed (Team analytics with heatmap)
+stopped_at: Completed 08-05-PLAN.md
+last_updated: "2026-03-04T19:54:21Z"
+last_activity: 2026-03-04 -- Plan 08-05 completed (Velocity, adherence charts & CSV export)
 progress:
   total_phases: 10
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 29
   completed_plans: 29
-  percent: 97
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-03)
 
 **Core value:** The AI context layer that makes every meeting smarter than the last
-**Current focus:** Phase 8 IN PROGRESS - Manager Dashboard Analytics. Plans 01-04 complete.
+**Current focus:** Phase 8 COMPLETE - Manager Dashboard Analytics. All 5 plans done.
 
 ## Current Position
 
 Phase: 8 of 10 (Manager Dashboard Analytics)
-Plan: 4 of 5 in current phase
-Status: Plan 08-04 complete -- team analytics with aggregated scores and dot matrix heatmap
-Last activity: 2026-03-04 -- Plan 08-04 completed (Team analytics with heatmap)
+Plan: 5 of 5 in current phase
+Status: Phase 8 complete -- velocity/adherence charts and CSV export
+Last activity: 2026-03-04 -- Plan 08-05 completed (Velocity, adherence charts & CSV export)
 
-Progress: [███████████████████░] 97%
+Progress: [████████████████████] 100%
 
 ## Performance Metrics
 
@@ -50,10 +50,11 @@ Progress: [███████████████████░] 97%
 | 05-meeting-series-session-wizard | 5/5 | 32 min | 6 min |
 | 06-action-items-session-history | 3/3 | 17 min | 6 min |
 | 07-ai-pipeline | 3/3 | 20 min | 7 min |
+| 08-manager-dashboard-analytics | 5/5 | 19 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-03 (5 min), 07-01 (8 min), 07-02 (6 min), 07-03 (6 min)
-- Trend: consistent (07-03: Pre-session nudge pipeline, dashboard/wizard nudge UI)
+- Last 5 plans: 08-01 (4 min), 08-02 (3 min), 08-03 (4 min), 08-04 (3 min), 08-05 (5 min)
+- Trend: consistent (08-05: Velocity, adherence charts & CSV export)
 
 *Updated after each plan completion*
 
@@ -78,6 +79,7 @@ Progress: [███████████████████░] 97%
 | Phase 08 P01 | 4min | 2 tasks | 7 files |
 | Phase 08 P03 | 4min | 2 tasks | 9 files |
 | Phase 08 P04 | 3min | 2 tasks | 7 files |
+| Phase 08 P05 | 5min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -199,6 +201,9 @@ Recent decisions affecting current work:
 - [Phase 08]: [08-03]: Session comparison is a delta table (not chart) per locked decision
 - [Phase 08]: [08-04]: Added sampleCount to HeatmapDataPoint for dot sizing (missing from query layer)
 - [Phase 08]: [08-04]: Team RBAC checks teams.managerId and team_member.role='lead' for manager access
+- [Phase 08]: [08-05]: Velocity query uses EXTRACT(EPOCH) for timezone-safe day calculation
+- [Phase 08]: [08-05]: Single /api/analytics/export endpoint handles all export types via type query parameter
+- [Phase 08]: [08-05]: effectiveRole set to "member" when viewing specific user's velocity/adherence data
 
 ### Pending Todos
 
@@ -213,6 +218,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-04T19:52:11Z
-Stopped at: Completed 08-04-PLAN.md
+Last session: 2026-03-04T19:54:21Z
+Stopped at: Completed 08-05-PLAN.md
 Resume file: None
