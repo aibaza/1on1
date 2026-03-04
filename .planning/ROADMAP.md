@@ -143,7 +143,7 @@ Plans:
 **Plans**: 3 plans in 2 waves (Wave 1: foundation, Wave 2: post-session pipeline + nudge pipeline in parallel)
 
 Plans:
-- [ ] 07-01-PLAN.md -- AI SDK + Inngest installation, DB schema migration (AI columns + ai_nudge table), Inngest client/serve route, AI service layer with Zod schemas and prompt templates (Wave 1)
+- [x] 07-01-PLAN.md -- AI SDK + Inngest installation, DB schema migration (AI columns + ai_nudge table), Inngest client/serve route, AI service layer with Zod schemas and prompt templates (Wave 1)
 - [ ] 07-02-PLAN.md -- Post-session Inngest pipeline (summary, addendum, suggestions), completion endpoint integration, AI summary/suggestions API endpoints, session summary page UI (Wave 2)
 - [ ] 07-03-PLAN.md -- Pre-session nudge cron pipeline, nudge refresh handler, nudge API endpoints, dashboard nudge cards, wizard context panel nudge integration (Wave 2)
 
@@ -211,7 +211,7 @@ Note: Phases 6, 7, and 9 all depend only on Phase 5 and can execute in parallel.
 | 4. Questionnaire Templates | 0/3 | Not started | - |
 | 5. Meeting Series & Session Wizard | 0/5 | Not started | - |
 | 6. Action Items & Session History | 0/3 | Not started | - |
-| 7. AI Pipeline | 0/3 | Not started | - |
+| 7. AI Pipeline | 1/3 | In progress | - |
 | 8. Manager Dashboard & Analytics | 0/5 | Not started | - |
 | 9. Email Notifications | 0/3 | Not started | - |
 | 10. Integration & Polish | 0/2 | Not started | - |

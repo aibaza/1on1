@@ -112,8 +112,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **AI-04**: Pre-session nudges appear on the dashboard and in the pre-session state
 - [ ] **AI-05**: After session completion, AI suggests 1-3 action items based on session answers and discussion
 - [ ] **AI-06**: Embedding infrastructure (pgvector) stores session embeddings for context retrieval and profile building
-- [ ] **AI-07**: AI features use Vercel AI SDK v6 with provider-agnostic model routing (cost-optimized per task)
-- [ ] **AI-08**: AI pipelines run as durable Inngest background functions with automatic retry
+- [x] **AI-07**: AI features use Vercel AI SDK v6 with provider-agnostic model routing (cost-optimized per task)
+- [x] **AI-08**: AI pipelines run as durable Inngest background functions with automatic retry
 
 ### Analytics
 
@@ -273,8 +273,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AI-04 | Phase 7 | Pending |
 | AI-05 | Phase 7 | Pending |
 | AI-06 | Phase 7 | Pending |
-| AI-07 | Phase 7 | Pending |
-| AI-08 | Phase 7 | Pending |
+| AI-07 | Phase 7 | Complete |
+| AI-08 | Phase 7 | Complete |
 | ANLT-01 | Phase 8 | Pending |
 | ANLT-02 | Phase 8 | Pending |
 | ANLT-03 | Phase 8 | Pending |
