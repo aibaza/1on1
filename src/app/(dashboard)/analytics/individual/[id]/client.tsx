@@ -12,10 +12,15 @@ import {
 import { ScoreTrendChart } from "@/components/analytics/score-trend-chart";
 import { CategoryBreakdown } from "@/components/analytics/category-breakdown";
 import { SessionComparison } from "@/components/analytics/session-comparison";
+import { VelocityChart } from "@/components/analytics/velocity-chart";
+import { AdherenceChart } from "@/components/analytics/adherence-chart";
+import { CsvExportButton } from "@/components/analytics/csv-export-button";
 import type {
   ScoreTrendPoint,
   CategoryAverage,
   SessionComparisonRow,
+  VelocityPoint,
+  AdherencePoint,
 } from "@/lib/analytics/queries";
 
 interface TargetUser {
@@ -37,6 +42,8 @@ interface AnalyticsApiResponse {
   categoryAverages: CategoryAverage[];
   sessions: SessionOption[];
   comparison: SessionComparisonRow[] | null;
+  velocity: VelocityPoint[];
+  adherence: AdherencePoint[];
 }
 
 interface IndividualAnalyticsClientProps {
@@ -44,6 +51,8 @@ interface IndividualAnalyticsClientProps {
   initialScoreTrend: ScoreTrendPoint[];
   initialCategoryAverages: CategoryAverage[];
   initialSessions: SessionOption[];
+  initialVelocity: VelocityPoint[];
+  initialAdherence: AdherencePoint[];
   targetUserId: string;
 }
 
@@ -52,6 +61,8 @@ export function IndividualAnalyticsClient({
   initialScoreTrend,
   initialCategoryAverages,
   initialSessions,
+  initialVelocity,
+  initialAdherence,
   targetUserId,
 }: IndividualAnalyticsClientProps) {
   const defaultRange = periodToDateRange("3mo");
@@ -93,6 +104,8 @@ export function IndividualAnalyticsClient({
             categoryAverages: initialCategoryAverages,
             sessions: initialSessions,
             comparison: null,
+            velocity: initialVelocity,
+            adherence: initialAdherence,
           }
         : undefined,
     staleTime: 60_000,
@@ -130,6 +143,8 @@ export function IndividualAnalyticsClient({
   const categoryAverages = analyticsData?.categoryAverages ?? [];
   const sessionList = analyticsData?.sessions ?? [];
   const comparisonData = comparisonResult?.comparison ?? null;
+  const velocity = analyticsData?.velocity ?? [];
+  const adherence = analyticsData?.adherence ?? [];
 
   const initials = `${targetUser.firstName[0]}${targetUser.lastName[0]}`;
 
@@ -156,14 +171,28 @@ export function IndividualAnalyticsClient({
         </div>
       </div>
 
-      {/* Period selector */}
-      <PeriodSelector value={period} onChange={setPeriod} />
+      {/* Period selector + Export All */}
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <PeriodSelector value={period} onChange={setPeriod} />
+        <CsvExportButton
+          type="full"
+          userId={targetUserId}
+          period={period}
+          variant="full"
+        />
+      </div>
 
       {/* Charts grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-base">Score Trend</CardTitle>
+            <CsvExportButton
+              type="score-trend"
+              userId={targetUserId}
+              period={period}
+              label="Export score trend"
+            />
           </CardHeader>
           <CardContent>
             <ScoreTrendChart data={scoreTrend} loading={isLoading} />
@@ -171,11 +200,50 @@ export function IndividualAnalyticsClient({
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-base">Category Breakdown</CardTitle>
+            <CsvExportButton
+              type="categories"
+              userId={targetUserId}
+              period={period}
+              label="Export categories"
+            />
           </CardHeader>
           <CardContent>
             <CategoryBreakdown data={categoryAverages} />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Operational charts grid */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-base">Action Item Velocity</CardTitle>
+            <CsvExportButton
+              type="velocity"
+              userId={targetUserId}
+              period={period}
+              label="Export velocity"
+            />
+          </CardHeader>
+          <CardContent>
+            <VelocityChart data={velocity} loading={isLoading} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-base">Meeting Adherence</CardTitle>
+            <CsvExportButton
+              type="adherence"
+              userId={targetUserId}
+              period={period}
+              label="Export adherence"
+            />
+          </CardHeader>
+          <CardContent>
+            <AdherenceChart data={adherence} loading={isLoading} />
           </CardContent>
         </Card>
       </div>

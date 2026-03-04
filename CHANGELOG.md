@@ -7,6 +7,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- CSV export API endpoint (`GET /api/analytics/export`) supporting full, score-trend, categories, velocity, and adherence export types with RBAC
+- CSV generation utilities (`generateCSV`, `escapeCsvField`, `sessionDataToRows`) with RFC 4180 escaping
+- CsvExportButton component with icon and full variants, browser download trigger, and toast notifications
+- Per-chart CSV export buttons on individual analytics page (score trend, categories, velocity, adherence)
+- "Export All Data" button on individual analytics page header
+- Velocity and adherence charts integrated into individual analytics page with initial server-side data
 - Team analytics page with aggregated category scores and SVG dot matrix heatmap (size=sample count, color=score)
 - Team analytics API route (`GET /api/analytics/team/[id]`) with RBAC (members blocked, managers need team lead role)
 - TeamOverview component showing category score cards with green/amber/red bar visualization and limited-data footnotes

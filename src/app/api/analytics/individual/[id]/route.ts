@@ -7,6 +7,8 @@ import {
   getScoreTrend,
   getCategoryAverages,
   getSessionComparison,
+  getActionItemVelocity,
+  getMeetingAdherence,
 } from "@/lib/analytics/queries";
 import { periodToDateRange } from "@/components/analytics/period-selector";
 
@@ -80,8 +82,12 @@ export async function GET(
           endDate = range.endDate.toISOString().split("T")[0]!;
         }
 
+        // Determine effective role for velocity/adherence queries
+        // When viewing a specific user, use "member" role to scope to their data
+        const effectiveRole = targetUserId === user.id ? user.role : "member";
+
         // Fetch analytics in parallel
-        const [scoreTrend, categoryAverages, sessionList] = await Promise.all([
+        const [scoreTrend, categoryAverages, sessionList, velocity, adherence] = await Promise.all([
           getScoreTrend(tx, targetUserId, startDate, endDate),
           getCategoryAverages(tx, targetUserId, startDate, endDate),
           // Get completed sessions for comparison selector
@@ -101,6 +107,8 @@ export async function GET(
               ),
             )
             .orderBy(sessions.completedAt),
+          getActionItemVelocity(tx, targetUserId, effectiveRole, startDate, endDate),
+          getMeetingAdherence(tx, targetUserId, effectiveRole, startDate, endDate),
         ]);
 
         // Comparison data (optional)
@@ -117,6 +125,8 @@ export async function GET(
           categoryAverages,
           sessions: sessionList.filter((s) => s.date !== null),
           comparison,
+          velocity,
+          adherence,
         };
       },
     );
