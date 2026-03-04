@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   Collapsible,
   CollapsibleContent,
@@ -30,6 +31,7 @@ export interface OpenActionItem {
   status: string;
   category: string | null;
   sessionNumber: number;
+  createdAt?: string;
 }
 
 export interface ContextPanelProps {
@@ -46,6 +48,29 @@ function formatDate(dateStr: string): string {
     month: "short",
     day: "numeric",
   });
+}
+
+function isItemOverdue(dueDate: string | null, status: string): boolean {
+  if (!dueDate || status === "completed") return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return new Date(dueDate) < today;
+}
+
+function formatAge(createdAt: string): string | null {
+  const created = new Date(createdAt);
+  const now = new Date();
+  const diffMs = now.getTime() - created.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays < 1) return null;
+  if (diffDays === 1) return "1 day ago";
+  if (diffDays < 7) return `${diffDays} days ago`;
+  const weeks = Math.floor(diffDays / 7);
+  if (weeks === 1) return "1 week ago";
+  if (diffDays < 30) return `${weeks} weeks ago`;
+  const months = Math.floor(diffDays / 30);
+  if (months === 1) return "1 month ago";
+  return `${months} months ago`;
 }
 
 function SectionHeader({
@@ -161,24 +186,41 @@ function RecapContent({
                       Session #{sessionNum}
                     </p>
                     <ul className="space-y-1">
-                      {items.map((item) => (
-                        <li
-                          key={item.id}
-                          className="flex items-start gap-2 rounded-md border px-2 py-1.5 text-xs"
-                        >
-                          <div className="min-w-0 flex-1">
-                            <p className="font-medium leading-tight">{item.title}</p>
-                            <p className="text-muted-foreground">
-                              {item.assignee.firstName} {item.assignee.lastName}
-                              {item.dueDate && (
-                                <span className="ml-1">
-                                  &middot; due {formatDate(item.dueDate)}
-                                </span>
-                              )}
-                            </p>
-                          </div>
-                        </li>
-                      ))}
+                      {items.map((item) => {
+                        const overdue = isItemOverdue(item.dueDate, item.status);
+                        const age = item.createdAt ? formatAge(item.createdAt) : null;
+                        return (
+                          <li
+                            key={item.id}
+                            className={cn(
+                              "flex items-start gap-2 rounded-md border px-2 py-1.5 text-xs",
+                              overdue && "border-l-2 border-l-destructive/60"
+                            )}
+                          >
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium leading-tight">{item.title}</p>
+                              <p className="text-muted-foreground">
+                                {item.assignee.firstName} {item.assignee.lastName}
+                                {item.dueDate && (
+                                  <span className="ml-1">
+                                    &middot; due {formatDate(item.dueDate)}
+                                  </span>
+                                )}
+                                {overdue && (
+                                  <span className="ml-1 text-destructive font-medium">
+                                    &middot; Overdue
+                                  </span>
+                                )}
+                                {age && (
+                                  <span className="ml-1 opacity-60">
+                                    &middot; {age}
+                                  </span>
+                                )}
+                              </p>
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 ))}
@@ -342,30 +384,57 @@ function CategoryContent({
               <EmptyState message="No open action items for this section" />
             ) : (
               <ul className="space-y-1">
-                {categoryActions.map((item) => (
-                  <li
-                    key={item.id}
-                    className="flex items-start gap-2 rounded-md border px-2 py-1.5 text-xs"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium leading-tight">{item.title}</p>
-                      <p className="text-muted-foreground">
-                        {item.assignee.firstName} {item.assignee.lastName}
-                        {item.dueDate && (
-                          <span className="ml-1">
-                            &middot; due {formatDate(item.dueDate)}
-                          </span>
-                        )}
-                      </p>
-                    </div>
-                    <Badge
-                      variant="outline"
-                      className="shrink-0 text-[10px]"
+                {categoryActions.map((item) => {
+                  const overdue = isItemOverdue(item.dueDate, item.status);
+                  const age = item.createdAt ? formatAge(item.createdAt) : null;
+                  return (
+                    <li
+                      key={item.id}
+                      className={cn(
+                        "flex items-start gap-2 rounded-md border px-2 py-1.5 text-xs",
+                        overdue && "border-l-2 border-l-destructive/60"
+                      )}
                     >
-                      #{item.sessionNumber}
-                    </Badge>
-                  </li>
-                ))}
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium leading-tight">{item.title}</p>
+                        <p className="text-muted-foreground">
+                          {item.assignee.firstName} {item.assignee.lastName}
+                          {item.dueDate && (
+                            <span className="ml-1">
+                              &middot; due {formatDate(item.dueDate)}
+                            </span>
+                          )}
+                          {overdue && (
+                            <span className="ml-1 text-destructive font-medium">
+                              &middot; Overdue
+                            </span>
+                          )}
+                          {age && (
+                            <span className="ml-1 opacity-60">
+                              &middot; {age}
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                      <div className="flex shrink-0 flex-col items-end gap-0.5">
+                        <Badge
+                          variant="outline"
+                          className="text-[10px]"
+                        >
+                          #{item.sessionNumber}
+                        </Badge>
+                        {overdue && (
+                          <Badge
+                            variant="destructive"
+                            className="text-[9px] px-1"
+                          >
+                            Overdue
+                          </Badge>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>

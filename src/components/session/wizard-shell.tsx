@@ -637,6 +637,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         status: ai.status,
         category: ai.category,
         sessionNumber: sessionNum,
+        createdAt: ai.createdAt,
       };
     });
   }, [data, seriesParticipants, sessionNumberMap]);
