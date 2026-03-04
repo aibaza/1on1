@@ -98,11 +98,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Manager Dashboard
 
-- [ ] **DASH-01**: Dashboard shows upcoming sessions for the next 7 days (report name, date, template, agenda readiness)
-- [ ] **DASH-02**: Dashboard shows overdue action items grouped by report with days overdue
-- [ ] **DASH-03**: Dashboard shows quick stats: total reports, sessions this month, average session score
-- [ ] **DASH-04**: Dashboard shows last 5 completed sessions with scores
-- [ ] **DASH-05**: "Start session" quick action button for today's scheduled sessions
+- [x] **DASH-01**: Dashboard shows upcoming sessions for the next 7 days (report name, date, template, agenda readiness)
+- [x] **DASH-02**: Dashboard shows overdue action items grouped by report with days overdue
+- [x] **DASH-03**: Dashboard shows quick stats: total reports, sessions this month, average session score
+- [x] **DASH-04**: Dashboard shows last 5 completed sessions with scores
+- [x] **DASH-05**: "Start session" quick action button for today's scheduled sessions
 
 ### AI Features
 
@@ -262,11 +262,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HIST-02 | Phase 6 | Complete |
 | HIST-03 | Phase 6 | Complete |
 | HIST-04 | Phase 6 | Complete |
-| DASH-01 | Phase 8 | Pending |
-| DASH-02 | Phase 8 | Pending |
-| DASH-03 | Phase 8 | Pending |
-| DASH-04 | Phase 8 | Pending |
-| DASH-05 | Phase 8 | Pending |
+| DASH-01 | Phase 8 | Complete |
+| DASH-02 | Phase 8 | Complete |
+| DASH-03 | Phase 8 | Complete |
+| DASH-04 | Phase 8 | Complete |
+| DASH-05 | Phase 8 | Complete |
 | AI-01 | Phase 7 | Complete |
 | AI-02 | Phase 7 | Complete |
 | AI-03 | Phase 7 | Complete |
