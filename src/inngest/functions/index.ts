@@ -1,4 +1,7 @@
 import type { InngestFunction } from "inngest";
+import { postSessionPipeline, aiRetryHandler } from "./post-session";
 
-// Functions will be added by Plan 02 (post-session pipeline) and Plan 03 (nudge pipeline)
-export const functions: InngestFunction.Any[] = [];
+export const functions: InngestFunction.Any[] = [
+  postSessionPipeline,
+  aiRetryHandler,
+];

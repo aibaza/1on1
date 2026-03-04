@@ -4,6 +4,7 @@ import { withTenantContext } from "@/lib/db/tenant-context";
 import { logAuditEvent } from "@/lib/audit/log";
 import { computeSessionScore } from "@/lib/utils/scoring";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
+import { inngest } from "@/inngest/client";
 import {
   sessions,
   meetingSeries,
@@ -112,7 +113,7 @@ export async function POST(
           );
         }
 
-        // Update session: mark completed
+        // Update session: mark completed with AI status pending
         await tx
           .update(sessions)
           .set({
@@ -120,6 +121,7 @@ export async function POST(
             completedAt: now,
             sessionScore: sessionScore !== null ? String(sessionScore) : null,
             durationMinutes,
+            aiStatus: "pending",
             updatedAt: now,
           })
           .where(eq(sessions.id, sessionId));
@@ -159,6 +161,9 @@ export async function POST(
           sessionId,
           score: sessionScore,
           nextSessionAt: nextSessionAt.toISOString(),
+          seriesId: series.id,
+          managerId: series.managerId,
+          reportId: series.reportId,
         };
       }
     );
@@ -183,7 +188,28 @@ export async function POST(
       }
     }
 
-    return NextResponse.json(result);
+    // Fire-and-forget: trigger AI pipeline via Inngest
+    // Do NOT await -- session completion must never be blocked by AI
+    inngest
+      .send({
+        name: "session/completed",
+        data: {
+          sessionId: result.sessionId,
+          seriesId: result.seriesId,
+          tenantId: session.user.tenantId,
+          managerId: result.managerId,
+          reportId: result.reportId,
+        },
+      })
+      .catch((err) =>
+        console.error("Failed to send Inngest session/completed event:", err)
+      );
+
+    return NextResponse.json({
+      sessionId: result.sessionId,
+      score: result.score,
+      nextSessionAt: result.nextSessionAt,
+    });
   } catch (error) {
     console.error("Failed to complete session:", error);
     return NextResponse.json(

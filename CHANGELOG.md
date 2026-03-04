@@ -7,6 +7,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Post-session AI pipeline (`postSessionPipeline`): 9-step Inngest function generating summary, manager addendum, action suggestions, and base nudges after session completion
+- AI retry handler (`aiRetryHandler`): re-runs the full AI pipeline for sessions with failed AI generation
+- AI retry API endpoint (`POST /api/sessions/[id]/ai-retry`): allows managers to re-trigger failed AI pipelines
+- Session completion endpoint fires `session/completed` Inngest event as fire-and-forget (never blocks session completion)
+- AI status transitions: `pending` (on completion) -> `generating` (pipeline starts) -> `completed`/`failed`
+
+### Changed
+- Session completion endpoint now sets `aiStatus: "pending"` when completing a session
+
+### Added
 - AI SDK v6 (`ai@6.0.111`) and Anthropic provider (`@ai-sdk/anthropic@3.0.54`) for structured AI generation
 - Inngest (`inngest@3.52.6`) for durable background job pipelines with typed event schemas
 - Inngest serve route at `/api/inngest` with typed client exporting `session/completed`, `session/nudges.refresh`, `session/ai.retry` events
