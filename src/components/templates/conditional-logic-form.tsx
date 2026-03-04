@@ -66,9 +66,9 @@ export function ConditionalLogicForm({
   // Only earlier questions (lower index) can be referenced
   const availableQuestions = allQuestions.filter((_, i) => i < currentQuestionIndex);
 
-  // Get the selected target question
+  // Get the selected target question (match by id or fallback index key)
   const targetQuestion = targetQuestionId
-    ? allQuestions.find((q) => q.id === targetQuestionId)
+    ? allQuestions.find((q, i) => (q.id ?? `q-${i}`) === targetQuestionId)
     : null;
 
   // Get valid operators for the target question's answer type

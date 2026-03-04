@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Conditional question operator dropdown disabled for unsaved questions — fallback ID matching now consistent between select and lookup
+
 ### Added
 - Session summary screen: read-only recap of all answers, notes, talking points, and action items grouped by category
 - Session score computation: normalizes all numeric answer types (rating_1_5, rating_1_10, yes_no, mood) to 1-5 scale and averages
