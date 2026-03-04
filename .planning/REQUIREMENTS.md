@@ -106,11 +106,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### AI Features
 
-- [ ] **AI-01**: After session completion, AI generates a concise narrative summary from structured answers and notes
-- [ ] **AI-02**: AI summary is stored and viewable in session history and post-session email
+- [x] **AI-01**: After session completion, AI generates a concise narrative summary from structured answers and notes
+- [x] **AI-02**: AI summary is stored and viewable in session history and post-session email
 - [ ] **AI-03**: Before a session, AI generates 2-3 specific follow-up suggestions based on previous session answers ("Last time Alex mentioned burnout — follow up?")
 - [ ] **AI-04**: Pre-session nudges appear on the dashboard and in the pre-session state
-- [ ] **AI-05**: After session completion, AI suggests 1-3 action items based on session answers and discussion
+- [x] **AI-05**: After session completion, AI suggests 1-3 action items based on session answers and discussion
 - [ ] **AI-06**: Embedding infrastructure (pgvector) stores session embeddings for context retrieval and profile building
 - [x] **AI-07**: AI features use Vercel AI SDK v6 with provider-agnostic model routing (cost-optimized per task)
 - [x] **AI-08**: AI pipelines run as durable Inngest background functions with automatic retry
@@ -267,11 +267,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DASH-03 | Phase 8 | Pending |
 | DASH-04 | Phase 8 | Pending |
 | DASH-05 | Phase 8 | Pending |
-| AI-01 | Phase 7 | Pending |
-| AI-02 | Phase 7 | Pending |
+| AI-01 | Phase 7 | Complete |
+| AI-02 | Phase 7 | Complete |
 | AI-03 | Phase 7 | Pending |
 | AI-04 | Phase 7 | Pending |
-| AI-05 | Phase 7 | Pending |
+| AI-05 | Phase 7 | Complete |
 | AI-06 | Phase 7 | Pending |
 | AI-07 | Phase 7 | Complete |
 | AI-08 | Phase 7 | Complete |
