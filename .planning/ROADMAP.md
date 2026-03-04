@@ -123,13 +123,12 @@ Plans:
   3. Dedicated list view shows all open action items across all series
   4. User can view a chronological timeline of sessions in a series and open read-only detail views of completed sessions
   5. User can search across session notes (full-text) and filter sessions by date range and status
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves (Wave 1: action items + history in parallel, Wave 2: full-text search + command palette)
 
 Plans:
-- [ ] 06-01: Action item CRUD, status tracking, and carry-over logic
-- [ ] 06-02: Action item list view (cross-series)
-- [ ] 06-03: Session history timeline and detail view
-- [ ] 06-04: Full-text search and filtering
+- [ ] 06-01-PLAN.md -- Standalone action item APIs, Action Items page, context panel overdue badges, sidebar nav (Wave 1)
+- [ ] 06-02-PLAN.md -- Session summary page, enhanced timeline click-through, History page with filters (Wave 1)
+- [ ] 06-03-PLAN.md -- Full-text search GIN indexes, search API, Cmd+K command palette, History search bar (Wave 2)
 
 ### Phase 7: AI Pipeline
 **Goal**: AI generates session summaries and pre-meeting nudges, proving the "AI-first" positioning with reliable background pipelines
@@ -211,7 +210,7 @@ Note: Phases 6, 7, and 9 all depend only on Phase 5 and can execute in parallel.
 | 3. User & Team Management | 0/4 | Not started | - |
 | 4. Questionnaire Templates | 0/3 | Not started | - |
 | 5. Meeting Series & Session Wizard | 0/5 | Not started | - |
-| 6. Action Items & Session History | 0/4 | Not started | - |
+| 6. Action Items & Session History | 0/3 | Not started | - |
 | 7. AI Pipeline | 0/3 | Not started | - |
 | 8. Manager Dashboard & Analytics | 0/5 | Not started | - |
 | 9. Email Notifications | 0/3 | Not started | - |
