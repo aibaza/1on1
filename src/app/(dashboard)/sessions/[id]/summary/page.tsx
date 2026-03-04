@@ -73,6 +73,22 @@ export default async function SessionSummaryPage({
 
       const isManager = session.user.id === series.managerId;
 
+      // Fetch manager and report names for AI suggestions display
+      const [managerUser, reportUser] = await Promise.all([
+        tx
+          .select({ firstName: users.firstName, lastName: users.lastName })
+          .from(users)
+          .where(eq(users.id, series.managerId))
+          .limit(1)
+          .then((rows) => rows[0]),
+        tx
+          .select({ firstName: users.firstName, lastName: users.lastName })
+          .from(users)
+          .where(eq(users.id, series.reportId))
+          .limit(1)
+          .then((rows) => rows[0]),
+      ]);
+
       // Fetch all data in parallel
       const [
         sectionData,
@@ -298,6 +314,7 @@ export default async function SessionSummaryPage({
       });
 
       return {
+        sessionId,
         sessionNumber: sessionRecord.sessionNumber,
         scheduledAt: sessionRecord.scheduledAt.toISOString(),
         completedAt: sessionRecord.completedAt?.toISOString() ?? null,
@@ -309,6 +326,19 @@ export default async function SessionSummaryPage({
         categories: categoriesData,
         isManager,
         seriesId: series.id,
+        aiStatus: sessionRecord.aiStatus,
+        aiSummary: sessionRecord.aiSummary ?? null,
+        aiAddendum: isManager
+          ? (sessionRecord.aiManagerAddendum ?? null)
+          : null,
+        managerId: series.managerId,
+        reportId: series.reportId,
+        managerName: managerUser
+          ? `${managerUser.firstName} ${managerUser.lastName}`
+          : "Manager",
+        reportName: reportUser
+          ? `${reportUser.firstName} ${reportUser.lastName}`
+          : "Report",
       };
     }
   );
@@ -322,6 +352,7 @@ export default async function SessionSummaryPage({
 
   return (
     <SessionSummaryView
+      sessionId={data.sessionId}
       sessionNumber={data.sessionNumber}
       scheduledAt={data.scheduledAt}
       completedAt={data.completedAt}
@@ -331,6 +362,13 @@ export default async function SessionSummaryPage({
       categories={data.categories}
       isManager={data.isManager}
       seriesId={data.seriesId}
+      aiStatus={data.aiStatus}
+      aiSummary={data.aiSummary}
+      aiAddendum={data.aiAddendum}
+      managerId={data.managerId}
+      reportId={data.reportId}
+      managerName={data.managerName}
+      reportName={data.reportName}
     />
   );
 }

@@ -12,8 +12,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - AI retry API endpoint (`POST /api/sessions/[id]/ai-retry`): allows managers to re-trigger failed AI pipelines
 - Session completion endpoint fires `session/completed` Inngest event as fire-and-forget (never blocks session completion)
 - AI status transitions: `pending` (on completion) -> `generating` (pipeline starts) -> `completed`/`failed`
+- AI summary polling API (`GET /api/sessions/[id]/ai-summary`): returns AI summary status/content, manager addendum only for the series manager
+- AI suggestions API (`GET/POST /api/sessions/[id]/ai-suggestions`): polling for suggestions + accept/skip actions that create real action items
+- AI summary section component: renders structured summary (key takeaways, discussion highlights, follow-up items, sentiment badge) with skeleton loading and retry
+- AI suggestions section component: renders suggestion cards with Accept/Edit+Accept/Skip controls, inline edit form with assignee dropdown
+- Manager addendum section on session summary: sentiment analysis, patterns, coaching suggestions, follow-up priority (manager-only, behind lock badge)
 
 ### Changed
+- Session summary page passes AI columns and participant info to summary view component
+- Session summary view replaces AI placeholder with live AI summary and suggestions sections
 - Session completion endpoint now sets `aiStatus: "pending"` when completing a session
 
 ### Added

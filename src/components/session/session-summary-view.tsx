@@ -16,9 +16,12 @@ import {
   User,
   CalendarDays,
   ArrowLeft,
-  Sparkles,
   Lock,
 } from "lucide-react";
+import { AISummarySection } from "./ai-summary-section";
+import { AISuggestionsSection } from "./ai-suggestions-section";
+import type { AISummary } from "@/lib/ai/schemas/summary";
+import type { AIManagerAddendum } from "@/lib/ai/schemas/addendum";
 
 // --- Types ---
 
@@ -79,6 +82,14 @@ interface SessionSummaryViewProps {
   categories: SummaryCategory[];
   isManager: boolean;
   seriesId: string;
+  sessionId: string;
+  aiStatus: string | null;
+  aiSummary: AISummary | null;
+  aiAddendum: AIManagerAddendum | null;
+  managerId: string;
+  reportId: string;
+  managerName: string;
+  reportName: string;
 }
 
 // --- Helpers ---
@@ -195,6 +206,14 @@ export function SessionSummaryView({
   categories,
   isManager,
   seriesId,
+  sessionId,
+  aiStatus,
+  aiSummary,
+  aiAddendum,
+  managerId,
+  reportId,
+  managerName,
+  reportName,
 }: SessionSummaryViewProps) {
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(
     () => {
@@ -278,16 +297,27 @@ export function SessionSummaryView({
         )}
       </div>
 
-      {/* AI Summary placeholder */}
-      <div className="mb-8 rounded-lg border border-dashed p-6">
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <Sparkles className="h-5 w-5" />
-          <h3 className="font-medium">AI Summary</h3>
-        </div>
-        <p className="mt-2 text-sm text-muted-foreground">
-          AI-generated summaries will appear here after Phase 7 is complete.
-        </p>
-      </div>
+      {/* AI Summary */}
+      {status === "completed" && (
+        <>
+          <AISummarySection
+            sessionId={sessionId}
+            isManager={isManager}
+            initialStatus={aiStatus}
+            initialSummary={aiSummary}
+            initialAddendum={aiAddendum}
+          />
+          <AISuggestionsSection
+            sessionId={sessionId}
+            seriesId={seriesId}
+            managerId={managerId}
+            reportId={reportId}
+            managerName={managerName}
+            reportName={reportName}
+            isManager={isManager}
+          />
+        </>
+      )}
 
       {/* Per-category sections */}
       {categories.map((category) => {
