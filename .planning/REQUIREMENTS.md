@@ -77,9 +77,9 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **SESS-10**: User can create action items inline at any point during the session
 - [x] **SESS-11**: All answers and notes auto-save with debounce (500ms)
 - [x] **SESS-12**: Navigation supports next/previous and direct jump to any step
-- [ ] **SESS-13**: Post-session summary screen shows recap of all answers, notes, and new action items
-- [ ] **SESS-14**: Session score is computed as average of all numeric answers
-- [ ] **SESS-15**: Manager confirms session completion from the summary screen
+- [x] **SESS-13**: Post-session summary screen shows recap of all answers, notes, and new action items
+- [x] **SESS-14**: Session score is computed as average of all numeric answers
+- [x] **SESS-15**: Manager confirms session completion from the summary screen
 
 ### Action Items
 
@@ -250,9 +250,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SESS-10 | Phase 5 | Complete |
 | SESS-11 | Phase 5 | Complete |
 | SESS-12 | Phase 5 | Complete |
-| SESS-13 | Phase 5 | Pending |
-| SESS-14 | Phase 5 | Pending |
-| SESS-15 | Phase 5 | Pending |
+| SESS-13 | Phase 5 | Complete |
+| SESS-14 | Phase 5 | Complete |
+| SESS-15 | Phase 5 | Complete |
 | ACTN-01 | Phase 6 | Pending |
 | ACTN-02 | Phase 6 | Pending |
 | ACTN-03 | Phase 6 | Pending |
