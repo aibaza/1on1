@@ -62,6 +62,7 @@ Progress: [▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░] 50%
 | Phase 04 P02 | 7min | 2 tasks | 13 files |
 | Phase 04 P03 | 6min | 2 tasks | 9 files |
 | Phase 05 P01 | 11min | 2 tasks | 26 files |
+| Phase 05 P02 | 8min | 2 tasks | 20 files |
 | Phase 05 P03 | 3min | 1 task | 7 files |
 
 ## Accumulated Context
@@ -131,6 +132,10 @@ Recent decisions affecting current work:
 - [05-01]: Start session creates in_progress immediately with auto-incremented session number
 - [05-01]: Zod v4 z.coerce incompatible with @hookform/resolvers -- use explicit interface + parseInt handlers
 - [05-01]: Migration applied via Docker exec (psql not available on host)
+- [05-02]: Wizard state managed via single useReducer at shell level -- enables cross-category conditional logic and centralized answer tracking
+- [05-02]: navigator.sendBeacon used for beforeunload save -- reliable on page close without auth header limitations
+- [05-02]: Category order derived from first question sortOrder appearance -- canonical ordering prevents display inconsistencies
+- [05-02]: answerNumeric stored as string in DB (decimal column) but exposed as number in API responses
 - [05-03]: Context panel uses Collapsible sections (not tabs) for simultaneous multi-section visibility
 - [05-03]: Previous answers collapsed by default on category steps to reduce visual noise
 - [05-03]: Recharts sparkline uses hidden YAxis with domain padding for visual spread

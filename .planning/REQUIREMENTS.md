@@ -66,17 +66,17 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Session Wizard
 
 - [x] **SESS-01**: Manager can start a session for a scheduled meeting in a series
-- [ ] **SESS-02**: Session wizard presents questions one at a time (or in category groups) with progress indicator
+- [x] **SESS-02**: Session wizard presents questions one at a time (or in category groups) with progress indicator
 - [x] **SESS-03**: Context panel (sidebar) shows notes from last 3 sessions (collapsible)
 - [x] **SESS-04**: Context panel shows open action items from past sessions
 - [x] **SESS-05**: Context panel shows score trend sparklines (last 6 sessions)
-- [ ] **SESS-06**: Appropriate input widget renders per question type (text area, star rating, slider, toggle, select, emoji picker)
+- [x] **SESS-06**: Appropriate input widget renders per question type (text area, star rating, slider, toggle, select, emoji picker)
 - [ ] **SESS-07**: Both manager and report can add talking points to the pre-session agenda
 - [ ] **SESS-08**: Shared notes area with rich text editor visible to both parties
 - [ ] **SESS-09**: Private notes area visible only to the author, encrypted at rest (AES-256-GCM)
 - [ ] **SESS-10**: User can create action items inline at any point during the session
-- [ ] **SESS-11**: All answers and notes auto-save with debounce (500ms)
-- [ ] **SESS-12**: Navigation supports next/previous and direct jump to any step
+- [x] **SESS-11**: All answers and notes auto-save with debounce (500ms)
+- [x] **SESS-12**: Navigation supports next/previous and direct jump to any step
 - [ ] **SESS-13**: Post-session summary screen shows recap of all answers, notes, and new action items
 - [ ] **SESS-14**: Session score is computed as average of all numeric answers
 - [ ] **SESS-15**: Manager confirms session completion from the summary screen
@@ -239,17 +239,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MEET-05 | Phase 5 | Complete |
 | MEET-06 | Phase 5 | Complete |
 | SESS-01 | Phase 5 | Complete |
-| SESS-02 | Phase 5 | Pending |
+| SESS-02 | Phase 5 | Complete |
 | SESS-03 | Phase 5 | Complete |
 | SESS-04 | Phase 5 | Complete |
 | SESS-05 | Phase 5 | Complete |
-| SESS-06 | Phase 5 | Pending |
+| SESS-06 | Phase 5 | Complete |
 | SESS-07 | Phase 5 | Pending |
 | SESS-08 | Phase 5 | Pending |
 | SESS-09 | Phase 5 | Pending |
 | SESS-10 | Phase 5 | Pending |
-| SESS-11 | Phase 5 | Pending |
-| SESS-12 | Phase 5 | Pending |
+| SESS-11 | Phase 5 | Complete |
+| SESS-12 | Phase 5 | Complete |
 | SESS-13 | Phase 5 | Pending |
 | SESS-14 | Phase 5 | Pending |
 | SESS-15 | Phase 5 | Pending |
