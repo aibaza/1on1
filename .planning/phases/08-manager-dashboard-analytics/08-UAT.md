@@ -1,19 +1,14 @@
 ---
-status: testing
+status: complete
 phase: 08-manager-dashboard-analytics
 source: 08-01-SUMMARY.md, 08-02-SUMMARY.md, 08-03-SUMMARY.md, 08-04-SUMMARY.md, 08-05-SUMMARY.md
 started: 2026-03-04T20:10:00Z
-updated: 2026-03-04T21:30:00Z
+updated: 2026-03-04T22:15:00Z
 ---
 
 ## Current Test
-<!-- OVERWRITE each test - shows where we are -->
 
-number: 10
-name: Period Selector
-expected: |
-  On individual analytics page, see period selector with preset buttons (30d, 3mo, 6mo, 1yr) and a custom date range option. Changing the period updates all charts without a full page reload.
-awaiting: user response
+[testing complete]
 
 ## Tests
 
@@ -75,30 +70,38 @@ severity: major
 
 ### 12. Team Heatmap
 expected: On team analytics page, see an SVG dot matrix where rows are team members, columns are categories. Dot size reflects sample count, dot color reflects score (green >= 4, amber 3-3.9, red < 3). Hollow circles appear for insufficient data (< 3 samples). Hovering shows exact score and sample count.
-result: [pending]
+result: issue
+reported: "No category data available for this period. No heatmap data available for this period. Only has sessions for two people but team shows 5 members. Team queries only use analytics_snapshot with no live fallback."
+severity: major
 
 ### 13. Anonymization Toggle
 expected: On team analytics page, see an anonymization switch/toggle. Turning it on replaces member names with "Member 1", "Member 2", etc. across the heatmap and overview.
-result: [pending]
+result: issue
+reported: "No members visible on the team page, so there's nothing to anonymize"
+severity: major
 
 ### 14. Velocity Chart
 expected: On individual analytics page, see an area chart showing average days to complete action items per month. Chart has a gradient fill and a horizontal dashed reference line at 7 days (target).
-result: [pending]
+result: issue
+reported: "Velocity chart is empty: No action item velocity data available for this period."
+severity: major
 
 ### 15. Adherence Chart
 expected: On individual analytics page, see a stacked bar chart showing meeting adherence per month — green bars for completed sessions, amber for cancelled, red for missed. Tooltip shows adherence percentage.
-result: [pending]
+result: pass
 
 ### 16. CSV Export
 expected: On individual analytics page, see small download/export icon buttons on each chart section header. Also see an "Export All Data" button. Clicking any export button downloads a CSV file. The file opens correctly in a spreadsheet app with proper column headers and data.
-result: [pending]
+result: issue
+reported: "CSV saves but encoding is all wrong — Romanian characters garbled: Aplica»õie finalizatƒÉ etc."
+severity: major
 
 ## Summary
 
 total: 16
-passed: 7
-issues: 5
-pending: 4
+passed: 6
+issues: 10
+pending: 0
 skipped: 0
 
 ## Gaps
@@ -112,5 +115,45 @@ skipped: 0
   artifacts:
     - path: "src/components/dashboard/recent-sessions.tsx"
       issue: "Wrong URL pattern in Link href"
+  missing: []
+  debug_session: ""
+
+- truth: "Team heatmap shows SVG dot matrix with members, categories, color-coded scores"
+  status: failed
+  reason: "User reported: No category data or heatmap data available. Only 2 people have sessions but team shows 5 members. Team queries only use analytics_snapshot with no live fallback."
+  severity: major
+  test: 12
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "Anonymization toggle replaces member names with Member 1, Member 2, etc."
+  status: failed
+  reason: "User reported: No members visible on the team page, so there's nothing to anonymize"
+  severity: major
+  test: 13
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "Velocity chart shows area chart of average days to complete action items per month"
+  status: failed
+  reason: "User reported: Velocity chart is empty — No action item velocity data available for this period."
+  severity: major
+  test: 14
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "CSV export downloads correctly encoded file with proper column headers and data"
+  status: failed
+  reason: "User reported: CSV saves but encoding is all wrong — Romanian characters garbled"
+  severity: major
+  test: 16
+  root_cause: ""
+  artifacts: []
   missing: []
   debug_session: ""
