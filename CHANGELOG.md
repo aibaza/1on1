@@ -7,6 +7,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Meeting series CRUD: create, update, archive series with cadence, preferred day/time, and default template
+- Series list API (`GET /api/series`) with report info, latest session status, sorted by next meeting date (soonest first)
+- Series detail API (`GET /api/series/[id]`) with session history, manager/report info
+- Start session API (`POST /api/series/[id]/start`) creates in_progress session record
+- Series card grid page (`/sessions`) with responsive grid layout and empty state
+- Series card component with report avatar, cadence, next session date, status badge, Start/Resume button
+- Create series form (`/sessions/new`) with report selector, cadence radio group, preferred day/time, template selector, duration input
+- Series detail page (`/sessions/[id]`) with settings overview, session history timeline, Pause/Resume/Archive actions
+- Session timeline component showing session history with scores and status badges
+- `computeNextSessionDate` utility for cadence-based scheduling (weekly, biweekly, monthly, custom + preferred day alignment)
+- Zod validation schemas for series CRUD: `createSeriesSchema`, `updateSeriesSchema` with custom cadence refinement
+- RBAC helpers: `canManageSeries` (admin/manager), `isSeriesParticipant` (manager or report on series)
+- Sidebar navigation: "Sessions" item after "Templates" with CalendarDays icon
+- Schema migration: `shared_notes` from TEXT to JSONB for per-category storage
+- Schema migration: `category` column added to `private_note`, `talking_point`, `action_item` tables
+- Schema migration: unique index on `session_answer(session_id, question_id)` for answer upsert support
+- Schema migration: updated unique index on `private_note` to include `category`
+
+### Changed
+- Seed data updated: `shared_notes` uses JSONB format, action items and private notes have category values
+
+### Added
 - Drag-and-drop question reordering in template editor using @dnd-kit with vertical axis constraint
 - GripVertical drag handle on question cards with visual drag feedback (shadow + opacity)
 - Keyboard accessibility for question reordering via KeyboardSensor
