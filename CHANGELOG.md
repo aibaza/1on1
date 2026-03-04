@@ -12,6 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Zod validation schema for standalone action item updates
 - Action Items page at `/action-items` with grouped items, status toggle, inline edit sheet
 - Overdue badge and age indicator on action items in context panel
+- Session summary page (`/sessions/[id]/summary`) with read-only view of all session data grouped by section
+- Session summary view component with collapsible sections, answers, notes, talking points, action items with live status
+- AI summary placeholder section on session summary page (ready for Phase 7)
+- Private notes displayed on summary page only for the note author (server-side decrypted)
+- In-progress sessions redirect from summary page to wizard
+- Enhanced session timeline: completed sessions link to summary, in-progress sessions show Resume button
 
 ### Changed
 - Replace hardcoded category enums with user-defined sections and labels
