@@ -19,7 +19,7 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 | [[Phase-05]] | Meeting Series & Session Wizard | Series lifecycle, step-by-step wizard, context panel, notes | Complete | Phase 4 |
 | [[Phase-06]] | Action Items & Session History | Action tracking, carry-over, session timeline, full-text search | Complete | Phase 5 |
 | [[Phase-07]] | AI Pipeline | Session summaries, pre-session nudges, Inngest, Vercel AI SDK | Complete | Phase 5 |
-| [[Phase-08]] | Manager Dashboard & Analytics | Dashboard, score charts, team analytics, CSV export | Not Started | Phase 6, 7 |
+| [[Phase-08]] | Manager Dashboard & Analytics | Dashboard, score charts, team analytics, CSV export | In Progress | Phase 6, 7 |
 | [[Phase-09]] | Email Notifications | Invite emails, reminders, post-session summaries | Not Started | Phase 5 |
 | [[Phase-10]] | Integration & Polish | Dark mode, UI polish, end-to-end flow verification | Not Started | Phase 8, 9 |
 

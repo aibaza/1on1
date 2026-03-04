@@ -65,3 +65,9 @@ AI-01, AI-02, AI-03, AI-04, AI-05, AI-06, AI-07, AI-08
 - Two-phase nudge generation: base after completion + cron refresh 24h before
 - Inngest step.run() requires date rehydration (JSON serialization)
 - Dashboard nudges via Server Component DB query, context panel via TanStack Query
+
+## UAT Fixes
+- Removed Zod `.min()/.max()` on arrays — Anthropic structured output doesn't support `minItems`/`maxItems`
+- Removed `.max()` on strings — `maxLength` also unsupported in Anthropic schema
+- Rewrote all prompts for brevity: shared `BASE_SYSTEM` instruction ("write like a sharp colleague, not a corporate AI"), output proportional to input, session language (Romanian), no filler
+- Docker networking: `INNGEST_DEV=http://host.docker.internal:8288` + `extra_hosts` for container↔host communication
