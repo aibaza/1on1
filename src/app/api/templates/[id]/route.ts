@@ -261,7 +261,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
                     isRequired: q.isRequired,
                     sortOrder: q.sortOrder,
                     conditionalOnQuestionId:
-                      q.conditionalOnQuestionId ?? null,
+                      resolveRefForInsert(q.conditionalOnQuestionId),
                     conditionalOperator: q.conditionalOperator ?? null,
                     conditionalValue: q.conditionalValue ?? null,
                   })
@@ -461,8 +461,9 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       );
     }
     console.error("Failed to update template:", error);
+    const detail = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: "Failed to update template" },
+      { error: "Failed to update template", detail },
       { status: 500 }
     );
   }
