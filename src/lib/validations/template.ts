@@ -183,8 +183,14 @@ export function validateConditionalLogic(
       return `Question "${q.questionText}": conditional value is required when a target question is set`;
     }
 
-    // Target must exist in the same set
-    const target = questionMap.get(q.conditionalOnQuestionId);
+    // Target must exist in the same set (by ID or by q-{index} temporary reference)
+    let target = questionMap.get(q.conditionalOnQuestionId);
+    if (!target) {
+      const indexMatch = q.conditionalOnQuestionId.match(/^q-(\d+)$/);
+      if (indexMatch) {
+        target = indexMap.get(parseInt(indexMatch[1], 10));
+      }
+    }
     if (!target) {
       return `Question "${q.questionText}": references non-existent question ${q.conditionalOnQuestionId}`;
     }

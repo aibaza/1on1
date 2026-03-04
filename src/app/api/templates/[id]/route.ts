@@ -280,6 +280,45 @@ export async function PATCH(request: Request, { params }: RouteContext) {
             }
           }
 
+          // Resolve q-{index} temporary conditional references to real UUIDs
+          const hasTemporaryRefs = data.questions.some(
+            (q) => q.conditionalOnQuestionId?.match(/^q-\d+$/)
+          );
+          if (hasTemporaryRefs) {
+            // Fetch all current (non-archived) questions ordered by sortOrder
+            const resolvedQuestions = await tx
+              .select({ id: templateQuestions.id, sortOrder: templateQuestions.sortOrder })
+              .from(templateQuestions)
+              .where(
+                and(
+                  eq(templateQuestions.templateId, id),
+                  eq(templateQuestions.isArchived, false)
+                )
+              )
+              .orderBy(asc(templateQuestions.sortOrder));
+
+            // Build sortOrder → UUID map
+            const indexToId = new Map<number, string>();
+            for (const rq of resolvedQuestions) {
+              indexToId.set(rq.sortOrder, rq.id);
+            }
+
+            // Update rows that have temporary refs
+            for (const rq of resolvedQuestions) {
+              const original = data.questions.find((q) => q.sortOrder === rq.sortOrder);
+              if (original?.conditionalOnQuestionId?.match(/^q-\d+$/)) {
+                const refIndex = parseInt(original.conditionalOnQuestionId.replace("q-", ""), 10);
+                const realId = indexToId.get(refIndex);
+                if (realId) {
+                  await tx
+                    .update(templateQuestions)
+                    .set({ conditionalOnQuestionId: realId })
+                    .where(eq(templateQuestions.id, rq.id));
+                }
+              }
+            }
+          }
+
           // Update template metadata
           const [updated] = await tx
             .update(questionnaireTemplates)
