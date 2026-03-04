@@ -35,7 +35,7 @@ Progress: [████████████████████] 100%
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 25
+- Total plans completed: 26
 - Average duration: 7 min
 - Total execution time: 2.77 hours
 
@@ -49,12 +49,12 @@ Progress: [████████████████████] 100%
 | 04-questionnaire-templates | 3 | 18 min | 6 min |
 | 05-meeting-series-session-wizard | 5/5 | 32 min | 6 min |
 | 06-action-items-session-history | 3/3 | 17 min | 6 min |
-| 07-ai-pipeline | 4/5 | 53 min | 13 min |
+| 07-ai-pipeline | 5/5 | 61 min | 12 min |
 | 08-manager-dashboard-analytics | 6/7 | 26 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-02 (3 min), 08-03 (4 min), 08-04 (3 min), 08-05 (5 min), 08-06 (7 min)
-- Trend: consistent (08-06: Analytics gap closure - query fixes & dynamic categories)
+- Last 5 plans: 08-03 (4 min), 08-04 (3 min), 08-05 (5 min), 08-06 (7 min), 07-05 (8 min)
+- Trend: consistent (07-05: Inngest cleanup & analytics pipeline integration)
 
 *Updated after each plan completion*
 
@@ -82,6 +82,7 @@ Progress: [████████████████████] 100%
 | Phase 08 P05 | 5min | 2 tasks | 9 files |
 | Phase 08 P06 | 7min | 2 tasks | 5 files |
 | Phase 07 P04 | 33min | 2 tasks | 4 files |
+| Phase 07 P05 | 8min | 1 task | 13 files |
 
 ## Accumulated Context
 
@@ -212,6 +213,8 @@ Recent decisions affecting current work:
 - [07-04]: getManagerNudges is standalone query with no date filter -- nudges show regardless of upcoming sessions
 - [07-04]: Wizard NudgeList fetches all non-dismissed nudges (no upcoming param) -- context panel shows full picture
 - [07-04]: API upcoming filter uses IS NULL OR range check -- defensive fix for NULL targetSessionAt
+- [07-05]: Analytics snapshot is non-fatal in direct pipeline -- failure logged but AI completion status unaffected
+- [07-05]: concurrently removed (only used for Inngest parallel dev) -- dev script simplified to plain next dev
 
 ### Pending Todos
 
@@ -226,6 +229,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-04T22:06:45Z
-Stopped at: Completed 07-04-PLAN.md
+Last session: 2026-03-04T22:07:00Z
+Stopped at: Completed 07-05-PLAN.md
 Resume file: None
