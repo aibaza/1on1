@@ -91,10 +91,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Session History
 
-- [ ] **HIST-01**: User can view a chronological timeline of all sessions in a series
-- [ ] **HIST-02**: User can open a read-only detail view of any completed session (answers, notes, action items)
+- [x] **HIST-01**: User can view a chronological timeline of all sessions in a series
+- [x] **HIST-02**: User can open a read-only detail view of any completed session (answers, notes, action items)
 - [ ] **HIST-03**: User can search across session notes and talking points (full-text search)
-- [ ] **HIST-04**: User can filter sessions by date range and status
+- [x] **HIST-04**: User can filter sessions by date range and status
 
 ### Manager Dashboard
 
@@ -258,10 +258,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ACTN-03 | Phase 6 | Complete |
 | ACTN-04 | Phase 6 | Complete |
 | ACTN-05 | Phase 6 | Complete |
-| HIST-01 | Phase 6 | Pending |
-| HIST-02 | Phase 6 | Pending |
+| HIST-01 | Phase 6 | Complete |
+| HIST-02 | Phase 6 | Complete |
 | HIST-03 | Phase 6 | Pending |
-| HIST-04 | Phase 6 | Pending |
+| HIST-04 | Phase 6 | Complete |
 | DASH-01 | Phase 8 | Pending |
 | DASH-02 | Phase 8 | Pending |
 | DASH-03 | Phase 8 | Pending |
