@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Replace hardcoded category enums with user-defined sections and labels
+- Template questions now belong to sections (wizard steps) instead of fixed categories
+- Templates use a many-to-many label system (tenant-wide taxonomy) instead of a single category enum
+- Wizard steps display section names directly instead of looking up from a hardcoded map
+- Context panel and summary screen use "section" terminology instead of "category"
+- Template list shows colored label badges instead of category badge
+- Create template dialog simplified (no more category picker)
+
+### Added
+- Template sections table (`template_section`) — user-defined groups that become wizard steps
+- Template labels table (`template_label`) — tenant-wide taxonomy with optional color
+- Template label assignments table (`template_label_assignment`) — many-to-many
+- Labels CRUD API (`GET/POST /api/labels`, `PATCH/DELETE /api/labels/[id]`)
+- Migration `0008_sections_labels` with automatic data migration from categories to sections
+
+### Removed
+- `template_category` and `question_category` database enums
+- `category` column from `questionnaire_template` and `template_question` tables
+- Hardcoded `CATEGORY_LABELS` / `categoryLabels` maps from all components
+
 ### Fixed
 - Conditional question operator dropdown disabled for unsaved questions — fallback ID matching now consistent between select and lookup
 - Conditional question "Add Question" button silently failing — Zod schema required UUID for `conditionalOnQuestionId` but unsaved questions use temporary IDs

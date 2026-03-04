@@ -18,11 +18,18 @@ import { useDebounce } from "@/lib/hooks/use-debounce";
 
 // --- Types ---
 
+interface TemplateSection {
+  id: string;
+  name: string;
+  description: string | null;
+  sortOrder: number;
+}
+
 interface TemplateQuestion {
   id: string;
   questionText: string;
   helpText: string | null;
-  category: string;
+  sectionId: string;
   answerType: string;
   answerConfig: unknown;
   isRequired: boolean;
@@ -53,6 +60,7 @@ interface SessionData {
     report: { id: string; firstName: string; lastName: string; avatarUrl: string | null } | null;
   };
   template: {
+    sections: TemplateSection[];
     questions: TemplateQuestion[];
   };
   answers: Array<{
@@ -90,7 +98,8 @@ interface SessionData {
   }>;
 }
 
-interface CategoryGroup {
+interface SectionGroup {
+  id: string;
   name: string;
   questions: TemplateQuestion[];
 }
@@ -100,7 +109,7 @@ interface CategoryGroup {
 interface WizardState {
   currentStep: number;
   answers: Map<string, AnswerValue>;
-  categories: CategoryGroup[];
+  sections: SectionGroup[];
   saveStatus: SaveStatus;
   pendingSaves: Set<string>;
   /** Track number of active saving operations (notes, talking points, action items) */
@@ -108,7 +117,7 @@ interface WizardState {
 }
 
 type WizardAction =
-  | { type: "INIT"; categories: CategoryGroup[]; answers: Map<string, AnswerValue> }
+  | { type: "INIT"; sections: SectionGroup[]; answers: Map<string, AnswerValue> }
   | { type: "SET_STEP"; step: number }
   | { type: "SET_ANSWER"; questionId: string; value: AnswerValue }
   | { type: "SET_SAVE_STATUS"; status: SaveStatus }
@@ -122,7 +131,7 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
     case "INIT":
       return {
         ...state,
-        categories: action.categories,
+        sections: action.sections,
         answers: action.answers,
       };
     case "SET_STEP":
@@ -159,24 +168,25 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
 // --- Helper Functions ---
 
 /**
- * Groups template questions by category, preserving sort order.
- * Category order determined by first question's appearance in sortOrder.
+ * Groups template questions into sections, preserving section sort order.
  */
-function groupQuestionsByCategory(
+function groupQuestionsBySections(
+  sections: TemplateSection[],
   questions: TemplateQuestion[]
-): CategoryGroup[] {
-  const groups = new Map<string, TemplateQuestion[]>();
+): SectionGroup[] {
+  const questionsBySection = new Map<string, TemplateQuestion[]>();
 
   for (const q of questions) {
-    if (!groups.has(q.category)) {
-      groups.set(q.category, []);
+    if (!questionsBySection.has(q.sectionId)) {
+      questionsBySection.set(q.sectionId, []);
     }
-    groups.get(q.category)!.push(q);
+    questionsBySection.get(q.sectionId)!.push(q);
   }
 
-  return Array.from(groups.entries()).map(([name, qs]) => ({
-    name,
-    questions: qs,
+  return sections.map((section) => ({
+    id: section.id,
+    name: section.name,
+    questions: questionsBySection.get(section.id) ?? [],
   }));
 }
 
@@ -243,7 +253,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
   const [state, dispatch] = useReducer(wizardReducer, {
     currentStep: 0,
     answers: new Map(),
-    categories: [],
+    sections: [],
     saveStatus: "saved" as SaveStatus,
     pendingSaves: new Set<string>(),
     activeSavingCount: 0,
@@ -357,7 +367,10 @@ export function WizardShell({ sessionId }: WizardShellProps) {
   useEffect(() => {
     if (data && !initializedRef.current) {
       initializedRef.current = true;
-      const categories = groupQuestionsByCategory(data.template.questions);
+      const sections = groupQuestionsBySections(
+        data.template.sections,
+        data.template.questions
+      );
 
       // Build initial answers map from existing answers
       const answersMap = new Map<string, AnswerValue>();
@@ -369,7 +382,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         });
       }
 
-      dispatch({ type: "INIT", categories, answers: answersMap });
+      dispatch({ type: "INIT", sections, answers: answersMap });
     }
   }, [data]);
 
@@ -504,27 +517,14 @@ export function WizardShell({ sessionId }: WizardShellProps) {
     [state.answers]
   );
 
-  // Build step names: [Recap, ...categories, Summary]
+  // Build step names: [Recap, ...sections, Summary]
   const stepNames = useMemo(
     () => [
       "Recap",
-      ...state.categories.map((c) => {
-        const labels: Record<string, string> = {
-          check_in: "Check-in",
-          wellbeing: "Wellbeing",
-          engagement: "Engagement",
-          performance: "Performance",
-          career: "Career",
-          feedback: "Feedback",
-          recognition: "Recognition",
-          goals: "Goals",
-          custom: "Custom",
-        };
-        return labels[c.name] ?? c.name;
-      }),
+      ...state.sections.map((s) => s.name),
       "Summary",
     ],
-    [state.categories]
+    [state.sections]
   );
 
   const totalSteps = stepNames.length;
@@ -587,12 +587,18 @@ export function WizardShell({ sessionId }: WizardShellProps) {
   // Build previous sessions for context panel (with question text enrichment)
   const previousSessionsForContext: PreviousSession[] = useMemo(() => {
     if (!data) return [];
-    const questionMap = new Map<string, { text: string; type: string; cat: string }>();
+    // Build a section name lookup for question -> section name mapping
+    const sectionNameMap = new Map<string, string>();
+    for (const s of data.template.sections) {
+      sectionNameMap.set(s.id, s.name);
+    }
+
+    const questionMap = new Map<string, { text: string; type: string; sectionName: string }>();
     for (const q of data.template.questions) {
       questionMap.set(q.id, {
         text: q.questionText,
         type: q.answerType,
-        cat: q.category,
+        sectionName: sectionNameMap.get(q.sectionId) ?? "General",
       });
     }
 
@@ -611,7 +617,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
           answerText: a.answerText,
           answerNumeric: a.answerNumeric !== null ? String(a.answerNumeric) : null,
           answerJson: a.answerJson,
-          category: q?.cat ?? "general",
+          category: q?.sectionName ?? "General",
         };
       }),
     }));
@@ -678,10 +684,10 @@ export function WizardShell({ sessionId }: WizardShellProps) {
   // Determine current step content
   const isRecapStep = state.currentStep === 0;
   const isSummaryStep = state.currentStep === totalSteps - 1 && totalSteps > 1;
-  const categoryIndex = state.currentStep - 1; // -1 for recap
-  const currentCategory =
-    categoryIndex >= 0 && categoryIndex < state.categories.length
-      ? state.categories[categoryIndex]
+  const sectionIndex = state.currentStep - 1; // -1 for recap
+  const currentSection =
+    sectionIndex >= 0 && sectionIndex < state.sections.length
+      ? state.sections[sectionIndex]
       : null;
 
   // Determine if current user is the manager on this series
@@ -711,7 +717,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
           <SummaryScreen
             sessionId={sessionId}
             seriesId={data.session.seriesId}
-            categories={state.categories}
+            categories={state.sections}
             answers={state.answers}
             sharedNotes={data.session.sharedNotes ?? {}}
             talkingPoints={talkingPointsByCategory}
@@ -719,21 +725,21 @@ export function WizardShell({ sessionId }: WizardShellProps) {
             onGoBack={handleStepChange}
             isManager={isManager}
           />
-        ) : currentCategory ? (
+        ) : currentSection ? (
           <CategoryStep
             sessionId={sessionId}
-            categoryName={currentCategory.name}
-            questions={currentCategory.questions}
+            categoryName={currentSection.name}
+            questions={currentSection.questions}
             answers={state.answers}
             onAnswerChange={handleAnswerChange}
             isQuestionVisible={isQuestionVisible}
             disabled={data.session.status === "completed"}
             sharedNotesContent={
-              data.session.sharedNotes?.[currentCategory.name] ?? ""
+              data.session.sharedNotes?.[currentSection.name] ?? ""
             }
-            privateNotesContent={privateNotes[currentCategory.name] ?? ""}
-            talkingPoints={talkingPointsByCategory[currentCategory.name] ?? []}
-            actionItems={actionItemsByCategory[currentCategory.name] ?? []}
+            privateNotesContent={privateNotes[currentSection.name] ?? ""}
+            talkingPoints={talkingPointsByCategory[currentSection.name] ?? []}
+            actionItems={actionItemsByCategory[currentSection.name] ?? []}
             seriesParticipants={seriesParticipants}
             sessionNumberMap={sessionNumberMap}
             onSavingChange={handleSavingChange}
@@ -743,7 +749,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         {/* Right: context panel */}
         <ContextPanel
           currentStep={state.currentStep}
-          currentCategory={currentCategory?.name ?? null}
+          currentCategory={currentSection?.name ?? null}
           previousSessions={previousSessionsForContext}
           openActionItems={openActionItemsForContext}
           sessionScores={sessionScores}

@@ -57,6 +57,13 @@
       "when": 1772610555257,
       "tag": "0007_cultured_frank_castle",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1772700000000,
+      "tag": "0008_sections_labels",
+      "breakpoints": true
     }
   ]
 }

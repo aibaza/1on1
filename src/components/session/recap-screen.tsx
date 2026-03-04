@@ -36,18 +36,6 @@ interface RecapScreenProps {
   openActionItems: ActionItem[];
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  check_in: "Check-in",
-  wellbeing: "Wellbeing",
-  engagement: "Engagement",
-  performance: "Performance",
-  career: "Career",
-  feedback: "Feedback",
-  recognition: "Recognition",
-  goals: "Goals",
-  custom: "Custom",
-};
-
 export function RecapScreen({
   reportName,
   previousSessions,
@@ -125,7 +113,7 @@ export function RecapScreen({
                               className="rounded-md bg-muted/50 p-3"
                             >
                               <p className="mb-1 text-xs font-medium text-muted-foreground">
-                                {CATEGORY_LABELS[category] ?? category}
+                                {category}
                               </p>
                               <div
                                 className="prose prose-sm max-w-none dark:prose-invert"
@@ -203,7 +191,7 @@ export function RecapScreen({
                             )}
                             {item.category && (
                               <span className="text-xs text-muted-foreground">
-                                {CATEGORY_LABELS[item.category] ?? item.category}
+                                {item.category}
                               </span>
                             )}
                           </div>

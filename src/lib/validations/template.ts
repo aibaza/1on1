@@ -1,27 +1,5 @@
 import { z } from "zod";
 
-// Template categories (mirrors DB enum)
-export const templateCategories = [
-  "check_in",
-  "career",
-  "performance",
-  "onboarding",
-  "custom",
-] as const;
-
-// Question categories (mirrors DB enum)
-export const questionCategories = [
-  "check_in",
-  "wellbeing",
-  "engagement",
-  "performance",
-  "career",
-  "feedback",
-  "recognition",
-  "goals",
-  "custom",
-] as const;
-
 // Answer types (mirrors DB enum)
 export const answerTypes = [
   "text",
@@ -42,25 +20,29 @@ export const conditionalOperators = [
   "gte",
 ] as const;
 
-// Create template
-export const createTemplateSchema = z.object({
-  name: z.string().min(1, "Template name is required").max(255),
-  description: z.string().max(2000).optional(),
-  category: z.enum(templateCategories),
-});
+// --- Section schemas ---
 
-// Update template metadata
-export const updateTemplateSchema = z.object({
-  name: z.string().min(1).max(255).optional(),
+export const sectionSchema = z.object({
+  id: z.string().uuid().optional(),
+  name: z.string().min(1, "Section name is required").max(255),
   description: z.string().max(2000).nullable().optional(),
-  category: z.enum(templateCategories).optional(),
+  sortOrder: z.number().int().min(0),
 });
 
-// Create/update question
+// --- Label schemas ---
+
+export const labelSchema = z.object({
+  id: z.string().uuid().optional(),
+  name: z.string().min(1, "Label name is required").max(100),
+  color: z.string().max(7).nullable().optional(),
+});
+
+// --- Question schemas ---
+
+// Create/update question (no category — belongs to a section)
 export const questionSchema = z.object({
   questionText: z.string().min(1, "Question text is required").max(1000),
   helpText: z.string().max(500).nullable().optional(),
-  category: z.enum(questionCategories),
   answerType: z.enum(answerTypes),
   answerConfig: z.record(z.string(), z.unknown()).default({}),
   isRequired: z.boolean().default(false),
@@ -75,14 +57,33 @@ export const saveQuestionSchema = questionSchema.extend({
   id: z.string().uuid().optional(),
 });
 
-// Batch save: template metadata + all questions in one call
+// Section with its questions for batch save
+export const saveSectionSchema = sectionSchema.extend({
+  questions: z.array(saveQuestionSchema),
+});
+
+// Create template (quick create — no sections yet)
+export const createTemplateSchema = z.object({
+  name: z.string().min(1, "Template name is required").max(255),
+  description: z.string().max(2000).optional(),
+  labelIds: z.array(z.string().uuid()).optional(),
+});
+
+// Update template metadata
+export const updateTemplateSchema = z.object({
+  name: z.string().min(1).max(255).optional(),
+  description: z.string().max(2000).nullable().optional(),
+  labelIds: z.array(z.string().uuid()).optional(),
+});
+
+// Batch save: template metadata + sections with questions
 export const saveTemplateSchema = z.object({
   name: z.string().min(1).max(255),
   description: z.string().max(2000).nullable().optional(),
-  category: z.enum(templateCategories),
-  questions: z
-    .array(saveQuestionSchema)
-    .min(1, "Template must have at least 1 question"),
+  labelIds: z.array(z.string().uuid()).optional(),
+  sections: z
+    .array(saveSectionSchema)
+    .min(1, "Template must have at least 1 section"),
 });
 
 // Reorder questions (array of question IDs in desired order)
@@ -131,6 +132,8 @@ export function validateAnswerConfig(
 /**
  * Validates conditional logic for a set of questions.
  * Returns null if valid, or error string describing the problem.
+ *
+ * Caller should flatten all sections into global order before calling.
  *
  * Checks:
  * - conditionalOnQuestionId references a question in the same set

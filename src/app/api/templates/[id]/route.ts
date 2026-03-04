@@ -12,9 +12,12 @@ import {
 import {
   questionnaireTemplates,
   templateQuestions,
+  templateSections,
+  templateLabelAssignments,
+  templateLabels,
   sessions,
 } from "@/lib/db/schema";
-import { eq, and, asc, sql } from "drizzle-orm";
+import { eq, and, asc, sql, inArray } from "drizzle-orm";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -43,6 +46,19 @@ export async function GET(request: Request, { params }: RouteContext) {
 
         if (!template) return null;
 
+        // Fetch non-archived sections ordered by sortOrder
+        const sectionRows = await tx
+          .select()
+          .from(templateSections)
+          .where(
+            and(
+              eq(templateSections.templateId, id),
+              eq(templateSections.isArchived, false)
+            )
+          )
+          .orderBy(asc(templateSections.sortOrder));
+
+        // Fetch non-archived questions ordered by sortOrder
         const questions = await tx
           .select()
           .from(templateQuestions)
@@ -54,13 +70,44 @@ export async function GET(request: Request, { params }: RouteContext) {
           )
           .orderBy(asc(templateQuestions.sortOrder));
 
+        // Group questions by section
+        const questionsBySection = new Map<string, typeof questions>();
+        for (const q of questions) {
+          if (!questionsBySection.has(q.sectionId)) {
+            questionsBySection.set(q.sectionId, []);
+          }
+          questionsBySection.get(q.sectionId)!.push(q);
+        }
+
+        // Fetch labels
+        const labelRows = await tx
+          .select({
+            id: templateLabels.id,
+            name: templateLabels.name,
+            color: templateLabels.color,
+          })
+          .from(templateLabelAssignments)
+          .innerJoin(
+            templateLabels,
+            eq(templateLabelAssignments.labelId, templateLabels.id)
+          )
+          .where(eq(templateLabelAssignments.templateId, id));
+
         return {
           ...template,
           createdAt: template.createdAt.toISOString(),
           updatedAt: template.updatedAt.toISOString(),
-          questions: questions.map((q) => ({
-            ...q,
-            createdAt: q.createdAt.toISOString(),
+          labels: labelRows,
+          sections: sectionRows.map((s) => ({
+            id: s.id,
+            name: s.name,
+            description: s.description,
+            sortOrder: s.sortOrder,
+            createdAt: s.createdAt.toISOString(),
+            questions: (questionsBySection.get(s.id) ?? []).map((q) => ({
+              ...q,
+              createdAt: q.createdAt.toISOString(),
+            })),
           })),
         };
       }
@@ -102,19 +149,42 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  // Determine if this is a batch save (with questions) or metadata-only update
+  // Determine if this is a batch save (with sections) or metadata-only update
   const isBatchSave =
     typeof body === "object" &&
     body !== null &&
-    "questions" in body;
+    "sections" in body;
 
   try {
     if (isBatchSave) {
-      // Full batch save: template metadata + all questions
+      // Full batch save: template metadata + sections + questions
       const data = saveTemplateSchema.parse(body);
 
-      // Validate answer configs for all questions
-      for (const q of data.questions) {
+      // Flatten all questions across sections for validation (assign global sortOrder)
+      let globalIndex = 0;
+      const allQuestions: Array<{
+        id?: string;
+        questionText: string;
+        sortOrder: number;
+        answerType: string;
+        answerConfig: Record<string, unknown>;
+        conditionalOnQuestionId?: string | null;
+        conditionalOperator?: string | null;
+        conditionalValue?: string | null;
+      }> = [];
+
+      for (const section of data.sections) {
+        for (const q of section.questions) {
+          allQuestions.push({
+            ...q,
+            sortOrder: globalIndex,
+          });
+          globalIndex++;
+        }
+      }
+
+      // Validate answer configs
+      for (const q of allQuestions) {
         const configError = validateAnswerConfig(q.answerType, q.answerConfig);
         if (configError) {
           return NextResponse.json(
@@ -125,17 +195,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       }
 
       // Validate conditional logic across all questions
-      const conditionalError = validateConditionalLogic(
-        data.questions.map((q, i) => ({
-          id: q.id,
-          questionText: q.questionText,
-          sortOrder: q.sortOrder ?? i,
-          answerType: q.answerType,
-          conditionalOnQuestionId: q.conditionalOnQuestionId,
-          conditionalOperator: q.conditionalOperator,
-          conditionalValue: q.conditionalValue,
-        }))
-      );
+      const conditionalError = validateConditionalLogic(allQuestions);
       if (conditionalError) {
         return NextResponse.json(
           { error: conditionalError },
@@ -178,7 +238,16 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
           const isUsedInSessions = sessionCount.count > 0;
 
-          // Get current non-archived questions to detect changes
+          // Get current non-archived sections and questions
+          const currentSections = await tx
+            .select()
+            .from(templateSections)
+            .where(
+              and(
+                eq(templateSections.templateId, id),
+                eq(templateSections.isArchived, false)
+              )
+            );
           const currentQuestions = await tx
             .select()
             .from(templateQuestions)
@@ -190,89 +259,78 @@ export async function PATCH(request: Request, { params }: RouteContext) {
             )
             .orderBy(asc(templateQuestions.sortOrder));
 
-          // Determine if questions have changed
-          const currentIds = new Set(currentQuestions.map((q) => q.id));
-          const incomingIds = new Set(
-            data.questions.filter((q) => q.id).map((q) => q.id!)
+          // Determine if content changed
+          const currentSectionIds = new Set(currentSections.map((s) => s.id));
+          const currentQuestionIds = new Set(currentQuestions.map((q) => q.id));
+          const incomingSectionIds = new Set(
+            data.sections.filter((s) => s.id).map((s) => s.id!)
           );
-          const questionsChanged =
-            currentQuestions.length !== data.questions.length ||
-            [...currentIds].some((cid) => !incomingIds.has(cid)) ||
-            data.questions.some((q) => !q.id);
+          const incomingQuestionIds = new Set(
+            data.sections
+              .flatMap((s) => s.questions)
+              .filter((q) => q.id)
+              .map((q) => q.id!)
+          );
+
+          const contentChanged =
+            currentSections.length !== data.sections.length ||
+            currentQuestions.length !== allQuestions.length ||
+            [...currentSectionIds].some((sid) => !incomingSectionIds.has(sid)) ||
+            [...currentQuestionIds].some((qid) => !incomingQuestionIds.has(qid)) ||
+            data.sections.some((s) => !s.id) ||
+            data.sections.some((s) => s.questions.some((q) => !q.id));
 
           let newVersion = template.version;
 
-          if (isUsedInSessions && questionsChanged) {
-            // Versioning: increment version, archive all old questions, insert new
+          if (isUsedInSessions && contentChanged) {
+            // Versioning: increment version, archive old sections & questions, insert new
             newVersion = template.version + 1;
 
             // Archive all current non-archived questions
-            await tx
-              .update(templateQuestions)
-              .set({ isArchived: true })
-              .where(
-                and(
-                  eq(templateQuestions.templateId, id),
-                  eq(templateQuestions.isArchived, false)
-                )
-              );
-
-            // Insert all questions as new rows with new UUIDs
-            for (const q of data.questions) {
-              await tx.insert(templateQuestions).values({
-                templateId: id,
-                questionText: q.questionText,
-                helpText: q.helpText ?? null,
-                category: q.category,
-                answerType: q.answerType,
-                answerConfig: q.answerConfig,
-                isRequired: q.isRequired,
-                sortOrder: q.sortOrder,
-                conditionalOnQuestionId:
-                  resolveRefForInsert(q.conditionalOnQuestionId),
-                conditionalOperator: q.conditionalOperator ?? null,
-                conditionalValue: q.conditionalValue ?? null,
-              });
-            }
-          } else {
-            // Not used in sessions -- update in place (upsert pattern)
-            // Archive questions that were removed
-            for (const cq of currentQuestions) {
-              if (!incomingIds.has(cq.id)) {
-                await tx
-                  .update(templateQuestions)
-                  .set({ isArchived: true })
-                  .where(eq(templateQuestions.id, cq.id));
-              }
+            if (currentQuestions.length > 0) {
+              await tx
+                .update(templateQuestions)
+                .set({ isArchived: true })
+                .where(
+                  and(
+                    eq(templateQuestions.templateId, id),
+                    eq(templateQuestions.isArchived, false)
+                  )
+                );
             }
 
-            // Update existing and insert new questions
-            for (const q of data.questions) {
-              if (q.id && currentIds.has(q.id)) {
-                // Update existing question
-                await tx
-                  .update(templateQuestions)
-                  .set({
-                    questionText: q.questionText,
-                    helpText: q.helpText ?? null,
-                    category: q.category,
-                    answerType: q.answerType,
-                    answerConfig: q.answerConfig,
-                    isRequired: q.isRequired,
-                    sortOrder: q.sortOrder,
-                    conditionalOnQuestionId:
-                      resolveRefForInsert(q.conditionalOnQuestionId),
-                    conditionalOperator: q.conditionalOperator ?? null,
-                    conditionalValue: q.conditionalValue ?? null,
-                  })
-                  .where(eq(templateQuestions.id, q.id));
-              } else {
-                // Insert new question
+            // Archive all current non-archived sections
+            if (currentSections.length > 0) {
+              await tx
+                .update(templateSections)
+                .set({ isArchived: true })
+                .where(
+                  and(
+                    eq(templateSections.templateId, id),
+                    eq(templateSections.isArchived, false)
+                  )
+                );
+            }
+
+            // Insert all sections and questions as new rows
+            for (const section of data.sections) {
+              const [newSection] = await tx
+                .insert(templateSections)
+                .values({
+                  templateId: id,
+                  tenantId: session.user.tenantId,
+                  name: section.name,
+                  description: section.description ?? null,
+                  sortOrder: section.sortOrder,
+                })
+                .returning();
+
+              for (const q of section.questions) {
                 await tx.insert(templateQuestions).values({
                   templateId: id,
+                  sectionId: newSection.id,
                   questionText: q.questionText,
                   helpText: q.helpText ?? null,
-                  category: q.category,
                   answerType: q.answerType,
                   answerConfig: q.answerConfig,
                   isRequired: q.isRequired,
@@ -284,14 +342,103 @@ export async function PATCH(request: Request, { params }: RouteContext) {
                 });
               }
             }
+          } else {
+            // Not used in sessions (or no content change) -- upsert sections/questions
+
+            // Archive removed sections
+            for (const cs of currentSections) {
+              if (!incomingSectionIds.has(cs.id)) {
+                await tx
+                  .update(templateSections)
+                  .set({ isArchived: true })
+                  .where(eq(templateSections.id, cs.id));
+              }
+            }
+
+            // Archive removed questions
+            for (const cq of currentQuestions) {
+              if (!incomingQuestionIds.has(cq.id)) {
+                await tx
+                  .update(templateQuestions)
+                  .set({ isArchived: true })
+                  .where(eq(templateQuestions.id, cq.id));
+              }
+            }
+
+            // Upsert sections and their questions
+            for (const section of data.sections) {
+              let sectionId: string;
+
+              if (section.id && currentSectionIds.has(section.id)) {
+                // Update existing section
+                await tx
+                  .update(templateSections)
+                  .set({
+                    name: section.name,
+                    description: section.description ?? null,
+                    sortOrder: section.sortOrder,
+                  })
+                  .where(eq(templateSections.id, section.id));
+                sectionId = section.id;
+              } else {
+                // Insert new section
+                const [newSection] = await tx
+                  .insert(templateSections)
+                  .values({
+                    templateId: id,
+                    tenantId: session.user.tenantId,
+                    name: section.name,
+                    description: section.description ?? null,
+                    sortOrder: section.sortOrder,
+                  })
+                  .returning();
+                sectionId = newSection.id;
+              }
+
+              // Upsert questions within this section
+              for (const q of section.questions) {
+                if (q.id && currentQuestionIds.has(q.id)) {
+                  await tx
+                    .update(templateQuestions)
+                    .set({
+                      sectionId,
+                      questionText: q.questionText,
+                      helpText: q.helpText ?? null,
+                      answerType: q.answerType,
+                      answerConfig: q.answerConfig,
+                      isRequired: q.isRequired,
+                      sortOrder: q.sortOrder,
+                      conditionalOnQuestionId:
+                        resolveRefForInsert(q.conditionalOnQuestionId),
+                      conditionalOperator: q.conditionalOperator ?? null,
+                      conditionalValue: q.conditionalValue ?? null,
+                    })
+                    .where(eq(templateQuestions.id, q.id));
+                } else {
+                  await tx.insert(templateQuestions).values({
+                    templateId: id,
+                    sectionId,
+                    questionText: q.questionText,
+                    helpText: q.helpText ?? null,
+                    answerType: q.answerType,
+                    answerConfig: q.answerConfig,
+                    isRequired: q.isRequired,
+                    sortOrder: q.sortOrder,
+                    conditionalOnQuestionId:
+                      resolveRefForInsert(q.conditionalOnQuestionId),
+                    conditionalOperator: q.conditionalOperator ?? null,
+                    conditionalValue: q.conditionalValue ?? null,
+                  });
+                }
+              }
+            }
           }
 
           // Resolve q-{index} temporary conditional references to real UUIDs
-          const hasTemporaryRefs = data.questions.some(
+          const hasTemporaryRefs = allQuestions.some(
             (q) => q.conditionalOnQuestionId?.match(/^q-\d+$/)
           );
           if (hasTemporaryRefs) {
-            // Fetch all current (non-archived) questions ordered by sortOrder
             const resolvedQuestions = await tx
               .select({ id: templateQuestions.id, sortOrder: templateQuestions.sortOrder })
               .from(templateQuestions)
@@ -303,15 +450,13 @@ export async function PATCH(request: Request, { params }: RouteContext) {
               )
               .orderBy(asc(templateQuestions.sortOrder));
 
-            // Build sortOrder → UUID map
             const indexToId = new Map<number, string>();
             for (const rq of resolvedQuestions) {
               indexToId.set(rq.sortOrder, rq.id);
             }
 
-            // Update rows that have temporary refs
             for (const rq of resolvedQuestions) {
-              const original = data.questions.find((q) => q.sortOrder === rq.sortOrder);
+              const original = allQuestions.find((q) => q.sortOrder === rq.sortOrder);
               if (original?.conditionalOnQuestionId?.match(/^q-\d+$/)) {
                 const refIndex = parseInt(original.conditionalOnQuestionId.replace("q-", ""), 10);
                 const realId = indexToId.get(refIndex);
@@ -325,13 +470,30 @@ export async function PATCH(request: Request, { params }: RouteContext) {
             }
           }
 
+          // Sync label assignments
+          if (data.labelIds !== undefined) {
+            // Delete existing assignments
+            await tx
+              .delete(templateLabelAssignments)
+              .where(eq(templateLabelAssignments.templateId, id));
+
+            // Insert new assignments
+            if (data.labelIds.length > 0) {
+              await tx.insert(templateLabelAssignments).values(
+                data.labelIds.map((labelId) => ({
+                  templateId: id,
+                  labelId,
+                }))
+              );
+            }
+          }
+
           // Update template metadata
           const [updated] = await tx
             .update(questionnaireTemplates)
             .set({
               name: data.name,
               description: data.description ?? null,
-              category: data.category,
               version: newVersion,
               updatedAt: new Date(),
             })
@@ -346,12 +508,23 @@ export async function PATCH(request: Request, { params }: RouteContext) {
             resourceId: id,
             metadata: {
               version: newVersion,
-              questionsChanged,
+              contentChanged,
               isUsedInSessions,
             },
           });
 
-          // Return template with updated questions
+          // Return template with updated sections, questions, labels
+          const updatedSections = await tx
+            .select()
+            .from(templateSections)
+            .where(
+              and(
+                eq(templateSections.templateId, id),
+                eq(templateSections.isArchived, false)
+              )
+            )
+            .orderBy(asc(templateSections.sortOrder));
+
           const updatedQuestions = await tx
             .select()
             .from(templateQuestions)
@@ -363,14 +536,43 @@ export async function PATCH(request: Request, { params }: RouteContext) {
             )
             .orderBy(asc(templateQuestions.sortOrder));
 
+          const questionsBySection = new Map<string, typeof updatedQuestions>();
+          for (const q of updatedQuestions) {
+            if (!questionsBySection.has(q.sectionId)) {
+              questionsBySection.set(q.sectionId, []);
+            }
+            questionsBySection.get(q.sectionId)!.push(q);
+          }
+
+          const updatedLabels = await tx
+            .select({
+              id: templateLabels.id,
+              name: templateLabels.name,
+              color: templateLabels.color,
+            })
+            .from(templateLabelAssignments)
+            .innerJoin(
+              templateLabels,
+              eq(templateLabelAssignments.labelId, templateLabels.id)
+            )
+            .where(eq(templateLabelAssignments.templateId, id));
+
           return {
             data: {
               ...updated,
               createdAt: updated.createdAt.toISOString(),
               updatedAt: updated.updatedAt.toISOString(),
-              questions: updatedQuestions.map((q) => ({
-                ...q,
-                createdAt: q.createdAt.toISOString(),
+              labels: updatedLabels,
+              sections: updatedSections.map((s) => ({
+                id: s.id,
+                name: s.name,
+                description: s.description,
+                sortOrder: s.sortOrder,
+                createdAt: s.createdAt.toISOString(),
+                questions: (questionsBySection.get(s.id) ?? []).map((q) => ({
+                  ...q,
+                  createdAt: q.createdAt.toISOString(),
+                })),
               })),
             },
           };
@@ -414,14 +616,28 @@ export async function PATCH(request: Request, { params }: RouteContext) {
           if (data.name !== undefined) updatePayload.name = data.name;
           if (data.description !== undefined)
             updatePayload.description = data.description;
-          if (data.category !== undefined)
-            updatePayload.category = data.category;
 
           const [updated] = await tx
             .update(questionnaireTemplates)
             .set(updatePayload)
             .where(eq(questionnaireTemplates.id, id))
             .returning();
+
+          // Sync label assignments if provided
+          if (data.labelIds !== undefined) {
+            await tx
+              .delete(templateLabelAssignments)
+              .where(eq(templateLabelAssignments.templateId, id));
+
+            if (data.labelIds.length > 0) {
+              await tx.insert(templateLabelAssignments).values(
+                data.labelIds.map((labelId) => ({
+                  templateId: id,
+                  labelId,
+                }))
+              );
+            }
+          }
 
           await logAuditEvent(tx, {
             tenantId: session.user.tenantId,
@@ -433,9 +649,6 @@ export async function PATCH(request: Request, { params }: RouteContext) {
               ...(data.name !== undefined && { newName: data.name }),
               ...(data.description !== undefined && {
                 newDescription: data.description,
-              }),
-              ...(data.category !== undefined && {
-                newCategory: data.category,
               }),
             },
           });

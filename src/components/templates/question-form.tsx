@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   questionSchema,
-  questionCategories,
   answerTypes,
 } from "@/lib/validations/template";
 import { Button } from "@/components/ui/button";
@@ -32,18 +31,6 @@ const answerTypeLabels: Record<string, string> = {
   yes_no: "Yes/No",
   multiple_choice: "Multiple Choice",
   mood: "Mood",
-};
-
-const categoryLabels: Record<string, string> = {
-  check_in: "Check-in",
-  wellbeing: "Wellbeing",
-  engagement: "Engagement",
-  performance: "Performance",
-  career: "Career",
-  feedback: "Feedback",
-  recognition: "Recognition",
-  goals: "Goals",
-  custom: "Custom",
 };
 
 interface QuestionFormProps {
@@ -73,7 +60,6 @@ export function QuestionForm({
     defaultValues: {
       questionText: question?.questionText ?? "",
       helpText: question?.helpText ?? "",
-      category: question?.category ?? "custom",
       answerType: question?.answerType ?? "text",
       answerConfig: question?.answerConfig ?? {},
       isRequired: question?.isRequired ?? false,
@@ -84,7 +70,6 @@ export function QuestionForm({
     },
   });
 
-  const selectedCategory = watch("category");
   const selectedAnswerType = watch("answerType");
   const isRequired = watch("isRequired");
   const answerConfig = watch("answerConfig");
@@ -94,7 +79,6 @@ export function QuestionForm({
       id: question?.id,
       questionText: data.questionText,
       helpText: data.helpText || null,
-      category: data.category,
       answerType: data.answerType,
       answerConfig: data.answerConfig,
       isRequired: data.isRequired,
@@ -162,34 +146,6 @@ export function QuestionForm({
         />
         {errors.helpText && (
           <p className="text-xs text-destructive">{errors.helpText.message}</p>
-        )}
-      </div>
-
-      {/* Category */}
-      <div className="space-y-2">
-        <Label>Category</Label>
-        <Select
-          value={selectedCategory}
-          onValueChange={(value) =>
-            setValue(
-              "category",
-              value as QuestionFormValues["category"]
-            )
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select category" />
-          </SelectTrigger>
-          <SelectContent>
-            {questionCategories.map((cat) => (
-              <SelectItem key={cat} value={cat}>
-                {categoryLabels[cat] ?? cat}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors.category && (
-          <p className="text-xs text-destructive">{errors.category.message}</p>
         )}
       </div>
 

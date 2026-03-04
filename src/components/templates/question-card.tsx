@@ -28,18 +28,6 @@ const answerTypeLabels: Record<string, string> = {
   mood: "Mood",
 };
 
-const categoryLabels: Record<string, string> = {
-  check_in: "Check-in",
-  wellbeing: "Wellbeing",
-  engagement: "Engagement",
-  performance: "Performance",
-  career: "Career",
-  feedback: "Feedback",
-  recognition: "Recognition",
-  goals: "Goals",
-  custom: "Custom",
-};
-
 const operatorLabels: Record<string, string> = {
   eq: "equals",
   neq: "not equals",
@@ -183,9 +171,6 @@ export function QuestionCard({
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="secondary" className="text-xs">
                 {answerTypeLabels[question.answerType] ?? question.answerType}
-              </Badge>
-              <Badge variant="outline" className="text-xs">
-                {categoryLabels[question.category] ?? question.category}
               </Badge>
               {question.conditionalOnQuestionId && (
                 <Badge

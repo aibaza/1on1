@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Plus, FileText, Hash } from "lucide-react";
-import { createTemplateSchema, templateCategories } from "@/lib/validations/template";
+import { createTemplateSchema } from "@/lib/validations/template";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,41 +28,32 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 type CreateTemplateValues = z.infer<typeof createTemplateSchema>;
+
+interface LabelData {
+  id: string;
+  name: string;
+  color: string | null;
+}
 
 interface TemplateData {
   id: string;
   name: string;
   description: string | null;
-  category: string;
   isDefault: boolean;
   isPublished: boolean;
   isArchived: boolean;
   version: number;
   createdAt: string;
   questionCount: number;
+  labels?: LabelData[];
 }
 
 interface TemplateListProps {
   initialTemplates: TemplateData[];
   currentUserRole: string;
 }
-
-const categoryLabels: Record<string, string> = {
-  check_in: "Check-in",
-  career: "Career",
-  performance: "Performance",
-  onboarding: "Onboarding",
-  custom: "Custom",
-};
 
 export function TemplateList({
   initialTemplates,
@@ -114,19 +105,14 @@ export function TemplateList({
     register,
     handleSubmit,
     reset,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm<CreateTemplateValues>({
     resolver: zodResolver(createTemplateSchema),
     defaultValues: {
       name: "",
       description: "",
-      category: "custom",
     },
   });
-
-  const selectedCategory = watch("category");
 
   function onSubmit(data: CreateTemplateValues) {
     createMutation.mutate(data);
@@ -187,9 +173,22 @@ export function TemplateList({
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="text-xs">
-                      {categoryLabels[template.category] ?? template.category}
-                    </Badge>
+                    <div className="flex flex-wrap gap-1">
+                      {(template.labels ?? []).map((label) => (
+                        <Badge
+                          key={label.id}
+                          variant="outline"
+                          className="text-xs"
+                          style={
+                            label.color
+                              ? { borderColor: label.color, color: label.color }
+                              : undefined
+                          }
+                        >
+                          {label.name}
+                        </Badge>
+                      ))}
+                    </div>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Hash className="h-3 w-3" />
@@ -256,35 +255,6 @@ export function TemplateList({
                 {errors.description && (
                   <p className="text-xs text-destructive">
                     {errors.description.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label>Category</Label>
-                <Select
-                  value={selectedCategory}
-                  onValueChange={(value) =>
-                    setValue(
-                      "category",
-                      value as (typeof templateCategories)[number]
-                    )
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {templateCategories.map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {categoryLabels[cat] ?? cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.category && (
-                  <p className="text-xs text-destructive">
-                    {errors.category.message}
                   </p>
                 )}
               </div>

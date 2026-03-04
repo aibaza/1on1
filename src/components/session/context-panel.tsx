@@ -268,7 +268,7 @@ function CategoryContent({
                 dangerouslySetInnerHTML={{ __html: previousNotes }}
               />
             ) : (
-              <EmptyState message="No previous notes for this category" />
+              <EmptyState message="No previous notes for this section" />
             )}
             {lastSession && previousNotes && (
               <p className="mt-1 text-[10px] text-muted-foreground">
@@ -291,7 +291,7 @@ function CategoryContent({
         <CollapsibleContent>
           <div className="px-2 py-1">
             {previousAnswers.length === 0 ? (
-              <EmptyState message="No previous answers for this category" />
+              <EmptyState message="No previous answers for this section" />
             ) : (
               <ul className="space-y-2">
                 {previousAnswers.map((answer) => (
@@ -339,7 +339,7 @@ function CategoryContent({
         <CollapsibleContent>
           <div className="px-2 py-1">
             {categoryActions.length === 0 ? (
-              <EmptyState message="No open action items for this category" />
+              <EmptyState message="No open action items for this section" />
             ) : (
               <ul className="space-y-1">
                 {categoryActions.map((item) => (

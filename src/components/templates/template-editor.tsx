@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import Link from "next/link";
 import {
@@ -33,24 +33,20 @@ import {
   Star,
   Copy,
   Archive,
+  GripVertical,
+  Pencil,
+  Trash2,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import {
   createTemplateSchema,
-  templateCategories,
-  questionCategories,
   answerTypes,
 } from "@/lib/validations/template";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -70,24 +66,21 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { QuestionCard } from "./question-card";
 import { QuestionForm } from "./question-form";
 
-const categoryLabels: Record<string, string> = {
-  check_in: "Check-in",
-  career: "Career",
-  performance: "Performance",
-  onboarding: "Onboarding",
-  custom: "Custom",
-};
-
-type TemplateMetadata = z.infer<typeof createTemplateSchema>;
+type TemplateFormValues = z.infer<typeof createTemplateSchema>;
 
 export interface QuestionData {
   id?: string;
   questionText: string;
   helpText: string | null;
-  category: (typeof questionCategories)[number];
   answerType: (typeof answerTypes)[number];
   answerConfig: Record<string, unknown>;
   isRequired: boolean;
@@ -98,12 +91,26 @@ export interface QuestionData {
   createdAt?: string;
 }
 
-// Server-returned question data may include DB enum values beyond the client subset
+export interface SectionData {
+  id?: string;
+  name: string;
+  description?: string | null;
+  sortOrder: number;
+  questions: QuestionData[];
+}
+
+interface LabelData {
+  id: string;
+  name: string;
+  color: string | null;
+}
+
+// Server-returned question data
 interface ServerQuestionData {
   id: string;
   questionText: string;
   helpText: string | null;
-  category: string;
+  sectionId: string;
   answerType: string;
   answerConfig: unknown;
   isRequired: boolean;
@@ -116,12 +123,20 @@ interface ServerQuestionData {
   isArchived: boolean;
 }
 
+interface ServerSectionData {
+  id: string;
+  name: string;
+  description: string | null;
+  sortOrder: number;
+  createdAt: string;
+  questions: ServerQuestionData[];
+}
+
 interface TemplateData {
   id: string;
   tenantId: string | null;
   name: string;
   description: string | null;
-  category: string;
   isDefault: boolean;
   isPublished: boolean;
   isArchived: boolean;
@@ -129,7 +144,8 @@ interface TemplateData {
   version: number;
   createdAt: string;
   updatedAt: string;
-  questions: ServerQuestionData[];
+  labels: LabelData[];
+  sections: ServerSectionData[];
 }
 
 function toQuestionData(q: ServerQuestionData): QuestionData {
@@ -137,7 +153,6 @@ function toQuestionData(q: ServerQuestionData): QuestionData {
     id: q.id,
     questionText: q.questionText,
     helpText: q.helpText,
-    category: q.category as QuestionData["category"],
     answerType: q.answerType as QuestionData["answerType"],
     answerConfig: (q.answerConfig as Record<string, unknown>) ?? {},
     isRequired: q.isRequired,
@@ -146,6 +161,16 @@ function toQuestionData(q: ServerQuestionData): QuestionData {
     conditionalOperator: q.conditionalOperator,
     conditionalValue: q.conditionalValue,
     createdAt: q.createdAt,
+  };
+}
+
+function toSectionData(s: ServerSectionData): SectionData {
+  return {
+    id: s.id,
+    name: s.name,
+    description: s.description,
+    sortOrder: s.sortOrder,
+    questions: s.questions.map(toQuestionData),
   };
 }
 
@@ -166,111 +191,64 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
   const {
     register,
     handleSubmit,
-    setValue,
     watch,
     formState: { errors },
-  } = useForm<TemplateMetadata>({
+  } = useForm<TemplateFormValues>({
     resolver: zodResolver(createTemplateSchema),
     defaultValues: {
       name: template?.name ?? "",
       description: template?.description ?? "",
-      category: (template?.category as TemplateMetadata["category"]) ?? "custom",
     },
   });
 
-  const selectedCategory = watch("category");
-
-  // Questions state (managed locally, saved in batch)
-  const [questions, setQuestions] = useState<QuestionData[]>(
-    template?.questions.map(toQuestionData) ?? []
+  // Sections state
+  const [sections, setSections] = useState<SectionData[]>(
+    template?.sections.map(toSectionData) ?? []
   );
+
+  // Label selection state
+  const [selectedLabelIds, setSelectedLabelIds] = useState<string[]>(
+    template?.labels.map((l) => l.id) ?? []
+  );
+
+  // Fetch available labels
+  const { data: availableLabels } = useQuery<LabelData[]>({
+    queryKey: ["labels"],
+    queryFn: async () => {
+      const res = await fetch("/api/labels");
+      if (!res.ok) throw new Error("Failed to fetch labels");
+      return res.json();
+    },
+  });
+
+  // Section editing
+  const [editingSectionIndex, setEditingSectionIndex] = useState<number | null>(null);
+  const [sectionNameInput, setSectionNameInput] = useState("");
 
   // Question form dialog state
   const [questionDialogOpen, setQuestionDialogOpen] = useState(false);
-  const [editingQuestion, setEditingQuestion] = useState<QuestionData | null>(
-    null
-  );
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingQuestion, setEditingQuestion] = useState<QuestionData | null>(null);
+  const [editingQuestionSectionIndex, setEditingQuestionSectionIndex] = useState<number>(0);
+  const [editingQuestionIndex, setEditingQuestionIndex] = useState<number | null>(null);
 
-  // DnD sensors: pointer (mouse/touch) + keyboard
+  // Collapsible section state
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(
+    new Set(sections.map((_, i) => i))
+  );
+
+  // DnD sensors
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  // Reorder mutation
-  const reorderMutation = useMutation({
-    mutationFn: async (questionIds: string[]) => {
-      const res = await fetch(
-        `/api/templates/${template!.id}/questions/reorder`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ questionIds }),
-        }
-      );
-      if (!res.ok) {
-        const json = await res.json();
-        throw new Error(json.error || "Failed to reorder questions");
-      }
-      return res.json();
-    },
-    onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to reorder questions"
-      );
-    },
-  });
-
-  // DnD drag end handler
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event;
-      if (!over || active.id === over.id) return;
-
-      setQuestions((prev) => {
-        const oldIndex = prev.findIndex(
-          (q) => (q.id ?? `new-${prev.indexOf(q)}`) === active.id
-        );
-        const newIndex = prev.findIndex(
-          (q) => (q.id ?? `new-${prev.indexOf(q)}`) === over.id
-        );
-
-        if (oldIndex === -1 || newIndex === -1) return prev;
-
-        const reordered = arrayMove(prev, oldIndex, newIndex);
-
-        // Persist to server if not in create mode and all questions have IDs
-        if (template && reordered.every((q) => q.id)) {
-          const previousOrder = prev.map((q) => q.id!);
-          reorderMutation.mutate(reordered.map((q) => q.id!), {
-            onError: () => {
-              // Rollback on error
-              setQuestions(prev);
-            },
-          });
-          void previousOrder; // suppress unused variable
-        }
-
-        return reordered;
-      });
-    },
-    [template, reorderMutation]
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
   // Create template mutation
   const createMutation = useMutation({
-    mutationFn: async (data: TemplateMetadata) => {
+    mutationFn: async (data: TemplateFormValues) => {
       const res = await fetch("/api/templates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, labelIds: selectedLabelIds }),
       });
       if (!res.ok) {
         const json = await res.json();
@@ -279,18 +257,21 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       return res.json() as Promise<{ id: string }>;
     },
     onSuccess: async (newTemplate) => {
-      // If we have questions, save them via PATCH
-      if (questions.length > 0) {
+      if (sections.length > 0) {
         const formValues = watch();
         await saveMutation.mutateAsync({
           templateId: newTemplate.id,
           body: {
             name: formValues.name,
             description: formValues.description || null,
-            category: formValues.category,
-            questions: questions.map((q, i) => ({
-              ...q,
-              sortOrder: i,
+            labelIds: selectedLabelIds,
+            sections: sections.map((s, si) => ({
+              ...s,
+              sortOrder: si,
+              questions: s.questions.map((q, qi) => ({
+                ...q,
+                sortOrder: qi,
+              })),
             })),
           },
         });
@@ -300,21 +281,13 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       router.push(`/templates/${newTemplate.id}`);
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create template"
-      );
+      toast.error(error instanceof Error ? error.message : "Failed to create template");
     },
   });
 
   // Save (PATCH) mutation
   const saveMutation = useMutation({
-    mutationFn: async ({
-      templateId,
-      body,
-    }: {
-      templateId: string;
-      body: unknown;
-    }) => {
+    mutationFn: async ({ templateId, body }: { templateId: string; body: unknown }) => {
       const res = await fetch(`/api/templates/${templateId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -331,18 +304,14 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       toast.success("Template saved");
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to save template"
-      );
+      toast.error(error instanceof Error ? error.message : "Failed to save template");
     },
   });
 
   // Publish mutation
   const publishMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/templates/${template!.id}/publish`, {
-        method: "PUT",
-      });
+      const res = await fetch(`/api/templates/${template!.id}/publish`, { method: "PUT" });
       if (!res.ok) {
         const json = await res.json();
         throw new Error(json.error || "Failed to toggle publish status");
@@ -351,24 +320,18 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["templates"] });
-      toast.success(
-        data.isPublished ? "Template published" : "Template unpublished"
-      );
+      toast.success(data.isPublished ? "Template published" : "Template unpublished");
       router.refresh();
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to toggle publish"
-      );
+      toast.error(error instanceof Error ? error.message : "Failed to toggle publish");
     },
   });
 
   // Set default mutation
   const setDefaultMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/templates/${template!.id}/default`, {
-        method: "PUT",
-      });
+      const res = await fetch(`/api/templates/${template!.id}/default`, { method: "PUT" });
       if (!res.ok) {
         const json = await res.json();
         throw new Error(json.error || "Failed to set as default");
@@ -381,18 +344,14 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       router.refresh();
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to set default"
-      );
+      toast.error(error instanceof Error ? error.message : "Failed to set default");
     },
   });
 
   // Duplicate mutation
   const duplicateMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/templates/${template!.id}/duplicate`, {
-        method: "POST",
-      });
+      const res = await fetch(`/api/templates/${template!.id}/duplicate`, { method: "POST" });
       if (!res.ok) {
         const json = await res.json();
         throw new Error(json.error || "Failed to duplicate template");
@@ -405,18 +364,14 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       router.push(`/templates/${data.id}`);
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to duplicate"
-      );
+      toast.error(error instanceof Error ? error.message : "Failed to duplicate");
     },
   });
 
   // Archive mutation
   const archiveMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/templates/${template!.id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(`/api/templates/${template!.id}`, { method: "DELETE" });
       if (!res.ok) {
         const json = await res.json();
         throw new Error(json.error || "Failed to archive template");
@@ -429,14 +384,12 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       router.push("/templates");
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to archive"
-      );
+      toast.error(error instanceof Error ? error.message : "Failed to archive");
     },
   });
 
   // Save handler
-  function onSave(data: TemplateMetadata) {
+  function onSave(data: TemplateFormValues) {
     if (isCreateMode) {
       createMutation.mutate(data);
     } else {
@@ -445,61 +398,147 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
         body: {
           name: data.name,
           description: data.description || null,
-          category: data.category,
-          questions: questions.map((q, i) => ({
-            ...q,
-            sortOrder: i,
+          labelIds: selectedLabelIds,
+          sections: sections.map((s, si) => ({
+            ...s,
+            sortOrder: si,
+            questions: s.questions.map((q, qi) => ({
+              ...q,
+              sortOrder: qi,
+            })),
           })),
         },
       });
     }
   }
 
+  // Section management
+  const handleAddSection = useCallback(() => {
+    setSections((prev) => [
+      ...prev,
+      { name: "New Section", sortOrder: prev.length, questions: [] },
+    ]);
+    setExpandedSections((prev) => new Set([...prev, sections.length]));
+  }, [sections.length]);
+
+  const handleRenameSection = useCallback((index: number, name: string) => {
+    setSections((prev) => prev.map((s, i) => (i === index ? { ...s, name } : s)));
+  }, []);
+
+  const handleRemoveSection = useCallback((index: number) => {
+    setSections((prev) => prev.filter((_, i) => i !== index));
+    setExpandedSections((prev) => {
+      const next = new Set<number>();
+      for (const idx of prev) {
+        if (idx < index) next.add(idx);
+        else if (idx > index) next.add(idx - 1);
+      }
+      return next;
+    });
+  }, []);
+
+  // Flatten all questions across sections for conditional logic
+  const allQuestions: QuestionData[] = sections.flatMap((s) => s.questions);
+
   // Question management
-  const handleAddQuestion = useCallback(() => {
+  const handleAddQuestion = useCallback((sectionIndex: number) => {
     setEditingQuestion(null);
-    setEditingIndex(null);
+    setEditingQuestionIndex(null);
+    setEditingQuestionSectionIndex(sectionIndex);
     setQuestionDialogOpen(true);
   }, []);
 
-  const handleEditQuestion = useCallback((question: QuestionData, index: number) => {
-    setEditingQuestion(question);
-    setEditingIndex(index);
-    setQuestionDialogOpen(true);
-  }, []);
+  const handleEditQuestion = useCallback(
+    (sectionIndex: number, questionIndex: number, question: QuestionData) => {
+      setEditingQuestion(question);
+      setEditingQuestionIndex(questionIndex);
+      setEditingQuestionSectionIndex(sectionIndex);
+      setQuestionDialogOpen(true);
+    },
+    []
+  );
 
-  const handleRemoveQuestion = useCallback((index: number) => {
-    setQuestions((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveQuestion = useCallback((sectionIndex: number, questionIndex: number) => {
+    setSections((prev) =>
+      prev.map((s, si) =>
+        si === sectionIndex
+          ? { ...s, questions: s.questions.filter((_, qi) => qi !== questionIndex) }
+          : s
+      )
+    );
   }, []);
 
   const handleSaveQuestion = useCallback(
     (question: QuestionData) => {
-      if (editingIndex !== null) {
-        // Update existing
-        setQuestions((prev) =>
-          prev.map((q, i) => (i === editingIndex ? question : q))
+      const sectionIdx = editingQuestionSectionIndex;
+      if (editingQuestionIndex !== null) {
+        setSections((prev) =>
+          prev.map((s, si) =>
+            si === sectionIdx
+              ? {
+                  ...s,
+                  questions: s.questions.map((q, qi) =>
+                    qi === editingQuestionIndex ? question : q
+                  ),
+                }
+              : s
+          )
         );
       } else {
-        // Add new
-        setQuestions((prev) => [
-          ...prev,
-          { ...question, sortOrder: prev.length },
-        ]);
+        setSections((prev) =>
+          prev.map((s, si) =>
+            si === sectionIdx
+              ? { ...s, questions: [...s.questions, { ...question, sortOrder: s.questions.length }] }
+              : s
+          )
+        );
       }
       setQuestionDialogOpen(false);
       setEditingQuestion(null);
-      setEditingIndex(null);
+      setEditingQuestionIndex(null);
     },
-    [editingIndex]
+    [editingQuestionSectionIndex, editingQuestionIndex]
   );
 
-  const isSaving =
-    createMutation.isPending || saveMutation.isPending;
+  // DnD within a section
+  const handleDragEnd = useCallback(
+    (sectionIndex: number) => (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
 
-  // Sortable IDs for DndContext
-  const sortableIds = questions.map(
-    (q, i) => q.id ?? `new-${i}`
+      setSections((prev) =>
+        prev.map((s, si) => {
+          if (si !== sectionIndex) return s;
+          const oldIdx = s.questions.findIndex(
+            (q) => (q.id ?? `new-${s.questions.indexOf(q)}`) === active.id
+          );
+          const newIdx = s.questions.findIndex(
+            (q) => (q.id ?? `new-${s.questions.indexOf(q)}`) === over.id
+          );
+          if (oldIdx === -1 || newIdx === -1) return s;
+          return { ...s, questions: arrayMove(s.questions, oldIdx, newIdx) };
+        })
+      );
+    },
+    []
   );
+
+  const toggleSection = useCallback((index: number) => {
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  }, []);
+
+  const toggleLabel = useCallback((labelId: string) => {
+    setSelectedLabelIds((prev) =>
+      prev.includes(labelId) ? prev.filter((id) => id !== labelId) : [...prev, labelId]
+    );
+  }, []);
+
+  const isSaving = createMutation.isPending || saveMutation.isPending;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -512,7 +551,6 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
           </Link>
         </Button>
 
-        {/* Actions toolbar (edit mode only) */}
         {!isCreateMode && canEdit && (
           <div className="flex items-center gap-2">
             <Button
@@ -629,71 +667,64 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
               {...register("description")}
             />
             {errors.description && (
-              <p className="text-xs text-destructive">
-                {errors.description.message}
-              </p>
+              <p className="text-xs text-destructive">{errors.description.message}</p>
             )}
           </div>
 
+          {/* Labels */}
           <div className="space-y-2">
-            <Label>Category</Label>
-            <Select
-              value={selectedCategory}
-              onValueChange={(value) =>
-                setValue(
-                  "category",
-                  value as TemplateMetadata["category"]
-                )
-              }
-              disabled={isReadOnly}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {templateCategories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {categoryLabels[cat] ?? cat}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.category && (
-              <p className="text-xs text-destructive">
-                {errors.category.message}
-              </p>
-            )}
+            <Label>Labels</Label>
+            <div className="flex flex-wrap gap-2">
+              {(availableLabels ?? []).map((label) => (
+                <Badge
+                  key={label.id}
+                  variant={selectedLabelIds.includes(label.id) ? "default" : "outline"}
+                  className="cursor-pointer select-none"
+                  style={
+                    label.color && selectedLabelIds.includes(label.id)
+                      ? { backgroundColor: label.color, borderColor: label.color }
+                      : label.color
+                        ? { borderColor: label.color, color: label.color }
+                        : undefined
+                  }
+                  onClick={() => !isReadOnly && toggleLabel(label.id)}
+                >
+                  {label.name}
+                </Badge>
+              ))}
+              {(availableLabels ?? []).length === 0 && (
+                <p className="text-xs text-muted-foreground">
+                  No labels yet. Labels can be created via the API.
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
         <Separator />
 
-        {/* Questions section */}
+        {/* Sections */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold">Questions</h2>
+              <h2 className="text-lg font-semibold">Sections</h2>
               <p className="text-sm text-muted-foreground">
-                {questions.length} question{questions.length !== 1 ? "s" : ""}
+                {sections.length} section{sections.length !== 1 ? "s" : ""},{" "}
+                {allQuestions.length} question{allQuestions.length !== 1 ? "s" : ""}
               </p>
             </div>
             {canEdit && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleAddQuestion}
-              >
+              <Button type="button" variant="outline" size="sm" onClick={handleAddSection}>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Question
+                Add Section
               </Button>
             )}
           </div>
 
-          {questions.length === 0 ? (
+          {sections.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-10">
               <p className="text-sm text-muted-foreground">
-                No questions yet. Add your first question to get started.
+                No sections yet. Add a section to organize your questions.
               </p>
               {canEdit && (
                 <Button
@@ -701,39 +732,179 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
                   variant="outline"
                   size="sm"
                   className="mt-3"
-                  onClick={handleAddQuestion}
+                  onClick={handleAddSection}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Add Question
+                  Add Section
                 </Button>
               )}
             </div>
           ) : (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              modifiers={[restrictToVerticalAxis]}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={sortableIds}
-                strategy={verticalListSortingStrategy}
-              >
-                <div className="space-y-3">
-                  {questions.map((question, index) => (
-                    <QuestionCard
-                      key={question.id ?? `new-${index}`}
-                      question={question}
-                      index={index}
-                      isReadOnly={isReadOnly}
-                      allQuestions={questions}
-                      onEdit={() => handleEditQuestion(question, index)}
-                      onRemove={() => handleRemoveQuestion(index)}
-                    />
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
+            <div className="space-y-4">
+              {sections.map((section, sectionIndex) => {
+                const isExpanded = expandedSections.has(sectionIndex);
+                const sortableIds = section.questions.map(
+                  (q, i) => q.id ?? `new-${i}`
+                );
+
+                return (
+                  <Collapsible
+                    key={section.id ?? `section-${sectionIndex}`}
+                    open={isExpanded}
+                    onOpenChange={() => toggleSection(sectionIndex)}
+                  >
+                    <div className="rounded-lg border">
+                      {/* Section header */}
+                      <div className="flex items-center gap-2 px-4 py-3">
+                        <CollapsibleTrigger asChild>
+                          <button type="button" className="shrink-0 text-muted-foreground hover:text-foreground">
+                            {isExpanded ? (
+                              <ChevronDown className="h-4 w-4" />
+                            ) : (
+                              <ChevronRight className="h-4 w-4" />
+                            )}
+                          </button>
+                        </CollapsibleTrigger>
+
+                        {editingSectionIndex === sectionIndex ? (
+                          <Input
+                            autoFocus
+                            value={sectionNameInput}
+                            onChange={(e) => setSectionNameInput(e.target.value)}
+                            onBlur={() => {
+                              if (sectionNameInput.trim()) {
+                                handleRenameSection(sectionIndex, sectionNameInput.trim());
+                              }
+                              setEditingSectionIndex(null);
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                if (sectionNameInput.trim()) {
+                                  handleRenameSection(sectionIndex, sectionNameInput.trim());
+                                }
+                                setEditingSectionIndex(null);
+                              }
+                              if (e.key === "Escape") {
+                                setEditingSectionIndex(null);
+                              }
+                            }}
+                            className="h-7 text-sm font-semibold"
+                          />
+                        ) : (
+                          <span className="flex-1 text-sm font-semibold">
+                            {section.name}
+                          </span>
+                        )}
+
+                        <Badge variant="secondary" className="text-xs">
+                          {section.questions.length} Q
+                        </Badge>
+
+                        {canEdit && (
+                          <div className="flex items-center gap-1">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingSectionIndex(sectionIndex);
+                                setSectionNameInput(section.name);
+                              }}
+                            >
+                              <Pencil className="h-3 w-3" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 text-destructive hover:text-destructive"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Remove Section</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Remove &quot;{section.name}&quot; and all its questions?
+                                    This takes effect when you save.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleRemoveSection(sectionIndex)}>
+                                    Remove
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Section content */}
+                      <CollapsibleContent>
+                        <div className="border-t px-4 py-3 space-y-3">
+                          {section.questions.length === 0 ? (
+                            <p className="text-sm text-muted-foreground text-center py-4">
+                              No questions in this section.
+                            </p>
+                          ) : (
+                            <DndContext
+                              sensors={sensors}
+                              collisionDetection={closestCenter}
+                              modifiers={[restrictToVerticalAxis]}
+                              onDragEnd={handleDragEnd(sectionIndex)}
+                            >
+                              <SortableContext
+                                items={sortableIds}
+                                strategy={verticalListSortingStrategy}
+                              >
+                                <div className="space-y-3">
+                                  {section.questions.map((question, qIndex) => (
+                                    <QuestionCard
+                                      key={question.id ?? `new-${qIndex}`}
+                                      question={question}
+                                      index={qIndex}
+                                      isReadOnly={isReadOnly}
+                                      allQuestions={allQuestions}
+                                      onEdit={() =>
+                                        handleEditQuestion(sectionIndex, qIndex, question)
+                                      }
+                                      onRemove={() =>
+                                        handleRemoveQuestion(sectionIndex, qIndex)
+                                      }
+                                    />
+                                  ))}
+                                </div>
+                              </SortableContext>
+                            </DndContext>
+                          )}
+
+                          {canEdit && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="w-full"
+                              onClick={() => handleAddQuestion(sectionIndex)}
+                            >
+                              <Plus className="mr-2 h-4 w-4" />
+                              Add Question
+                            </Button>
+                          )}
+                        </div>
+                      </CollapsibleContent>
+                    </div>
+                  </Collapsible>
+                );
+              })}
+            </div>
           )}
         </div>
 
@@ -768,8 +939,8 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
           </DialogHeader>
           <QuestionForm
             question={editingQuestion}
-            questionIndex={editingIndex ?? questions.length}
-            allQuestions={questions}
+            questionIndex={editingQuestionIndex ?? allQuestions.length}
+            allQuestions={allQuestions}
             onSave={handleSaveQuestion}
             onCancel={() => setQuestionDialogOpen(false)}
           />

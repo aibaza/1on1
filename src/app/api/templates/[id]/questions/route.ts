@@ -3,8 +3,14 @@ import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { canManageTemplates } from "@/lib/auth/rbac";
 import { questionSchema, validateAnswerConfig } from "@/lib/validations/template";
-import { questionnaireTemplates, templateQuestions } from "@/lib/db/schema";
+import { questionnaireTemplates, templateQuestions, templateSections } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { z } from "zod";
+
+// Extended schema that requires sectionId for single question creation
+const createQuestionSchema = questionSchema.extend({
+  sectionId: z.string().uuid("Section ID is required"),
+});
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -28,7 +34,7 @@ export async function POST(request: Request, { params }: RouteContext) {
   }
 
   try {
-    const data = questionSchema.parse(body);
+    const data = createQuestionSchema.parse(body);
 
     // Validate answer_config matches answerType
     const configError = validateAnswerConfig(
@@ -58,13 +64,28 @@ export async function POST(request: Request, { params }: RouteContext) {
           return { error: "Template not found", status: 404 };
         }
 
+        // Verify section exists and belongs to this template
+        const [section] = await tx
+          .select({ id: templateSections.id })
+          .from(templateSections)
+          .where(
+            and(
+              eq(templateSections.id, data.sectionId),
+              eq(templateSections.templateId, id)
+            )
+          );
+
+        if (!section) {
+          return { error: "Section not found", status: 404 };
+        }
+
         const [question] = await tx
           .insert(templateQuestions)
           .values({
             templateId: id,
+            sectionId: data.sectionId,
             questionText: data.questionText,
             helpText: data.helpText ?? null,
-            category: data.category,
             answerType: data.answerType,
             answerConfig: data.answerConfig,
             isRequired: data.isRequired,

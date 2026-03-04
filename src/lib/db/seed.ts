@@ -65,6 +65,22 @@ const CAREER_TEMPLATE_ID = 'dddddddd-0002-4000-d000-000000000002';
 // Beta Template
 const BETA_TEMPLATE_ID = 'dddddddd-0003-4000-d000-000000000003';
 
+// Acme Template Sections (Weekly Check-in)
+const SEC_WEEKLY_WELLBEING_ID = 'aaaabbbb-0001-4000-ab00-000000000001';
+const SEC_WEEKLY_PERFORMANCE_ID = 'aaaabbbb-0002-4000-ab00-000000000002';
+const SEC_WEEKLY_CHECKIN_ID = 'aaaabbbb-0003-4000-ab00-000000000003';
+
+// Acme Template Sections (Career Development)
+const SEC_CAREER_GOALS_ID = 'aaaabbbb-0004-4000-ab00-000000000004';
+const SEC_CAREER_FEEDBACK_ID = 'aaaabbbb-0005-4000-ab00-000000000005';
+
+// Beta Template Sections
+const SEC_BETA_CHECKIN_ID = 'aaaabbbb-0006-4000-ab00-000000000006';
+
+// Acme Labels
+const LABEL_CHECKIN_ID = 'aabbccee-0001-4000-ab00-000000000001';
+const LABEL_CAREER_ID = 'aabbccee-0002-4000-ab00-000000000002';
+
 // Acme Template Questions (Weekly Check-in)
 const Q_MOOD_ID = 'eeeeeeee-0001-4000-e000-000000000001';
 const Q_WORKLOAD_ID = 'eeeeeeee-0002-4000-e000-000000000002';
@@ -381,7 +397,6 @@ async function seedTemplates() {
         tenantId: ACME_TENANT_ID,
         name: 'Weekly Check-in',
         description: 'Quick weekly pulse check covering mood, workload, blockers, and satisfaction',
-        category: 'check_in',
         isDefault: true,
         isPublished: true,
         createdBy: ALICE_ID,
@@ -392,7 +407,6 @@ async function seedTemplates() {
         tenantId: ACME_TENANT_ID,
         name: 'Career Development',
         description: 'Quarterly career growth discussion covering goals, opportunities, and feedback',
-        category: 'career',
         isDefault: false,
         isPublished: true,
         createdBy: ALICE_ID,
@@ -404,7 +418,6 @@ async function seedTemplates() {
       set: {
         name: sql`excluded.name`,
         description: sql`excluded.description`,
-        category: sql`excluded.category`,
         isDefault: sql`excluded.is_default`,
         isPublished: sql`excluded.is_published`,
         updatedAt: sql`now()`,
@@ -419,7 +432,6 @@ async function seedTemplates() {
       tenantId: BETA_TENANT_ID,
       name: 'Simple Check-in',
       description: 'Basic mood check for small teams',
-      category: 'check_in',
       isDefault: true,
       isPublished: true,
       createdBy: ZARA_ID,
@@ -434,14 +446,63 @@ async function seedTemplates() {
       },
     });
 
+  // Acme Labels
+  console.log('  Seeding labels...');
+  await db
+    .insert(schema.templateLabels)
+    .values([
+      { id: LABEL_CHECKIN_ID, tenantId: ACME_TENANT_ID, name: 'Check-in', color: '#3b82f6' },
+      { id: LABEL_CAREER_ID, tenantId: ACME_TENANT_ID, name: 'Career', color: '#8b5cf6' },
+    ])
+    .onConflictDoUpdate({
+      target: schema.templateLabels.id,
+      set: {
+        name: sql`excluded.name`,
+        color: sql`excluded.color`,
+      },
+    });
+
+  // Label assignments
+  await db
+    .insert(schema.templateLabelAssignments)
+    .values([
+      { templateId: WEEKLY_TEMPLATE_ID, labelId: LABEL_CHECKIN_ID },
+      { templateId: CAREER_TEMPLATE_ID, labelId: LABEL_CAREER_ID },
+    ])
+    .onConflictDoNothing();
+
+  // Template Sections
+  console.log('  Seeding template sections...');
+  const sections = [
+    { id: SEC_WEEKLY_WELLBEING_ID, templateId: WEEKLY_TEMPLATE_ID, tenantId: ACME_TENANT_ID, name: 'Wellbeing', sortOrder: 0 },
+    { id: SEC_WEEKLY_PERFORMANCE_ID, templateId: WEEKLY_TEMPLATE_ID, tenantId: ACME_TENANT_ID, name: 'Performance', sortOrder: 1 },
+    { id: SEC_WEEKLY_CHECKIN_ID, templateId: WEEKLY_TEMPLATE_ID, tenantId: ACME_TENANT_ID, name: 'Check-in', sortOrder: 2 },
+    { id: SEC_CAREER_GOALS_ID, templateId: CAREER_TEMPLATE_ID, tenantId: ACME_TENANT_ID, name: 'Career Goals', sortOrder: 0 },
+    { id: SEC_CAREER_FEEDBACK_ID, templateId: CAREER_TEMPLATE_ID, tenantId: ACME_TENANT_ID, name: 'Feedback', sortOrder: 1 },
+    { id: SEC_BETA_CHECKIN_ID, templateId: BETA_TEMPLATE_ID, tenantId: BETA_TENANT_ID, name: 'Check-in', sortOrder: 0 },
+  ];
+
+  for (const sec of sections) {
+    await db
+      .insert(schema.templateSections)
+      .values(sec)
+      .onConflictDoUpdate({
+        target: schema.templateSections.id,
+        set: {
+          name: sql`excluded.name`,
+          sortOrder: sql`excluded.sort_order`,
+        },
+      });
+  }
+
   // Weekly Check-in Questions
   const weeklyQuestions = [
     {
       id: Q_MOOD_ID,
       templateId: WEEKLY_TEMPLATE_ID,
+      sectionId: SEC_WEEKLY_WELLBEING_ID,
       questionText: 'How are you feeling this week?',
       helpText: 'Pick the emoji that best represents your overall mood',
-      category: 'wellbeing' as const,
       answerType: 'mood' as const,
       answerConfig: { options: ['great', 'good', 'okay', 'struggling', 'bad'] },
       isRequired: true,
@@ -450,9 +511,9 @@ async function seedTemplates() {
     {
       id: Q_WORKLOAD_ID,
       templateId: WEEKLY_TEMPLATE_ID,
+      sectionId: SEC_WEEKLY_WELLBEING_ID,
       questionText: 'How would you rate your workload this week?',
       helpText: '1 = too little, 3 = just right, 5 = overwhelmed',
-      category: 'wellbeing' as const,
       answerType: 'rating_1_5' as const,
       answerConfig: { labels: { 1: 'Too little', 3: 'Just right', 5: 'Overwhelmed' } },
       isRequired: true,
@@ -461,9 +522,9 @@ async function seedTemplates() {
     {
       id: Q_BLOCKERS_ID,
       templateId: WEEKLY_TEMPLATE_ID,
+      sectionId: SEC_WEEKLY_PERFORMANCE_ID,
       questionText: 'What blockers or challenges are you facing?',
       helpText: 'Describe any issues preventing you from doing your best work',
-      category: 'performance' as const,
       answerType: 'text' as const,
       answerConfig: {},
       isRequired: false,
@@ -472,8 +533,8 @@ async function seedTemplates() {
     {
       id: Q_HELP_ID,
       templateId: WEEKLY_TEMPLATE_ID,
+      sectionId: SEC_WEEKLY_CHECKIN_ID,
       questionText: 'Do you need any help from me this week?',
-      category: 'check_in' as const,
       answerType: 'yes_no' as const,
       answerConfig: {},
       isRequired: true,
@@ -482,9 +543,9 @@ async function seedTemplates() {
     {
       id: Q_SATISFACTION_ID,
       templateId: WEEKLY_TEMPLATE_ID,
+      sectionId: SEC_WEEKLY_CHECKIN_ID,
       questionText: 'How satisfied are you with your work this week?',
       helpText: '1 = very unsatisfied, 10 = extremely satisfied',
-      category: 'engagement' as const,
       answerType: 'rating_1_10' as const,
       answerConfig: {},
       isRequired: true,
@@ -497,9 +558,9 @@ async function seedTemplates() {
     {
       id: Q_CAREER_GOALS_ID,
       templateId: CAREER_TEMPLATE_ID,
+      sectionId: SEC_CAREER_GOALS_ID,
       questionText: 'What are your career goals for the next 6-12 months?',
       helpText: 'Think about skills, roles, or projects you want to pursue',
-      category: 'career' as const,
       answerType: 'text' as const,
       answerConfig: {},
       isRequired: true,
@@ -508,9 +569,9 @@ async function seedTemplates() {
     {
       id: Q_GROWTH_ID,
       templateId: CAREER_TEMPLATE_ID,
+      sectionId: SEC_CAREER_GOALS_ID,
       questionText: 'How would you rate your growth opportunities here?',
       helpText: '1 = no opportunities, 5 = excellent opportunities',
-      category: 'career' as const,
       answerType: 'rating_1_5' as const,
       answerConfig: {},
       isRequired: true,
@@ -519,8 +580,8 @@ async function seedTemplates() {
     {
       id: Q_LEARNING_ID,
       templateId: CAREER_TEMPLATE_ID,
+      sectionId: SEC_CAREER_GOALS_ID,
       questionText: 'What is your preferred way of learning?',
-      category: 'career' as const,
       answerType: 'multiple_choice' as const,
       answerConfig: {
         options: [
@@ -537,8 +598,8 @@ async function seedTemplates() {
     {
       id: Q_FEEDBACK_ID,
       templateId: CAREER_TEMPLATE_ID,
+      sectionId: SEC_CAREER_FEEDBACK_ID,
       questionText: 'What feedback do you have for the team or organization?',
-      category: 'feedback' as const,
       answerType: 'text' as const,
       answerConfig: {},
       isRequired: false,
@@ -551,8 +612,8 @@ async function seedTemplates() {
     {
       id: Q_BETA_MOOD_ID,
       templateId: BETA_TEMPLATE_ID,
+      sectionId: SEC_BETA_CHECKIN_ID,
       questionText: 'How is everything going?',
-      category: 'check_in' as const,
       answerType: 'mood' as const,
       answerConfig: { options: ['great', 'good', 'okay', 'struggling', 'bad'] },
       isRequired: true,
@@ -569,7 +630,7 @@ async function seedTemplates() {
         set: {
           questionText: sql`excluded.question_text`,
           helpText: sql`excluded.help_text`,
-          category: sql`excluded.category`,
+          sectionId: sql`excluded.section_id`,
           answerType: sql`excluded.answer_type`,
           answerConfig: sql`excluded.answer_config`,
           isRequired: sql`excluded.is_required`,

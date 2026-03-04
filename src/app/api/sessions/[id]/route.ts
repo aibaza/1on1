@@ -7,6 +7,7 @@ import {
   meetingSeries,
   users,
   templateQuestions,
+  templateSections,
   sessionAnswers,
   actionItems,
 } from "@/lib/db/schema";
@@ -18,7 +19,7 @@ import { eq, and, desc, asc, inArray, or } from "drizzle-orm";
  * Returns the full session data needed by the wizard:
  * - Session record (status, sessionNumber, startedAt)
  * - Series info (managerId, reportId, report name/avatar, cadence)
- * - Template questions (ordered by sortOrder, non-archived)
+ * - Template sections (ordered by sortOrder, non-archived) with questions
  * - Existing answers (for restore on resume)
  * - Previous sessions (last 3 completed, with answers and action items)
  * - Open action items from previous sessions
@@ -108,12 +109,19 @@ export async function GET(
             .limit(1),
         ]);
 
-        // Fetch template questions (non-archived, ordered)
+        // Fetch template sections and questions
+        let sectionData: Array<{
+          id: string;
+          name: string;
+          description: string | null;
+          sortOrder: number;
+        }> = [];
+
         let questions: Array<{
           id: string;
           questionText: string;
           helpText: string | null;
-          category: string;
+          sectionId: string;
           answerType: string;
           answerConfig: unknown;
           isRequired: boolean;
@@ -124,12 +132,28 @@ export async function GET(
         }> = [];
 
         if (sessionRecord.templateId) {
+          sectionData = await tx
+            .select({
+              id: templateSections.id,
+              name: templateSections.name,
+              description: templateSections.description,
+              sortOrder: templateSections.sortOrder,
+            })
+            .from(templateSections)
+            .where(
+              and(
+                eq(templateSections.templateId, sessionRecord.templateId),
+                eq(templateSections.isArchived, false)
+              )
+            )
+            .orderBy(asc(templateSections.sortOrder));
+
           questions = await tx
             .select({
               id: templateQuestions.id,
               questionText: templateQuestions.questionText,
               helpText: templateQuestions.helpText,
-              category: templateQuestions.category,
+              sectionId: templateQuestions.sectionId,
               answerType: templateQuestions.answerType,
               answerConfig: templateQuestions.answerConfig,
               isRequired: templateQuestions.isRequired,
@@ -271,6 +295,7 @@ export async function GET(
             report: reportRows[0] ?? null,
           },
           template: {
+            sections: sectionData,
             questions,
           },
           answers: answers.map((a) => ({

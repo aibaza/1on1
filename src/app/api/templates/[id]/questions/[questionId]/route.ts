@@ -80,8 +80,6 @@ export async function PATCH(request: Request, { params }: RouteContext) {
           updatePayload.questionText = data.questionText;
         if (data.helpText !== undefined)
           updatePayload.helpText = data.helpText;
-        if (data.category !== undefined)
-          updatePayload.category = data.category;
         if (data.answerType !== undefined)
           updatePayload.answerType = data.answerType;
         if (data.answerConfig !== undefined)

@@ -48,18 +48,6 @@ interface SummaryScreenProps {
 
 // --- Helpers ---
 
-const CATEGORY_LABELS: Record<string, string> = {
-  check_in: "Check-in",
-  wellbeing: "Wellbeing",
-  engagement: "Engagement",
-  performance: "Performance",
-  career: "Career",
-  feedback: "Feedback",
-  recognition: "Recognition",
-  goals: "Goals",
-  custom: "Custom",
-};
-
 const SCORABLE_TYPES = new Set([
   "rating_1_5",
   "rating_1_10",
@@ -208,7 +196,7 @@ export function SummaryScreen({
 
         {/* Categories */}
         {categories.map((category, catIndex) => {
-          const catLabel = CATEGORY_LABELS[category.name] ?? category.name;
+          const catLabel = category.name;
           const catNotes = sharedNotes[category.name] ?? "";
           const catTalkingPoints = talkingPoints[category.name] ?? [];
           const catActionItems = actionItems[category.name] ?? [];

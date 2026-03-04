@@ -20,26 +20,6 @@ export const teamMemberRoleEnum = pgEnum("team_member_role", [
   "member",
 ]);
 
-export const templateCategoryEnum = pgEnum("template_category", [
-  "check_in",
-  "career",
-  "performance",
-  "onboarding",
-  "custom",
-]);
-
-export const questionCategoryEnum = pgEnum("question_category", [
-  "check_in",
-  "wellbeing",
-  "engagement",
-  "performance",
-  "career",
-  "feedback",
-  "recognition",
-  "goals",
-  "custom",
-]);
-
 export const answerTypeEnum = pgEnum("answer_type", [
   "text",
   "rating_1_5",

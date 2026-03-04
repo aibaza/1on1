@@ -4,7 +4,12 @@ import { withTenantContext } from "@/lib/db/tenant-context";
 import { canManageTemplates } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
 import { createTemplateSchema } from "@/lib/validations/template";
-import { questionnaireTemplates, templateQuestions } from "@/lib/db/schema";
+import {
+  questionnaireTemplates,
+  templateQuestions,
+  templateLabelAssignments,
+  templateLabels,
+} from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 
 export async function GET(request: Request) {
@@ -36,7 +41,6 @@ export async function GET(request: Request) {
             id: questionnaireTemplates.id,
             name: questionnaireTemplates.name,
             description: questionnaireTemplates.description,
-            category: questionnaireTemplates.category,
             isDefault: questionnaireTemplates.isDefault,
             isPublished: questionnaireTemplates.isPublished,
             isArchived: questionnaireTemplates.isArchived,
@@ -57,9 +61,43 @@ export async function GET(request: Request) {
           .groupBy(questionnaireTemplates.id)
           .orderBy(questionnaireTemplates.name);
 
+        // Fetch labels for all templates
+        const templateIds = templates.map((t) => t.id);
+        let labelsByTemplate = new Map<
+          string,
+          Array<{ id: string; name: string; color: string | null }>
+        >();
+
+        if (templateIds.length > 0) {
+          const assignments = await tx
+            .select({
+              templateId: templateLabelAssignments.templateId,
+              labelId: templateLabels.id,
+              labelName: templateLabels.name,
+              labelColor: templateLabels.color,
+            })
+            .from(templateLabelAssignments)
+            .innerJoin(
+              templateLabels,
+              eq(templateLabelAssignments.labelId, templateLabels.id)
+            );
+
+          for (const a of assignments) {
+            if (!labelsByTemplate.has(a.templateId)) {
+              labelsByTemplate.set(a.templateId, []);
+            }
+            labelsByTemplate.get(a.templateId)!.push({
+              id: a.labelId,
+              name: a.labelName,
+              color: a.labelColor,
+            });
+          }
+        }
+
         return templates.map((t) => ({
           ...t,
           createdAt: t.createdAt.toISOString(),
+          labels: labelsByTemplate.get(t.id) ?? [],
         }));
       }
     );
@@ -104,10 +142,19 @@ export async function POST(request: Request) {
             tenantId: session.user.tenantId,
             name: data.name,
             description: data.description ?? null,
-            category: data.category,
             createdBy: session.user.id,
           })
           .returning();
+
+        // Create label assignments if provided
+        if (data.labelIds && data.labelIds.length > 0) {
+          await tx.insert(templateLabelAssignments).values(
+            data.labelIds.map((labelId) => ({
+              templateId: template.id,
+              labelId,
+            }))
+          );
+        }
 
         await logAuditEvent(tx, {
           tenantId: session.user.tenantId,

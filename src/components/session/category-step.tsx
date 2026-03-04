@@ -13,7 +13,7 @@ interface TemplateQuestion {
   id: string;
   questionText: string;
   helpText: string | null;
-  category: string;
+  sectionId: string;
   answerType: string;
   answerConfig: unknown;
   isRequired: boolean;
@@ -45,18 +45,6 @@ interface CategoryStepProps {
   sessionNumberMap?: Map<string, number>;
   onSavingChange?: (saving: boolean) => void;
 }
-
-const CATEGORY_LABELS: Record<string, string> = {
-  check_in: "Check-in",
-  wellbeing: "Wellbeing",
-  engagement: "Engagement",
-  performance: "Performance",
-  career: "Career",
-  feedback: "Feedback",
-  recognition: "Recognition",
-  goals: "Goals",
-  custom: "Custom",
-};
 
 function SectionLabel({
   icon: Icon,
@@ -104,7 +92,7 @@ export function CategoryStep({
         {/* Category header */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold tracking-tight">
-            {CATEGORY_LABELS[categoryName] ?? categoryName}
+            {categoryName}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
             {visibleQuestions.length} question{visibleQuestions.length !== 1 ? "s" : ""}
