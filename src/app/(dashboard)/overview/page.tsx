@@ -1,26 +1,20 @@
 import { auth } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
-import { eq, and, gte, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { adminDb } from "@/lib/db";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import {
-  tenants,
-  aiNudges,
-  meetingSeries,
-  users,
-} from "@/lib/db/schema";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Sparkles } from "lucide-react";
-import { LogoutButton } from "@/components/auth/logout-button";
+import { tenants } from "@/lib/db/schema";
 import { EmailVerificationBanner } from "@/components/auth/email-verification-banner";
-import { NudgeCardsGrid } from "@/components/dashboard/nudge-cards-grid";
-import type { NudgeData } from "@/components/dashboard/nudge-card";
+import { UpcomingSessions } from "@/components/dashboard/upcoming-sessions";
+import { QuickStats } from "@/components/dashboard/quick-stats";
+import { OverdueItems } from "@/components/dashboard/overdue-items";
+import { RecentSessions } from "@/components/dashboard/recent-sessions";
+import {
+  getUpcomingSessions,
+  getOverdueActionItems,
+  getQuickStats,
+  getRecentSessions,
+} from "@/lib/queries/dashboard";
 
 export default async function OverviewPage() {
   const session = await auth();
@@ -28,66 +22,27 @@ export default async function OverviewPage() {
 
   const { user } = session;
 
-  const tenant = await adminDb.query.tenants.findFirst({
-    where: eq(tenants.id, user.tenantId),
-    columns: { name: true },
-  });
-
-  const isManager = user.role === "manager" || user.role === "admin";
-
-  // Fetch nudges for managers via direct DB query (Server Component pattern)
-  let nudgeData: NudgeData[] = [];
-  if (isManager) {
-    const in7Days = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    nudgeData = await withTenantContext(
-      user.tenantId,
-      user.id,
-      async (tx) => {
-        const rows = await tx
-          .select({
-            id: aiNudges.id,
-            content: aiNudges.content,
-            reason: aiNudges.reason,
-            priority: aiNudges.priority,
-            seriesId: aiNudges.seriesId,
-            targetSessionAt: aiNudges.targetSessionAt,
-            reportFirstName: users.firstName,
-            reportLastName: users.lastName,
-          })
-          .from(aiNudges)
-          .innerJoin(meetingSeries, eq(aiNudges.seriesId, meetingSeries.id))
-          .innerJoin(users, eq(meetingSeries.reportId, users.id))
-          .where(
-            and(
-              eq(aiNudges.isDismissed, false),
-              eq(aiNudges.tenantId, user.tenantId),
-              eq(meetingSeries.managerId, user.id),
-              sql`(${aiNudges.targetSessionAt} IS NULL OR ${aiNudges.targetSessionAt} <= ${in7Days})`
-            )
-          )
-          .orderBy(
-            sql`CASE ${aiNudges.priority} WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 ELSE 4 END`,
-            aiNudges.targetSessionAt
-          );
-
-        return rows.map((row) => ({
-          id: row.id,
-          content: row.content,
-          reason: row.reason,
-          priority: row.priority ?? "medium",
-          seriesId: row.seriesId,
-          reportName: `${row.reportFirstName} ${row.reportLastName}`,
-          targetSessionAt: row.targetSessionAt?.toISOString() ?? null,
-        }));
-      }
-    );
-  }
+  const [tenant, dashboardData] = await Promise.all([
+    adminDb.query.tenants.findFirst({
+      where: eq(tenants.id, user.tenantId),
+      columns: { name: true },
+    }),
+    withTenantContext(user.tenantId, user.id, async (tx) => {
+      const [upcoming, overdue, stats, recent] = await Promise.all([
+        getUpcomingSessions(tx, user.id, user.role, user.tenantId),
+        getOverdueActionItems(tx, user.id, user.role),
+        getQuickStats(tx, user.id, user.role),
+        getRecentSessions(tx, user.id, user.role),
+      ]);
+      return { upcoming, overdue, stats, recent };
+    }),
+  ]);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
       {!user.emailVerified && <EmailVerificationBanner />}
 
-      {/* Welcome section */}
+      {/* Welcome header */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight">
           Welcome{user.name ? `, ${user.name}` : ""}
@@ -98,46 +53,29 @@ export default async function OverviewPage() {
         </p>
       </div>
 
-      {/* Nudge section for managers */}
-      {isManager && (
+      {/* 1. Upcoming Sessions (primary section) */}
+      <section className="mb-8">
+        <h2 className="mb-4 text-lg font-medium">Upcoming Sessions</h2>
+        <UpcomingSessions sessions={dashboardData.upcoming} />
+      </section>
+
+      {/* 2. Quick Stats */}
+      <section className="mb-8">
+        <QuickStats stats={dashboardData.stats} />
+      </section>
+
+      {/* 3. Overdue Items (only if any exist) */}
+      {dashboardData.overdue.length > 0 && (
         <section className="mb-8">
-          <div className="mb-4 flex items-center gap-2">
-            <Sparkles className="size-4 text-amber-600 dark:text-amber-400" />
-            <h2 className="text-lg font-medium">
-              Prepare for upcoming meetings
-            </h2>
-          </div>
-          <NudgeCardsGrid initialNudges={nudgeData} />
+          <OverdueItems groups={dashboardData.overdue} />
         </section>
       )}
 
-      {/* Account info card */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Account</CardTitle>
-          <CardDescription>Your account details</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Email</span>
-              <span>{user.email}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Role</span>
-              <span className="capitalize">{user.role}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Organization</span>
-              <span>{tenant?.name ?? "Unknown"}</span>
-            </div>
-          </div>
-
-          <div className="pt-4">
-            <LogoutButton />
-          </div>
-        </CardContent>
-      </Card>
+      {/* 4. Recent Sessions */}
+      <section className="mb-8">
+        <h2 className="mb-4 text-lg font-medium">Recent Sessions</h2>
+        <RecentSessions sessions={dashboardData.recent} />
+      </section>
     </div>
   );
 }

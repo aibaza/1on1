@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - Dashboard query layer (`src/lib/queries/dashboard.ts`): getUpcomingSessions, getOverdueActionItems, getQuickStats, getRecentSessions with role-based filtering
+- Dashboard overview rebuild: upcoming sessions with inline AI nudges, quick stats cards, overdue items grouped by report, recent sessions with score badges
+- Start Session button on today's sessions with Resume for in-progress sessions
+- Upcoming sessions cards integrate AI nudges inline with expandable "+N more" pattern
 - Analytics ingestion tracking: `analytics_ingested_at` column on session table with migration
 - Analytics metric name constants (`METRIC_NAMES`): session_score, per-category scores, operational metrics
 - Pre-session nudge cron pipeline (`preSessionNudgeRefresh`): runs every 6 hours, finds series with sessions in next 24h, fires refresh events
@@ -29,6 +32,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Manager addendum section on session summary: sentiment analysis, patterns, coaching suggestions, follow-up priority (manager-only, behind lock badge)
 
 ### Changed
+- Dashboard overview page rebuilt: replaced stub Account card and separate NudgeCardsGrid with full 4-section manager briefing layout
 - Session summary page passes AI columns and participant info to summary view component
 - Session summary view replaces AI placeholder with live AI summary and suggestions sections
 - Session completion endpoint now sets `aiStatus: "pending"` when completing a session
