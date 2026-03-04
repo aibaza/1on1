@@ -113,7 +113,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **AI-05**: After session completion, AI suggests 1-3 action items based on session answers and discussion
 - [ ] **AI-06**: Embedding infrastructure (pgvector) stores session embeddings for context retrieval and profile building
 - [x] **AI-07**: AI features use Vercel AI SDK v6 with provider-agnostic model routing (cost-optimized per task)
-- [x] **AI-08**: AI pipelines run as durable Inngest background functions with automatic retry
+- [x] **AI-08**: AI pipelines run as direct async functions with manual retry via UI button (Inngest removed in favor of simpler direct execution)
 
 ### Analytics
 

@@ -13,7 +13,7 @@ AI generates session summaries and pre-meeting nudges, proving the "AI-first" po
 2. Before a session, AI generates 2-3 specific follow-up suggestions based on previous session data
 3. Pre-session nudges appear on the dashboard and in the pre-session state
 4. After completion, AI suggests 1-3 action items based on session content
-5. All AI pipelines run as durable Inngest background functions with retry, using Vercel AI SDK with provider-agnostic routing
+5. All AI pipelines run as direct async functions with manual retry, using Vercel AI SDK with provider-agnostic routing
 
 ## Planned Scope
 
@@ -66,8 +66,27 @@ AI-01, AI-02, AI-03, AI-04, AI-05, AI-06, AI-07, AI-08
 - Inngest step.run() requires date rehydration (JSON serialization)
 - Dashboard nudges via Server Component DB query, context panel via TanStack Query
 
+### Plan 07-04: Nudge Visibility Gap Closure
+- Added `getManagerNudges()` standalone query (no date filter) to dashboard queries
+- Restored NudgeCardsGrid on dashboard overview page for managers
+- Fixed wizard NudgeList to fetch all non-dismissed series nudges (removed `upcoming=true`)
+- Fixed API nudge route to include NULL `targetSessionAt` in upcoming filter
+
+### Plan 07-05: Inngest Cleanup & Analytics Wiring
+- Removed entire `src/inngest/` directory (client, functions, serve route)
+- Wired `computeSessionSnapshot()` into direct AI pipeline (non-fatal)
+- Removed inngest, inngest-cli, concurrently from dependencies
+- Simplified dev script to `next dev --port 4300`
+
+## Key Decisions
+- Model tiers: Sonnet for summaries/addendum/suggestions, Haiku for nudges
+- Two-phase nudge generation: base after completion + cron refresh 24h before
+- Direct pipeline execution replaced Inngest (simpler, no external dependency)
+- Dashboard nudges via Server Component DB query, context panel via TanStack Query
+- Analytics snapshots computed non-fatally in direct pipeline after AI completion
+
 ## UAT Fixes
 - Removed Zod `.min()/.max()` on arrays — Anthropic structured output doesn't support `minItems`/`maxItems`
 - Removed `.max()` on strings — `maxLength` also unsupported in Anthropic schema
 - Rewrote all prompts for brevity: shared `BASE_SYSTEM` instruction ("write like a sharp colleague, not a corporate AI"), output proportional to input, session language (Romanian), no filler
-- Docker networking: `INNGEST_DEV=http://host.docker.internal:8288` + `extra_hosts` for container↔host communication
+- Docker networking: removed (Inngest no longer needed)
