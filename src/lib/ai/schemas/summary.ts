@@ -3,25 +3,21 @@ import { z } from "zod";
 export const summarySchema = z.object({
   keyTakeaways: z
     .array(z.string())
-    .describe("3-5 key takeaways from the session as bullet points"),
+    .describe("2-5 key takeaways, each max 10 words"),
   discussionHighlights: z
     .array(
       z.object({
-        category: z.string().describe("The section/category name"),
-        summary: z
-          .string()
-          .describe(
-            "1-2 paragraph summary of the discussion in this category"
-          ),
+        category: z.string().describe("Section name"),
+        summary: z.string().describe("1-2 sentences max"),
       })
     )
-    .describe("Per-category discussion highlights"),
+    .describe("Only sections with substantive answers — skip score-only sections"),
   followUpItems: z
     .array(z.string())
-    .describe("Items that need follow-up or attention"),
+    .describe("Only items explicitly mentioned or clearly needed"),
   overallSentiment: z
     .enum(["positive", "neutral", "mixed", "concerning"])
-    .describe("Overall tone of the session"),
+    .describe("Overall tone"),
 });
 
 export type AISummary = z.infer<typeof summarySchema>;
