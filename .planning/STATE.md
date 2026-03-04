@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed 08-05-PLAN.md
-last_updated: "2026-03-04T20:00:03.126Z"
-last_activity: 2026-03-04 -- Plan 08-05 completed (Velocity, adherence charts & CSV export)
+status: in_progress
+stopped_at: Completed 08-06-PLAN.md
+last_updated: "2026-03-04T22:05:12Z"
+last_activity: 2026-03-04 -- Plan 08-06 completed (Analytics gap closure - query fixes & dynamic categories)
 progress:
   total_phases: 10
   completed_phases: 8
-  total_plans: 29
-  completed_plans: 29
-  percent: 100
+  total_plans: 31
+  completed_plans: 30
+  percent: 97
 ---
 
 # Project State
@@ -21,21 +21,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-03)
 
 **Core value:** The AI context layer that makes every meeting smarter than the last
-**Current focus:** Phase 8 COMPLETE - Manager Dashboard Analytics. All 5 plans done.
+**Current focus:** Phase 8 gap closure -- analytics query fixes and dynamic categories
 
 ## Current Position
 
 Phase: 8 of 10 (Manager Dashboard Analytics)
-Plan: 5 of 5 in current phase
-Status: Phase 8 complete -- velocity/adherence charts and CSV export
-Last activity: 2026-03-04 -- Plan 08-05 completed (Velocity, adherence charts & CSV export)
+Plan: 6 of 7 in current phase
+Status: Plan 08-06 complete -- analytics gap closure (query fixes & dynamic categories)
+Last activity: 2026-03-04 -- Plan 08-06 completed (Analytics gap closure - query fixes & dynamic categories)
 
-Progress: [████████████████████] 100%
+Progress: [███████████████████░] 97%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 24
+- Total plans completed: 25
 - Average duration: 7 min
 - Total execution time: 2.77 hours
 
@@ -50,11 +50,11 @@ Progress: [████████████████████] 100%
 | 05-meeting-series-session-wizard | 5/5 | 32 min | 6 min |
 | 06-action-items-session-history | 3/3 | 17 min | 6 min |
 | 07-ai-pipeline | 3/3 | 20 min | 7 min |
-| 08-manager-dashboard-analytics | 5/5 | 19 min | 4 min |
+| 08-manager-dashboard-analytics | 6/7 | 26 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-01 (4 min), 08-02 (3 min), 08-03 (4 min), 08-04 (3 min), 08-05 (5 min)
-- Trend: consistent (08-05: Velocity, adherence charts & CSV export)
+- Last 5 plans: 08-02 (3 min), 08-03 (4 min), 08-04 (3 min), 08-05 (5 min), 08-06 (7 min)
+- Trend: consistent (08-06: Analytics gap closure - query fixes & dynamic categories)
 
 *Updated after each plan completion*
 
@@ -80,6 +80,7 @@ Progress: [████████████████████] 100%
 | Phase 08 P03 | 4min | 2 tasks | 9 files |
 | Phase 08 P04 | 3min | 2 tasks | 7 files |
 | Phase 08 P05 | 5min | 2 tasks | 9 files |
+| Phase 08 P06 | 7min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -204,6 +205,9 @@ Recent decisions affecting current work:
 - [Phase 08]: [08-05]: Velocity query uses EXTRACT(EPOCH) for timezone-safe day calculation
 - [Phase 08]: [08-05]: Single /api/analytics/export endpoint handles all export types via type query parameter
 - [Phase 08]: [08-05]: effectiveRole set to "member" when viewing specific user's velocity/adherence data
+- [Phase 08]: [08-06]: Section name stored directly as metricName in snapshots (avoids lossy slug-to-display conversion)
+- [Phase 08]: [08-06]: OPERATIONAL_METRICS exclusion set replaces CATEGORY_METRICS inclusion list (new categories auto-work)
+- [Phase 08]: [08-06]: DISTINCT ON query for latest scores per report (avoids correlated subquery in GROUP BY)
 
 ### Pending Todos
 
@@ -218,6 +222,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-04T19:54:21Z
-Stopped at: Completed 08-05-PLAN.md
+Last session: 2026-03-04T22:05:12Z
+Stopped at: Completed 08-06-PLAN.md
 Resume file: None
