@@ -278,7 +278,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
                   isRequired: q.isRequired,
                   sortOrder: q.sortOrder,
                   conditionalOnQuestionId:
-                    q.conditionalOnQuestionId ?? null,
+                    resolveRefForInsert(q.conditionalOnQuestionId),
                   conditionalOperator: q.conditionalOperator ?? null,
                   conditionalValue: q.conditionalValue ?? null,
                 });
