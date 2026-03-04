@@ -10,12 +10,10 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { periodToDateRange, type PeriodValue } from "@/lib/analytics/period";
 
-export interface PeriodValue {
-  preset: string;
-  startDate: Date;
-  endDate: Date;
-}
+export type { PeriodValue } from "@/lib/analytics/period";
+export { periodToDateRange } from "@/lib/analytics/period";
 
 const PRESETS = [
   { value: "30d", label: "Last 30 days" },
@@ -24,33 +22,6 @@ const PRESETS = [
   { value: "1yr", label: "Last year" },
   { value: "custom", label: "Custom range" },
 ] as const;
-
-/**
- * Compute start/end dates from a preset string.
- */
-export function periodToDateRange(preset: string): { startDate: Date; endDate: Date } {
-  const end = new Date();
-  const start = new Date();
-
-  switch (preset) {
-    case "30d":
-      start.setDate(start.getDate() - 30);
-      break;
-    case "3mo":
-      start.setMonth(start.getMonth() - 3);
-      break;
-    case "6mo":
-      start.setMonth(start.getMonth() - 6);
-      break;
-    case "1yr":
-      start.setFullYear(start.getFullYear() - 1);
-      break;
-    default:
-      start.setMonth(start.getMonth() - 3);
-  }
-
-  return { startDate: start, endDate: end };
-}
 
 interface PeriodSelectorProps {
   value: PeriodValue;

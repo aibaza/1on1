@@ -201,16 +201,11 @@ export async function getCategoryAverages(
     )
     .groupBy(templateSections.name);
 
-  return liveResults
-    .filter((r) => {
-      const cat = r.sectionName.toLowerCase().trim();
-      return CATEGORY_METRICS[cat] !== undefined;
-    })
-    .map((r) => ({
-      category: r.sectionName.toLowerCase().trim(),
-      avgScore: parseFloat(r.avgScore),
-      sampleCount: r.sampleCount,
-    }));
+  return liveResults.map((r) => ({
+    category: r.sectionName.trim(),
+    avgScore: parseFloat(r.avgScore),
+    sampleCount: r.sampleCount,
+  }));
 }
 
 // ---------- Session Comparison ----------
@@ -258,10 +253,8 @@ export async function getSessionComparison(
 
     const map = new Map<string, number>();
     for (const row of rows) {
-      const cat = row.sectionName.toLowerCase().trim();
-      if (CATEGORY_METRICS[cat]) {
-        map.set(cat, parseFloat(row.avgScore));
-      }
+      const cat = row.sectionName.trim();
+      map.set(cat, parseFloat(row.avgScore));
     }
     return map;
   }

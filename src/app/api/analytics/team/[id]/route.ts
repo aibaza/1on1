@@ -7,7 +7,7 @@ import {
   getTeamAverages,
   getTeamHeatmapData,
 } from "@/lib/analytics/queries";
-import { periodToDateRange } from "@/components/analytics/period-selector";
+import { periodToDateRange } from "@/lib/analytics/period";
 
 /**
  * GET /api/analytics/team/[id]

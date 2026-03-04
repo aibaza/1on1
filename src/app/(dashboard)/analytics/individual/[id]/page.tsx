@@ -9,7 +9,7 @@ import {
   getActionItemVelocity,
   getMeetingAdherence,
 } from "@/lib/analytics/queries";
-import { periodToDateRange } from "@/components/analytics/period-selector";
+import { periodToDateRange } from "@/lib/analytics/period";
 import { IndividualAnalyticsClient } from "./client";
 
 export default async function IndividualAnalyticsPage({

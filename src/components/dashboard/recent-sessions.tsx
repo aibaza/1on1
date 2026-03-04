@@ -42,7 +42,7 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
       {sessions.map((s) => (
         <Link
           key={s.id}
-          href={`/sessions/${s.seriesId}/history/${s.id}`}
+          href={`/sessions/${s.id}/summary`}
           className="flex items-center gap-3 rounded-md border px-4 py-3 transition-colors hover:bg-muted/50"
         >
           <div className="min-w-0 flex-1">

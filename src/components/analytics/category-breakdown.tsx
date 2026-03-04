@@ -16,7 +16,7 @@ interface CategoryBreakdownProps {
 }
 
 const CATEGORY_COLORS = [
-  "hsl(var(--primary))",
+  "var(--primary)",
   "hsl(220, 70%, 55%)",
   "hsl(280, 60%, 55%)",
   "hsl(340, 65%, 55%)",

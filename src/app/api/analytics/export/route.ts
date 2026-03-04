@@ -10,7 +10,7 @@ import {
 import { eq, and, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { generateCSV, sessionDataToRows } from "@/lib/analytics/csv";
-import { periodToDateRange } from "@/components/analytics/period-selector";
+import { periodToDateRange } from "@/lib/analytics/period";
 import {
   getScoreTrend,
   getCategoryAverages,

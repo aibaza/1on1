@@ -180,7 +180,7 @@ export function TeamHeatmap({ data, categories }: TeamHeatmapProps) {
                         cy={y}
                         r={6}
                         fill="none"
-                        stroke="hsl(var(--muted-foreground))"
+                        stroke="var(--muted-foreground)"
                         strokeWidth={1.5}
                         opacity={0.5}
                         className="cursor-pointer"

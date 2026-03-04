@@ -85,9 +85,9 @@ export function ScoreTrendChart({ data, loading }: ScoreTrendChartProps) {
             <Line
               type="monotone"
               dataKey="score"
-              stroke="hsl(var(--primary))"
+              stroke="var(--primary)"
               strokeWidth={2}
-              dot={{ r: 4, fill: "hsl(var(--primary))" }}
+              dot={{ r: 4, fill: "var(--primary)" }}
               activeDot={{ r: 6 }}
               isAnimationActive={false}
             />

@@ -59,7 +59,7 @@ export default async function AnalyticsPage() {
           jobTitle: users.jobTitle,
           sessionCount: sql<number>`COUNT(DISTINCT ${sessions.id})::int`,
           latestScore: sql<string | null>`(
-            SELECT ${sessions.sessionScore}
+            SELECT s2.session_score
             FROM session s2
             WHERE s2.series_id = ${meetingSeries.id}
               AND s2.status = 'completed'
@@ -112,29 +112,20 @@ export default async function AnalyticsPage() {
 
       // Fetch teams the user can see analytics for
       // Managers: teams they manage or lead; Admins: all teams
-      const teamRows =
-        user.role === "admin"
-          ? await tx
-              .select({
-                id: teams.id,
-                name: teams.name,
-                memberCount: sql<number>`(
-                  SELECT COUNT(*)::int FROM team_member WHERE team_id = ${teams.id}
-                )`,
-              })
-              .from(teams)
-              .orderBy(teams.name)
-          : await tx
-              .select({
-                id: teams.id,
-                name: teams.name,
-                memberCount: sql<number>`(
-                  SELECT COUNT(*)::int FROM team_member WHERE team_id = ${teams.id}
-                )`,
-              })
-              .from(teams)
-              .where(eq(teams.managerId, user.id))
-              .orderBy(teams.name);
+      const teamCondition =
+        user.role === "admin" ? undefined : eq(teams.managerId, user.id);
+
+      const teamRows = await tx
+        .select({
+          id: teams.id,
+          name: teams.name,
+          memberCount: sql<number>`COUNT(${teamMembers.id})::int`,
+        })
+        .from(teams)
+        .leftJoin(teamMembers, eq(teamMembers.teamId, teams.id))
+        .where(teamCondition)
+        .groupBy(teams.id, teams.name)
+        .orderBy(teams.name);
 
       return { reports: reportsList, teamsList: teamRows as TeamSummary[] };
     },

@@ -7,7 +7,7 @@ import {
   getTeamAverages,
   getTeamHeatmapData,
 } from "@/lib/analytics/queries";
-import { periodToDateRange } from "@/components/analytics/period-selector";
+import { periodToDateRange } from "@/lib/analytics/period";
 import { TeamAnalyticsClient } from "./client";
 
 export default async function TeamAnalyticsPage({

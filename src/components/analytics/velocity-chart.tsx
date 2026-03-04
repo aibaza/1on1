@@ -43,12 +43,12 @@ export function VelocityChart({ data, loading }: VelocityChartProps) {
             <linearGradient id="velocityGradient" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="0%"
-                stopColor="hsl(var(--primary))"
+                stopColor="var(--primary)"
                 stopOpacity={0.8}
               />
               <stop
                 offset="100%"
-                stopColor="hsl(var(--primary))"
+                stopColor="var(--primary)"
                 stopOpacity={0.1}
               />
             </linearGradient>
@@ -112,7 +112,7 @@ export function VelocityChart({ data, loading }: VelocityChartProps) {
           <Area
             type="monotone"
             dataKey="avgDays"
-            stroke="hsl(var(--primary))"
+            stroke="var(--primary)"
             strokeWidth={2}
             fill="url(#velocityGradient)"
             isAnimationActive={false}
