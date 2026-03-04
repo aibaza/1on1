@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - Conditional question operator dropdown disabled for unsaved questions — fallback ID matching now consistent between select and lookup
+- Conditional question "Add Question" button silently failing — Zod schema required UUID for `conditionalOnQuestionId` but unsaved questions use temporary IDs
 
 ### Added
 - Session summary screen: read-only recap of all answers, notes, talking points, and action items grouped by category

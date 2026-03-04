@@ -65,7 +65,7 @@ export const questionSchema = z.object({
   answerConfig: z.record(z.string(), z.unknown()).default({}),
   isRequired: z.boolean().default(false),
   sortOrder: z.number().int().min(0),
-  conditionalOnQuestionId: z.string().uuid().nullable().optional(),
+  conditionalOnQuestionId: z.string().nullable().optional(),
   conditionalOperator: z.enum(conditionalOperators).nullable().optional(),
   conditionalValue: z.string().max(255).nullable().optional(),
 });
