@@ -1,0 +1,194 @@
+import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth/config";
+import { withTenantContext } from "@/lib/db/tenant-context";
+import { logAuditEvent } from "@/lib/audit/log";
+import { computeSessionScore } from "@/lib/utils/scoring";
+import { computeNextSessionDate } from "@/lib/utils/scheduling";
+import {
+  sessions,
+  meetingSeries,
+  sessionAnswers,
+  templateQuestions,
+} from "@/lib/db/schema";
+import { eq, and, sql } from "drizzle-orm";
+
+/**
+ * POST /api/sessions/[id]/complete
+ *
+ * Completes a session:
+ * 1. Validates the user is the manager on the series
+ * 2. Verifies session is in_progress
+ * 3. Fetches all answers with their question answerType
+ * 4. Computes session score (normalized average of numeric answers)
+ * 5. Marks session as completed with score and duration
+ * 6. Computes and sets next_session_at on the series
+ * 7. Logs audit event
+ */
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const { id: sessionId } = await params;
+
+  try {
+    const result = await withTenantContext(
+      session.user.tenantId,
+      session.user.id,
+      async (tx) => {
+        // Fetch the session
+        const sessionRows = await tx
+          .select()
+          .from(sessions)
+          .where(
+            and(
+              eq(sessions.id, sessionId),
+              eq(sessions.tenantId, session.user.tenantId)
+            )
+          )
+          .limit(1);
+
+        if (sessionRows.length === 0) {
+          return { error: "NOT_FOUND" as const };
+        }
+
+        const sessionRecord = sessionRows[0];
+
+        // Verify session is in_progress
+        if (sessionRecord.status !== "in_progress") {
+          return { error: "INVALID_STATUS" as const };
+        }
+
+        // Fetch the series to verify manager and get cadence info
+        const seriesRows = await tx
+          .select()
+          .from(meetingSeries)
+          .where(eq(meetingSeries.id, sessionRecord.seriesId))
+          .limit(1);
+
+        if (seriesRows.length === 0) {
+          return { error: "NOT_FOUND" as const };
+        }
+
+        const series = seriesRows[0];
+
+        // Only the manager on the series can complete a session
+        if (session.user.id !== series.managerId) {
+          return { error: "FORBIDDEN" as const };
+        }
+
+        // Fetch all answers for this session with their question's answerType
+        const answersWithType = await tx
+          .select({
+            answerNumeric: sessionAnswers.answerNumeric,
+            skipped: sessionAnswers.skipped,
+            answerType: templateQuestions.answerType,
+          })
+          .from(sessionAnswers)
+          .innerJoin(
+            templateQuestions,
+            eq(sessionAnswers.questionId, templateQuestions.id)
+          )
+          .where(eq(sessionAnswers.sessionId, sessionId));
+
+        // Compute session score
+        const scoreInput = answersWithType.map((a) => ({
+          answerType: a.answerType,
+          answerNumeric: a.answerNumeric ? Number(a.answerNumeric) : null,
+          skipped: a.skipped,
+        }));
+        const sessionScore = computeSessionScore(scoreInput);
+
+        // Compute duration in minutes
+        const now = new Date();
+        let durationMinutes: number | null = null;
+        if (sessionRecord.startedAt) {
+          durationMinutes = Math.round(
+            (now.getTime() - sessionRecord.startedAt.getTime()) / 60000
+          );
+        }
+
+        // Update session: mark completed
+        await tx
+          .update(sessions)
+          .set({
+            status: "completed",
+            completedAt: now,
+            sessionScore: sessionScore !== null ? String(sessionScore) : null,
+            durationMinutes,
+            updatedAt: now,
+          })
+          .where(eq(sessions.id, sessionId));
+
+        // Compute next session date
+        const nextSessionAt = computeNextSessionDate(
+          now,
+          series.cadence,
+          series.cadenceCustomDays,
+          series.preferredDay
+        );
+
+        // Update series: set next_session_at
+        await tx
+          .update(meetingSeries)
+          .set({
+            nextSessionAt,
+            updatedAt: now,
+          })
+          .where(eq(meetingSeries.id, series.id));
+
+        // Audit log
+        await logAuditEvent(tx, {
+          tenantId: session.user.tenantId,
+          actorId: session.user.id,
+          action: "session_completed",
+          resourceType: "session",
+          resourceId: sessionId,
+          metadata: {
+            sessionScore,
+            sessionNumber: sessionRecord.sessionNumber,
+            durationMinutes,
+          },
+        });
+
+        return {
+          sessionId,
+          score: sessionScore,
+          nextSessionAt: nextSessionAt.toISOString(),
+        };
+      }
+    );
+
+    if ("error" in result) {
+      switch (result.error) {
+        case "NOT_FOUND":
+          return NextResponse.json(
+            { error: "Session not found" },
+            { status: 404 }
+          );
+        case "INVALID_STATUS":
+          return NextResponse.json(
+            { error: "Session is not in progress" },
+            { status: 400 }
+          );
+        case "FORBIDDEN":
+          return NextResponse.json(
+            { error: "Only the manager can complete a session" },
+            { status: 403 }
+          );
+      }
+    }
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("Failed to complete session:", error);
+    return NextResponse.json(
+      { error: "Failed to complete session" },
+      { status: 500 }
+    );
+  }
+}
