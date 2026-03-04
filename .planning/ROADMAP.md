@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Meeting Series & Session Wizard** - Series lifecycle, step-by-step wizard, context panel, notes, auto-save
 - [ ] **Phase 6: Action Items & Session History** - Action tracking with carry-over, session timeline, full-text search
 - [ ] **Phase 7: AI Pipeline** - Session summaries, pre-session nudges, embeddings, Inngest durable functions, AI SDK integration
-- [x] **Phase 8: Manager Dashboard & Analytics** - Dashboard home screen, score charts, category breakdowns, team analytics, CSV export (completed 2026-03-04)
+- [ ] **Phase 8: Manager Dashboard & Analytics** - Dashboard home screen, score charts, category breakdowns, team analytics, CSV export (UAT gap closure in progress)
 - [ ] **Phase 9: Email Notifications** - Invite emails, meeting reminders, post-session summaries, agenda prep reminders
 - [ ] **Phase 10: Integration & Polish** - Dark mode, final UI polish, end-to-end flow verification
 
@@ -157,14 +157,16 @@ Plans:
   3. Analytics shows line charts of individual scores over time, bar charts of per-category averages, and session-over-session comparison
   4. Team analytics shows aggregated scores across reports (with anonymized option) and a heatmap of team x category scores
   5. Action item velocity chart, meeting adherence chart, and CSV export are available, all powered by pre-computed analytics snapshots
-**Plans**: 5 plans in 3 waves (Wave 1: snapshot pipeline + dashboard in parallel, Wave 2: individual analytics, Wave 3: team analytics + velocity/adherence/export in parallel)
+**Plans**: 7 plans in 5 waves (Wave 1-3: original plans, Wave 4-5: UAT gap closure)
 
 Plans:
-- [ ] 08-01-PLAN.md -- Analytics snapshot pipeline: schema migration (analyticsIngestedAt), Inngest snapshot computation on session/completed, cron safety net, analytics query layer (Wave 1)
-- [ ] 08-02-PLAN.md -- Dashboard rebuild: upcoming sessions with integrated AI nudges, overdue items by report, quick stats, recent sessions, Start Session button (Wave 1)
-- [ ] 08-03-PLAN.md -- Individual analytics: score trend line chart, category breakdown bar chart, session comparison delta table, period selector, sidebar nav (Wave 2)
-- [ ] 08-04-PLAN.md -- Team analytics: aggregated scores with anonymization toggle, dot matrix heatmap (team x category), RBAC enforcement (Wave 3)
-- [ ] 08-05-PLAN.md -- Action item velocity area chart, meeting adherence stacked bar chart, CSV export (full + per-view) (Wave 3)
+- [x] 08-01-PLAN.md -- Analytics snapshot pipeline: schema migration (analyticsIngestedAt), Inngest snapshot computation on session/completed, cron safety net, analytics query layer (Wave 1)
+- [x] 08-02-PLAN.md -- Dashboard rebuild: upcoming sessions with integrated AI nudges, overdue items by report, quick stats, recent sessions, Start Session button (Wave 1)
+- [x] 08-03-PLAN.md -- Individual analytics: score trend line chart, category breakdown bar chart, session comparison delta table, period selector, sidebar nav (Wave 2)
+- [x] 08-04-PLAN.md -- Team analytics: aggregated scores with anonymization toggle, dot matrix heatmap (team x category), RBAC enforcement (Wave 3)
+- [x] 08-05-PLAN.md -- Action item velocity area chart, meeting adherence stacked bar chart, CSV export (full + per-view) (Wave 3)
+- [ ] 08-06-PLAN.md -- Gap closure: fix analytics page crash, score trend NaN, dynamic categories, CSV encoding (Wave 4)
+- [ ] 08-07-PLAN.md -- Gap closure: team analytics live fallback, velocity seed data, analytics snapshots seed (Wave 5)
 
 ### Phase 9: Email Notifications
 **Goal**: The application keeps users engaged between sessions with timely, well-designed email notifications
@@ -212,6 +214,6 @@ Note: Phases 6, 7, and 9 all depend only on Phase 5 and can execute in parallel.
 | 5. Meeting Series & Session Wizard | 0/5 | Not started | - |
 | 6. Action Items & Session History | 0/3 | Not started | - |
 | 7. AI Pipeline | 1/3 | In progress | - |
-| 8. Manager Dashboard & Analytics | 5/5 | Complete   | 2026-03-04 |
+| 8. Manager Dashboard & Analytics | 5/7 | Gap closure | - |
 | 9. Email Notifications | 0/3 | Not started | - |
 | 10. Integration & Polish | 0/2 | Not started | - |
