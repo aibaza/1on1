@@ -13,7 +13,7 @@ import {
 } from "@/lib/db/schema";
 import {
   METRIC_NAMES,
-  CATEGORY_METRICS,
+  OPERATIONAL_METRICS,
   SCORABLE_ANSWER_TYPES,
 } from "./constants";
 
@@ -136,9 +136,9 @@ export async function getCategoryAverages(
   startDate: string,
   endDate: string,
 ): Promise<CategoryAverage[]> {
-  const categoryMetricNames = Object.values(CATEGORY_METRICS);
+  // Try snapshots first -- exclude operational metrics to get only category scores
+  const operationalNames = [...OPERATIONAL_METRICS];
 
-  // Try snapshots first
   const snapshots = await tx
     .select({
       metricName: analyticsSnapshots.metricName,
@@ -150,7 +150,10 @@ export async function getCategoryAverages(
       and(
         eq(analyticsSnapshots.userId, userId),
         isNull(analyticsSnapshots.teamId),
-        inArray(analyticsSnapshots.metricName, categoryMetricNames),
+        sql`${analyticsSnapshots.metricName} NOT IN (${sql.join(
+          operationalNames.map((n) => sql`${n}`),
+          sql`, `,
+        )})`,
         gte(analyticsSnapshots.periodStart, startDate),
         lte(analyticsSnapshots.periodStart, endDate),
       ),
@@ -158,12 +161,9 @@ export async function getCategoryAverages(
     .groupBy(analyticsSnapshots.metricName);
 
   if (snapshots.length > 0) {
-    // Map metric names back to category labels
-    const metricToCategory = Object.fromEntries(
-      Object.entries(CATEGORY_METRICS).map(([cat, metric]) => [metric, cat]),
-    );
+    // metricName IS the category display name (stored as section name directly)
     return snapshots.map((s) => ({
-      category: metricToCategory[s.metricName] ?? s.metricName,
+      category: s.metricName,
       avgScore: Number(s.avgScore),
       sampleCount: s.sampleCount,
     }));
@@ -278,7 +278,7 @@ export async function getSessionComparison(
       category,
       score1: s1,
       score2: s2,
-      delta: parseFloat((s2 - s1).toFixed(3)),
+      delta: Number((s2 - s1).toFixed(3)),
     });
   }
 
@@ -308,7 +308,7 @@ export async function getTeamAverages(
   if (members.length === 0) return [];
 
   const memberIds = members.map((m) => m.userId);
-  const categoryMetricNames = Object.values(CATEGORY_METRICS);
+  const operationalNames = [...OPERATIONAL_METRICS];
 
   const results = await tx
     .select({
@@ -322,22 +322,21 @@ export async function getTeamAverages(
       and(
         inArray(analyticsSnapshots.userId, memberIds),
         isNull(analyticsSnapshots.teamId),
-        inArray(analyticsSnapshots.metricName, categoryMetricNames),
+        sql`${analyticsSnapshots.metricName} NOT IN (${sql.join(
+          operationalNames.map((n) => sql`${n}`),
+          sql`, `,
+        )})`,
         gte(analyticsSnapshots.periodStart, startDate),
         lte(analyticsSnapshots.periodStart, endDate),
       ),
     )
     .groupBy(analyticsSnapshots.metricName);
 
-  const metricToCategory = Object.fromEntries(
-    Object.entries(CATEGORY_METRICS).map(([cat, metric]) => [metric, cat]),
-  );
-
   // Enforce minimum 3 data points for anonymization
   return results
     .filter((r) => r.memberCount >= 3)
     .map((r) => ({
-      category: metricToCategory[r.metricName] ?? r.metricName,
+      category: r.metricName,
       avgScore: Number(r.avgScore),
       memberCount: r.memberCount,
     }));
@@ -372,7 +371,7 @@ export async function getTeamHeatmapData(
   if (members.length === 0) return [];
 
   const memberIds = members.map((m) => m.userId);
-  const categoryMetricNames = Object.values(CATEGORY_METRICS);
+  const operationalNames = [...OPERATIONAL_METRICS];
 
   const snapshots = await tx
     .select({
@@ -386,16 +385,15 @@ export async function getTeamHeatmapData(
       and(
         inArray(analyticsSnapshots.userId, memberIds),
         isNull(analyticsSnapshots.teamId),
-        inArray(analyticsSnapshots.metricName, categoryMetricNames),
+        sql`${analyticsSnapshots.metricName} NOT IN (${sql.join(
+          operationalNames.map((n) => sql`${n}`),
+          sql`, `,
+        )})`,
         gte(analyticsSnapshots.periodStart, startDate),
         lte(analyticsSnapshots.periodStart, endDate),
       ),
     )
     .groupBy(analyticsSnapshots.userId, analyticsSnapshots.metricName);
-
-  const metricToCategory = Object.fromEntries(
-    Object.entries(CATEGORY_METRICS).map(([cat, metric]) => [metric, cat]),
-  );
 
   // Build name lookup, with optional anonymization
   const nameMap = new Map<string, string>();
@@ -414,7 +412,7 @@ export async function getTeamHeatmapData(
     .map((s) => ({
       userId: anonymize ? "" : s.userId!,
       userName: nameMap.get(s.userId!) ?? "Unknown",
-      category: metricToCategory[s.metricName] ?? s.metricName,
+      category: s.metricName,
       score: Number(s.avgScore),
       sampleCount: s.sampleCount ?? 0,
     }));

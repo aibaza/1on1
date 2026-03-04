@@ -9,7 +9,6 @@ import {
 } from "@/lib/db/schema";
 import {
   METRIC_NAMES,
-  CATEGORY_METRICS,
   SCORABLE_ANSWER_TYPES,
 } from "./constants";
 
@@ -103,9 +102,8 @@ export async function computeSessionSnapshot(
     if (answer.skipped || answer.answerNumeric === null) continue;
     if (!SCORABLE_ANSWER_TYPES.has(answer.answerType)) continue;
 
-    const category = answer.sectionName.toLowerCase().trim();
-    const metricName = CATEGORY_METRICS[category];
-    if (!metricName) continue; // Skip categories we don't track
+    const category = answer.sectionName.trim();
+    if (!category) continue;
 
     const value = parseFloat(answer.answerNumeric);
     if (isNaN(value)) continue;
@@ -140,12 +138,10 @@ export async function computeSessionSnapshot(
     });
   }
 
-  // Per-category averages
+  // Per-category averages (use section name directly as metricName)
   for (const [category, data] of Object.entries(categoryScores)) {
-    const metricName = CATEGORY_METRICS[category];
-    if (!metricName) continue;
     metricRows.push({
-      metricName,
+      metricName: category,
       metricValue: (data.sum / data.count).toFixed(3),
       sampleCount: data.count,
     });
