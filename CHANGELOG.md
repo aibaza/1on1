@@ -15,6 +15,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - AI summary/suggestions polling timeout after 2 minutes — shows retry UI instead of infinite "Generating..." state
 
 ### Fixed
+- Dashboard nudge section missing for managers — restored standalone `getManagerNudges` query and `NudgeCardsGrid` rendering on overview page (no date filter, shows all non-dismissed nudges)
+- Analytics overview page crash caused by ungrouped column in correlated subquery — replaced with DISTINCT ON query for latest scores
+- Score trend chart NaN values caused by parseFloat on Drizzle decimal strings — replaced with Number() and added NaN filtering across all analytics queries
+- Hardcoded CATEGORY_METRICS (6 English names) silently dropping 7 of 13 template sections — categories now derived dynamically from template section names
+- CSV export encoding for non-ASCII characters — added UTF-8 BOM prefix for correct display in Excel
 - AI pipeline never completing due to Inngest dev server not running — direct execution path resolves this
 - Infinite "Generating..." spinner on session summary page when AI pipeline fails to start
 - CSV export API endpoint (`GET /api/analytics/export`) supporting full, score-trend, categories, velocity, and adherence export types with RBAC

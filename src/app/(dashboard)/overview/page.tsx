@@ -14,7 +14,10 @@ import {
   getOverdueActionItems,
   getQuickStats,
   getRecentSessions,
+  getManagerNudges,
 } from "@/lib/queries/dashboard";
+import { NudgeCardsGrid } from "@/components/dashboard/nudge-cards-grid";
+import { Sparkles } from "lucide-react";
 
 export default async function OverviewPage() {
   const session = await auth();
@@ -28,13 +31,16 @@ export default async function OverviewPage() {
       columns: { name: true },
     }),
     withTenantContext(user.tenantId, user.id, async (tx) => {
-      const [upcoming, overdue, stats, recent] = await Promise.all([
+      const [upcoming, overdue, stats, recent, nudges] = await Promise.all([
         getUpcomingSessions(tx, user.id, user.role, user.tenantId),
         getOverdueActionItems(tx, user.id, user.role),
         getQuickStats(tx, user.id, user.role),
         getRecentSessions(tx, user.id, user.role),
+        user.role !== "member"
+          ? getManagerNudges(tx, user.id, user.tenantId)
+          : Promise.resolve([]),
       ]);
-      return { upcoming, overdue, stats, recent };
+      return { upcoming, overdue, stats, recent, nudges };
     }),
   ]);
 
@@ -52,6 +58,17 @@ export default async function OverviewPage() {
           <span className="capitalize">{user.role}</span>
         </p>
       </div>
+
+      {/* AI Coaching Nudges (managers/admins only) */}
+      {user.role !== "member" && dashboardData.nudges.length > 0 && (
+        <section className="mb-8">
+          <h2 className="mb-4 text-lg font-medium flex items-center gap-2">
+            <Sparkles className="size-4 text-amber-600" />
+            AI Coaching Nudges
+          </h2>
+          <NudgeCardsGrid initialNudges={dashboardData.nudges} />
+        </section>
+      )}
 
       {/* 1. Upcoming Sessions (primary section) */}
       <section className="mb-8">

@@ -359,7 +359,55 @@ export async function getQuickStats(
 }
 
 // ---------------------------------------------------------------------------
-// 4. Recent Sessions
+// 4. Manager Nudges (standalone, no date filter)
+// ---------------------------------------------------------------------------
+
+export async function getManagerNudges(
+  tx: TransactionClient,
+  userId: string,
+  tenantId: string
+): Promise<NudgeData[]> {
+  const reportUser = alias(users, "reportUser");
+
+  const rows = await tx
+    .select({
+      id: aiNudges.id,
+      content: aiNudges.content,
+      reason: aiNudges.reason,
+      priority: aiNudges.priority,
+      seriesId: aiNudges.seriesId,
+      targetSessionAt: aiNudges.targetSessionAt,
+      reportFirstName: reportUser.firstName,
+      reportLastName: reportUser.lastName,
+    })
+    .from(aiNudges)
+    .innerJoin(meetingSeries, eq(aiNudges.seriesId, meetingSeries.id))
+    .innerJoin(reportUser, eq(meetingSeries.reportId, reportUser.id))
+    .where(
+      and(
+        eq(aiNudges.isDismissed, false),
+        eq(aiNudges.tenantId, tenantId),
+        eq(meetingSeries.managerId, userId)
+      )
+    )
+    .orderBy(
+      sql`CASE ${aiNudges.priority} WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 ELSE 4 END`,
+      sql`${aiNudges.targetSessionAt} NULLS LAST`
+    );
+
+  return rows.map((r) => ({
+    id: r.id,
+    content: r.content,
+    reason: r.reason,
+    priority: r.priority ?? "medium",
+    seriesId: r.seriesId,
+    reportName: `${r.reportFirstName} ${r.reportLastName}`,
+    targetSessionAt: r.targetSessionAt?.toISOString() ?? null,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// 5. Recent Sessions
 // ---------------------------------------------------------------------------
 
 export async function getRecentSessions(
