@@ -36,6 +36,10 @@ services:
       EMAIL_FROM: "${EMAIL_FROM}"
       NODE_ENV: production
       NEXT_PUBLIC_APP_URL: http://localhost:4300
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+      INNGEST_DEV: "http://host.docker.internal:8288"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy
