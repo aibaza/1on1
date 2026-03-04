@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 4: Questionnaire Templates** - Template builder with 6 question types, versioning, conditional logic, drag-and-drop
 - [ ] **Phase 5: Meeting Series & Session Wizard** - Series lifecycle, step-by-step wizard, context panel, notes, auto-save
 - [ ] **Phase 6: Action Items & Session History** - Action tracking with carry-over, session timeline, full-text search
-- [ ] **Phase 7: AI Pipeline** - Session summaries, pre-session nudges, embeddings, Inngest durable functions, AI SDK integration
+- [ ] **Phase 7: AI Pipeline** - Session summaries, pre-session nudges, direct AI pipeline, AI SDK integration
 - [ ] **Phase 8: Manager Dashboard & Analytics** - Dashboard home screen, score charts, category breakdowns, team analytics, CSV export (UAT gap closure in progress)
 - [ ] **Phase 9: Email Notifications** - Invite emails, meeting reminders, post-session summaries, agenda prep reminders
 - [ ] **Phase 10: Integration & Polish** - Dark mode, final UI polish, end-to-end flow verification
@@ -139,13 +139,15 @@ Plans:
   2. Before a session, AI generates 2-3 specific follow-up suggestions based on previous session data (e.g., "Last time Alex mentioned burnout -- follow up?")
   3. Pre-session nudges appear on the dashboard and in the pre-session state
   4. After completion, AI suggests 1-3 action items based on session content
-  5. All AI pipelines run as durable Inngest background functions with retry, using Vercel AI SDK with provider-agnostic routing (pgvector embeddings deferred to v2 -- full-text search used for AI context retrieval)
-**Plans**: 3 plans in 2 waves (Wave 1: foundation, Wave 2: post-session pipeline + nudge pipeline in parallel)
+  5. AI pipeline runs as direct background execution with retry, using Vercel AI SDK with provider-agnostic routing (pgvector embeddings deferred to v2 -- full-text search used for AI context retrieval)
+**Plans**: 5 plans (Wave 1: foundation, Wave 2: post-session pipeline + nudge pipeline in parallel, Gap closure: nudge fixes + dead code cleanup in parallel)
 
 Plans:
 - [x] 07-01-PLAN.md -- AI SDK + Inngest installation, DB schema migration (AI columns + ai_nudge table), Inngest client/serve route, AI service layer with Zod schemas and prompt templates (Wave 1)
-- [ ] 07-02-PLAN.md -- Post-session Inngest pipeline (summary, addendum, suggestions), completion endpoint integration, AI summary/suggestions API endpoints, session summary page UI (Wave 2)
-- [ ] 07-03-PLAN.md -- Pre-session nudge cron pipeline, nudge refresh handler, nudge API endpoints, dashboard nudge cards, wizard context panel nudge integration (Wave 2)
+- [x] 07-02-PLAN.md -- Post-session pipeline (summary, addendum, suggestions), completion endpoint integration, AI summary/suggestions API endpoints, session summary page UI (Wave 2)
+- [x] 07-03-PLAN.md -- Pre-session nudge cron pipeline, nudge refresh handler, nudge API endpoints, dashboard nudge cards, wizard context panel nudge integration (Wave 2)
+- [ ] 07-04-PLAN.md -- [GAP CLOSURE] Fix dashboard nudge visibility and wizard nudge list filtering (Wave 1)
+- [ ] 07-05-PLAN.md -- [GAP CLOSURE] Remove dead Inngest code, wire analytics snapshot into direct pipeline (Wave 1)
 
 ### Phase 8: Manager Dashboard & Analytics
 **Goal**: Managers have a home screen that surfaces everything they need, and analytics charts reveal trends across sessions and teams
@@ -213,7 +215,7 @@ Note: Phases 6, 7, and 9 all depend only on Phase 5 and can execute in parallel.
 | 4. Questionnaire Templates | 0/3 | Not started | - |
 | 5. Meeting Series & Session Wizard | 0/5 | Not started | - |
 | 6. Action Items & Session History | 0/3 | Not started | - |
-| 7. AI Pipeline | 1/3 | In progress | - |
+| 7. AI Pipeline | 3/5 | Gap closure | - |
 | 8. Manager Dashboard & Analytics | 5/7 | Gap closure | - |
 | 9. Email Notifications | 0/3 | Not started | - |
 | 10. Integration & Polish | 0/2 | Not started | - |
