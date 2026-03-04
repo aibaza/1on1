@@ -7,6 +7,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Session wizard: full-page immersive layout without sidebar for focused 1:1 experience
+- Session data API (`GET /api/sessions/[id]`) returns comprehensive wizard payload: session, series, template questions, existing answers, previous sessions, and open action items
+- Answer upsert API (`PUT /api/sessions/[id]/answers`) with `onConflictDoUpdate` for 500ms debounced auto-save
+- Wizard shell (`wizard-shell.tsx`) orchestrates wizard state via `useReducer`: step navigation, answer management, conditional question logic, and auto-save
+- Wizard top bar with exit button (with unsaved changes confirmation), session info, and live save status indicator
+- Wizard navigation with category pill tabs, prev/next buttons, and keyboard arrow key shortcuts
+- Category step component renders questions grouped by category on scrollable screens with required badges and help text
+- Recap screen shows last meeting summary (session score, notes by category, answer count) and open action items with status/due date
+- Question widget dispatcher maps `answerType` to correct input widget
+- Text widget: auto-resizing textarea
+- Rating 1-5 widget: clickable star icons with configurable labels
+- Rating 1-10 widget: 10 numbered buttons in responsive grid
+- Yes/No widget: two large toggle buttons (1 = yes, 0 = no)
+- Multiple choice widget: radio-style buttons from `answerConfig.options`
+- Mood widget: 5 emoji buttons with configurable labels
+- `useDebounce<T>` hook for auto-save pattern
+- Zod `answerUpsertSchema` for answer validation
+- `beforeunload` handler triggers immediate save of pending debounced answers via `navigator.sendBeacon`
+- Conditional question evaluation across all categories (cross-category conditionals work correctly)
 - Context panel sidebar (`context-panel.tsx`): always-visible right sidebar with session history context, category-scoped data, and mobile slide-in overlay
 - Question history dialog (`question-history-dialog.tsx`): per-question answer timeline across previous sessions with formatted values per answer type
 - Score sparkline component (`score-sparkline.tsx`): Recharts mini line chart for score trends with hidden axes
