@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Hardcoded `CATEGORY_LABELS` / `categoryLabels` maps from all components
 
 ### Fixed
+- Reword inverted rating questions (blockers/capacity) to positive framing so higher = better across all ratings
 - Conditional question operator dropdown disabled for unsaved questions — fallback ID matching now consistent between select and lookup
 - Conditional question "Add Question" button silently failing — Zod schema required UUID for `conditionalOnQuestionId` but unsaved questions use temporary IDs
 - Conditional question references causing 500 on save — temporary `q-{index}` refs nulled during DB insert, then resolved to real UUIDs in a second pass
