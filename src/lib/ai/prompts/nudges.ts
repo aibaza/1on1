@@ -1,13 +1,11 @@
 import type { SessionContext } from "../context";
+import { BASE_SYSTEM } from "./base";
 
 export function buildNudgesSystemPrompt(): string {
-  return `Generate 2-3 short coaching nudges for a manager before their next 1-on-1.
+  return BASE_SYSTEM + `Generate 2-3 coaching nudges for a manager before their next 1-on-1.
 
-Rules:
-- Each nudge: 1 sentence max
-- Only reference real data from provided sessions
-- Tone: direct and helpful, not fluffy
-- Use the language of the session answers (if Romanian, write Romanian)`;
+- Each nudge: 1 sentence, specific, referencing real data
+- No generic advice`;
 }
 
 export function buildNudgesUserPrompt(context: SessionContext): string {
@@ -46,7 +44,6 @@ export function buildNudgesUserPrompt(context: SessionContext): string {
     }
   }
 
-  parts.push(`Generate 2-3 brief nudges based only on the data above.`);
   return parts.join("\n");
 }
 

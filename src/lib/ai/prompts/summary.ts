@@ -1,17 +1,13 @@
 import type { SessionContext } from "../context";
+import { BASE_SYSTEM } from "./base";
 
 export function buildSummarySystemPrompt(): string {
-  return `You summarize 1-on-1 meeting sessions. Be extremely concise — match output length to input length.
+  return BASE_SYSTEM + `Summarize a 1-on-1 session.
 
-Rules:
-- If an answer is one sentence, summarize it in a few words, not a paragraph
-- Each key takeaway: max 10 words
-- Each discussion highlight summary: 1-2 sentences max, only if there's substance to summarize
-- Skip sections where answers are just scores with no text commentary
-- Follow-up items: only if explicitly mentioned or clearly needed
-- Never pad, never invent details not in the data
-- Never include private notes
-- Use the language of the session answers (if Romanian, write Romanian)`;
+- Each takeaway: a few words, not a sentence
+- Discussion highlights: 1 sentence per section, skip score-only sections
+- Follow-ups: only if explicitly needed
+- Never include private notes`;
 }
 
 export function buildSummaryUserPrompt(context: SessionContext): string {
@@ -41,10 +37,6 @@ export function buildSummaryUserPrompt(context: SessionContext): string {
       parts.push(`- ${tp.isDiscussed ? "✓" : "○"} ${tp.content}`);
     }
   }
-
-  parts.push(
-    `\nSummarize proportionally to the data above. Short answers = short summary. No filler.`
-  );
 
   return parts.join("\n");
 }

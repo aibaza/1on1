@@ -11,6 +11,7 @@ import {
   type AIActionSuggestions,
 } from "./schemas/action-items";
 import type { SessionContext } from "./context";
+import { BASE_SYSTEM } from "./prompts/base";
 import {
   buildSummarySystemPrompt,
   buildSummaryUserPrompt,
@@ -62,14 +63,11 @@ export async function generateManagerAddendum(
   context: SessionContext
 ): Promise<AIManagerAddendum> {
   try {
-    const systemPrompt = `Confidential manager-only addendum for a 1-on-1 session. NOT visible to the report.
+    const systemPrompt = BASE_SYSTEM + `Confidential manager-only addendum. NOT visible to the report.
 
-Rules:
-- Sentiment analysis: 1-2 sentences max
-- Patterns: only if supported by data, max 3 items of a few words each
-- Coaching suggestions: 1 sentence each, max 3
-- Be proportional to input — short session data = short addendum
-- Use the language of the session answers`;
+- Sentiment: 1 sentence
+- Patterns: a few words each, only if real
+- Coaching: 1 sentence each, only what matters`;
 
     const parts: string[] = [];
     parts.push(

@@ -1,15 +1,13 @@
 import type { SessionContext } from "../context";
 import type { AISummary } from "../schemas/summary";
+import { BASE_SYSTEM } from "./base";
 
 export function buildActionSuggestionsSystemPrompt(): string {
-  return `Suggest 1-3 follow-up action items after a 1-on-1 session.
+  return BASE_SYSTEM + `Suggest follow-up action items after a 1-on-1.
 
-Rules:
-- Only suggest items clearly warranted by the session data
-- Title: max 10 words. Description: 1 sentence.
-- Don't duplicate existing action items
-- If session was routine with no issues, suggest 0-1 items — don't force it
-- Use the language of the session answers (if Romanian, write Romanian)`;
+- Title: max 8 words. Description: 1 sentence.
+- Only suggest what's clearly warranted — 0 items is fine for routine sessions
+- Don't duplicate existing items`;
 }
 
 export function buildActionSuggestionsUserPrompt(
@@ -24,25 +22,24 @@ export function buildActionSuggestionsUserPrompt(
     ""
   );
 
-  parts.push(`Key takeaways:`);
+  parts.push(`Takeaways:`);
   for (const t of summary.keyTakeaways) {
     parts.push(`- ${t}`);
   }
 
   if (summary.followUpItems.length > 0) {
-    parts.push(`\nFollow-ups identified:`);
+    parts.push(`\nFollow-ups:`);
     for (const item of summary.followUpItems) {
       parts.push(`- ${item}`);
     }
   }
 
   if (context.actionItemTexts.length > 0) {
-    parts.push(`\nExisting items (do NOT duplicate):`);
+    parts.push(`\nExisting (don't duplicate):`);
     for (const ai of context.actionItemTexts) {
       parts.push(`- ${ai.title}`);
     }
   }
 
-  parts.push(`\nSuggest only clearly needed action items. Keep it brief.`);
   return parts.join("\n");
 }
