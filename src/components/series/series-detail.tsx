@@ -73,6 +73,11 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
     (s) => s.status === "in_progress"
   );
 
+  // Find the in-progress session id for Resume navigation
+  const inProgressSession = series.sessions.find(
+    (s) => s.status === "in_progress"
+  );
+
   const startSession = useMutation({
     mutationFn: async () => {
       const res = await fetch(`/api/series/${series.id}/start`, {
@@ -86,7 +91,7 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
     },
     onSuccess: (data) => {
       toast.success(`Session #${data.sessionNumber} started`);
-      router.refresh();
+      router.push(`/wizard/${data.id}`);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -187,9 +192,16 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
               Start Session
             </Button>
           ) : (
-            <Button variant="outline" disabled>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (inProgressSession) {
+                  router.push(`/wizard/${inProgressSession.id}`);
+                }
+              }}
+            >
               <RotateCcw className="mr-1.5 h-4 w-4" />
-              Session in progress
+              Resume Session
             </Button>
           )}
 

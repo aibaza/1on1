@@ -23,7 +23,8 @@ export function WizardNavigation({
   onNext,
 }: WizardNavigationProps) {
   const isFirst = currentStep === 0;
-  const isLastCategory = currentStep === totalSteps - 1;
+  const isSummaryStep = currentStep === totalSteps - 1;
+  const isLastCategoryStep = currentStep === totalSteps - 2;
 
   // Keyboard shortcuts: Left/Right arrow keys for navigation
   const handleKeyDown = useCallback(
@@ -41,12 +42,12 @@ export function WizardNavigation({
       if (e.key === "ArrowLeft" && !isFirst) {
         e.preventDefault();
         onPrev();
-      } else if (e.key === "ArrowRight" && !isLastCategory) {
+      } else if (e.key === "ArrowRight" && !isSummaryStep) {
         e.preventDefault();
         onNext();
       }
     },
-    [isFirst, isLastCategory, onPrev, onNext]
+    [isFirst, isSummaryStep, onPrev, onNext]
   );
 
   useEffect(() => {
@@ -88,17 +89,20 @@ export function WizardNavigation({
         ))}
       </div>
 
-      {/* Next button */}
-      <Button
-        variant={isLastCategory ? "default" : "outline"}
-        size="sm"
-        onClick={onNext}
-        disabled={isLastCategory}
-        className="gap-1"
-      >
-        {isLastCategory ? "Review" : "Next"}
-        <ChevronRight className="h-4 w-4" />
-      </Button>
+      {/* Next button -- hidden on summary step (Complete Session button handles it) */}
+      {isSummaryStep ? (
+        <div className="w-[100px]" />
+      ) : (
+        <Button
+          variant={isLastCategoryStep ? "default" : "outline"}
+          size="sm"
+          onClick={onNext}
+          className="gap-1"
+        >
+          {isLastCategoryStep ? "Review" : "Next"}
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   );
 }

@@ -24,8 +24,10 @@ interface SeriesCardProps {
       avatarUrl: string | null;
     };
     latestSession: {
+      id: string;
       status: string;
       sessionNumber: number;
+      sessionScore: string | null;
     } | null;
   };
   currentUserId: string;
@@ -73,7 +75,7 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
     },
     onSuccess: (data) => {
       toast.success(`Session #${data.sessionNumber} started`);
-      router.refresh();
+      router.push(`/wizard/${data.id}`);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -104,13 +106,20 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
           {series.status}
         </Badge>
       </CardHeader>
-      <CardContent className="flex items-center justify-between pt-0">
-        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          <CalendarDays className="h-3.5 w-3.5" />
-          {series.nextSessionAt ? (
-            <span>{formatRelativeDate(series.nextSessionAt)}</span>
-          ) : (
-            <span>Not scheduled</span>
+      <CardContent className="space-y-2 pt-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <CalendarDays className="h-3.5 w-3.5" />
+            {series.nextSessionAt ? (
+              <span>{formatRelativeDate(series.nextSessionAt)}</span>
+            ) : (
+              <span>Not scheduled</span>
+            )}
+          </div>
+          {series.latestSession?.sessionScore && series.latestSession.status === "completed" && (
+            <span className="text-sm font-medium tabular-nums text-muted-foreground">
+              {parseFloat(series.latestSession.sessionScore).toFixed(1)} / 5
+            </span>
           )}
         </div>
         {isManager && series.status === "active" && (
@@ -122,9 +131,9 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
               e.preventDefault();
               if (!hasInProgress) {
                 startSession.mutate();
-              } else {
-                // Navigate to the series detail to resume
-                router.push(`/sessions/${series.id}`);
+              } else if (series.latestSession?.id) {
+                // Navigate directly to the wizard to resume
+                router.push(`/wizard/${series.latestSession.id}`);
               }
             }}
             disabled={startSession.isPending}
@@ -141,6 +150,11 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
               </>
             )}
           </Button>
+        )}
+        {hasInProgress && series.latestSession && (
+          <p className="text-xs text-muted-foreground">
+            Session #{series.latestSession.sessionNumber} in progress
+          </p>
         )}
       </CardContent>
     </Card>

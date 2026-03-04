@@ -7,6 +7,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Session summary screen: read-only recap of all answers, notes, talking points, and action items grouped by category
+- Session score computation: normalizes all numeric answer types (rating_1_5, rating_1_10, yes_no, mood) to 1-5 scale and averages
+- Session completion API (`POST /api/sessions/[id]/complete`): computes score, marks session completed with duration, updates `next_session_at` on series
+- Summary step as final wizard tab with score card, per-category review, and "Complete Session" button for managers
+- Save status component for wizard top bar (saved/saving/error states with icon transitions)
+- Series cards navigate to wizard on "Start" and "Resume" (direct `/wizard/[sessionId]` navigation)
+- Series detail "Resume Session" button navigates to wizard for in-progress sessions
+- Session score displayed on series cards for completed sessions
+- In-progress session number shown on series cards ("Session #N in progress")
 - Tiptap rich text editor for session notes with formatting toolbar (bold, italic, lists, links)
 - Shared notes tab with auto-save per category via debounced PUT to `/api/sessions/[id]/notes`
 - Private notes tab with "Only you can see this" indicator, server-side AES-256-GCM encryption

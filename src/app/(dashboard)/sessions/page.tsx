@@ -58,9 +58,11 @@ export default async function SessionsPage() {
         seriesIds.length > 0
           ? await tx
               .select({
+                id: sessions.id,
                 seriesId: sessions.seriesId,
                 status: sessions.status,
                 sessionNumber: sessions.sessionNumber,
+                sessionScore: sessions.sessionScore,
               })
               .from(sessions)
               .where(
@@ -88,7 +90,12 @@ export default async function SessionsPage() {
             avatarUrl: report?.avatarUrl ?? null,
           },
           latestSession: latest
-            ? { status: latest.status, sessionNumber: latest.sessionNumber }
+            ? {
+                id: latest.id,
+                status: latest.status,
+                sessionNumber: latest.sessionNumber,
+                sessionScore: latest.sessionScore,
+              }
             : null,
         };
       });

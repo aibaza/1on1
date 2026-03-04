@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { WizardTopBar, type SaveStatus } from "./wizard-top-bar";
 import { WizardNavigation } from "./wizard-navigation";
 import { CategoryStep } from "./category-step";
 import { RecapScreen } from "./recap-screen";
+import { SummaryScreen } from "./summary-screen";
 import { ContextPanel, type OpenActionItem } from "./context-panel";
 import { QuestionHistoryDialog, type PreviousSession } from "./question-history-dialog";
 import { type AnswerValue } from "./question-widget";
@@ -237,6 +239,7 @@ interface WizardShellProps {
 }
 
 export function WizardShell({ sessionId }: WizardShellProps) {
+  const { data: authSession } = useSession();
   const [state, dispatch] = useReducer(wizardReducer, {
     currentStep: 0,
     answers: new Map(),
@@ -519,6 +522,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         };
         return labels[c.name] ?? c.name;
       }),
+      "Summary",
     ],
     [state.categories]
   );
@@ -673,11 +677,15 @@ export function WizardShell({ sessionId }: WizardShellProps) {
 
   // Determine current step content
   const isRecapStep = state.currentStep === 0;
+  const isSummaryStep = state.currentStep === totalSteps - 1 && totalSteps > 1;
   const categoryIndex = state.currentStep - 1; // -1 for recap
   const currentCategory =
     categoryIndex >= 0 && categoryIndex < state.categories.length
       ? state.categories[categoryIndex]
       : null;
+
+  // Determine if current user is the manager on this series
+  const isManager = authSession?.user?.id === data.series.managerId;
 
   return (
     <>
@@ -699,6 +707,18 @@ export function WizardShell({ sessionId }: WizardShellProps) {
             previousSessions={data.previousSessions}
             openActionItems={data.openActionItems}
           />
+        ) : isSummaryStep ? (
+          <SummaryScreen
+            sessionId={sessionId}
+            seriesId={data.session.seriesId}
+            categories={state.categories}
+            answers={state.answers}
+            sharedNotes={data.session.sharedNotes ?? {}}
+            talkingPoints={talkingPointsByCategory}
+            actionItems={actionItemsByCategory}
+            onGoBack={handleStepChange}
+            isManager={isManager}
+          />
         ) : currentCategory ? (
           <CategoryStep
             sessionId={sessionId}
@@ -718,17 +738,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
             sessionNumberMap={sessionNumberMap}
             onSavingChange={handleSavingChange}
           />
-        ) : (
-          // Summary step placeholder (filled in Plan 05)
-          <div className="flex flex-1 items-center justify-center">
-            <div className="text-center text-muted-foreground">
-              <p className="text-lg font-medium">Summary</p>
-              <p className="text-sm">
-                Session summary and completion will be available in Plan 05.
-              </p>
-            </div>
-          </div>
-        )}
+        ) : null}
 
         {/* Right: context panel */}
         <ContextPanel

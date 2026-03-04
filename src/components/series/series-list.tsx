@@ -19,8 +19,10 @@ interface Series {
     avatarUrl: string | null;
   };
   latestSession: {
+    id: string;
     status: string;
     sessionNumber: number;
+    sessionScore: string | null;
   } | null;
 }
 

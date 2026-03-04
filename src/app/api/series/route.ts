@@ -68,9 +68,11 @@ export async function GET(request: Request) {
 
         const latestSessions = await tx
           .select({
+            id: sessions.id,
             seriesId: sessions.seriesId,
             status: sessions.status,
             sessionNumber: sessions.sessionNumber,
+            sessionScore: sessions.sessionScore,
           })
           .from(sessions)
           .where(
@@ -105,8 +107,10 @@ export async function GET(request: Request) {
             },
             latestSession: latest
               ? {
+                  id: latest.id,
                   status: latest.status,
                   sessionNumber: latest.sessionNumber,
+                  sessionScore: latest.sessionScore,
                 }
               : null,
           };
