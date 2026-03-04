@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Pre-session nudge cron pipeline (`preSessionNudgeRefresh`): runs every 6 hours, finds series with sessions in next 24h, fires refresh events
+- Individual nudge refresh handler (`nudgeRefreshHandler`): gathers context from last completed session, generates fresh nudges, replaces non-dismissed ones
+- Nudge API endpoint (`GET /api/nudges`): returns upcoming non-dismissed nudges with report names, sorted by priority
+- Nudge dismiss endpoint (`POST /api/nudges/[id]/dismiss`): marks a nudge as permanently dismissed (manager-only)
 - Post-session AI pipeline (`postSessionPipeline`): 9-step Inngest function generating summary, manager addendum, action suggestions, and base nudges after session completion
 - AI retry handler (`aiRetryHandler`): re-runs the full AI pipeline for sessions with failed AI generation
 - AI retry API endpoint (`POST /api/sessions/[id]/ai-retry`): allows managers to re-trigger failed AI pipelines
