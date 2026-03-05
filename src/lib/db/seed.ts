@@ -265,6 +265,12 @@ const TM_FRANK_PROD_ID = 'aabbccdd-0005-4000-ab00-000000000005';
 const TM_GRACE_PROD_ID = 'aabbccdd-0006-4000-ab00-000000000006';
 const TM_FRANK_ENG_ID = 'aabbccdd-0007-4000-ab00-000000000007';
 
+// Sample Notifications
+const NOTIF_PRE_MEETING_BOB_ID = 'aaccddee-0001-4000-ac00-000000000001';
+const NOTIF_PRE_MEETING_DAVE_ID = 'aaccddee-0002-4000-ac00-000000000002';
+const NOTIF_AGENDA_PREP_BOB_ID = 'aaccddee-0003-4000-ac00-000000000003';
+const NOTIF_AGENDA_PREP_DAVE_ID = 'aaccddee-0004-4000-ac00-000000000004';
+
 // =============================================================================
 // Seed functions
 // =============================================================================
@@ -284,6 +290,7 @@ async function seedTenants() {
           timezone: 'America/New_York',
           defaultCadence: 'biweekly',
           defaultDurationMinutes: 30,
+          preferredLanguage: 'en',
         },
       },
       {
@@ -296,6 +303,7 @@ async function seedTenants() {
           timezone: 'Europe/London',
           defaultCadence: 'weekly',
           defaultDurationMinutes: 45,
+          preferredLanguage: 'en',
         },
       },
     ])
@@ -1617,6 +1625,74 @@ async function seedAnalyticsSnapshots() {
 // Main
 // =============================================================================
 
+async function seedNotifications() {
+  console.log('  Seeding notifications...');
+
+  const now = new Date();
+  const threeDaysFromNow = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+  const twoDaysFromNow = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+
+  const notifs = [
+    {
+      id: NOTIF_PRE_MEETING_BOB_ID,
+      tenantId: ACME_TENANT_ID,
+      userId: BOB_ID,
+      type: 'pre_meeting' as const,
+      channel: 'email' as const,
+      referenceType: 'series',
+      referenceId: SERIES_BOB_DAVE_ID,
+      scheduledFor: twoDaysFromNow,
+      status: 'pending' as const,
+    },
+    {
+      id: NOTIF_PRE_MEETING_DAVE_ID,
+      tenantId: ACME_TENANT_ID,
+      userId: DAVE_ID,
+      type: 'pre_meeting' as const,
+      channel: 'email' as const,
+      referenceType: 'series',
+      referenceId: SERIES_BOB_DAVE_ID,
+      scheduledFor: twoDaysFromNow,
+      status: 'pending' as const,
+    },
+    {
+      id: NOTIF_AGENDA_PREP_BOB_ID,
+      tenantId: ACME_TENANT_ID,
+      userId: BOB_ID,
+      type: 'agenda_prep' as const,
+      channel: 'email' as const,
+      referenceType: 'series',
+      referenceId: SERIES_BOB_DAVE_ID,
+      scheduledFor: threeDaysFromNow,
+      status: 'pending' as const,
+    },
+    {
+      id: NOTIF_AGENDA_PREP_DAVE_ID,
+      tenantId: ACME_TENANT_ID,
+      userId: DAVE_ID,
+      type: 'agenda_prep' as const,
+      channel: 'email' as const,
+      referenceType: 'series',
+      referenceId: SERIES_BOB_DAVE_ID,
+      scheduledFor: threeDaysFromNow,
+      status: 'pending' as const,
+    },
+  ];
+
+  for (const notif of notifs) {
+    await db
+      .insert(schema.notifications)
+      .values(notif)
+      .onConflictDoUpdate({
+        target: schema.notifications.id,
+        set: {
+          scheduledFor: sql`excluded.scheduled_for`,
+          status: sql`excluded.status`,
+        },
+      });
+  }
+}
+
 async function seed() {
   console.log('Seeding database...\n');
 
@@ -1630,6 +1706,7 @@ async function seed() {
   await seedAnalyticsSnapshots();
   await seedActionItems();
   await seedPrivateNotes();
+  await seedNotifications();
 
   console.log('\nSeed complete!');
   console.log(`  Acme Corp (${ACME_TENANT_ID}): 7 users, 2 teams, 2 templates, 4 series, 9 sessions`);

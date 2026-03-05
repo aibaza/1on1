@@ -10,6 +10,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Post-session summary email sender (`summary-email.ts`) triggered by AI pipeline completion
 - Organization language setting in company settings (supports en, ro, de, fr, es, pt)
 - AI language injection: all AI-generated content uses the org's preferred language
+- Notification scheduling on session completion: pre-meeting and agenda-prep for next session
+- Notification scheduling on series creation when nextSessionAt is set
+- Notification cancellation on series pause/archive and rescheduling on cadence changes
+- `reminderHoursBefore` field in series update validation for configurable reminder timing
+- Sample notification records in seed data for manual testing
 - Shared email styles module (`src/lib/email/styles.ts`) with consistent Apple-style design constants
 - Reusable email layout component (`EmailLayout`) wrapping brand, content, and footer
 - Pre-meeting reminder email template with recipient, meeting date/time, and CTA

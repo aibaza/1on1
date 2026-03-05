@@ -5,11 +5,13 @@ import { logAuditEvent } from "@/lib/audit/log";
 import { computeSessionScore } from "@/lib/utils/scoring";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
 import { runAIPipelineDirect } from "@/lib/ai/pipeline";
+import { scheduleSeriesNotifications } from "@/lib/notifications/scheduler";
 import {
   sessions,
   meetingSeries,
   sessionAnswers,
   templateQuestions,
+  users,
 } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 
@@ -145,6 +147,25 @@ export async function POST(
           })
           .where(eq(meetingSeries.id, series.id));
 
+        // Fetch manager and report names for notification scheduling
+        const [managerUser] = await tx
+          .select({ firstName: users.firstName, lastName: users.lastName })
+          .from(users)
+          .where(eq(users.id, series.managerId))
+          .limit(1);
+        const [reportUser] = await tx
+          .select({ firstName: users.firstName, lastName: users.lastName })
+          .from(users)
+          .where(eq(users.id, series.reportId))
+          .limit(1);
+
+        const managerName = managerUser
+          ? `${managerUser.firstName} ${managerUser.lastName}`
+          : "Manager";
+        const reportName = reportUser
+          ? `${reportUser.firstName} ${reportUser.lastName}`
+          : "Report";
+
         // Audit log
         await logAuditEvent(tx, {
           tenantId: session.user.tenantId,
@@ -166,6 +187,9 @@ export async function POST(
           seriesId: series.id,
           managerId: series.managerId,
           reportId: series.reportId,
+          managerName,
+          reportName,
+          reminderHoursBefore: series.reminderHoursBefore,
         };
       }
     );
@@ -200,6 +224,20 @@ export async function POST(
       reportId: result.reportId,
     }).catch((err) =>
       console.error("Failed to run AI pipeline:", err)
+    );
+
+    // Schedule notifications for the next session (non-blocking)
+    scheduleSeriesNotifications({
+      tenantId: session.user.tenantId,
+      seriesId: result.seriesId,
+      managerId: result.managerId,
+      reportId: result.reportId,
+      nextSessionAt: new Date(result.nextSessionAt),
+      reminderHoursBefore: result.reminderHoursBefore ?? 24,
+      managerName: result.managerName,
+      reportName: result.reportName,
+    }).catch((err) =>
+      console.error("Failed to schedule notifications:", err)
     );
 
     return NextResponse.json({

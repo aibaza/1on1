@@ -4,6 +4,8 @@ import { withTenantContext } from "@/lib/db/tenant-context";
 import { canManageSeries, isSeriesParticipant } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
 import { updateSeriesSchema } from "@/lib/validations/series";
+import { scheduleSeriesNotifications } from "@/lib/notifications/scheduler";
+import { cancelSeriesNotifications } from "@/lib/notifications/queries";
 import { meetingSeries, sessions, users } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
@@ -217,6 +219,8 @@ export async function PATCH(
         if (data.defaultDurationMinutes !== undefined)
           updateData.defaultDurationMinutes = data.defaultDurationMinutes;
         if (data.status !== undefined) updateData.status = data.status;
+        if (data.reminderHoursBefore !== undefined)
+          updateData.reminderHoursBefore = data.reminderHoursBefore;
 
         // Recompute nextSessionAt if cadence changes
         if (data.cadence || data.preferredDay !== undefined) {
@@ -264,6 +268,60 @@ export async function PATCH(
     }
     if (result === "FORBIDDEN") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // Handle notification scheduling/cancellation based on changes
+    try {
+      if (
+        data.status === "paused" ||
+        data.status === "archived"
+      ) {
+        // Cancel all pending notifications for paused/archived series
+        await cancelSeriesNotifications(id, ["pre_meeting", "agenda_prep"]);
+      } else if (
+        data.cadence ||
+        data.preferredDay !== undefined ||
+        data.reminderHoursBefore !== undefined
+      ) {
+        // Reschedule notifications when timing changes
+        if (result.nextSessionAt) {
+          const [managerUser, reportUser] = await Promise.all([
+            withTenantContext(session.user.tenantId, session.user.id, async (tx) => {
+              const [u] = await tx
+                .select({ firstName: users.firstName, lastName: users.lastName })
+                .from(users)
+                .where(eq(users.id, result.managerId))
+                .limit(1);
+              return u;
+            }),
+            withTenantContext(session.user.tenantId, session.user.id, async (tx) => {
+              const [u] = await tx
+                .select({ firstName: users.firstName, lastName: users.lastName })
+                .from(users)
+                .where(eq(users.id, result.reportId))
+                .limit(1);
+              return u;
+            }),
+          ]);
+
+          await scheduleSeriesNotifications({
+            tenantId: session.user.tenantId,
+            seriesId: id,
+            managerId: result.managerId,
+            reportId: result.reportId,
+            nextSessionAt: result.nextSessionAt,
+            reminderHoursBefore: result.reminderHoursBefore ?? 24,
+            managerName: managerUser
+              ? `${managerUser.firstName} ${managerUser.lastName}`
+              : "Manager",
+            reportName: reportUser
+              ? `${reportUser.firstName} ${reportUser.lastName}`
+              : "Report",
+          });
+        }
+      }
+    } catch (notifError) {
+      console.error("Failed to update notifications for series:", notifError);
     }
 
     return NextResponse.json(result);
@@ -349,6 +407,13 @@ export async function DELETE(
     }
     if (result === "FORBIDDEN") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // Cancel all pending notifications for archived series
+    try {
+      await cancelSeriesNotifications(id, ["pre_meeting", "agenda_prep"]);
+    } catch (notifError) {
+      console.error("Failed to cancel notifications for archived series:", notifError);
     }
 
     return NextResponse.json(result);

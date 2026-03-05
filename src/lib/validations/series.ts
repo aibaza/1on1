@@ -48,6 +48,7 @@ export const updateSeriesSchema = z.object({
     .nullable()
     .optional(),
   defaultDurationMinutes: z.number().int().min(15).max(180).optional(),
+  reminderHoursBefore: z.number().int().min(1).max(168).optional(),
   status: z.enum(seriesStatuses).optional(),
 });
 

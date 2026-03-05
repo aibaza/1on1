@@ -4,6 +4,7 @@ import { withTenantContext } from "@/lib/db/tenant-context";
 import { canManageSeries } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
 import { createSeriesSchema } from "@/lib/validations/series";
+import { scheduleSeriesNotifications } from "@/lib/notifications/scheduler";
 import { meetingSeries, sessions, users } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
@@ -227,6 +228,40 @@ export async function POST(request: Request) {
         return series;
       }
     );
+
+    // Schedule notifications for the first session (non-blocking)
+    if (result.nextSessionAt) {
+      // Fetch manager and report names for notification content
+      const managerName = session.user.name || "Manager";
+      const reportUser = await withTenantContext(
+        session.user.tenantId,
+        session.user.id,
+        async (tx) => {
+          const [u] = await tx
+            .select({ firstName: users.firstName, lastName: users.lastName })
+            .from(users)
+            .where(eq(users.id, data.reportId))
+            .limit(1);
+          return u;
+        }
+      );
+      const reportName = reportUser
+        ? `${reportUser.firstName} ${reportUser.lastName}`
+        : "Report";
+
+      scheduleSeriesNotifications({
+        tenantId: session.user.tenantId,
+        seriesId: result.id,
+        managerId: session.user.id,
+        reportId: data.reportId,
+        nextSessionAt: result.nextSessionAt,
+        reminderHoursBefore: 24,
+        managerName,
+        reportName,
+      }).catch((err) =>
+        console.error("Failed to schedule notifications for new series:", err)
+      );
+    }
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
