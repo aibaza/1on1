@@ -140,7 +140,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **INFR-02**: Blue-green style local deployment — stable test environment always running while developing next version
 - [x] **INFR-03**: Application is deployable to Vercel (serverless functions, edge runtime)
 - [x] **INFR-04**: Bun is the package manager for all dependency management
-- [ ] **INFR-05**: Dark mode support via Tailwind CSS dark: variants
+- [x] **INFR-05**: Dark mode support via Tailwind CSS dark: variants
 
 ### Security
 
@@ -292,7 +292,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFR-02 | Phase 1 | Complete |
 | INFR-03 | Phase 1 | Complete |
 | INFR-04 | Phase 1 | Complete |
-| INFR-05 | Phase 10 | Pending |
+| INFR-05 | Phase 10 | Complete |
 | SEC-01 | Phase 1 | Complete |
 | SEC-02 | Phase 1 | Complete |
 | SEC-03 | Phase 3 | Complete |
