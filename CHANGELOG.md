@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Critical path E2E test (`e2e/critical-path.spec.ts`): admin journey (dashboard, templates, sessions) and manager journey (start session, wizard, complete)
 - Dark mode E2E test (`e2e/dark-mode.spec.ts`): toggle verification, persistence across reload, key screen rendering with screenshots
 - Global test timeout of 60s in `playwright.config.ts` (120s for critical path tests)
+- Docker deployment verification script (`scripts/verify-docker.sh`): build, start, HTTP check, DB check, cleanup
+- Docker E2E test (`e2e/docker.spec.ts`): verifies Docker image builds and verification script exists
+- Healthcheck for app service in `docker-compose.yml` (wget-based, 30s start period)
 
 - Wizard step sidebar (`WizardStepSidebar`): vertical left sidebar showing all categories with step numbers, checkmarks for completed sections, and answer counts
 - Floating context widgets (`FloatingContextWidgets`): collapsible card-based context information replacing fixed sidebar panel (score trends, action items, previous notes/answers, AI nudges)
