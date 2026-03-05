@@ -129,10 +129,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Email Notifications
 
-- [ ] **NOTF-01**: Invite email sent when admin invites a user to the organization
-- [ ] **NOTF-02**: Pre-meeting reminder email sent configurable hours before session (default: 24h)
+- [x] **NOTF-01**: Invite email sent when admin invites a user to the organization
+- [x] **NOTF-02**: Pre-meeting reminder email sent configurable hours before session (default: 24h)
 - [ ] **NOTF-03**: Post-session summary email sent to both parties with answers, notes, action items, and AI summary
-- [ ] **NOTF-04**: Agenda prep reminder email ("Add your talking points") sent 48h before meeting
+- [x] **NOTF-04**: Agenda prep reminder email ("Add your talking points") sent 48h before meeting
 
 ### Infrastructure
 
@@ -284,10 +284,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ANLT-07 | Phase 8 | Complete |
 | ANLT-08 | Phase 8 | Complete |
 | ANLT-09 | Phase 8 | Complete |
-| NOTF-01 | Phase 9 | Pending |
-| NOTF-02 | Phase 9 | Pending |
+| NOTF-01 | Phase 9 | Complete |
+| NOTF-02 | Phase 9 | Complete |
 | NOTF-03 | Phase 9 | Pending |
-| NOTF-04 | Phase 9 | Pending |
+| NOTF-04 | Phase 9 | Complete |
 | INFR-01 | Phase 1 | Complete |
 | INFR-02 | Phase 1 | Complete |
 | INFR-03 | Phase 1 | Complete |
