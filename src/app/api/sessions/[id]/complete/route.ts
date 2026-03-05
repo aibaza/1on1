@@ -82,12 +82,13 @@ export async function POST(
           return { error: "FORBIDDEN" as const };
         }
 
-        // Fetch all answers for this session with their question's answerType
+        // Fetch all answers for this session with their question's answerType and weight
         const answersWithType = await tx
           .select({
             answerNumeric: sessionAnswers.answerNumeric,
             skipped: sessionAnswers.skipped,
             answerType: templateQuestions.answerType,
+            scoreWeight: templateQuestions.scoreWeight,
           })
           .from(sessionAnswers)
           .innerJoin(
@@ -96,11 +97,12 @@ export async function POST(
           )
           .where(eq(sessionAnswers.sessionId, sessionId));
 
-        // Compute session score
+        // Compute session score with per-question weights
         const scoreInput = answersWithType.map((a) => ({
           answerType: a.answerType,
           answerNumeric: a.answerNumeric ? Number(a.answerNumeric) : null,
           skipped: a.skipped,
+          scoreWeight: a.scoreWeight ? Number(a.scoreWeight) : 1,
         }));
         const sessionScore = computeSessionScore(scoreInput);
 

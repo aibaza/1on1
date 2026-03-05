@@ -22,17 +22,6 @@ const mainNavItems: NavItem[] = [
     icon: LayoutDashboard,
   },
   {
-    label: "People",
-    href: "/people",
-    icon: Users,
-    matchAlso: ["/teams"],
-  },
-  {
-    label: "Templates",
-    href: "/templates",
-    icon: FileText,
-  },
-  {
     label: "Sessions",
     href: "/sessions",
     icon: CalendarDays,
@@ -57,6 +46,17 @@ const mainNavItems: NavItem[] = [
 ];
 
 const settingsNavItems: NavItem[] = [
+  {
+    label: "People",
+    href: "/people",
+    icon: Users,
+    matchAlso: ["/teams"],
+  },
+  {
+    label: "Templates",
+    href: "/templates",
+    icon: FileText,
+  },
   {
     label: "Company",
     href: "/settings/company",

@@ -50,6 +50,7 @@ export const questionSchema = z.object({
   conditionalOnQuestionId: z.string().nullable().optional(),
   conditionalOperator: z.enum(conditionalOperators).nullable().optional(),
   conditionalValue: z.string().max(255).nullable().optional(),
+  scoreWeight: z.number().min(0).max(10).default(1).optional(),
 });
 
 // Question with optional ID for batch saves (existing questions have IDs, new ones don't)

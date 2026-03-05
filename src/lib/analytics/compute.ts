@@ -83,6 +83,7 @@ export async function computeSessionSnapshot(
       answerType: templateQuestions.answerType,
       sectionName: templateSections.name,
       skipped: sessionAnswers.skipped,
+      scoreWeight: templateQuestions.scoreWeight,
     })
     .from(sessionAnswers)
     .innerJoin(
@@ -95,12 +96,15 @@ export async function computeSessionSnapshot(
     )
     .where(eq(sessionAnswers.sessionId, sessionId));
 
-  // 3. Compute per-category averages
-  const categoryScores: Record<string, { sum: number; count: number }> = {};
+  // 3. Compute per-category weighted averages
+  const categoryScores: Record<string, { weightedSum: number; totalWeight: number }> = {};
 
   for (const answer of answers) {
     if (answer.skipped || answer.answerNumeric === null) continue;
     if (!SCORABLE_ANSWER_TYPES.has(answer.answerType)) continue;
+
+    const weight = answer.scoreWeight ? parseFloat(answer.scoreWeight) : 1;
+    if (weight <= 0) continue;
 
     const category = answer.sectionName.trim();
     if (!category) continue;
@@ -111,10 +115,10 @@ export async function computeSessionSnapshot(
     const normalized = normalizeScore(value, answer.answerType);
 
     if (!categoryScores[category]) {
-      categoryScores[category] = { sum: 0, count: 0 };
+      categoryScores[category] = { weightedSum: 0, totalWeight: 0 };
     }
-    categoryScores[category].sum += normalized;
-    categoryScores[category].count += 1;
+    categoryScores[category].weightedSum += normalized * weight;
+    categoryScores[category].totalWeight += weight;
   }
 
   // 4. Determine period boundaries (monthly)
@@ -138,12 +142,13 @@ export async function computeSessionSnapshot(
     });
   }
 
-  // Per-category averages (use section name directly as metricName)
+  // Per-category weighted averages (use section name directly as metricName)
   for (const [category, data] of Object.entries(categoryScores)) {
+    if (data.totalWeight === 0) continue;
     metricRows.push({
       metricName: category,
-      metricValue: (data.sum / data.count).toFixed(3),
-      sampleCount: data.count,
+      metricValue: (data.weightedSum / data.totalWeight).toFixed(3),
+      sampleCount: Math.round(data.totalWeight),
     });
   }
 

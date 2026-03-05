@@ -88,6 +88,7 @@ export interface QuestionData {
   conditionalOnQuestionId?: string | null;
   conditionalOperator?: string | null;
   conditionalValue?: string | null;
+  scoreWeight?: number;
   createdAt?: string;
 }
 
@@ -118,6 +119,7 @@ interface ServerQuestionData {
   conditionalOnQuestionId: string | null;
   conditionalOperator: string | null;
   conditionalValue: string | null;
+  scoreWeight: string | null;
   createdAt: string;
   templateId: string;
   isArchived: boolean;
@@ -160,6 +162,7 @@ function toQuestionData(q: ServerQuestionData): QuestionData {
     conditionalOnQuestionId: q.conditionalOnQuestionId,
     conditionalOperator: q.conditionalOperator,
     conditionalValue: q.conditionalValue,
+    scoreWeight: q.scoreWeight ? Number(q.scoreWeight) : 1,
     createdAt: q.createdAt,
   };
 }

@@ -7,6 +7,7 @@ import {
   integer,
   jsonb,
   timestamp,
+  decimal,
   primaryKey,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
@@ -168,6 +169,9 @@ export const templateQuestions = pgTable("template_question", {
   conditionalOnQuestionId: uuid("conditional_on_question_id"),
   conditionalOperator: conditionalOperatorEnum("conditional_operator"),
   conditionalValue: varchar("conditional_value", { length: 255 }),
+  scoreWeight: decimal("score_weight", { precision: 4, scale: 2 })
+    .notNull()
+    .default("1"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

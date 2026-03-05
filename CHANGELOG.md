@@ -7,10 +7,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Per-question score weighting (`score_weight` column) — template authors can control each question's impact on session score (0 = excluded, 1 = normal, 2 = double impact, up to 10)
+- Score weight UI in template editor question form — shown only for scorable answer types (rating, mood, yes/no)
+- SoftexCo "1:1 Check-in (2 săptămâni)" template with 4 sections, 10 questions, and calibrated weights
 - Direct AI pipeline execution (`src/lib/ai/pipeline.ts`) — runs AI generation without Inngest dependency
 - Analytics snapshot computation wired into direct AI pipeline — `computeSessionSnapshot()` called after AI completion (non-fatal on failure)
 
 ### Changed
+- Session scoring now uses weighted averages instead of simple averages — backward compatible (default weight 1.0)
+- Analytics per-category scores now weighted by `score_weight`
 - Session completion and AI retry now use direct pipeline instead of Inngest events (more reliable in dev)
 - AI summary/suggestions polling timeout after 2 minutes — shows retry UI instead of infinite "Generating..." state
 - Dev server starts with plain `next dev` — no Inngest CLI or concurrently dependency
@@ -23,6 +28,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `INNGEST_EVENT_KEY` and `INNGEST_SIGNING_KEY` from `.env.example`
 
 ### Fixed
+- Series creation report dropdown showing all org users — now restricted to direct reports only (both UI and API)
+- Series report select now groups people by team instead of flat list with emails
 - Team analytics page showing no data — added live fallback queries for team averages and heatmap when analytics_snapshots is empty
 - Velocity chart empty for managers — fixed raw SQL with wrong table names (`session` instead of Drizzle table reference) in manager roleFilter
 - Team anonymization filter too aggressive — memberCount>=3 filter now only applies when anonymize=true

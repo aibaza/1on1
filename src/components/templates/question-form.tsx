@@ -8,6 +8,7 @@ import {
   answerTypes,
 } from "@/lib/validations/template";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -23,6 +24,8 @@ import { ConditionalLogicForm } from "./conditional-logic-form";
 import type { QuestionData } from "./template-editor";
 
 type QuestionFormValues = z.infer<typeof questionSchema>;
+
+const SCORABLE_TYPES = new Set(["rating_1_5", "rating_1_10", "yes_no", "mood"]);
 
 const answerTypeLabels: Record<string, string> = {
   text: "Text",
@@ -67,12 +70,15 @@ export function QuestionForm({
       conditionalOnQuestionId: question?.conditionalOnQuestionId ?? undefined,
       conditionalOperator: question?.conditionalOperator as QuestionFormValues["conditionalOperator"] ?? undefined,
       conditionalValue: question?.conditionalValue ?? undefined,
+      scoreWeight: question?.scoreWeight ?? 1,
     },
   });
 
   const selectedAnswerType = watch("answerType");
   const isRequired = watch("isRequired");
   const answerConfig = watch("answerConfig");
+  const scoreWeight = watch("scoreWeight");
+  const isScorable = SCORABLE_TYPES.has(selectedAnswerType);
 
   function onSubmit(data: QuestionFormValues) {
     onSave({
@@ -86,6 +92,7 @@ export function QuestionForm({
       conditionalOnQuestionId: data.conditionalOnQuestionId || null,
       conditionalOperator: data.conditionalOperator || null,
       conditionalValue: data.conditionalValue || null,
+      scoreWeight: SCORABLE_TYPES.has(data.answerType) ? (data.scoreWeight ?? 1) : undefined,
     });
   }
 
@@ -204,6 +211,27 @@ export function QuestionForm({
           onCheckedChange={(checked) => setValue("isRequired", checked)}
         />
       </div>
+
+      {/* Score weight (only for scorable answer types) */}
+      {isScorable && (
+        <div className="space-y-2">
+          <Label htmlFor="scoreWeight">Score Weight</Label>
+          <Input
+            id="scoreWeight"
+            type="number"
+            min={0}
+            max={10}
+            step={0.5}
+            value={scoreWeight ?? 1}
+            onChange={(e) =>
+              setValue("scoreWeight", parseFloat(e.target.value) || 0)
+            }
+          />
+          <p className="text-xs text-muted-foreground">
+            0 = excluded from scoring, 1 = normal, 2 = double impact
+          </p>
+        </div>
+      )}
 
       {/* Conditional logic */}
       {showConditionalLogic && (

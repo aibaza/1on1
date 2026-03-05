@@ -3,6 +3,7 @@
  *
  * All numeric answer types are normalized to a 1-5 scale before averaging.
  * Non-numeric types (text, multiple_choice) are excluded from scoring.
+ * Per-question weights control each question's impact on the final score.
  */
 
 /** Answer types that can be scored (have a numeric value on a defined scale). */
@@ -36,32 +37,40 @@ export function normalizeAnswer(answerType: string, value: number): number {
 }
 
 /**
- * Compute the overall session score as the average of normalized numeric answers.
+ * Compute the overall session score as the weighted average of normalized numeric answers.
  *
  * Returns null if no scorable answers exist (e.g. all questions are text/multiple_choice,
- * or all numeric answers were skipped).
+ * all numeric answers were skipped, or all weights are 0).
  */
 export function computeSessionScore(
   answers: Array<{
     answerType: string;
     answerNumeric: number | null;
     skipped: boolean;
+    scoreWeight?: number;
   }>
 ): number | null {
   const scorable = answers.filter(
     (a) =>
       SCORABLE_TYPES.has(a.answerType) &&
       a.answerNumeric !== null &&
-      !a.skipped
+      !a.skipped &&
+      (a.scoreWeight ?? 1) > 0
   );
 
   if (scorable.length === 0) return null;
 
-  const total = scorable.reduce(
-    (sum, a) => sum + normalizeAnswer(a.answerType, a.answerNumeric!),
-    0
-  );
+  let weightedSum = 0;
+  let totalWeight = 0;
+
+  for (const a of scorable) {
+    const weight = a.scoreWeight ?? 1;
+    weightedSum += normalizeAnswer(a.answerType, a.answerNumeric!) * weight;
+    totalWeight += weight;
+  }
+
+  if (totalWeight === 0) return null;
 
   // Round to 2 decimal places
-  return Math.round((total / scorable.length) * 100) / 100;
+  return Math.round((weightedSum / totalWeight) * 100) / 100;
 }

@@ -152,7 +152,7 @@ export async function POST(request: Request) {
       session.user.tenantId,
       session.user.id,
       async (tx) => {
-        // Verify report is a user in the same tenant
+        // Verify report is a direct report of the current user
         const report = await tx
           .select({ id: users.id })
           .from(users)
@@ -160,7 +160,8 @@ export async function POST(request: Request) {
             and(
               eq(users.id, data.reportId),
               eq(users.tenantId, session.user.tenantId),
-              eq(users.isActive, true)
+              eq(users.isActive, true),
+              eq(users.managerId, session.user.id)
             )
           )
           .limit(1);

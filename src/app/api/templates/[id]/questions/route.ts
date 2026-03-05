@@ -93,6 +93,7 @@ export async function POST(request: Request, { params }: RouteContext) {
             conditionalOnQuestionId: data.conditionalOnQuestionId ?? null,
             conditionalOperator: data.conditionalOperator ?? null,
             conditionalValue: data.conditionalValue ?? null,
+            scoreWeight: data.scoreWeight !== undefined ? String(data.scoreWeight) : "1",
           })
           .returning();
 

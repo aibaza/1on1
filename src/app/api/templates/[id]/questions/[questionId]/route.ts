@@ -95,6 +95,8 @@ export async function PATCH(request: Request, { params }: RouteContext) {
           updatePayload.conditionalOperator = data.conditionalOperator;
         if (data.conditionalValue !== undefined)
           updatePayload.conditionalValue = data.conditionalValue;
+        if (data.scoreWeight !== undefined)
+          updatePayload.scoreWeight = String(data.scoreWeight);
 
         const [updated] = await tx
           .update(templateQuestions)

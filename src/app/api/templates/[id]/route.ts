@@ -339,6 +339,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
                     resolveRefForInsert(q.conditionalOnQuestionId),
                   conditionalOperator: q.conditionalOperator ?? null,
                   conditionalValue: q.conditionalValue ?? null,
+                  scoreWeight: q.scoreWeight !== undefined ? String(q.scoreWeight) : "1",
                 });
               }
             }
@@ -412,6 +413,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
                         resolveRefForInsert(q.conditionalOnQuestionId),
                       conditionalOperator: q.conditionalOperator ?? null,
                       conditionalValue: q.conditionalValue ?? null,
+                      scoreWeight: q.scoreWeight !== undefined ? String(q.scoreWeight) : "1",
                     })
                     .where(eq(templateQuestions.id, q.id));
                 } else {
@@ -428,6 +430,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
                       resolveRefForInsert(q.conditionalOnQuestionId),
                     conditionalOperator: q.conditionalOperator ?? null,
                     conditionalValue: q.conditionalValue ?? null,
+                    scoreWeight: q.scoreWeight !== undefined ? String(q.scoreWeight) : "1",
                   });
                 }
               }

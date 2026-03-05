@@ -13,7 +13,9 @@ import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -62,7 +64,7 @@ interface Template {
 }
 
 interface SeriesFormProps {
-  users: User[];
+  userGroups: [string, User[]][];
   templates: Template[];
 }
 
@@ -81,7 +83,7 @@ const dayOptions = [
   { value: "fri", label: "Friday" },
 ] as const;
 
-export function SeriesForm({ users, templates }: SeriesFormProps) {
+export function SeriesForm({ userGroups, templates }: SeriesFormProps) {
   const router = useRouter();
 
   const form = useForm<FormValues>({
@@ -130,8 +132,8 @@ export function SeriesForm({ users, templates }: SeriesFormProps) {
     },
     onSuccess: () => {
       toast.success("Meeting series created");
-      router.push("/sessions");
       router.refresh();
+      router.push("/sessions");
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -157,10 +159,15 @@ export function SeriesForm({ users, templates }: SeriesFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {users.map((user) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      {user.firstName} {user.lastName} ({user.email})
-                    </SelectItem>
+                  {userGroups.map(([teamName, members]) => (
+                    <SelectGroup key={teamName}>
+                      <SelectLabel>{teamName}</SelectLabel>
+                      {members.map((user) => (
+                        <SelectItem key={`${teamName}-${user.id}`} value={user.id}>
+                          {user.firstName} {user.lastName}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
                   ))}
                 </SelectContent>
               </Select>
