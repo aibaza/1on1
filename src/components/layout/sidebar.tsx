@@ -1,3 +1,4 @@
+// Legacy sidebar -- kept as icon-only collapsible fallback. Not used in default layout.
 "use client";
 
 import Link from "next/link";

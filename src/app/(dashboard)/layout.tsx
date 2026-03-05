@@ -1,11 +1,14 @@
 import { auth } from "@/lib/auth/config";
 import { SessionProvider } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { QueryProvider } from "@/providers/query-provider";
-import { Sidebar } from "@/components/layout/sidebar";
+import { TopNav } from "@/components/layout/top-nav";
 import { Toaster } from "@/components/ui/sonner";
-import { CommandPalette, SearchTrigger } from "@/components/search/command-palette";
+import { CommandPalette } from "@/components/search/command-palette";
+import { ThemeColorProvider } from "@/components/theme-color-provider";
+import { withTenantContext } from "@/lib/db/tenant-context";
+import { tenants } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export default async function DashboardLayout({
   children,
@@ -17,19 +20,38 @@ export default async function DashboardLayout({
   const session = await auth();
   if (!session) redirect("/login");
 
+  // Read tenant color theme for ThemeColorProvider
+  let colorTheme = "neutral";
+  try {
+    const tenant = await withTenantContext(
+      session.user.tenantId,
+      session.user.id,
+      async (tx) => {
+        const [result] = await tx
+          .select({ settings: tenants.settings })
+          .from(tenants)
+          .where(eq(tenants.id, session.user.tenantId))
+          .limit(1);
+        return result;
+      }
+    );
+    const settings = (tenant?.settings ?? {}) as { colorTheme?: string };
+    colorTheme = settings.colorTheme ?? "neutral";
+  } catch {
+    // Fall back to neutral if tenant fetch fails
+  }
+
   return (
     <SessionProvider session={session}>
       <QueryProvider>
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <div className="flex flex-1 flex-col">
-            <header className="flex items-center justify-end gap-2 border-b px-4 py-2">
-              <SearchTrigger />
-              <ThemeToggle />
-            </header>
-            <main className="flex-1 p-6">{children}</main>
+        <ThemeColorProvider colorTheme={colorTheme}>
+          <div className="min-h-screen flex flex-col">
+            <TopNav />
+            <main className="flex-1 p-6">
+              <div className="mx-auto max-w-7xl">{children}</div>
+            </main>
           </div>
-        </div>
+        </ThemeColorProvider>
         <CommandPalette />
         <Toaster />
       </QueryProvider>

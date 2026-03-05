@@ -11,6 +11,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Standalone `UserMenu` dropdown component with avatar, role badge, and sign out
 - Mobile responsive hamburger menu (Sheet slide-in) for small screens
 - Settings dropdown in top nav grouping admin/manager navigation items
+
+### Changed
+- Dashboard layout restructured from sidebar to top nav with full-width content area (max-w-7xl)
+- Sidebar marked as legacy fallback (preserved but no longer used in default layout)
+
+### Added
 - Post-session summary email sender (`summary-email.ts`) triggered by AI pipeline completion
 - Organization language setting in company settings (supports en, ro, de, fr, es, pt)
 - AI language injection: all AI-generated content uses the org's preferred language
