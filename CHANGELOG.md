@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Shared email styles module (`src/lib/email/styles.ts`) with consistent Apple-style design constants
+- Reusable email layout component (`EmailLayout`) wrapping brand, content, and footer
+- Pre-meeting reminder email template with recipient, meeting date/time, and CTA
+- Agenda prep email template with manager/report variants and AI coaching nudges section (manager-only)
+- Session summary email template with score badge, AI summary, action items, and manager insights
 - Per-question score weighting (`score_weight` column) — template authors can control each question's impact on session score (0 = excluded, 1 = normal, 2 = double impact, up to 10)
 - Score weight UI in template editor question form — shown only for scorable answer types (rating, mood, yes/no)
 - SoftexCo "1:1 Check-in (2 săptămâni)" template with 4 sections, 10 questions, and calibrated weights
@@ -14,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Analytics snapshot computation wired into direct AI pipeline — `computeSessionSnapshot()` called after AI completion (non-fatal on failure)
 
 ### Changed
+- Existing email templates (invite, verification, password-reset) refactored to use shared EmailLayout and styles
 - Session scoring now uses weighted averages instead of simple averages — backward compatible (default weight 1.0)
 - Analytics per-category scores now weighted by `score_weight`
 - Session completion and AI retry now use direct pipeline instead of Inngest events (more reliable in dev)
