@@ -7,6 +7,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Wizard step sidebar (`WizardStepSidebar`): vertical left sidebar showing all categories with step numbers, checkmarks for completed sections, and answer counts
+- Floating context widgets (`FloatingContextWidgets`): collapsible card-based context information replacing fixed sidebar panel (score trends, action items, previous notes/answers, AI nudges)
+- Slide transitions between wizard category steps using CSS `translateX` + opacity animation
+- Inline Prev/Next navigation buttons below form content (replaces distant bottom bar)
+- Mobile: horizontal scrollable step strip at top, bottom Sheet for context widgets
+- Tablet: floating action button to open context widgets in right Sheet
 - Skeleton loading states (`loading.tsx`) for all dashboard routes: overview, sessions, action items, history, analytics, people, teams, templates, settings
 - Global `animate-fade-in` CSS animation utility (subtle opacity + translateY) for page transitions
 - Descriptive empty state with icon and CTA for history page when no sessions exist
@@ -21,6 +27,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `colorTheme` field in organization settings validation schema and API endpoint
 
 ### Changed
+- Wizard layout restructured: three-column layout (step sidebar | form content | context widgets) replacing two-column (form | fixed context panel)
+- Wizard navigation moved from bottom tab bar to left step sidebar with inline prev/next buttons below form
+- Context panel data displayed as individually collapsible Card widgets instead of single scrolling sidebar
 - Dashboard layout responsive padding: `px-4 py-6 sm:px-6 lg:px-8` with fade-in animation on content wrapper
 - Consistent `font-semibold` typography on all page titles (settings page was `font-bold`)
 - Subtle hover shadow (`hover:shadow-md`) added to all interactive cards (series, analytics, team, quick stats, upcoming sessions)

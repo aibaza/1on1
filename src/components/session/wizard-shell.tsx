@@ -2,18 +2,21 @@
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { WizardTopBar, type SaveStatus } from "./wizard-top-bar";
-import { WizardNavigation } from "./wizard-navigation";
+import { WizardStepSidebar } from "./wizard-step-sidebar";
 import { CategoryStep } from "./category-step";
 import { RecapScreen } from "./recap-screen";
 import { SummaryScreen } from "./summary-screen";
-import { ContextPanel, type OpenActionItem } from "./context-panel";
+import { FloatingContextWidgets } from "./floating-context-widgets";
 import { QuestionHistoryDialog, type PreviousSession } from "./question-history-dialog";
 import { type AnswerValue } from "./question-widget";
 import { type TalkingPoint } from "./talking-point-list";
 import { type ActionItemData } from "./action-item-inline";
+import { type OpenActionItem } from "./context-panel";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 
 // --- Types ---
@@ -258,6 +261,11 @@ export function WizardShell({ sessionId }: WizardShellProps) {
     pendingSaves: new Set<string>(),
     activeSavingCount: 0,
   });
+
+  // Track slide direction for CSS transitions
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const prevStepRef = useRef(0);
 
   const initializedRef = useRef(false);
   // Track the latest changed answer for debounced saving
@@ -529,23 +537,105 @@ export function WizardShell({ sessionId }: WizardShellProps) {
 
   const totalSteps = stepNames.length;
 
-  // Navigation handlers
+  // Build step info for sidebar (with completion tracking)
+  const stepInfos = useMemo(() => {
+    return stepNames.map((name, index) => {
+      // Recap and Summary steps have no questions
+      if (index === 0 || index === stepNames.length - 1) {
+        return { name, answered: 0, total: 0, isComplete: index === 0 };
+      }
+      // Category step
+      const sectionIndex = index - 1;
+      const section = state.sections[sectionIndex];
+      if (!section) return { name, answered: 0, total: 0, isComplete: false };
+
+      const visibleQuestions = section.questions.filter((q) =>
+        evaluateCondition(q, state.answers)
+      );
+      const answeredCount = visibleQuestions.filter((q) => {
+        const answer = state.answers.get(q.id);
+        if (!answer) return false;
+        return (
+          answer.answerText !== undefined ||
+          answer.answerNumeric !== undefined ||
+          answer.answerJson !== undefined
+        );
+      }).length;
+
+      return {
+        name,
+        answered: answeredCount,
+        total: visibleQuestions.length,
+        isComplete: visibleQuestions.length > 0 && answeredCount === visibleQuestions.length,
+      };
+    });
+  }, [stepNames, state.sections, state.answers]);
+
+  // Navigation with slide transition
+  const navigateToStep = useCallback(
+    (step: number) => {
+      if (step === state.currentStep) return;
+      const direction = step > state.currentStep ? "left" : "right";
+      setSlideDirection(direction);
+      setIsTransitioning(true);
+
+      // After brief exit animation, update step and start enter animation
+      requestAnimationFrame(() => {
+        dispatch({ type: "SET_STEP", step });
+        prevStepRef.current = step;
+        // Clear transition after enter animation completes
+        setTimeout(() => {
+          setIsTransitioning(false);
+          setSlideDirection(null);
+        }, 300);
+      });
+    },
+    [state.currentStep]
+  );
+
   const handleStepChange = useCallback(
-    (step: number) => dispatch({ type: "SET_STEP", step }),
-    []
+    (step: number) => navigateToStep(step),
+    [navigateToStep]
   );
 
   const handlePrev = useCallback(() => {
     if (state.currentStep > 0) {
-      dispatch({ type: "SET_STEP", step: state.currentStep - 1 });
+      navigateToStep(state.currentStep - 1);
     }
-  }, [state.currentStep]);
+  }, [state.currentStep, navigateToStep]);
 
   const handleNext = useCallback(() => {
     if (state.currentStep < totalSteps - 1) {
-      dispatch({ type: "SET_STEP", step: state.currentStep + 1 });
+      navigateToStep(state.currentStep + 1);
     }
-  }, [state.currentStep, totalSteps]);
+  }, [state.currentStep, totalSteps, navigateToStep]);
+
+  // Keyboard shortcuts: Left/Right arrow keys for navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isInput =
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT" ||
+        target.isContentEditable;
+
+      if (isInput) return;
+
+      const isSummaryStep = state.currentStep === totalSteps - 1;
+
+      if (e.key === "ArrowLeft" && state.currentStep > 0) {
+        e.preventDefault();
+        handlePrev();
+      } else if (e.key === "ArrowRight" && !isSummaryStep) {
+        e.preventDefault();
+        handleNext();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [state.currentStep, totalSteps, handlePrev, handleNext]);
 
   // Question history dialog handler
   const handleQuestionHistoryOpen = useCallback((questionId: string) => {
@@ -685,6 +775,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
   // Determine current step content
   const isRecapStep = state.currentStep === 0;
   const isSummaryStep = state.currentStep === totalSteps - 1 && totalSteps > 1;
+  const isLastCategoryStep = state.currentStep === totalSteps - 2;
   const sectionIndex = state.currentStep - 1; // -1 for recap
   const currentSection =
     sectionIndex >= 0 && sectionIndex < state.sections.length
@@ -693,6 +784,13 @@ export function WizardShell({ sessionId }: WizardShellProps) {
 
   // Determine if current user is the manager on this series
   const isManager = authSession?.user?.id === data.series.managerId;
+
+  // Slide transition classes
+  const slideClass = isTransitioning
+    ? slideDirection === "left"
+      ? "translate-x-[-8px] opacity-90"
+      : "translate-x-[8px] opacity-90"
+    : "translate-x-0 opacity-100";
 
   return (
     <>
@@ -705,50 +803,117 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         hasUnsavedChanges={aggregatedSaveStatus === "saving"}
       />
 
-      {/* Main content area with context panel */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left: main wizard content */}
-        {isRecapStep ? (
-          <RecapScreen
-            reportName={reportName}
-            previousSessions={data.previousSessions}
-            openActionItems={data.openActionItems}
-          />
-        ) : isSummaryStep ? (
-          <SummaryScreen
-            sessionId={sessionId}
+      {/* Main layout: step sidebar | content | context widgets */}
+      <div className="flex flex-1 overflow-hidden h-[calc(100vh-3.5rem)]">
+        {/* Left: step sidebar */}
+        <WizardStepSidebar
+          steps={stepInfos}
+          currentStep={state.currentStep}
+          onStepChange={handleStepChange}
+        />
+
+        {/* Center: form content area */}
+        <div className="flex-1 overflow-y-auto relative">
+          <div
+            className={cn(
+              "transition-all duration-300 ease-in-out",
+              slideClass
+            )}
+          >
+            {isRecapStep ? (
+              <RecapScreen
+                reportName={reportName}
+                previousSessions={data.previousSessions}
+                openActionItems={data.openActionItems}
+              />
+            ) : isSummaryStep ? (
+              <SummaryScreen
+                sessionId={sessionId}
+                seriesId={data.session.seriesId}
+                categories={state.sections}
+                answers={state.answers}
+                sharedNotes={data.session.sharedNotes ?? {}}
+                talkingPoints={talkingPointsByCategory}
+                actionItems={actionItemsByCategory}
+                onGoBack={handleStepChange}
+                isManager={isManager}
+              />
+            ) : currentSection ? (
+              <div className="max-w-3xl mx-auto py-6 px-4">
+                <CategoryStep
+                  sessionId={sessionId}
+                  categoryName={currentSection.name}
+                  questions={currentSection.questions}
+                  answers={state.answers}
+                  onAnswerChange={handleAnswerChange}
+                  isQuestionVisible={isQuestionVisible}
+                  disabled={data.session.status === "completed"}
+                  sharedNotesContent={
+                    data.session.sharedNotes?.[currentSection.name] ?? ""
+                  }
+                  privateNotesContent={privateNotes[currentSection.name] ?? ""}
+                  talkingPoints={talkingPointsByCategory[currentSection.name] ?? []}
+                  actionItems={actionItemsByCategory[currentSection.name] ?? []}
+                  seriesParticipants={seriesParticipants}
+                  sessionNumberMap={sessionNumberMap}
+                  onSavingChange={handleSavingChange}
+                />
+              </div>
+            ) : null}
+
+            {/* Inline Prev/Next buttons below form content */}
+            {!isSummaryStep && (
+              <div className="max-w-3xl mx-auto px-4 pb-8">
+                <div className="flex items-center justify-between pt-6 border-t mt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePrev}
+                    disabled={state.currentStep === 0}
+                    className="gap-1"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Previous
+                  </Button>
+
+                  <span className="text-xs text-muted-foreground">
+                    {state.currentStep + 1} of {totalSteps}
+                  </span>
+
+                  <Button
+                    variant={isLastCategoryStep ? "default" : "outline"}
+                    size="sm"
+                    onClick={handleNext}
+                    className="gap-1"
+                  >
+                    {isLastCategoryStep ? "Review" : "Next"}
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right: floating context widgets (desktop only -- lg+ as column) */}
+        <div className="hidden lg:block w-[280px] shrink-0 overflow-y-auto border-l p-4">
+          <FloatingContextWidgets
+            currentStep={state.currentStep}
+            currentCategory={currentSection?.name ?? null}
+            previousSessions={previousSessionsForContext}
+            openActionItems={openActionItemsForContext}
+            sessionScores={sessionScores}
+            onQuestionHistoryOpen={handleQuestionHistoryOpen}
             seriesId={data.session.seriesId}
-            categories={state.sections}
-            answers={state.answers}
-            sharedNotes={data.session.sharedNotes ?? {}}
-            talkingPoints={talkingPointsByCategory}
-            actionItems={actionItemsByCategory}
-            onGoBack={handleStepChange}
+            sessionId={data.session.id}
             isManager={isManager}
           />
-        ) : currentSection ? (
-          <CategoryStep
-            sessionId={sessionId}
-            categoryName={currentSection.name}
-            questions={currentSection.questions}
-            answers={state.answers}
-            onAnswerChange={handleAnswerChange}
-            isQuestionVisible={isQuestionVisible}
-            disabled={data.session.status === "completed"}
-            sharedNotesContent={
-              data.session.sharedNotes?.[currentSection.name] ?? ""
-            }
-            privateNotesContent={privateNotes[currentSection.name] ?? ""}
-            talkingPoints={talkingPointsByCategory[currentSection.name] ?? []}
-            actionItems={actionItemsByCategory[currentSection.name] ?? []}
-            seriesParticipants={seriesParticipants}
-            sessionNumberMap={sessionNumberMap}
-            onSavingChange={handleSavingChange}
-          />
-        ) : null}
+        </div>
+      </div>
 
-        {/* Right: context panel */}
-        <ContextPanel
+      {/* Tablet + Mobile: floating context widgets rendered outside the flex container */}
+      <div className="lg:hidden">
+        <FloatingContextWidgets
           currentStep={state.currentStep}
           currentCategory={currentSection?.name ?? null}
           previousSessions={previousSessionsForContext}
@@ -760,15 +925,6 @@ export function WizardShell({ sessionId }: WizardShellProps) {
           isManager={isManager}
         />
       </div>
-
-      <WizardNavigation
-        currentStep={state.currentStep}
-        totalSteps={totalSteps}
-        stepNames={stepNames}
-        onStepChange={handleStepChange}
-        onPrev={handlePrev}
-        onNext={handleNext}
-      />
 
       {/* Question history dialog */}
       {historyQuestion && (

@@ -63,7 +63,7 @@ export async function GET(request: Request) {
 
         // Fetch labels for all templates
         const templateIds = templates.map((t) => t.id);
-        let labelsByTemplate = new Map<
+        const labelsByTemplate = new Map<
           string,
           Array<{ id: string; name: string; color: string | null }>
         >();
