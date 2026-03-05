@@ -186,18 +186,21 @@ Plans:
 - [ ] 09-02-PLAN.md -- Post-session summary email via AI pipeline, notification scheduling on session completion, org language setting, series management wiring (Wave 2)
 
 ### Phase 10: Integration & Polish
-**Goal**: The application feels cohesive and polished with dark mode, consistent design, and verified end-to-end workflows
+**Goal**: The application feels cohesive and polished with dark mode, org color themes, redesigned navigation, restructured wizard, and verified end-to-end workflows
 **Depends on**: Phase 8, Phase 9
 **Requirements**: INFR-05
 **Success Criteria** (what must be TRUE):
   1. Dark mode works correctly across all screens via Tailwind CSS dark: variants with system preference detection
   2. Complete user workflow functions end-to-end: register org, invite user, create template, create series, run session, view AI summary, check dashboard, receive email
   3. Blue-green local deployment works -- stable test environment on port 4300 runs while developing the next version
-**Plans**: TBD
+**Plans**: 5 plans in 3 waves (Wave 1: theming + nav restructure in parallel, Wave 2: wizard restructure + responsive polish in parallel, Wave 3: E2E verification + Docker check)
 
 Plans:
-- [ ] 10-01: Dark mode implementation and theme consistency
-- [ ] 10-02: End-to-end workflow verification and polish
+- [ ] 10-01-PLAN.md -- Dark mode audit/fixes, two-state toggle, org color theme infrastructure, monochrome chart palette (Wave 1)
+- [ ] 10-02-PLAN.md -- Dashboard nav restructure: left sidebar to top horizontal nav bar (shadcn dashboard reference) (Wave 1)
+- [ ] 10-03-PLAN.md -- Wizard layout restructure: left step sidebar, floating context widgets, repositioned nav buttons (Wave 2)
+- [ ] 10-04-PLAN.md -- Responsive polish: loading states, empty states, transitions, typography consistency across all screens (Wave 2)
+- [ ] 10-05-PLAN.md -- E2E Playwright tests (critical path + dark mode), Docker blue-green deployment verification (Wave 3)
 
 ## Progress
 
@@ -217,4 +220,4 @@ Note: Phases 6, 7, and 9 all depend only on Phase 5 and can execute in parallel.
 | 7. AI Pipeline | 3/5 | Gap closure | - |
 | 8. Manager Dashboard & Analytics | 7/7 | Complete   | 2026-03-04 |
 | 9. Email Notifications | 2/2 | Complete   | 2026-03-05 |
-| 10. Integration & Polish | 0/2 | Not started | - |
+| 10. Integration & Polish | 0/5 | Not started | - |
