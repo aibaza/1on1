@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 10-02-PLAN.md (navigation restructure)
-last_updated: "2026-03-05T15:24:48.018Z"
-last_activity: 2026-03-05 -- Plan 09-02 completed (Email notification wiring)
+stopped_at: Completed 10-01-PLAN.md
+last_updated: "2026-03-05T15:30:17.372Z"
+last_activity: 2026-03-05 -- Plan 10-01 completed (Dark mode & org color themes)
 progress:
   total_phases: 10
   completed_phases: 9
   total_plans: 40
-  completed_plans: 36
+  completed_plans: 37
   percent: 90
 ---
 
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 
 Phase: 10 of 10 (Integration & Polish)
 Plan: 2 of 5 in current phase (COMPLETE)
-Status: Plan 10-02 complete -- top nav restructure
-Last activity: 2026-03-05 -- Plan 10-02 completed (Navigation restructure)
+Status: Plans 10-01 and 10-02 complete -- dark mode/themes + top nav restructure
+Last activity: 2026-03-05 -- Plan 10-01 completed (Dark mode & org color themes)
 
 Progress: [█████████░] 90%
 
@@ -86,6 +86,7 @@ Progress: [█████████░] 90%
 | Phase 09 P01 | 6min | 2 tasks | 18 files |
 | Phase 09 P02 | 6min | 2 tasks | 12 files |
 | Phase 10 P02 | 4min | 2 tasks | 4 files |
+| Phase 10 P01 | 8 | 2 tasks | 18 files |
 
 ## Accumulated Context
 
@@ -229,6 +230,9 @@ Recent decisions affecting current work:
 - [09-02]: Language injection via withLanguageInstruction helper -- appends instruction to system prompt when non-English
 - [09-02]: Non-blocking notification scheduling everywhere -- .catch() pattern for fire-and-forget
 - [Phase 10]: [10-02]: Settings items in dropdown, sidebar preserved as legacy, max-w-7xl content container
+- [Phase 10]: data-color-theme attribute on html for org themes (composes with .dark class without conflicts)
+- [Phase 10]: Semantic CSS variables (--color-success/warning/danger) for chart status colors
+- [Phase 10]: useSyncExternalStore for SSR-safe mounting detection in ThemeToggle
 
 ### Pending Todos
 
@@ -243,6 +247,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-05T15:24:48.014Z
-Stopped at: Completed 10-02-PLAN.md (navigation restructure)
+Last session: 2026-03-05T15:30:17.368Z
+Stopped at: Completed 10-01-PLAN.md
 Resume file: None
