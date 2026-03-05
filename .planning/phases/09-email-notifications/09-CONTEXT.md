@@ -23,26 +23,31 @@ Send 3 new email types to keep users engaged between sessions: pre-meeting remin
 - **Timing**: Configurable per-series (e.g., 1h, 4h, 24h, 48h). Stored on the meeting_series record. Default: 24h before session
 
 ### Agenda prep reminder (NOTF-04)
-- **Content**: Nudge text ("You have a 1:1 with [Name] in 2 days") plus 1-2 AI pre-session nudges inline from Phase 7 ("Last time Alex mentioned burnout — follow up?"). Brings AI value into the email
+- **Manager version**: Nudge text ("You have a 1:1 with [Name] in 2 days") plus 1-2 AI pre-session nudges inline from Phase 7 ("Last time Alex mentioned burnout — follow up?"). Brings AI value into the email
+- **Report version**: Plain nudge only — "You have a 1:1 with [Manager] in 2 days — add your talking points" with a link to the series page. No AI nudges (those are manager-facing coaching prompts)
 - **Timing**: 48h before meeting (per spec)
 
 ### Notification preferences
-- **No settings UI for v1** — each email includes an unsubscribe link at the bottom that disables that specific notification type per user
-- **Reversible**: User can re-enable notification types from their profile settings page (simple toggles showing current opt-in/out state)
-- **CAN-SPAM compliant**: Unsubscribe link in every email, one-click disable
+- **No unsubscribe mechanism** — these are company procedures, employees cannot opt out of meeting-related notifications
+- No unsubscribe links, no preference toggles, no opt-out UI
 
 ### Design consistency
 - Refresh the existing invite email template to match the new templates' design patterns — consistency pass across all 4+ email types
 
+### Organization language
+- Organizations can configure their preferred language (org-level setting)
+- All AI-generated content (summaries, nudges, action item suggestions) must use the organization's configured language
+- This applies to ALL AI output — not just emails but also in-app AI content (summaries, nudges, dashboard)
+- Email template chrome (headers, footers, button labels) stays in English for v1; AI content sections use org language
+
+### Email delivery
+- **Use Nodemailer with existing SMTP settings** — no Resend, no new provider. The SMTP configuration is already in place and working
+
 ### Claude's Discretion
 - Scheduling mechanism (cron API route vs event-driven vs hybrid) — pick based on Vercel deployment + notification table's scheduledFor field
-- Reminder recipients per type (both parties vs manager-only for agenda prep with AI nudges)
-- Email delivery provider (Nodemailer/SMTP vs Resend — both available, Resend ^6.9.3 already installed)
 - Failure handling and retry strategy (in-process vs cron-based retries)
-- Email tracking approach (status-only vs open/click tracking) — pick based on chosen provider
 - React Email template layout and component structure
-- Notification preference DB schema (user_notification_preferences table or column on users table)
-- Unsubscribe token mechanism and URL design
+- Org language setting schema and where it's stored (tenants table or separate settings table)
 
 </decisions>
 
@@ -64,7 +69,7 @@ Send 3 new email types to keep users engaged between sessions: pre-meeting remin
 - `src/lib/email/templates/`: 3 React Email templates (verification, password-reset, invite) — established design system with Apple-style aesthetics (dark text on light, system fonts, rounded buttons, 480px container)
 - `src/lib/db/schema/notifications.ts`: Full notification table with types (pre_meeting, agenda_prep, session_summary, etc.), channels (email, in_app), statuses (pending, sent, failed, cancelled), and scheduledFor field
 - `src/lib/db/schema/enums.ts`: notificationTypeEnum, notificationChannelEnum, notificationStatusEnum already defined
-- `resend` ^6.9.3 in package.json — installed but unused, available if preferred over Nodemailer
+- `resend` ^6.9.3 in package.json — installed but unused (not using it; sticking with Nodemailer/SMTP)
 
 ### Established Patterns
 - Email sending is non-blocking — failures logged but don't fail the parent request (invite email pattern)
@@ -77,7 +82,7 @@ Send 3 new email types to keep users engaged between sessions: pre-meeting remin
 - AI pipeline output: AI summary + manager addendum + action item suggestions — all needed as email content
 - Meeting series record: Stores cadence + next session date — source for scheduling reminders
 - Notification table: Write scheduled notifications when series next date is computed
-- User profile page: Add notification preference toggles for unsubscribe re-enable
+- Tenant/org settings: Store preferred language for AI content generation
 
 </code_context>
 
