@@ -21,6 +21,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Language preference API endpoint (`PATCH /api/user/language`) with Zod validation and cookie persistence
 - `updateLanguageSchema` Zod schema in `src/lib/validations/user.ts`
 - Date/number formatting pipeline proof via `useFormatter()` on login page
+- Language switcher in user menu dropdown (English / Romana) with visual checkmark for active language
+- Language switch persists to DB, updates JWT via session refresh, and reloads page for new translations
 
 ## [1.0.0] - 2026-03-05
 
