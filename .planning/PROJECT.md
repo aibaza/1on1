@@ -33,18 +33,27 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 
 ### Active
 
-- [ ] AI personal profiles built from accumulated session data (pgvector embeddings)
-- [ ] AI live suggestions during active sessions (streaming, low latency)
-- [ ] AI-generated growth narratives ("Over Q1, Alex improved communication by 23%...")
-- [ ] AI anomaly detection with proactive alerts
-- [ ] Google Calendar integration for scheduling meetings
-- [ ] Outlook/O365 calendar sync
-- [ ] Magic link passwordless login
-- [ ] Overdue action item email notifications
-- [ ] Slack/Teams integration (reminders, nudges, quick updates)
-- [ ] PDF export with organization branding for performance reviews
-- [ ] SSO (SAML 2.0, OIDC) for enterprise organizations
-- [ ] System template library (pre-built questionnaires)
+- [ ] i18n framework with UI language per-user and content language per-company
+- [ ] Full UI translation: English + Romanian
+- [ ] Date/number formatting per locale
+- [ ] AI-generated content (summaries, nudges, action items) in company language
+- [ ] Email notifications in company language
+- [ ] Browser locale detection for pre-login screens
+
+### Future
+
+- AI personal profiles built from accumulated session data (pgvector embeddings)
+- AI live suggestions during active sessions (streaming, low latency)
+- AI-generated growth narratives ("Over Q1, Alex improved communication by 23%...")
+- AI anomaly detection with proactive alerts
+- Google Calendar integration for scheduling meetings
+- Outlook/O365 calendar sync
+- Magic link passwordless login
+- Overdue action item email notifications
+- Slack/Teams integration (reminders, nudges, quick updates)
+- PDF export with organization branding for performance reviews
+- SSO (SAML 2.0, OIDC) for enterprise organizations
+- System template library (pre-built questionnaires)
 
 ### Out of Scope
 
@@ -57,7 +66,19 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 - Gamification (badges, leaderboards) — trivializes professional conversations
 - Slack bot replacing session wizard — chat answers produce lower-quality responses
 - Manager scoring / ranking — creates perverse incentives
-- Multi-language (i18n) — English-only until international expansion
+- Multi-language template translations — questionnaires defined in one language per company, no per-template multi-language support yet
+
+## Current Milestone: v1.1 Internationalization
+
+**Goal:** Add i18n support with two language layers — UI language (per-user, browser locale default) and content language (per-company, admin setting) — starting with English and Romanian.
+
+**Target features:**
+- i18n framework with per-user UI language and per-company content language
+- Full UI string extraction and Romanian translation
+- Locale-aware date/number formatting
+- AI content generation in company language
+- Email notifications in company language
+- Browser locale detection for pre-login screens
 
 ## Context
 
@@ -106,4 +127,4 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 | Nodemailer over Resend | Works with any SMTP provider | ✓ Good — provider flexibility |
 
 ---
-*Last updated: 2026-03-05 after v1.0 milestone*
+*Last updated: 2026-03-05 after v1.1 milestone started*
