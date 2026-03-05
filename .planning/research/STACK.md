@@ -1,219 +1,295 @@
-# Stack Research
+# Stack Research: i18n for 1on1
 
-**Domain:** AI-powered 1:1 meeting management SaaS
-**Researched:** 2026-03-03
-**Confidence:** HIGH (core stack verified via official docs; AI integration patterns verified via multiple sources)
+**Domain:** Internationalization (i18n) for existing Next.js App Router SaaS
+**Researched:** 2026-03-05
+**Confidence:** HIGH
 
 ## Context
 
-The core application stack is already decided: Next.js 15, TypeScript, Drizzle ORM, PostgreSQL 16, Auth.js v5, shadcn/ui, Tailwind CSS 4, Bun. This research focuses on the **additive layers** that make this an AI-powered product: LLM integration, Google Calendar sync, real-time session features, and analytics computation patterns.
+The 1on1 app needs two language layers:
+1. **UI language** -- per-user preference (default: browser locale), stored in user profile. Two locales: `en` and `ro`.
+2. **Content language** -- per-company admin setting, controls AI-generated content and system templates.
 
-The project's vision is that AI is the product, not a bolt-on feature. Every meeting should get smarter over time. This has direct stack implications -- the AI layer must be deeply integrated from day one, not retrofitted.
+The app runs Next.js 16.1.6, React 19.2, TypeScript 5, Zod 4.3, and has no middleware.ts yet. No `[locale]` segment exists in the URL structure. The app uses route groups `(auth)`, `(dashboard)`, and `(session-wizard)`. Package manager is Bun.
 
 ---
 
 ## Recommended Stack
 
-### AI / LLM Integration
+### Core Technologies
 
 | Technology | Version | Purpose | Why Recommended |
 |------------|---------|---------|-----------------|
-| Vercel AI SDK (`ai`) | ^6.0 | Provider-agnostic LLM abstraction layer | The standard for AI in Next.js. Unified API across OpenAI, Anthropic, Google. Supports streaming, structured output with Zod schemas, tool calling, and agents. Deployed on Vercel natively. AI SDK 6 adds agent loops, MCP support, and DevTools. [Confidence: HIGH -- verified via official docs] |
-| `@ai-sdk/openai` | ^3.0 | OpenAI provider for AI SDK | First-class provider. GPT-5 nano ($0.05/$0.40 per 1M tokens) is ideal for high-volume tasks like session summaries; GPT-5.2 ($1.75/$14.00 per 1M) for complex analysis. [Confidence: HIGH] |
-| `@ai-sdk/anthropic` | ^3.0 | Anthropic provider for AI SDK | Claude Haiku 4.5 ($1/$5 per 1M tokens) excels at structured data extraction (>80% accuracy across prompt styles per 2025 research). Sonnet 4.5 ($3/$15 per 1M) for nuanced meeting analysis. [Confidence: HIGH] |
+| next-intl | ^4.8 | UI string translations, date/number formatting, Server Component i18n | Purpose-built for Next.js App Router. Native RSC support via `getTranslations()` -- zero client JS for server-rendered strings. ~2KB client bundle. 931K+ weekly npm downloads, 3.7K+ GitHub stars. Wraps native `Intl.DateTimeFormat` / `Intl.NumberFormat` -- no extra date library needed. ICU message format handles Romanian's 3 plural forms correctly. Strict TypeScript types for translation keys via `AppConfig` interface. ESM-only in v4 (matches project). [Confidence: HIGH -- verified via official docs and npm] |
 
-**Architecture decision: Use Vercel AI SDK as the abstraction layer, NOT direct OpenAI/Anthropic SDKs.**
+### Supporting Libraries
 
-Rationale: The AI SDK lets you swap providers with a single import change. This is critical because:
-1. LLM pricing shifts rapidly (OpenAI dropped 60%+ in 18 months)
-2. Model quality varies by task (Claude is better at structured extraction; OpenAI is cheaper for summaries)
-3. You can route different AI features to different providers based on cost/quality tradeoffs
+None needed. next-intl covers translations, date formatting, number formatting, and relative time -- all built on the browser's native `Intl` API. No date-fns, no dayjs, no separate formatting library required.
 
-### AI Model Strategy
-
-| Use Case | Recommended Model | Cost per 1M tokens | Rationale |
-|----------|-------------------|---------------------|-----------|
-| Session summaries | GPT-5 nano or Claude Haiku 4.5 | $0.05-1.00 input | High volume, formulaic output. Cheapest model that produces good summaries |
-| Suggested questions | Claude Haiku 4.5 | $1/$5 | Needs context awareness + structured output. Haiku has the best accuracy-to-cost ratio |
-| Personal profile building | Claude Sonnet 4.5 | $3/$15 | Requires nuanced reasoning over accumulated session data |
-| Anomaly detection / nudges | GPT-5 nano | $0.05/$0.40 | Simple pattern matching over numeric trends. Volume makes cost matter |
-| Live session suggestions | Claude Haiku 4.5 | $1/$5 | Low latency required. Haiku is 4-5x faster than Sonnet at fraction of cost |
-| Growth narratives | Claude Sonnet 4.5 | $3/$15 | Needs long-form reasoning and writing quality |
-
-[Confidence: MEDIUM -- model recommendations based on current pricing/capabilities; models change rapidly]
-
-### Google Calendar Integration
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| `@googleapis/calendar` | ^14.2 | Google Calendar API v3 client | Official Google-maintained package. Smaller than full `googleapis` (171MB). Typed API, supports events CRUD, watch notifications. [Confidence: HIGH -- verified via npm/official docs] |
-| `googleapis` | - | **Do NOT install** | Full Google API client is 171MB+. Only use `@googleapis/calendar` for the specific API you need |
-
-**OAuth Token Flow for Calendar:**
-
-Auth.js v5 with the Drizzle adapter stores OAuth tokens in the `account` table automatically (`access_token`, `refresh_token`, `expires_at`). The integration pattern:
-
-1. User signs in with Google OAuth via Auth.js (request `calendar.events` scope alongside `openid email profile`)
-2. Auth.js stores tokens in the `account` table via Drizzle adapter
-3. When creating/reading calendar events, retrieve tokens from the `account` table
-4. Implement refresh token rotation in the Auth.js `jwt` callback (check `expires_at`, POST to Google token endpoint if expired)
-5. Use `@googleapis/calendar` with the refreshed `access_token` for API calls
-
-**Required OAuth scopes:**
-- `calendar.events` -- read/write events on the user's calendars (needed for creating 1:1 meeting events and reading availability)
-- Request scopes incrementally: start with `calendar.events.readonly` at signup, upgrade to `calendar.events` when user first creates a meeting
-
-[Confidence: HIGH -- verified via Google official docs and Auth.js refresh token rotation guide]
-
-### Real-Time Session Features
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Server-Sent Events (native) | N/A | Server-to-client streaming for live AI suggestions | SSE is built into browsers and Next.js Route Handlers via ReadableStream. No extra dependency needed. Perfect for streaming AI responses during sessions. [Confidence: HIGH] |
-| Vercel AI SDK `streamText` | ^6.0 | Streaming LLM responses to the UI | Built-in streaming protocol that works with React hooks (`useChat`, `useCompletion`). Handles SSE under the hood. [Confidence: HIGH] |
-| Inngest Realtime | ^3.52 | Real-time updates from background AI jobs | Inngest's `useAgent` React hook streams updates from durable AI workflows to the browser. Use for long-running AI tasks (profile building, analytics computation). [Confidence: MEDIUM -- feature released Sept 2025] |
-
-**Architecture decision: Use SSE for real-time, NOT WebSockets.**
-
-Rationale for this specific product:
-1. All real-time features are server-to-client (AI suggestions, live updates) -- SSE is purpose-built for this
-2. The session wizard does NOT need collaborative editing (manager fills in answers, not both simultaneously)
-3. SSE works natively on Vercel's serverless infrastructure; WebSockets require persistent connections and a separate service (e.g., Pusher, Ably)
-4. Auto-save uses debounced API route mutations (POST), not real-time sync -- SSE is for the AI suggestion stream, not for data sync
-
-**When WebSockets would be needed (and when to reconsider):** If you add real-time collaborative note editing where both manager and report type simultaneously, you would need WebSockets (via Liveblocks, PartyKit, or Yjs). This is NOT in the current scope.
-
-[Confidence: HIGH -- verified Next.js 15 SSE pattern via official docs and community implementations]
-
-### Background AI Processing
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Inngest | ^3.52 | Durable workflow orchestration for AI pipelines | Already in the stack for non-AI jobs. Inngest's `step.ai.wrap()` integrates directly with Vercel AI SDK -- wraps `generateText` calls as retryable steps with observability. `step.ai.infer()` offloads inference to Inngest infra so you don't pay for serverless compute while waiting. [Confidence: HIGH -- verified via Inngest official docs] |
-
-**AI Pipeline Architecture with Inngest:**
-
-```
-Event: "session.completed"
-  |
-  +-> step.run("prepare-context")     # Fetch session answers, previous sessions, action items
-  +-> step.ai.wrap("generate-summary") # AI SDK generateText with structured output
-  +-> step.ai.wrap("extract-actions")  # AI SDK generateText with Zod schema for action items
-  +-> step.ai.wrap("update-profile")   # AI SDK generateText to update personal profile
-  +-> step.run("persist-results")      # Write to DB
-  +-> step.run("send-summary-email")   # Email via Resend
-```
-
-Benefits of using Inngest for AI pipelines:
-- Each step retries independently (LLM API calls fail ~2-5% of the time)
-- `step.ai.infer()` pauses serverless execution while waiting for LLM response -- zero compute cost during inference
-- Full observability: see prompts, token usage, latency per step in Inngest dashboard
-- Step results are cached -- if step 4 fails, steps 1-3 don't re-run
-
-### Analytics Computation
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| PostgreSQL 16 window functions | N/A | Real-time analytics queries | Use `AVG() OVER`, `LAG()`, `RANK()` for trend calculations directly in SQL. Drizzle ORM supports window functions. Avoid pulling data into JS for computation. [Confidence: HIGH] |
-| Inngest cron functions | ^3.52 | Scheduled analytics snapshot computation | Nightly/weekly cron jobs to pre-compute `analytics_snapshot` table. Inngest handles scheduling, retries, and observability. [Confidence: HIGH] |
-| Drizzle ORM `sql` template | ^0.38 | Complex analytics queries | Use Drizzle's `sql` tagged template for analytics queries that need window functions, CTEs, and aggregations. Don't fight the ORM -- drop to raw SQL for analytics. [Confidence: HIGH] |
-
-**Architecture decision: Push analytics computation to PostgreSQL, NOT to application code.**
-
-The data model already has typed answer columns (`answer_text`, `answer_numeric`, `answer_json`). This enables:
-- Direct `AVG()`, `SUM()`, `COUNT()` on `answer_numeric` without JSON parsing
-- Window functions for session-over-session comparison (`LAG()` over `session_score`)
-- Materialized views or pre-computed snapshots for dashboard queries
-
----
-
-## Supporting Libraries
-
-### AI-Specific
-
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| `zod` | ^3.24 | Schema definitions for AI structured output | Already in stack. Used with AI SDK's `Output.object({ schema })` to define the shape of AI-generated summaries, action items, suggested questions. Shared between AI output validation and form validation. [Confidence: HIGH] |
-| `tiktoken` | ^1.0 | Token counting for prompt management | Use before sending prompts to estimate token usage and stay within context windows. Essential for cost monitoring and prompt truncation. Install only if needed. [Confidence: MEDIUM] |
-
-### Server Actions & Data Mutation
-
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| `next-safe-action` | ^8.0 | Type-safe server actions with middleware | Wraps Next.js Server Actions with Zod validation, error handling, and middleware. Replaces manual validation in API routes. Zero dependencies. Use for ALL mutations alongside the existing API route pattern. [Confidence: MEDIUM -- popular community library, not officially Vercel-maintained] |
-
-### Auth & Calendar
-
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| `@auth/drizzle-adapter` | ^1.11 | Drizzle ORM adapter for Auth.js | Stores users, accounts (with OAuth tokens), sessions, verification tokens in PostgreSQL via Drizzle. The `account` table automatically stores Google OAuth `access_token` and `refresh_token` needed for Calendar API. [Confidence: HIGH] |
-
-### Encryption (Private Notes)
-
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| Node.js `crypto` (built-in) | N/A | AES-256-GCM encryption for private notes | Use Node.js built-in crypto module. No external dependency needed. HKDF for per-tenant key derivation from master key. [Confidence: HIGH] |
-
----
-
-## Development Tools
+### Development Tools
 
 | Tool | Purpose | Notes |
 |------|---------|-------|
-| Inngest Dev Server | Local AI workflow testing | Run `npx inngest-cli dev` alongside `bun run dev`. Provides local dashboard to inspect AI pipeline steps, replay failed jobs, and view prompts/responses. |
-| Vercel AI SDK DevTools | Debug LLM calls in development | AI SDK 6 includes built-in DevTools showing inputs, outputs, token usage, timing per call. Enable in dev mode. |
-| `drizzle-kit studio` | Database browser | Already in stack. Use to inspect analytics snapshots, session answers, and AI-generated data during development. |
+| TypeScript `AppConfig` interface | Type-safe translation keys | Catches missing/wrong keys at build time. Defined once in `src/types/next-intl.d.ts`. next-intl v4 moved from global types to module-scoped `AppConfig`. |
+| ICU Message Syntax | Plurals, interpolation, select | Built into next-intl. Handles English (2 plural forms) and Romanian (3 plural forms: one, few, other) correctly via `Intl.PluralRules`. |
+
+---
+
+## Architecture Decision: No Locale in URLs
+
+**Use next-intl's "without i18n routing" setup.** This is the most important decision.
+
+### Why no URL-based locale routing
+
+1. **This is a B2B SaaS app behind auth** -- not a public content site. SEO for localized pages is irrelevant.
+2. **Language is a user preference**, not a content variant. Two users at the same company may use different UI languages at the same URL.
+3. **The app already has route groups** `(auth)`, `(dashboard)`, `(session-wizard)` -- adding a `[locale]` segment would require restructuring every route.
+4. **No middleware.ts exists yet** -- the "without i18n routing" setup needs no middleware at all.
+5. **Pre-login screens** (login, register, invite) use browser locale detection via `Accept-Language` header or `navigator.language` -- no URL prefix needed.
+
+### How it works
+
+```
+messages/
+  en.json    # English (default)
+  ro.json    # Romanian
+
+src/
+  i18n/
+    request.ts    # Resolves locale per-request
+  app/
+    layout.tsx    # Wraps children with NextIntlClientProvider
+```
+
+- `src/i18n/request.ts` resolves the locale from: (1) authenticated user's DB preference, (2) cookie for unauthenticated pages, (3) `Accept-Language` header fallback.
+- No `[locale]` URL segment. No middleware rewrites. No route restructuring.
+- `NextIntlClientProvider` wraps the root layout to enable Client Components.
+- Server Components use `const t = await getTranslations('namespace')`.
+- Client Components use `const t = useTranslations('namespace')`.
+
+### Locale resolution flow
+
+```
+Authenticated user:
+  Session -> user.ui_language (from DB) -> 'en' | 'ro'
+
+Unauthenticated visitor (login, register, invite):
+  Cookie 'NEXT_LOCALE' -> Accept-Language header -> 'en' (default)
+```
+
+---
+
+## Translation File Format
+
+**JSON files in `/messages/` directory:**
+
+```json
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "loading": "Loading..."
+  },
+  "dashboard": {
+    "title": "Overview",
+    "upcomingSessions": "Upcoming Sessions",
+    "noSessions": "No upcoming sessions"
+  },
+  "session": {
+    "wizard": {
+      "nextStep": "Next",
+      "previousStep": "Back",
+      "complete": "Complete Session"
+    }
+  },
+  "settings": {
+    "language": "Language",
+    "languageDescription": "Choose your preferred language for the interface"
+  }
+}
+```
+
+**Why JSON over other formats:**
+- next-intl's native format (no conversion step, no build tooling)
+- Easy to diff in code review
+- TypeScript can infer key types from it via `AppConfig`
+- Simple enough for the founder to maintain Romanian translations directly
+- Two languages, one maintainer -- no translation management system needed
+
+---
+
+## Date/Number Formatting Strategy
+
+**Use next-intl's built-in `useFormatter()` (client) / `getFormatter()` (server)** -- they wrap the native `Intl` APIs with locale awareness.
+
+```typescript
+// Server Component
+const format = await getFormatter();
+
+format.dateTime(session.scheduledAt, { dateStyle: 'medium', timeStyle: 'short' });
+// en: "Mar 5, 2026, 2:30 PM"
+// ro: "5 mar. 2026, 14:30"
+
+format.relativeTime(session.scheduledAt);
+// en: "in 2 hours"
+// ro: "peste 2 ore"
+
+format.number(0.85, { style: 'percent' });
+// en: "85%"
+// ro: "85 %"
+```
+
+**No date-fns or dayjs needed for formatting.** The existing `src/lib/utils/scheduling.ts` should be refactored to use next-intl formatters for any user-facing date strings. Date arithmetic (add days, calculate diff) can stay as plain Date math or use `Temporal` -- that is not an i18n concern.
+
+### Global format presets
+
+Define reusable formats in `src/i18n/request.ts`:
+
+```typescript
+return {
+  locale,
+  messages,
+  formats: {
+    dateTime: {
+      short: { dateStyle: 'short', timeStyle: 'short' },
+      medium: { dateStyle: 'medium', timeStyle: 'short' },
+      dateOnly: { dateStyle: 'long' },
+    },
+    number: {
+      percent: { style: 'percent', maximumFractionDigits: 0 },
+    }
+  }
+};
+```
+
+---
+
+## Email Template Translations
+
+React Email templates already exist in `src/lib/email/templates/`. Strategy:
+
+1. **Load translation messages directly** in the email rendering function (emails are server-side only).
+2. Use `createTranslator()` from `next-intl` to create a translator outside of React context.
+3. Email language follows the **recipient's UI language preference** (not the sender's).
+
+```typescript
+import { createTranslator } from 'next-intl';
+
+async function sendInviteEmail(recipientLocale: 'en' | 'ro', data: InviteData) {
+  const messages = (await import(`../../../messages/${recipientLocale}.json`)).default;
+  const t = createTranslator({ locale: recipientLocale, messages, namespace: 'emails.invite' });
+
+  const subject = t('subject', { companyName: data.companyName });
+  const html = renderEmail(<InviteEmail t={t} data={data} />);
+  // ... send via nodemailer
+}
+```
+
+Email translation keys live in the same `messages/en.json` and `messages/ro.json` files under an `emails` namespace. No separate translation system for emails.
+
+---
+
+## AI Content Language
+
+The Vercel AI SDK (`ai` package, already installed) generates content. The **company-level `content_language`** setting determines:
+
+- AI prompt language instructions (e.g., "Respond in Romanian" in system prompt)
+- System template default text
+- Pre-built questionnaire template translations
+
+This is **not an i18n library concern** -- it is a prompt engineering and DB seed data concern. The i18n stack handles UI strings; AI language is a separate configuration passed to the AI SDK. The `content_language` column on the `tenants` table controls this.
 
 ---
 
 ## Installation
 
 ```bash
-# AI integration (core)
-bun add ai @ai-sdk/openai @ai-sdk/anthropic
-
-# Google Calendar
-bun add @googleapis/calendar
-
-# Auth adapter (stores OAuth tokens for Calendar integration)
-bun add @auth/drizzle-adapter
-
-# Server actions (optional but recommended)
-bun add next-safe-action
-
-# Dev tools
-bun add -D inngest-cli
+bun add next-intl
 ```
 
-**Environment variables to add:**
+One dependency. That is it.
 
-```env
-# AI Providers
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
+---
 
-# Google Calendar (extend existing Google OAuth)
-# AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET already exist for auth
-# Add calendar scope to the Google provider configuration:
-# scope: "openid email profile https://www.googleapis.com/auth/calendar.events"
+## Integration Points with Existing Code
 
-# Encryption (private notes)
-ENCRYPTION_MASTER_KEY=... # 32-byte hex string, generate with: openssl rand -hex 32
+| Existing Code | Change Needed |
+|---------------|---------------|
+| `next.config.ts` | Wrap with `createNextIntlPlugin()` -- the plugin connects `src/i18n/request.ts` |
+| `src/app/layout.tsx` | Add `NextIntlClientProvider`, set `<html lang={locale}>` dynamically |
+| `src/app/(auth)/layout.tsx` | Locale from cookie / `Accept-Language` for unauthenticated users |
+| `src/app/(dashboard)/layout.tsx` | Locale from authenticated user's DB preference |
+| All hardcoded UI strings | Extract to `messages/en.json` + `messages/ro.json` |
+| `src/lib/email/send.ts` | Accept locale param, load correct translations via `createTranslator()` |
+| `src/lib/db/schema/users.ts` | Add `ui_language` column (pgEnum: 'en' / 'ro', default 'en') |
+| `src/lib/db/schema/tenants.ts` | Add `content_language` column (pgEnum: 'en' / 'ro', default 'en') |
+| `src/lib/utils/scheduling.ts` | Refactor date display to use next-intl formatters |
+| Settings pages | Add language picker in account settings (UI language) + company settings (content language) |
+| `src/components/ui/*` | No changes -- shadcn/ui components are label-agnostic; labels come from consuming components |
+
+### next.config.ts change
+
+```typescript
+import type { NextConfig } from "next";
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin();
+
+const nextConfig: NextConfig = {
+  output: "standalone",
+};
+
+export default withNextIntl(nextConfig);
+```
+
+### Root layout change
+
+```typescript
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
+  return (
+    <html lang={locale} suppressHydrationWarning>
+      <body>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </NextIntlClientProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+### Type-safe translation keys (src/types/next-intl.d.ts)
+
+```typescript
+import en from '../../messages/en.json';
+
+declare module 'next-intl' {
+  interface AppConfig {
+    Messages: typeof en;
+  }
+}
 ```
 
 ---
 
 ## Alternatives Considered
 
-| Recommended | Alternative | When to Use Alternative |
-|-------------|-------------|-------------------------|
-| Vercel AI SDK | Direct `@anthropic-ai/sdk` or `openai` SDK | Only if you need provider-specific features not exposed by AI SDK (e.g., Claude's computer use, OpenAI's assistants API). For this project, AI SDK covers all needs |
-| `@googleapis/calendar` | Full `googleapis` package | Never for this project. The full package is 171MB+ and includes every Google API. Use the scoped calendar package |
-| SSE (native) | Pusher / Ably / Liveblocks | Only if you add real-time collaborative editing between manager and report. Current wizard is single-user-fills-in, so SSE suffices |
-| Inngest `step.ai.wrap()` | Direct LLM calls in API routes | Only for simple, single-call AI features where reliability doesn't matter. For multi-step AI pipelines (summarize + extract + profile), Inngest provides retries, observability, and cost savings |
-| PostgreSQL window functions | Application-level computation | Never for this project. The data model is designed for SQL aggregation. Computing analytics in JS means pulling all data into memory |
-| `next-safe-action` | Raw Server Actions | Raw Server Actions if you prefer API routes for all mutations (project already plans this). `next-safe-action` is best if you want to use Server Actions directly from components |
-| GPT-5 nano | Claude Haiku 4.5 | For highest-volume, lowest-cost tasks where Claude's quality advantage doesn't matter. Test both and compare output quality per use case |
+| Recommended | Alternative | Why Not |
+|-------------|-------------|---------|
+| next-intl | react-i18next | Not designed for App Router. Requires wrapper hacks for Server Components. ~8KB bundle vs ~2KB. next-i18next (the Next.js wrapper) is explicitly incompatible with App Router. |
+| next-intl | react-intl (FormatJS) | Heavier (~12KB). Less Next.js-specific. No built-in App Router integration. More boilerplate for RSC. |
+| next-intl | Paraglide.js | Newer, compile-time approach. Interesting but smaller ecosystem, less battle-tested with Next.js 16. Reasonable for greenfield but adds risk to existing app. |
+| next-intl formatters | date-fns / dayjs | next-intl already wraps `Intl.DateTimeFormat`. Adding date-fns would be redundant for locale-aware formatting. Only consider if you need date arithmetic -- but that is not an i18n concern. |
+| JSON translations | YAML / PO / XLIFF | JSON is next-intl's native format. No build step. TypeScript type inference works out of the box. YAML adds a parser dependency. PO/XLIFF are for professional translation workflows with agencies -- overkill for 2 languages maintained by the founder. |
+| "Without i18n routing" | URL-based `[locale]` routing | Would require restructuring every route with a `[locale]` segment. Adds URL complexity for zero SEO benefit (app is behind auth). Makes the app harder to maintain for no user-facing gain. |
+| Cookie + DB preference | `localePrefix: 'never'` | `localePrefix: 'never'` requires the full routing setup + middleware just to suppress prefixes. "Without i18n routing" is simpler -- no middleware, no routing config, same result. |
 
 ---
 
@@ -221,107 +297,65 @@ ENCRYPTION_MASTER_KEY=... # 32-byte hex string, generate with: openssl rand -hex
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| LangChain | Massive dependency, abstracts away too much, adds indirection without value for this use case. You don't need a framework -- you need direct LLM calls with structured output | Vercel AI SDK `generateText` with `Output.object()` + Zod schemas |
-| LlamaIndex | Designed for RAG over document stores. This product's data is structured in PostgreSQL, not unstructured documents | Direct Drizzle queries to build context, then pass to AI SDK |
-| Pinecone / Weaviate / vector DB | Overkill. Session data is structured (ratings, text answers) and relational. You don't need semantic search over embeddings for this domain | PostgreSQL full-text search (`tsvector`) for searching session notes. `LIKE` / `ILIKE` for simple search |
-| Socket.io / WebSockets | Requires persistent connections, separate infrastructure, and doesn't work natively on Vercel serverless | SSE via Next.js Route Handlers for server-to-client streaming |
-| Cron jobs via Vercel Cron | Limited to 1 execution per minute on Pro plan, no retries, no observability, no multi-step workflows | Inngest cron functions with `step.ai.wrap()` for reliable scheduled AI work |
-| `openai` npm package directly | Locks you to one provider. When Claude drops prices or adds features, you'd need to refactor | `@ai-sdk/openai` provider via Vercel AI SDK |
-| Redis for real-time | Adds infrastructure complexity for a feature (pub/sub) that SSE handles natively | SSE for streaming, TanStack Query for polling-based updates |
+| next-i18next | Explicitly incompatible with App Router. Pages Router only. | next-intl |
+| i18next directly | Low-level, no Next.js integration, requires manual RSC wiring | next-intl (which has ICU format built in) |
+| date-fns / dayjs for display formatting | Redundant -- next-intl wraps native `Intl` API for locale-aware formatting. Adds bundle weight for nothing. | next-intl `useFormatter()` / `getFormatter()` |
+| Locale URL segments (`/en/`, `/ro/`) | B2B SaaS behind auth. No SEO need. Restructures all routes for zero benefit. | Cookie + DB preference via "without i18n routing" |
+| Professional TMS (Crowdin, Phrase, Lokalise) | Two languages, one maintainer. Translation management systems add complexity for zero benefit at this scale. Revisit if you add 5+ languages. | JSON files in repo, reviewed in PRs |
+| `navigator.language` directly | Inconsistent across SSR/client. next-intl handles negotiation properly via `getRequestConfig`. | next-intl locale resolution in `request.ts` |
+| Separate i18n system for emails | Adds a second translation source of truth. Drift guaranteed. | `createTranslator()` from next-intl with the same message files |
+| next-intl middleware | Not needed for the "without i18n routing" setup. Would add unnecessary complexity. | Direct locale resolution in `src/i18n/request.ts` |
 
 ---
 
-## Stack Patterns by AI Feature
+## Romanian-Specific Considerations
 
-**If building session summaries:**
-- Use Inngest `step.ai.wrap()` with AI SDK `generateText`
-- Define a Zod schema for the summary structure (key themes, action items, sentiment)
-- Use the cheapest model (GPT-5 nano or Claude Haiku 4.5) -- test both for quality
-- Run as background job triggered by `session.completed` event
+### Plural forms
 
-**If building live session suggestions:**
-- Use AI SDK `streamText` in a Next.js API route
-- Stream suggestions via SSE to the session wizard's context panel
-- Use Claude Haiku 4.5 for speed (4-5x faster than Sonnet)
-- Pass last 3 sessions + current answers as context
+Romanian has **3 plural forms** (not 2 like English). ICU message format handles this:
 
-**If building personal profiles:**
-- Use Inngest multi-step workflow
-- Step 1: Aggregate all session data for the user
-- Step 2: AI SDK `generateText` with `Output.object()` to produce structured profile
-- Step 3: Diff with existing profile, merge changes
-- Trigger on `session.completed` with debouncing (don't rebuild on every session)
+```json
+{
+  "sessions": "{count, plural, one {# sesiune} few {# sesiuni} other {# de sesiuni}}"
+}
+```
 
-**If building proactive nudges:**
-- Use Inngest cron function (daily or before scheduled meetings)
-- Query recent sessions + action items for upcoming meetings
-- Use GPT-5 nano for cost efficiency -- nudges are simple pattern matching
-- Store nudges in a `nudge` table, display on dashboard
+The `few` category covers 0 and numbers 2-19, plus numbers ending in 02-19 (e.g., 102, 219). next-intl delegates plural rule selection to the `Intl.PluralRules` API, which has correct Romanian rules built into every modern browser and Node.js.
 
-**If building analytics computation:**
-- Use Inngest cron function (weekly/monthly)
-- Compute in PostgreSQL using window functions and CTEs
-- Write results to `analytics_snapshot` table
-- Dashboard reads from snapshots (fast) not raw session data (slow)
+### Date format
+
+Romanian uses `dd.MM.yyyy` (day-first with dots) and 24-hour time. The `Intl.DateTimeFormat` API handles this natively when locale is set to `ro` -- no manual format strings needed.
+
+### Font considerations
+
+Romanian uses diacritics: a-breve, i-circumflex, s-comma-below, t-comma-below. The Geist font (already in use) supports these characters. No font changes needed.
 
 ---
 
 ## Version Compatibility
 
-| Package A | Compatible With | Notes |
-|-----------|-----------------|-------|
-| `ai@^6.0` | `@ai-sdk/openai@^3.0`, `@ai-sdk/anthropic@^3.0` | AI SDK 6 uses v3 Language Model Specification. Provider packages must be v3+ |
-| `ai@^6.0` | `next@^15.0` | Full App Router support, streaming in Route Handlers, Server Actions |
-| `inngest@^3.52` | `ai@^6.0` | `step.ai.wrap()` supports AI SDK `generateText` and `streamText` |
-| `@auth/drizzle-adapter@^1.11` | `drizzle-orm@^0.38`, `next-auth@^5.0` | Adapter bridges Auth.js and Drizzle schema |
-| `@googleapis/calendar@^14.2` | Node.js 18+ / Bun | Uses Google's official client library, compatible with Bun runtime |
-| `next@^15.0` | `bun@^1.1` | Bun runtime support is GA on Vercel since Oct 2025. Use `bun --bun` prefix for scripts |
-| `next-safe-action@^8.0` | `next@^15.0`, `zod@^3.24` | Supports any Standard Schema validator (Zod, Valibot, ArkType) |
-
-**Bun compatibility note:** Bun runs the vast majority of npm packages without changes. All packages listed here are compatible. Use `bun add` instead of `npm install` per project constraints.
-
----
-
-## Cost Estimation (AI Features)
-
-Assuming a company with 50 active users, 200 sessions/month:
-
-| Feature | Model | Calls/Month | Avg Tokens | Est. Monthly Cost |
-|---------|-------|-------------|------------|-------------------|
-| Session summaries | GPT-5 nano | 200 | ~2K in / 500 out | ~$0.06 |
-| Suggested questions | Claude Haiku 4.5 | 600 (3 per session) | ~3K in / 200 out | ~$2.40 |
-| Personal profiles | Claude Sonnet 4.5 | 50 (1 per user/month) | ~10K in / 1K out | ~$2.25 |
-| Proactive nudges | GPT-5 nano | 400 (2 per session) | ~1K in / 200 out | ~$0.06 |
-| Live suggestions | Claude Haiku 4.5 | 1000 (5 per session) | ~2K in / 100 out | ~$2.50 |
-| **Total** | | | | **~$7.27/month** |
-
-At scale (1000 users, 4000 sessions/month), costs would be approximately $145/month. LLM costs are negligible relative to hosting costs until very high scale.
-
-[Confidence: MEDIUM -- based on current published pricing as of March 2026; actual token counts depend on prompt engineering]
+| Package | Compatible With | Notes |
+|---------|-----------------|-------|
+| next-intl@4.x | Next.js 14+ (incl. 16.x) | ESM-only distribution (except plugin for CJS next.config). Matches project ESM setup. |
+| next-intl@4.x | TypeScript 5+ | Required. Project already on TypeScript 5. |
+| next-intl@4.x | React 18+ / 19 | Full RSC support. Project on React 19.2 -- fully compatible. |
+| next-intl@4.x | Turbopack | Supported via the `createNextIntlPlugin()` wrapper. |
+| next-intl@4.x | Bun | Standard npm package, no native bindings. Works with Bun. |
 
 ---
 
 ## Sources
 
-- [Vercel AI SDK 6 announcement](https://vercel.com/blog/ai-sdk-6) -- features, backwards compatibility, agent support [HIGH confidence]
-- [AI SDK documentation](https://ai-sdk.dev/docs/introduction) -- `generateText`, `streamText`, structured output with `Output.object()` [HIGH confidence]
-- [AI SDK structured data generation](https://ai-sdk.dev/docs/ai-sdk-core/generating-structured-data) -- Zod integration, output types [HIGH confidence]
-- [Inngest AI orchestration docs](https://www.inngest.com/docs/features/inngest-functions/steps-workflows/step-ai-orchestration) -- `step.ai.infer()`, `step.ai.wrap()` [HIGH confidence]
-- [Inngest AgentKit announcement](https://www.inngest.com/blog/ai-orchestration-with-agentkit-step-ai) -- `useAgent` React hook, real-time AI streaming [MEDIUM confidence]
-- [Google Calendar API auth scopes](https://developers.google.com/workspace/calendar/api/auth) -- 17 scopes, incremental authorization [HIGH confidence]
-- [Auth.js refresh token rotation guide](https://authjs.dev/guides/refresh-token-rotation) -- jwt callback pattern for Google token refresh [HIGH confidence]
-- [Auth.js Drizzle adapter](https://authjs.dev/getting-started/adapters/drizzle) -- account table schema, token storage [HIGH confidence]
-- [Drizzle ORM RLS documentation](https://orm.drizzle.team/docs/rls) -- `pgTable.withRLS()`, `pgPolicy()`, `pgRole()` [HIGH confidence]
-- [OpenAI pricing](https://platform.openai.com/docs/pricing) -- GPT-5.2, GPT-5 nano pricing as of March 2026 [HIGH confidence]
-- [Anthropic pricing](https://platform.claude.com/docs/en/about-claude/pricing) -- Claude Haiku/Sonnet/Opus 4.5 pricing [HIGH confidence]
-- [Next.js Bun support](https://bun.com/docs/guides/ecosystem/nextjs) -- GA on Vercel since Oct 2025 [HIGH confidence]
-- [npm: ai@6.0.105](https://www.npmjs.com/package/ai) -- latest version verified [HIGH confidence]
-- [npm: @ai-sdk/anthropic@3.0.50](https://www.npmjs.com/package/@ai-sdk/anthropic) -- latest version verified [HIGH confidence]
-- [npm: inngest@3.52.4](https://www.npmjs.com/package/inngest) -- latest version verified [HIGH confidence]
-- [npm: @googleapis/calendar@14.2.0](https://www.npmjs.com/package/@googleapis/calendar) -- latest version verified [HIGH confidence]
-- [npm: @auth/drizzle-adapter@1.11.1](https://www.npmjs.com/package/@auth/drizzle-adapter) -- latest version verified [HIGH confidence]
-- [2025 LLM structured extraction research](https://www.preprints.org/manuscript/202506.1937) -- Claude >80% accuracy across prompt styles [MEDIUM confidence]
+- [next-intl: App Router without i18n routing](https://next-intl.dev/docs/getting-started/app-router/without-i18n-routing) -- setup steps verified, HIGH confidence
+- [next-intl 4.0 release blog](https://next-intl.dev/blog/next-intl-4-0) -- breaking changes, AppConfig migration, version requirements, HIGH confidence
+- [next-intl npm (v4.8.3)](https://www.npmjs.com/package/next-intl) -- latest version confirmed, HIGH confidence
+- [next-intl date/time formatting](https://next-intl.dev/docs/usage/dates-times) -- Intl.DateTimeFormat wrapper confirmed, HIGH confidence
+- [next-intl number formatting](https://next-intl.dev/docs/usage/numbers) -- Intl.NumberFormat wrapper confirmed, HIGH confidence
+- [next-intl routing configuration](https://next-intl.dev/docs/routing/configuration) -- localePrefix options verified, HIGH confidence
+- [Next.js i18n guide](https://nextjs.org/docs/app/guides/internationalization) -- official Next.js i18n guidance, HIGH confidence
+- [MDN Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat) -- browser API reference, HIGH confidence
+- [Smashing Magazine: Intl API guide](https://www.smashingmagazine.com/2025/08/power-intl-api-guide-browser-native-internationalization/) -- Intl vs libraries comparison, MEDIUM confidence
 
 ---
-*Stack research for: AI-powered 1:1 meeting management SaaS*
-*Researched: 2026-03-03*
+*Stack research for: i18n in 1on1 (Next.js App Router SaaS, English + Romanian)*
+*Researched: 2026-03-05*

@@ -1,437 +1,402 @@
-# Pitfalls Research
+# Domain Pitfalls: i18n Retrofit (English + Romanian)
 
-**Domain:** AI-powered 1:1 meeting management SaaS
-**Researched:** 2026-03-03
-**Confidence:** MEDIUM-HIGH (verified across multiple sources; some LLM-specific claims depend on rapidly evolving ecosystem)
+**Domain:** Internationalization for existing Next.js 15 App Router SaaS
+**Researched:** 2026-03-05
+**Context:** ~265 source files, 106 client components, 41K+ LOC of hardcoded English strings, dual-layer language model (UI language per-user, content language per-company)
 
 ---
 
 ## Critical Pitfalls
 
-Mistakes that cause rewrites, major delays, or fundamental product problems.
-
-### Pitfall 1: AI as Afterthought Despite "AI-Core" Intent
-
-**What goes wrong:**
-The project declares AI as the core differentiator but defers all AI features to v3 (as the existing `docs/features.md` currently does). The data model, API layer, and session wizard get built without AI integration points. When AI is added later, it requires retrofitting: the session wizard needs a live suggestion panel, the data pipeline needs embedding generation, the API routes need streaming response support, and the context panel needs to source AI-generated insights alongside historical data. This is effectively a rewrite of the core experience.
-
-**Why it happens:**
-AI features feel risky and complex, so teams push them "until the foundation is solid." But the foundation IS the AI -- without it, you build a structured Google Forms replacement, not an intelligent meeting assistant. The PROJECT.md explicitly says "AI is core, not v3 add-on" but the inherited feature roadmap contradicts this.
-
-**How to avoid:**
-- Resolve the contradiction between PROJECT.md (AI is core) and features.md (AI is v3) in the very first planning phase. The roadmap must include AI from the MVP.
-- Design the session wizard with AI integration points from day one: a suggestion slot in the context panel, streaming-ready API routes, and a text field architecture that can accept AI-generated content.
-- Start with the cheapest viable AI: session summaries via a single LLM call on session completion. This validates the pipeline without requiring real-time streaming.
-- Build the embedding/context pipeline early: when sessions are completed, generate embeddings of notes and answers. This data becomes the foundation for all future AI features (suggestions, nudges, profiles).
-- Use a provider abstraction layer (e.g., Vercel AI SDK) so you can swap models without touching application code.
-
-**Warning signs:**
-- No AI-related columns or tables in the initial database migration.
-- Session wizard wireframes lack any AI panel or suggestion area.
-- API routes return only JSON, with no streaming support.
-- The words "we'll add AI later" appear in planning discussions.
-
-**Phase to address:**
-Phase 1 (Foundation) must include AI data pipeline scaffolding. Phase 2 (Session Wizard) must include at minimum post-session AI summaries. Live suggestions can follow in Phase 3.
-
-**Confidence:** HIGH -- supported by PROJECT.md constraints, industry consensus on AI-native architecture ([AI-Native vs AI-Bolted On](https://medium.com/@the_AI_doctor/ai-native-vs-ai-bolted-on-architectures-a-technical-white-paper-for-enterprise-decision-makers-bf081efdc648), [CloudZero on AI-native SaaS](https://www.cloudzero.com/blog/ai-native-saas-architecture/))
+Mistakes that cause rewrites, broken UX, or data corruption.
 
 ---
 
-### Pitfall 2: Multi-Tenant AI Context Leakage
+### Pitfall 1: Incomplete String Extraction Leaves Untranslated Fragments
 
-**What goes wrong:**
-When the LLM generates session summaries, suggestions, or nudges, it receives context from the tenant's data. If tenant isolation is not enforced at the AI layer -- not just the database layer -- Tenant A's session data can leak into Tenant B's AI outputs. This happens through: (1) shared prompt caches or KV-caches in multi-tenant LLM serving, (2) embedding vectors stored without tenant scoping, (3) RAG retrieval queries that accidentally cross tenant boundaries, or (4) conversation history/context windows that persist between requests.
+**What goes wrong:** With 265 source files and 41K+ LOC, manual string extraction misses strings. Users see a patchwork of English and Romanian -- buttons translated, error messages not, toast notifications half-English. This is worse than no translation at all.
 
-**Why it happens:**
-Developers correctly implement RLS at the database level but forget that the AI pipeline is a separate data path. Embeddings stored in a vector database need their own tenant isolation. LLM API calls include context that must be scoped. Caching of AI responses must be tenant-partitioned.
+**Why it happens:** Hardcoded strings live everywhere: JSX text nodes, placeholder attributes, aria-labels, toast messages in API route handlers, Zod validation error messages, `title` attributes, `alt` text, confirmation dialogs, empty state messages, table column headers. No single grep pattern catches them all.
 
-**How to avoid:**
-- Every AI data pipeline step must include `tenant_id` filtering, not just the database queries that feed it.
-- Vector store (if used) must partition by tenant. Use tenant-prefixed namespaces or collections, never a single shared index.
-- Never include cross-tenant data in LLM context windows. System prompts should never reference other tenants.
-- Use stateless LLM API calls (no persistent conversation threads shared across tenants). Each request should be self-contained with the tenant's data only.
-- AI response caching must be keyed by `tenant_id + user_id + context_hash`, never by query alone.
-- Log and audit what context is sent to the LLM for each request -- this is your detection mechanism.
+**Consequences:** Broken user experience. Users lose trust when the app randomly switches languages.
 
-**Warning signs:**
-- AI suggestions reference people or events from another company.
-- Vector store queries lack tenant filtering.
-- AI cache keys don't include tenant_id.
-- No audit trail of what data was sent to the LLM.
+**Prevention:**
+1. Use a codemod tool (e.g., [Codemod's next-intl migration](https://codemod.com/blog/next-intl-codemod)) for the initial bulk extraction pass
+2. Create a string extraction checklist by component type: page components, layout components, form components, error boundaries, email templates, API error responses
+3. Run the app in Romanian and screenshot every page -- untranslated strings are immediately visible
+4. Add an ESLint rule (eslint-plugin-i18next) that flags hardcoded string literals in JSX
+5. Process extraction file-by-file, not feature-by-feature -- less likely to miss strings in shared components
 
-**Phase to address:**
-Must be designed into the AI architecture from the first AI-related phase. The embedding storage schema and AI context assembly functions must enforce tenant isolation before any AI feature ships.
+**Detection:** Any English text visible when UI language is set to Romanian. Automated: grep for quoted strings in JSX that are not wrapped in `t()`.
 
-**Confidence:** HIGH -- supported by OWASP LLM Top 10 ([LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)), academic research on multi-tenant LLM leakage ([Burn-After-Use SMTA](https://arxiv.org/abs/2601.06627)), and industry reports ([LayerX on Multi-Tenant AI Leakage](https://layerxsecurity.com/generative-ai/multi-tenant-ai-leakage/))
+**Phase:** Must be addressed systematically in the core i18n setup phase. Expect this to be the most time-consuming step -- budget 60-70% of the total i18n effort here.
 
 ---
 
-### Pitfall 3: RLS Bypass in Serverless Connection Pooling
+### Pitfall 2: Confusing UI Language and Content Language
 
-**What goes wrong:**
-The project uses PostgreSQL RLS with `SET LOCAL app.current_tenant_id` inside transactions. In serverless environments (Vercel), connection poolers like PgBouncer (used by Neon) operate in transaction mode. If any database operation runs outside a transaction wrapper, the `SET LOCAL` context is not set and RLS policies either deny all access (best case) or, if misconfigured, allow unrestricted access. Additionally, if the application uses the `neondb_owner` role (which has `BYPASSRLS`), RLS policies are silently ignored entirely.
+**What goes wrong:** The app has two distinct language layers: (1) UI language -- buttons, labels, navigation, set per-user; (2) content language -- questionnaire templates, AI-generated summaries, email summaries, set per-company. Mixing these up causes a Romanian-speaking manager to see AI summaries in English (because their report writes in English), or an English-speaking user to see Romanian button labels (because the company is Romanian).
 
-**Why it happens:**
-- Developers test locally with a direct connection where `SET LOCAL` works fine, but production uses pooled connections with different behavior.
-- A single Drizzle query executed without the `withTenantContext()` wrapper silently bypasses RLS.
-- Neon's default connection role (`neondb_owner`) bypasses RLS -- a fact buried in documentation.
-- Prepared statements don't work in PgBouncer transaction mode (`prepare: false` is required), and forgetting this causes cryptic errors.
+**Why it happens:** Most i18n libraries handle one language at a time. The concept of "the UI is in English but this AI summary should be in Romanian because that is the company language" is not a standard i18n pattern. Developers default to using the same locale for everything.
 
-**How to avoid:**
-- Create a dedicated database role for the application that does NOT have `BYPASSRLS`. Never use `neondb_owner` in production connection strings.
-- Wrap EVERY database operation in the `withTenantContext()` transaction helper. No exceptions.
-- Add a lint rule or code review checklist item: "Does this query use `withTenantContext()`?"
-- Write integration tests that verify RLS by attempting cross-tenant access with the actual database role.
-- Set `prepare: false` in the Drizzle/postgres client configuration for Neon pooled connections.
-- Consider adding a middleware that rejects any request where tenant context was not set, as a safety net.
+**Consequences:** Confusing UX. AI content in the wrong language. Email summaries sent in the wrong language. Questionnaire templates shown in unexpected language.
 
-**Warning signs:**
-- Any direct `db.query.*` or `db.select()` call not wrapped in `withTenantContext()`.
-- Connection string uses `neondb_owner` role.
-- RLS integration tests don't exist or only test with a superuser.
-- `prepare: false` is not set and you see "prepared statement does not exist" errors.
+**Prevention:**
+1. Define two explicit concepts in the codebase: `uiLocale` (from user preferences, drives `t()` calls) and `contentLocale` (from company settings, drives AI prompts, email templates, questionnaire content)
+2. Store `uiLocale` on the user record, `contentLocale` on the tenant/company record
+3. The `t()` function always uses `uiLocale` -- this is the standard next-intl behavior
+4. AI prompts explicitly receive `contentLocale` and include it in the system prompt (the existing `BASE_SYSTEM` prompt already says "write in the same language as the session data" -- this needs to become locale-aware with an explicit locale parameter)
+5. Email templates: determine language from recipient's `uiLocale` for UI chrome (headers, footers), but content sections (session summaries, action items) use `contentLocale`
+6. Questionnaire template text is user-generated content -- it lives in the database, not in translation files. Do NOT try to put template question text into i18n JSON files
 
-**Phase to address:**
-Phase 1 (Database Setup). RLS policies, dedicated roles, and the `withTenantContext()` wrapper must be established and tested before any tenant-scoped data is written.
+**Detection:** During testing, set one user to English UI + Romanian company, another to Romanian UI + English company. Verify every screen shows the right language for the right elements.
 
-**Confidence:** HIGH -- verified via [Drizzle ORM RLS docs](https://orm.drizzle.team/docs/rls), [Neon RLS guide](https://neon.com/docs/guides/rls-drizzle), [Neon connection pooling docs](https://neon.com/docs/connect/connection-pooling), and [Multi-Tenant RLS failure analysis](https://medium.com/@instatunnel/multi-tenant-leakage-when-row-level-security-fails-in-saas-da25f40c788c)
+**Phase:** Architecture decision in Phase 1 (i18n setup). Must be designed before any translation work begins. This is the single most important design decision for the entire i18n milestone.
 
 ---
 
-### Pitfall 4: LLM Cost Explosion at Scale
+### Pitfall 3: Romanian Plural Rules Are Complex (Three Categories, Not Two)
 
-**What goes wrong:**
-AI costs scale with usage in ways that traditional SaaS does not. A session summary that costs $0.02 per call seems cheap. But with 1,000 tenants averaging 50 sessions/month, that's $1,000/month for summaries alone. Add pre-session context generation, live suggestions during sessions (multiple calls per session), AI nudges, and profile building -- costs can reach $5,000-$15,000/month before you have significant revenue. Output tokens cost 3-10x more than input tokens, and context windows (stuffing historical sessions into prompts) inflate input costs further.
+**What goes wrong:** English has 2 plural forms: singular (1 item) and plural (2+ items). Romanian has 3 CLDR plural categories: `one` (1), `few` (0, 2-19, 101-119, etc.), and `other` (20-99, 120-199, etc.). Developers write `{count} items` / `{count} item` and call it done. Romanian users see grammatically incorrect text for most numbers.
 
-**Why it happens:**
-- Developers prototype with a single user and don't model per-request costs at scale.
-- Product managers add AI features without tracking marginal cost per feature.
-- No cost caps or circuit breakers exist, so a single tenant's heavy usage can blow the budget.
-- Context window stuffing: including "last 10 sessions" of notes in every prompt balloons token counts.
+**Why it happens:** Developers think "singular vs plural" is universal. Romanian follows CLDR rules where:
+- `one`: exactly 1 (integer, no decimals)
+- `few`: 0, or 2-19, or any number ending in 01-19 (e.g., 2, 12, 101, 112)
+- `other`: numbers ending in 20-99, or round hundreds/thousands (e.g., 20, 35, 100, 1000)
 
-**How to avoid:**
-- Model costs early: calculate cost per session, per tenant, per month for each AI feature. Use [llm-prices.com](https://www.llm-prices.com/) or [pricepertoken.com](https://pricepertoken.com/) for estimates.
-- Implement tiered AI: use cheap models (GPT-4o-mini, Gemini Flash-Lite) for summaries and simple suggestions. Reserve expensive models for complex analysis.
-- Cache aggressively: if a session summary has been generated, never regenerate it. Cache AI suggestions that haven't changed.
-- Use batch APIs for non-real-time features (50% cheaper on OpenAI). Session summaries and profile updates don't need to be real-time.
-- Implement per-tenant rate limiting on AI features. Free tier gets limited AI calls; paid tiers get more.
-- Compress context: summarize historical sessions into condensed profiles rather than stuffing raw text into every prompt. Use embeddings + RAG rather than raw context.
-- Track cost per AI call in your observability stack. Alert when daily spend exceeds thresholds.
+Example: "3 sesiuni" (few), "25 de sesiuni" (other -- note the "de" particle that appears in the `other` form). This is not just a suffix change; the entire phrase structure changes.
 
-**Warning signs:**
-- No cost tracking per AI call in your application logs.
-- Prompt templates include unbounded historical data (e.g., "all previous sessions").
-- All AI features use the same expensive model.
-- Monthly AI API bill grows faster than user count.
+**Consequences:** Grammatically broken Romanian text throughout the app. Looks unprofessional.
 
-**Phase to address:**
-The AI architecture phase must include cost modeling and the provider abstraction layer. Per-call cost tracking should ship with the first AI feature.
+**Prevention:**
+1. Use ICU MessageFormat syntax for ALL pluralized strings from the start:
+   ```json
+   "sessionCount": "{count, plural, one {# sesiune} few {# sesiuni} other {# de sesiuni}}"
+   ```
+2. Create a comprehensive list of all strings that contain counts/numbers before translating -- search for `{count}`, `{total}`, any numeric interpolation
+3. Have a native Romanian speaker review all plural forms -- automated tools cannot catch the "de" particle or other structural changes
+4. Test with values: 0, 1, 2, 5, 19, 20, 21, 100, 101 -- these hit all three plural branches
 
-**Confidence:** HIGH -- verified via [LLM pricing analysis](https://www.cloudidr.com/blog/llm-pricing-comparison-2026), [cost optimization strategies](https://www.silicondata.com/blog/llm-cost-per-token), [TCO analysis](https://www.ptolemay.com/post/llm-total-cost-of-ownership)
+**Detection:** Search translation files for `plural` usage. Any string with a numeric variable that only has `one`/`other` forms is broken for Romanian.
+
+**Phase:** Translation authoring phase. Every translator must understand Romanian CLDR rules. Include a Romanian plural cheat-sheet in translator documentation.
 
 ---
 
-### Pitfall 5: Google Calendar Webhook Unreliability
+### Pitfall 4: Hydration Mismatches from Locale-Dependent Rendering
 
-**What goes wrong:**
-Google Calendar push notifications expire after at most 7 days and there is no automatic renewal mechanism. If the renewal cron job fails, the application silently stops receiving calendar updates. Worse, Google's own documentation states: "Notifications are not 100% reliable. Expect a small percentage of messages to get dropped under normal working conditions." Teams build the calendar sync assuming webhooks are reliable event sources and then discover dropped events, missed meeting updates, and stale session schedules in production.
+**What goes wrong:** Server renders with one locale, client hydrates with another. React throws hydration errors. Common triggers: date formatting (`new Date().toLocaleDateString()`), number formatting, relative time ("2 hours ago"), and currency formatting.
 
-**Why it happens:**
-- Developers treat webhooks like guaranteed message delivery (they're not).
-- The renewal mechanism is easy to forget or under-test.
-- Google's verification process for webhook domains takes weeks, delaying integration testing.
-- Notification messages contain no body -- only headers -- requiring a separate API call to fetch actual changes, which adds latency and error surface.
+**Why it happens:** In Next.js App Router, Server Components render on the server with the locale from the request. Client Components may briefly see a different locale during hydration if the locale detection logic differs between server and client. The `Intl.DateTimeFormat` and `Intl.NumberFormat` APIs produce different output based on the runtime locale.
 
-**How to avoid:**
-- Design calendar sync as "webhooks accelerate, polling guarantees." Always have a periodic polling fallback (every 5-15 minutes) that uses `syncToken` for incremental sync. Webhooks reduce latency but are not the source of truth.
-- Build a webhook renewal service that runs well before expiration (e.g., renew 1 day before the 7-day expiry). Monitor renewal failures and alert.
-- Use `syncToken`-based incremental sync for the polling fallback -- this is efficient and catches anything webhooks missed.
-- Factor Google's app verification timeline (2-4 weeks, possible rejection) into project planning. Apply early.
-- Store the channel ID and expiration timestamp in the database. Build a dashboard or monitoring for active webhook channels.
-- Handle the empty-body notification pattern: on receiving a webhook, queue a job to fetch the actual changes via the Calendar API, rather than processing inline.
+**Consequences:** React hydration errors in production. Console warnings. Flickering text. In worst cases, entire component trees remount, losing state (particularly dangerous in the session wizard where auto-save state could be disrupted).
 
-**Warning signs:**
-- Calendar events stop updating for some tenants but not others.
-- No periodic sync running alongside webhooks.
-- Webhook renewal logs show gaps or failures.
-- Calendar sync tests only run against a mock, never the real API.
+**Prevention:**
+1. Always use `next-intl`'s formatting functions (`useFormatter` / `format.dateTime()`) instead of raw `Intl` APIs -- they ensure server/client consistency
+2. Set `timeZone` explicitly in `i18n/request.ts` configuration (from company settings), never rely on runtime detection
+3. For dates displayed in Server Components, format on the server only -- no client-side reformatting
+4. Use `suppressHydrationWarning` only on elements that genuinely differ (e.g., `<time>` elements with relative times) -- do not suppress globally
+5. Ensure the `NEXT_LOCALE` cookie is set before SSR runs -- if the cookie arrives after server render, the server uses the default locale while the client uses the cookie value
 
-**Phase to address:**
-The Calendar Integration phase. This is not a v1 feature (Google Calendar is listed for v2 in features.md, but PROJECT.md lists it as active), so the phase that introduces calendar sync must build both webhook and polling paths from the start.
+**Detection:** React DevTools hydration warnings in console. Automated: Playwright tests that compare server-rendered HTML text content against client-rendered text content.
 
-**Confidence:** HIGH -- verified via [Google Calendar Push Notification docs](https://developers.google.com/workspace/calendar/api/guides/push), [production reliability guides](https://calendhub.com/blog/calendar-webhook-integration-developer-guide-2025/), and [Google Calendar webhook implementation guides](https://lorisleiva.com/google-calendar-integration/webhook-synchronizations)
+**Phase:** Core i18n setup phase. The formatting utilities must be established before any date/number formatting migration.
 
 ---
 
-### Pitfall 6: Private Note Encryption Key Management Failure
+### Pitfall 5: Email Templates Rendered in Wrong Language
 
-**What goes wrong:**
-The project plans AES-256-GCM encryption with per-tenant keys derived via HKDF from a master key. If the master key is lost, rotated incorrectly, or stored insecurely, all private notes across all tenants become permanently unreadable. If key derivation is implemented incorrectly (wrong HKDF context, inconsistent parameters), notes encrypted with one derivation become undecryptable with another. There's no recovery path for encrypted data with lost keys.
+**What goes wrong:** Email templates (invite, session summary, password reset, verification) are React Email components with hardcoded English strings. After i18n, emails might render in the server's default locale instead of the recipient's preferred language, or use `contentLocale` when they should use `uiLocale`.
 
-**Why it happens:**
-- Master key stored in `.env` file that gets rotated during deployment without re-encryption.
-- HKDF derivation parameters (salt, info/context string) aren't versioned, so code changes break backward compatibility.
-- No key rotation strategy: the same master key is used forever, or rotation is attempted without re-encrypting existing data.
-- Testing uses a hardcoded key that differs from production, so encryption/decryption issues aren't caught.
+**Why it happens:** Emails are rendered server-side, outside the normal React component tree. The `useTranslations` hook is not available. Developers forget to pass the locale explicitly to `getTranslations` from `next-intl/server`, or they pass the wrong one.
 
-**How to avoid:**
-- Store the master key in a secrets manager (Vercel Environment Variables marked as secret, or a dedicated service like AWS Secrets Manager), never in `.env` files that might be committed.
-- Version your encryption scheme: store a `key_version` alongside each encrypted note. When rotating keys, new notes use the new version; old notes are decrypted with the old version and re-encrypted on read (lazy rotation).
-- Pin HKDF parameters (algorithm, salt, info string format) in a constants file and include them in the encrypted payload metadata so they're never ambiguous.
-- Write integration tests that encrypt with version N, then decrypt with the current code to verify backward compatibility.
-- Document the key recovery process. If the master key is lost, private notes are gone -- make sure this is understood and the key is backed up securely.
-- Consider using an established library (like Google Tink or AWS Encryption SDK) rather than hand-rolling crypto, to reduce the surface area for subtle bugs.
+**Consequences:** Users receive emails in the wrong language. Invite emails in Romanian sent to English-speaking invitees. Password reset emails unreadable.
 
-**Warning signs:**
-- Master key is in `.env.local` or committed to version control.
-- No `key_version` field in the `private_note` table (the current schema lacks this).
-- Encryption tests use a different key than production.
-- No documented key backup or rotation procedure.
+**Prevention:**
+1. Every email rendering function must accept an explicit `locale` parameter -- never infer from request context
+2. Use `getTranslations({ locale, namespace })` from `next-intl/server` for email string translation
+3. Language rules by email type:
+   - Invite emails (recipient has no account yet): use the company's `contentLocale` as default
+   - Transactional emails (password reset, verification): use the recipient's stored `uiLocale`
+   - Session summary emails: UI chrome in recipient's `uiLocale`, session content in `contentLocale`
+4. Create a test that renders every email template in both locales and snapshots the output
 
-**Phase to address:**
-Phase 1 (Database + Security Foundation). The encryption scheme, key versioning, and HKDF parameters must be locked down before any private notes are stored.
+**Detection:** Send test emails in both locales during development. Automated: render email templates with explicit locale parameter in unit tests.
 
-**Confidence:** HIGH -- verified via [NIST AES-GCM guidance](https://csrc.nist.gov/csrc/media/Events/2023/third-workshop-on-block-cipher-modes-of-operation/documents/accepted-papers/Practical%20Challenges%20with%20AES-GCM.pdf), [key rotation best practices](https://www.kiteworks.com/regulatory-compliance/encryption-key-rotation-strategies/), [multi-tenant encryption FAQs](https://www.awssome.io/blog/multi-tenant-saas-security-encryption-faqs)
+**Phase:** Email template migration phase (after core i18n is set up). Can be done independently from UI translation.
 
 ---
 
-## Technical Debt Patterns
-
-Shortcuts that seem reasonable but create long-term problems.
-
-| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
-|----------|-------------------|----------------|-----------------|
-| Single LLM provider hardcoded | Faster initial development | Vendor lock-in; can't optimize costs or switch when pricing changes | Never -- use a provider abstraction from day one (Vercel AI SDK) |
-| Skipping vector store, stuffing raw text into prompts | Avoids adding another infrastructure component | Token costs explode; context windows overflow; performance degrades as data grows | MVP only, but must plan migration path to embeddings within 2-3 months |
-| Storing AI-generated content without provenance | Simpler data model | Can't audit what the AI said vs. what the user wrote; liability risk; can't improve prompts | Never -- always tag AI-generated content with model, prompt version, and timestamp |
-| Using `neondb_owner` for app connections | Works immediately without role setup | Silently bypasses all RLS policies, creating a false sense of security | Never |
-| Auto-save without conflict resolution | Simpler implementation | Two people editing the same session simultaneously can overwrite each other's answers | MVP if sessions are single-editor; must add optimistic locking before v2 |
-| Hardcoded prompt templates in application code | Quick iteration | Can't A/B test prompts, can't update without deployment, no prompt versioning | Early prototype only; move to database-stored prompts before launch |
+## Moderate Pitfalls
 
 ---
 
-## Integration Gotchas
+### Pitfall 6: Romanian Diacritics Corruption
 
-Common mistakes when connecting to external services.
+**What goes wrong:** Romanian characters (ă, â, î, ș, ț) display as mojibake (garbled characters) or get stripped. Particularly insidious: there are two versions of ș and ț in Unicode -- comma-below (correct: ș U+0219, ț U+021B) and cedilla-below (wrong: ş U+015F, ţ U+0163). They look almost identical on screen but are different characters, causing search failures, sort inconsistencies, and database comparison mismatches.
 
-| Integration | Common Mistake | Correct Approach |
-|-------------|----------------|------------------|
-| **Google Calendar API** | Treating webhooks as reliable event delivery | Build polling fallback with `syncToken`; webhooks are acceleration, not guarantee |
-| **Google Calendar API** | Not handling token refresh | OAuth tokens expire; implement automatic refresh with retry logic; store refresh tokens securely per user |
-| **Google Calendar API** | Requesting overly broad OAuth scopes | Request only `calendar.events` (not `calendar`); users reject broad permission requests; Google verification is stricter for broad scopes |
-| **OpenAI / LLM APIs** | No timeout or retry logic | LLM API calls can take 5-30 seconds; implement timeouts, streaming for UX, and exponential backoff for retries |
-| **OpenAI / LLM APIs** | Sending PII in prompts without consideration | Session notes contain employee names, performance data; review data handling policies of your LLM provider; consider on-premise or privacy-focused providers |
-| **Neon PostgreSQL** | Using prepared statements with PgBouncer | Set `prepare: false` in client config; PgBouncer in transaction mode doesn't support prepared statements |
-| **Neon PostgreSQL** | Not configuring connection pool size for serverless | Serverless functions each open connections; without proper pooling config, you hit connection limits quickly |
-| **Auth.js v5** | Changing `AUTH_SECRET` in production | Invalidates ALL existing sessions, logging out every user; use secret rotation (two secrets during transition) |
-| **Auth.js v5** | Not embedding `tenant_id` in JWT | Session doesn't carry tenant context; every request requires an extra DB lookup to find the user's tenant |
-| **Inngest** | Not making event handlers idempotent | Inngest retries failed steps; if handlers aren't idempotent, you get duplicate emails, double analytics, etc. |
-| **Resend (Email)** | No email delivery tracking | Emails silently fail; implement webhook callbacks from Resend to track delivery status and failures |
+**Why it happens:** Copy-pasting from older Romanian sources, or translators using keyboards configured for Turkish (which uses the cedilla variants). The Debian wiki documents this as a long-standing Romanian i18n issue. ISO-8859-2 (commonly used historically) maps to the wrong cedilla variants.
 
----
+**Prevention:**
+1. Ensure all translation JSON files are saved as UTF-8 without BOM
+2. Verify the database connection uses UTF-8 (Neon/Supabase PostgreSQL defaults to UTF-8 -- verify, do not assume)
+3. Use the correct Unicode characters: ș (U+0219), ț (U+021B), not ş (U+015F), ţ (U+0163)
+4. Set `<html lang="ro">` dynamically when the UI locale is Romanian
+5. Add a pre-commit hook or CI check that scans Romanian translation files for the wrong cedilla diacritic variants (U+015E, U+015F, U+0162, U+0163)
+6. Specify correct diacritics in translator guidelines; provide a keyboard layout reference
 
-## Performance Traps
+**Detection:** Search translation files for bytes matching U+015E, U+015F, U+0162, U+0163 -- these are the wrong cedilla variants. A simple regex: `/[şŞţŢ]/`
 
-Patterns that work at small scale but fail as usage grows.
-
-| Trap | Symptoms | Prevention | When It Breaks |
-|------|----------|------------|----------------|
-| **Real-time analytics queries on raw session_answer table** | Dashboard load times exceed 3 seconds; database CPU spikes during business hours | Use pre-computed `analytics_snapshot` table (already designed); ensure background job runs reliably | 50+ sessions per tenant (hundreds of answer rows to aggregate) |
-| **Unbounded context window for AI features** | LLM calls take 10+ seconds; costs spike; token limit errors | Summarize historical sessions into compressed profiles; use RAG with embeddings instead of raw text injection | 10+ sessions per series (context exceeds 4K tokens per person) |
-| **N+1 queries in session wizard context panel** | Context panel loads slowly; each historical session triggers a separate query | Batch-load last 3 sessions + action items in a single query; use Drizzle's `with` for eager loading | 20+ concurrent active sessions across the platform |
-| **Synchronous AI calls blocking session wizard** | Wizard feels sluggish; "generating summary" takes 10-30 seconds blocking the UI | Use streaming responses for real-time features; use background jobs (Inngest) for post-session processing; never block the main request with an LLM call | Any scale -- even 1 user notices a 10-second wait |
-| **Audit log table without partitioning** | Audit log queries slow down; INSERT performance degrades | Partition audit_log by month (time-based partitioning); add index on (tenant_id, created_at) | 100K+ audit entries (reached within months for active tenants) |
-| **Analytics snapshot job processes all tenants sequentially** | Background job exceeds Inngest timeout; snapshots are stale for tenants processed last | Fan out: one Inngest event per tenant, each processed independently with concurrency control | 50+ tenants with active sessions |
-| **Full-text search on session notes without proper indexing** | Search queries scan entire table; response times degrade linearly with data | Add `tsvector` column with GIN index for PostgreSQL full-text search; update via trigger | 1,000+ sessions total across all tenants |
+**Phase:** Translation authoring. Include diacritic guidelines in translator documentation. Add CI check early.
 
 ---
 
-## Security Mistakes
+### Pitfall 7: Romanian Text Length Breaks Layouts
 
-Domain-specific security issues beyond general web security.
+**What goes wrong:** Romanian translations are typically 15-30% longer than English equivalents. UI elements designed for English overflow, truncate, or break layouts. Buttons, table headers, navigation items, and form labels are most affected.
 
-| Mistake | Risk | Prevention |
-|---------|------|------------|
-| **LLM prompt injection via session notes** | User writes "Ignore previous instructions and..." in a session answer; AI generates unauthorized content or leaks system prompt | Sanitize user input before including in LLM prompts; use structured prompt templates with clear delineation of system vs. user content; validate AI output before displaying |
-| **Indirect prompt injection via historical context** | A malicious user poisons their session history with crafted text that manipulates future AI suggestions for their manager | Treat all user-generated content as untrusted input to the LLM; use output filtering; limit AI agency (suggestions only, no automated actions) |
-| **Private notes visible in AI-generated summaries** | AI summary accidentally includes content from encrypted private notes because decrypted content was included in the prompt context | Never include decrypted private notes in any AI prompt context; enforce this with a code-level separation between the AI context assembly function and the private note decryption path |
-| **Tenant ID from request parameters instead of session** | Attacker modifies tenant_id in request body to access another tenant's data | Always derive tenant_id from the authenticated session/JWT, never from request parameters; the existing architecture doc correctly specifies this, but it must be enforced via code review and testing |
-| **AI feature exposes data beyond user's RBAC level** | A member asks the AI "summarize all team scores" and the AI complies because it has database access beyond the user's role | AI context assembly must respect the same RBAC rules as the UI; filter data based on the requesting user's role before passing to the LLM |
-| **OAuth token storage without encryption** | Google Calendar OAuth refresh tokens stored in plaintext in the database; a data breach exposes access to users' calendars | Encrypt OAuth tokens at rest (use the same AES-256-GCM scheme as private notes, or a dedicated secrets column); tokens are as sensitive as passwords |
+**Why it happens:** English is a compact language. Romanian words tend to be longer, and some concepts require more words. Layout testing is always done in English first.
 
----
+**Prevention:**
+1. During UI development, test with pseudo-localization (artificially lengthened strings) before real translations arrive
+2. Use flexible layouts: `min-width` not `width`, text wrapping not truncation, responsive grid not fixed columns
+3. Specific danger zones in this app:
+   - Sidebar navigation labels ("Overview" -> "Prezentare generala" is 2.5x longer)
+   - Button text ("Mark as Complete" -> "Marcheaza ca finalizat" is similar length, but "Quick Stats" -> "Statistici rapide" can vary)
+   - Table column headers in analytics and people views
+   - Wizard step labels in session wizard
+   - Badge text and status labels
+4. Set `max-width` with `text-overflow: ellipsis` as a safety net, with full text in tooltip
+5. Test the sidebar in collapsed and expanded states with Romanian labels
 
-## UX Pitfalls
+**Detection:** Visual regression tests with Romanian locale. Automated: Playwright screenshots in both locales compared side-by-side.
 
-Common user experience mistakes in this domain.
-
-| Pitfall | User Impact | Better Approach |
-|---------|-------------|-----------------|
-| **AI suggestions that feel generic** | Users dismiss AI features after a few uses because suggestions are obvious ("How is your workload?" when they always ask that) | Train on the specific series' history; surface insights, not questions already in the template; focus on pattern-based nudges ("Alex's engagement dropped 20% -- you may want to explore this") |
-| **Blocking the wizard with AI processing** | Manager sits in an active 1:1 meeting waiting for a loading spinner while the AI generates suggestions | Stream AI responses; show skeleton states; generate pre-session suggestions asynchronously before the meeting starts, not during it |
-| **Over-automating meeting preparation** | Managers stop preparing because "AI will handle it"; meeting quality actually drops because the human judgment layer is gone | Position AI as preparation assistance, not replacement; AI prepares drafts, humans review and customize; never auto-populate the agenda without manager confirmation |
-| **Showing AI confidence too prominently** | Confidence scores confuse non-technical users; they either ignore low-confidence suggestions entirely or trust high-confidence ones blindly | Don't show confidence scores to end users; curate the output -- only show suggestions above your quality threshold; use language like "You might want to discuss..." not "87% confidence: discuss..." |
-| **Session wizard with too many steps** | Manager rushes through questions because there are 15 steps; quality of answers drops | Group questions by category (as already designed); allow managers to customize which categories to include per session; aim for 4-6 steps maximum |
-| **Analytics dashboards that overwhelm** | Managers see 12 charts and metrics and don't know what matters | Start with 3 key metrics (session score trend, action item velocity, meeting adherence); allow progressive disclosure of detail; highlight anomalies, don't dump data |
-| **Private notes UX confusion** | Manager accidentally writes sensitive feedback in shared notes | Make the private/shared distinction extremely visible: different background colors, icon indicators, and a confirmation when switching modes; consider defaulting to private for new notes |
+**Phase:** UI adjustment phase (after translations are in). Plan a dedicated "layout polish" pass.
 
 ---
 
-## "Looks Done But Isn't" Checklist
+### Pitfall 8: Translation Key Organization Becomes Unmaintainable
 
-Things that appear complete but are missing critical pieces.
+**What goes wrong:** Translation keys start with a flat structure (`"loginButton"`, `"loginTitle"`, `"dashboardWelcome"`) and quickly become an unnavigable mess of 500+ keys in a single file. Or keys are too deeply nested and painful to type. Or keys are inconsistently named, making it impossible to find the right one.
 
-- [ ] **Multi-tenancy:** Verify RLS policies are active with a non-superuser role -- test by attempting to SELECT another tenant's data from a psql session using the app's database role
-- [ ] **AI summaries:** Check that summaries never include private note content, content from other tenants, or hallucinated facts about people not in the session
-- [ ] **Session auto-save:** Verify behavior when two browser tabs are open for the same session (conflict resolution or last-write-wins with notification)
-- [ ] **Calendar sync:** Verify webhook renewal actually works by checking after 7 days in production, not just in a test environment with mocked expiration
-- [ ] **Email notifications:** Verify all email templates render correctly with actual data, not just test fixtures; check timezone handling in "Your meeting is tomorrow at 10:00 AM" emails
-- [ ] **Private note encryption:** Verify decryption works after a deployment (same key, same HKDF parameters); test with notes encrypted by a previous code version
-- [ ] **AI rate limiting:** Verify per-tenant AI call limits are enforced; test with a tenant that exceeds their quota
-- [ ] **Analytics snapshots:** Verify the background job handles tenants with no sessions in the period (should produce no snapshot, not an error)
-- [ ] **Action item carry-over:** Verify carried-over items show their origin session and don't duplicate on repeated carries
-- [ ] **RBAC on AI features:** Verify a `member` role user cannot trigger AI features that would access data beyond their own sessions
-- [ ] **Audit logging:** Verify AI-related actions are logged (who triggered what AI feature, what data was sent to the LLM)
-- [ ] **OAuth token refresh:** Verify Google Calendar token refresh works when the original token expires (test with an actually expired token, not a mocked one)
+**Why it happens:** No key naming convention is established before extraction begins. Different developers use different patterns. The first 50 keys seem fine; the next 500 are chaos.
 
----
+**Prevention:**
+1. Use namespace-based organization matching the app's route structure:
+   ```
+   messages/en/
+     common.json       # shared: buttons, labels, errors, confirmations
+     auth.json          # login, register, forgot-password, invite
+     dashboard.json     # overview, quick stats, nudges
+     sessions.json      # wizard, summary, recap
+     people.json        # people list, teams, profiles
+     templates.json     # template editor, question types
+     analytics.json     # charts, period selector, exports
+     settings.json      # company settings, account settings
+     actionItems.json   # action item list, status, carry-over
+   ```
+2. Keys should be 2-3 levels deep max: `namespace.section.key` (e.g., `sessions.wizard.nextStep`)
+3. Shared strings (Save, Cancel, Delete, Loading, Error) go in `common.json` -- referenced everywhere
+4. Never duplicate strings across namespaces -- if it is used in 2+ places, it belongs in `common`
+5. Use `useTranslations('namespace')` to scope translations per component
+6. Establish naming conventions before extraction:
+   - Actions: `verb` or `verbNoun` (e.g., `save`, `deleteTeam`)
+   - Labels: `noun` or `nounDescription` (e.g., `email`, `sessionScore`)
+   - Messages: `stateMessage` (e.g., `emptyState`, `loadingData`, `saveSuccess`)
+   - Errors: `errorType` (e.g., `errorRequired`, `errorTooLong`)
 
-## Recovery Strategies
+**Detection:** Any namespace file exceeding 200 keys needs splitting. Any key used in 3+ files should be in `common`.
 
-When pitfalls occur despite prevention, how to recover.
-
-| Pitfall | Recovery Cost | Recovery Steps |
-|---------|---------------|----------------|
-| AI context leaks tenant data | HIGH | Immediately disable AI features; audit all AI-generated content for cross-tenant data; notify affected tenants per GDPR; fix isolation layer; re-enable with enhanced logging |
-| RLS bypass exposes cross-tenant data | HIGH | Immediately take application offline; audit access logs for cross-tenant queries; assess data exposure scope; notify affected tenants; fix role/policy configuration; add integration tests |
-| Master encryption key lost | CRITICAL (unrecoverable) | Private notes encrypted with the lost key are permanently unreadable; inform affected users; implement key backup procedures; cannot recover data |
-| LLM costs exceed budget | MEDIUM | Implement emergency rate limiting; switch to cheaper models for non-critical features; add cost tracking; negotiate volume pricing with provider |
-| Google Calendar webhooks silently stopped | LOW | Run a manual full sync for affected tenants; fix the renewal mechanism; verify polling fallback is running |
-| AI generates harmful/biased content about an employee | HIGH | Immediately disable the specific AI feature; review the generated content; assess impact on the employee; add output filtering; review prompt templates for bias |
-| Auth secret rotated, all sessions invalidated | MEDIUM | Users must re-login; no data loss; implement dual-secret support for future rotations |
-
----
-
-## Pitfall-to-Phase Mapping
-
-How roadmap phases should address these pitfalls.
-
-| Pitfall | Prevention Phase | Verification |
-|---------|------------------|--------------|
-| AI as afterthought | Phase 1 (Architecture) | AI pipeline scaffolding exists in initial schema; session wizard design includes AI panel |
-| Multi-tenant AI context leakage | First AI feature phase | Integration test: AI endpoint called with Tenant A's auth returns no Tenant B data |
-| RLS bypass in serverless pooling | Phase 1 (Database Setup) | Integration test: app-role connection cannot SELECT cross-tenant data; `prepare: false` configured |
-| LLM cost explosion | First AI feature phase | Cost-per-call logging exists; per-tenant rate limits configured; monthly cost projection documented |
-| Google Calendar webhook unreliability | Calendar Integration phase | Both webhook and polling paths exist; webhook renewal tested with real expiration; polling catches missed events |
-| Private note encryption key management | Phase 1 (Security Foundation) | `key_version` field exists on private_note; HKDF parameters documented and pinned; key backup procedure documented |
-| Prompt injection via session notes | First AI feature phase | Input sanitization in AI context assembly; output validation before display; test with known injection strings |
-| LLM blocking the session wizard | Session Wizard AI phase | AI calls are streamed or async; wizard never waits synchronously for LLM response |
-| Analytics job scalability | Analytics phase | Job fans out per-tenant; tested with simulated load of 100 tenants |
-| Design phase paralysis | Phase 0 (Design) | Timebox to 2-3 weeks; design key screens only (wizard, dashboard, template builder); derive system from screens |
-| Auth.js secret management | Phase 1 (Auth Setup) | Dual-secret rotation support; `tenant_id` embedded in JWT; session tests verify tenant scoping |
+**Phase:** Core i18n setup phase. The namespace structure must be defined before extraction begins.
 
 ---
 
-## Design-First Project Risk
+### Pitfall 9: AI-Generated Content Language Inconsistency
 
-This project has a specific constraint: "Design first, build second" with "Apple-level polish." This creates a unique pitfall category.
+**What goes wrong:** AI features (session summaries, nudges, action item suggestions) generate content in unpredictable languages. If session answers are in Romanian but the AI prompt is in English, the output language is a coin flip. Worse: mixed-language sessions (manager writes in English, report answers in Romanian) produce incoherent AI output.
 
-### Pitfall: Design Phase Paralysis
+**Why it happens:** The existing `BASE_SYSTEM` prompt says "Write in the same language as the session data" -- but this is ambiguous when session data is mixed-language. LLMs do not reliably detect language from short text like "Da" (Romanian "Yes") vs other short inputs.
 
-**What goes wrong:**
-The design phase expands indefinitely because "Apple-level polish" is a subjective, moving target. Every screen gets multiple iterations. The team spends 2-3 months on Figma mockups before writing a single line of code. By the time development starts, the designs are based on assumptions that don't survive contact with real data, real API latency, and real component behavior. Designs get reworked during implementation anyway.
+**Consequences:** AI summaries switch languages mid-paragraph. Nudge cards show Romanian text to English users. Action item suggestions are in the wrong language.
 
-**Why it happens:**
-"Apple-level polish" sounds like a quality bar but functions as a scope statement. Without explicit boundaries, it means every pixel gets debated. The design phase also lacks the feedback loop that implementation provides -- you can't test auto-save feel, AI response streaming, or real chart rendering in Figma.
+**Prevention:**
+1. Replace the language-detection heuristic with an explicit locale instruction: `"Always respond in ${contentLocale === 'ro' ? 'Romanian' : 'English'}."` in the system prompt
+2. Pass `contentLocale` from the company settings to every AI call via the `context.ts` module
+3. For mixed-language input: the AI output language follows `contentLocale`, not the input language
+4. Test AI prompts with both locales -- Romanian output quality may differ from English (LLMs are generally weaker in Romanian)
+5. Consider: AI-generated UI strings (like nudge card titles) that appear in the UI should follow `uiLocale`; summary content embedded in session records should follow `contentLocale`
 
-**How to avoid:**
-- Timebox the design phase strictly: 2-3 weeks maximum for the initial design sprint.
-- Design only the critical screens: session wizard, dashboard, template builder. Derive the design system (colors, typography, spacing, component library) from these 3-4 screens, not from an abstract style guide.
-- Accept that designs are hypotheses, not specifications. Plan for design iteration during development, not before it.
-- Use shadcn/ui defaults as the starting point and customize, rather than designing from scratch and then mapping to shadcn components.
-- Define "Apple-level polish" concretely: smooth animations (60fps), responsive transitions, consistent spacing, zero layout shifts, accessible color contrast. These are measurable, not subjective.
-- Build a living design system in Storybook that evolves with the codebase, rather than maintaining a separate Figma source of truth that drifts.
+**Detection:** Set company to Romanian, write session answers in English, verify AI output is in Romanian. And vice versa.
 
-**Warning signs:**
-- Design phase exceeds 3 weeks without producing implementable artifacts.
-- Designers and developers are working sequentially (design, then build) rather than in parallel (design screen X while building screen Y).
-- The Figma file has more than 50 frames for MVP screens.
-- No one has tested the designs with real data or real component constraints.
-
-**Phase to address:**
-Phase 0 (Design). Must be timeboxed with explicit deliverables and a hard cutoff. Design continues during development, not as a gate before it.
+**Phase:** AI integration update phase. Relatively isolated change -- update `BASE_SYSTEM` and pass locale to all AI service calls via `src/lib/ai/context.ts`.
 
 ---
 
-## Vercel Serverless Constraints
+### Pitfall 10: Zod Validation Error Messages Stay in English
 
-### Pitfall: Serverless Timeout on AI and Analytics Operations
+**What goes wrong:** Zod schemas throughout the app have hardcoded English error messages (`z.string().min(1, "Name is required")`). After i18n, form validation errors appear in English even when the UI is in Romanian.
 
-**What goes wrong:**
-Vercel's free tier limits serverless functions to 10 seconds; Pro tier allows up to 5 minutes (or 800 seconds with Fluid Compute). LLM API calls for complex operations (generating summaries with full context, building AI profiles) can take 10-30 seconds. Analytics computation for large tenants can exceed timeout limits. Cold starts add 800ms-2.5s for database connections.
+**Why it happens:** Zod validation runs on both server and client. The `t()` function is not available when defining Zod schemas (they are defined at module level, outside React components). This is a well-known pain point in the Zod + i18n ecosystem.
 
-**Why it happens:**
-Developers test locally where there are no timeouts, and prototypes with small datasets complete quickly. In production, real context sizes, real LLM latency, and cold starts combine to exceed limits.
+**Consequences:** All form validation messages remain in English. Users see a jarring mix of Romanian UI with English error text.
 
-**How to avoid:**
-- Route ALL long-running AI operations through Inngest, not through API routes. API routes should only trigger events; Inngest functions handle the actual LLM calls.
-- Use streaming for real-time AI features (live suggestions) to avoid timeout waiting for complete responses.
-- Enable Vercel Fluid Compute for extended duration if on Pro plan.
-- Pre-warm database connections using Neon's serverless driver (which supports HTTP-based queries that avoid TCP cold start overhead).
-- Design API routes to be fast (<5 seconds): fetch data, return response, trigger background processing via events.
+**Prevention:**
+1. Recommended approach for this app: remove custom messages from Zod schemas entirely (use schema-level validation only), then map Zod error codes to translated strings at the UI layer
+2. Create a `getZodErrorMessage(error: ZodIssue, t: TranslationFunction)` utility that maps Zod issue codes (`too_small`, `invalid_type`, `invalid_string`, etc.) to translation keys
+3. Update the shadcn/ui `<FormMessage>` component to use this utility
+4. For custom business logic errors (e.g., "Team name already exists"), return error keys from API routes and translate them in the client component
+5. Alternative: use `zod-i18n-map` library, but it adds a dependency and may not cover custom error messages
 
-**Warning signs:**
-- API routes directly call LLM APIs and wait for responses.
-- Analytics export endpoints compute results inline instead of generating async and notifying when ready.
-- "Function timed out" errors in Vercel logs.
+**Detection:** Submit a form with invalid data while UI is in Romanian. If error messages are in English, Zod messages are not translated.
 
-**Phase to address:**
-Phase 1 (Architecture). Establish the pattern: API routes are thin handlers; Inngest handles all heavy processing.
+**Phase:** Form migration phase. Must update the shared `<FormMessage>` component and all Zod schemas that have custom error strings. Can be done after core i18n setup.
+
+---
+
+### Pitfall 11: Missing Translation Fallback Breaks Production
+
+**What goes wrong:** A translation key exists in English but is missing from Romanian. In development, next-intl shows the key name (e.g., `sessions.wizard.nextStep`). In production, this raw key is shown to users -- confusing and unprofessional.
+
+**Why it happens:** Incremental translation means Romanian is always behind English. New features add English strings but Romanian translations lag. No CI check catches the gap.
+
+**Prevention:**
+1. Configure next-intl's `onError` and `getMessageFallback` to fall back to English (never show raw keys in production):
+   ```typescript
+   // i18n/request.ts
+   onError(error) {
+     if (error.code === 'MISSING_MESSAGE') {
+       console.warn(`Missing translation: ${error.originalMessage}`);
+     }
+   },
+   getMessageFallback({ namespace, key }) {
+     return englishMessages[`${namespace}.${key}`] ?? `[${namespace}.${key}]`;
+   }
+   ```
+2. Add a CI check that compares key counts between `en/` and `ro/` -- warn (not fail) if Romanian is missing keys, fail if more than 10% are missing
+3. Use TypeScript-generated types from translation files to catch missing keys at compile time (next-intl supports this with `global.d.ts` augmentation)
+4. During incremental migration, English fallbacks for untranslated sections are acceptable -- but log them so they can be tracked
+
+**Detection:** CI pipeline that diffs translation file keys between locales. Runtime logging of fallback usage in production.
+
+**Phase:** Core i18n setup (configure fallback behavior), then ongoing CI enforcement during translation phases.
+
+---
+
+## Minor Pitfalls
+
+---
+
+### Pitfall 12: Forgetting `setRequestLocale` in Every Page and Layout
+
+**What goes wrong:** In Next.js App Router with next-intl (when not using URL-based routing), every `page.tsx` and `layout.tsx` that uses translations must call `setRequestLocale(locale)` before any `useTranslations` or `getTranslations` call. Forgetting this in even one page causes the page to use the default locale, leading to English text on a page the user expects in Romanian.
+
+**Prevention:** Create a code snippet/template for all page files. Add to code review checklist. Consider a custom ESLint rule that checks for `setRequestLocale` in page/layout files.
+
+**Phase:** Core i18n setup. Part of the file-by-file migration process.
+
+---
+
+### Pitfall 13: Locale Cookie Not Synced with User Preference
+
+**What goes wrong:** Since this app uses no URL-based locale routing (locale is stored in user preferences, not the URL), the next-intl middleware must read the locale from a cookie. If the cookie gets out of sync with the database record, the user sees the wrong language. This can happen after clearing cookies, using a new device, or if the settings update fails to set the cookie.
+
+**Prevention:**
+1. On login/session creation, set the `NEXT_LOCALE` cookie from the user's stored `uiLocale` preference
+2. On language change in settings, update both the database record and the cookie in the same response (use `Set-Cookie` header in the API route response)
+3. Configure next-intl middleware with `localePrefix: 'never'` since URLs will not contain locale segments
+4. For unauthenticated pages (login, register, invite), fall back to `Accept-Language` header or a default
+5. On the middleware: if user is authenticated and cookie disagrees with stored preference, update the cookie
+
+**Phase:** Core i18n setup (middleware configuration) and auth flow update.
+
+---
+
+### Pitfall 14: Date and Number Format Inconsistencies
+
+**What goes wrong:** Romanian date format is DD.MM.YYYY (not MM/DD/YYYY). Number format uses comma for decimals and period for thousands (1.234,56 not 1,234.56). Hardcoded `toLocaleDateString('en-US')` or manual date formatting throughout the codebase produces American-style dates for Romanian users. Session scores displayed as "4.5" should be "4,5" in Romanian.
+
+**Why it happens:** Date/number formatting calls are scattered across many components and are easy to miss during string extraction because they are not plain text strings -- they are function calls that produce locale-dependent output.
+
+**Prevention:**
+1. Audit all `toLocaleDateString`, `toLocaleString`, `Intl.DateTimeFormat`, and manual date formatting calls across all 265 files
+2. Replace with next-intl's `useFormatter().dateTime()` and `useFormatter().number()` which respect the active locale
+3. For server-side formatting (API routes, email templates, Inngest jobs), use `getFormatter({ locale })` from `next-intl/server`
+4. Relative times ("2 hours ago") must also be locale-aware -- use `useFormatter().relativeTime()`
+5. Pay special attention to: session timestamps, due dates on action items, chart axis labels in analytics, CSV export date formatting
+
+**Detection:** Search codebase for `toLocaleDateString`, `toLocaleString`, `new Intl.DateTimeFormat`, `new Date().toLocal`, `.format(date` patterns.
+
+**Phase:** Formatting migration phase. Can be done in parallel with string extraction. Create a separate tracking list for date/number formatting instances.
+
+---
+
+### Pitfall 15: Client Bundle Size Increase from Translation Messages
+
+**What goes wrong:** By default, `NextIntlClientProvider` sends all translation messages to the client. With two languages and 500+ keys each, plus ICU MessageFormat parsing overhead, this adds 20-50KB to every page load.
+
+**Prevention:**
+1. Use next-intl's namespace-based message splitting -- only pass the namespaces needed for each page via the provider
+2. Server Components do not add to bundle size (translations stay on the server) -- leverage the existing 159 Server Components
+3. For the 106 client components, pass only the relevant namespace: `<NextIntlClientProvider messages={pick(messages, ['common', 'sessions'])}>`
+4. Monitor bundle size before and after i18n integration using `next-bundle-analyzer`
+
+**Detection:** Check the Next.js build output for `__NEXT_DATA__` size increase.
+
+**Phase:** Performance optimization phase (after i18n is functional). Not critical for initial launch.
+
+---
+
+### Pitfall 16: Hardcoded Strings in shadcn/ui Components
+
+**What goes wrong:** The 28 shadcn/ui components in `src/components/ui/` may contain hardcoded English strings in aria-labels, placeholder text, or default props (e.g., "Search...", "No results", "Close", "Loading"). These are easy to overlook because developers think of them as "library code" that should not be modified.
+
+**Prevention:**
+1. Audit each shadcn/ui component for hardcoded strings -- particularly `command.tsx` ("No results found"), `dialog.tsx` ("Close"), `sheet.tsx`, `alert-dialog.tsx` ("Cancel"/"Continue")
+2. Extract these strings into the `common` namespace
+3. Pass translated strings as props rather than modifying the shadcn components directly (preserves upgrade path)
+
+**Detection:** Grep `src/components/ui/` for English string literals in JSX.
+
+**Phase:** String extraction phase. Include UI components in the extraction checklist.
+
+---
+
+## Phase-Specific Warnings
+
+| Phase Topic | Likely Pitfall | Mitigation |
+|---|---|---|
+| **i18n Architecture Setup** | Pitfall 2 (dual language confusion) | Design `uiLocale` vs `contentLocale` separation first, before writing any code |
+| **Middleware & Routing** | Pitfall 13 (cookie sync), Pitfall 4 (hydration) | `localePrefix: 'never'`, sync cookie on login/settings change, explicit timezone |
+| **String Extraction** | Pitfall 1 (incomplete extraction), Pitfall 16 (shadcn) | Use codemod + ESLint rule + visual review in Romanian; include UI components |
+| **Translation Key Design** | Pitfall 8 (key organization) | Define namespace structure matching route structure before extraction begins |
+| **Server/Client Components** | Pitfall 4 (hydration mismatch), Pitfall 12 (setRequestLocale) | Use next-intl formatting APIs exclusively; add setRequestLocale to every page/layout |
+| **Form Validation** | Pitfall 10 (Zod messages) | Update shared `<FormMessage>` component; remove custom Zod messages |
+| **Email Templates** | Pitfall 5 (wrong language) | Every email function takes explicit `locale` parameter |
+| **AI Integration** | Pitfall 9 (inconsistent language) | Pass `contentLocale` to all AI service calls; update `BASE_SYSTEM` prompt |
+| **Romanian Translation** | Pitfall 3 (plural rules), Pitfall 6 (diacritics) | Romanian CLDR plural cheat-sheet; diacritic linting pre-commit hook |
+| **Layout Polish** | Pitfall 7 (text overflow) | Pseudo-localization testing; flexible layouts; sidebar label testing |
+| **Missing Translation Handling** | Pitfall 11 (fallback) | English fallback config; CI key-count check between locales |
+| **Date/Number Formatting** | Pitfall 14 (format inconsistencies) | Audit and replace all `Intl` API and manual formatting calls |
+| **Performance** | Pitfall 15 (bundle size) | Namespace-scoped message passing to client provider |
 
 ---
 
 ## Sources
 
-### Official Documentation
-- [Drizzle ORM RLS Documentation](https://orm.drizzle.team/docs/rls)
-- [Neon RLS with Drizzle Guide](https://neon.com/docs/guides/rls-drizzle)
-- [Neon Connection Pooling](https://neon.com/docs/connect/connection-pooling)
-- [Google Calendar Push Notifications](https://developers.google.com/workspace/calendar/api/guides/push)
-- [Google Calendar Error Handling](https://developers.google.com/workspace/calendar/api/guides/errors)
-- [Inngest Documentation](https://www.inngest.com/docs)
-- [Vercel Function Timeouts](https://vercel.com/kb/guide/what-can-i-do-about-vercel-serverless-functions-timing-out)
-
-### Security & AI References
-- [OWASP LLM Top 10: Prompt Injection (LLM01:2025)](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)
-- [OWASP Prompt Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html)
-- [Burn-After-Use: Multi-Tenant LLM Security (arXiv)](https://arxiv.org/abs/2601.06627)
-- [Multi-Tenant AI Leakage (LayerX)](https://layerxsecurity.com/generative-ai/multi-tenant-ai-leakage/)
-- [LLM Integration Risks for SaaS (Security Boulevard)](https://securityboulevard.com/2026/02/large-language-model-llm-integration-risks-for-saas-and-enterprise/)
-- [Multi-Tenant RLS Failure Analysis](https://medium.com/@instatunnel/multi-tenant-leakage-when-row-level-security-fails-in-saas-da25f40c788c)
-
-### Architecture & Cost
-- [AI-Native vs AI-Bolted On Architectures](https://medium.com/@the_AI_doctor/ai-native-vs-ai-bolted-on-architectures-a-technical-white-paper-for-enterprise-decision-makers-bf081efdc648)
-- [AI-Native SaaS Architecture (CloudZero)](https://www.cloudzero.com/blog/ai-native-saas-architecture/)
-- [LLM Pricing Comparison 2026](https://www.cloudidr.com/blog/llm-pricing-comparison-2026)
-- [LLM Cost Per Token Guide](https://www.silicondata.com/blog/llm-cost-per-token)
-- [NIST AES-GCM Practical Challenges](https://csrc.nist.gov/csrc/media/Events/2023/third-workshop-on-block-cipher-modes-of-operation/documents/accepted-papers/Practical%20Challenges%20with%20AES-GCM.pdf)
-- [Encryption Key Rotation Best Practices](https://www.kiteworks.com/regulatory-compliance/encryption-key-rotation-strategies/)
-- [Inngest: Solving Next.js Timeouts](https://www.inngest.com/blog/how-to-solve-nextjs-timeouts)
-
-### Auth & Session Management
-- [NextAuth Session Persistence Issues (Clerk)](https://clerk.com/articles/nextjs-session-management-solving-nextauth-persistence-issues)
-- [Auth.js v5 Migration Guide](https://authjs.dev/getting-started/migrating-to-v5)
-
-### Calendar Integration
-- [Calendar Webhook Integration Guide 2025](https://calendhub.com/blog/calendar-webhook-integration-developer-guide-2025/)
-- [Google Calendar Integration: Webhook Synchronizations](https://lorisleiva.com/google-calendar-integration/webhook-synchronizations)
-- [Google Calendar Integration: Periodic Synchronizations](https://lorisleiva.com/google-calendar-integration/periodic-synchronizations)
-
-### Analytics
-- [PostgreSQL for Analytics Workloads](https://www.epsio.io/blog/postgres-for-analytics-workloads-capabilities-and-performance-tips)
-- [Real-Time Analytics in Postgres (Timescale)](https://medium.com/timescale/real-time-analytics-in-postgres-why-its-hard-and-how-to-solve-it-bd28fa7314c7)
+- [next-intl App Router setup](https://next-intl.dev/docs/getting-started/app-router) -- official documentation (HIGH confidence)
+- [next-intl Server & Client Components](https://next-intl.dev/docs/environments/server-client-components) -- hydration and rendering patterns (HIGH confidence)
+- [next-intl translations outside React components](https://next-intl.dev/blog/translations-outside-of-react-components) -- email template pattern (HIGH confidence)
+- [next-intl useExtracted](https://next-intl.dev/docs/usage/extraction) -- automated string extraction (HIGH confidence)
+- [next-intl routing configuration (localePrefix)](https://next-intl.dev/docs/routing/configuration) -- no-prefix routing (HIGH confidence)
+- [next-intl middleware](https://next-intl.dev/docs/routing/middleware) -- cookie-based locale detection (HIGH confidence)
+- [Codemod next-intl migration tool](https://codemod.com/blog/next-intl-codemod) -- automated codemod for string extraction (MEDIUM confidence)
+- [CLDR Language Plural Rules](https://www.unicode.org/cldr/charts/44/supplemental/language_plural_rules.html) -- Romanian plural categories one/few/other (HIGH confidence)
+- [Debian Romanian I18N Issues](https://wiki.debian.org/L10n/Romanian/I18NIssues) -- diacritics and encoding specifics (HIGH confidence)
+- [i18next Romanian plurals issue #1579](https://github.com/i18next/i18next/issues/1579) -- known Romanian pluralization challenges (MEDIUM confidence)
+- [Phrase: i18n beyond code](https://phrase.com/blog/posts/internationalization-beyond-code-a-developers-guide-to-real-world-language-challenges/) -- real-world language challenges (MEDIUM confidence)
+- [next-intl locale without URL prefix discussion #366](https://github.com/amannn/next-intl/issues/366) -- community patterns for cookie-based locale (MEDIUM confidence)
 
 ---
-*Pitfalls research for: AI-powered 1:1 meeting management SaaS*
-*Researched: 2026-03-03*
+
+*Pitfalls research for: i18n retrofit (English + Romanian) on 1on1 SaaS*
+*Researched: 2026-03-05*
