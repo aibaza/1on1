@@ -8,7 +8,8 @@ import {
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { logAuditEvent } from "@/lib/audit/log";
 import { computeSessionSnapshot } from "@/lib/analytics/compute";
-import { sessions, meetingSeries, aiNudges } from "@/lib/db/schema";
+import { sendPostSessionSummaryEmails } from "@/lib/notifications/summary-email";
+import { sessions, meetingSeries, aiNudges, tenants } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 interface PipelineInput {
@@ -46,11 +47,22 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       reportId,
     });
 
+    // Fetch tenant's preferred language for AI content
+    const tenantData = await withTenantContext(tenantId, managerId, async (tx) => {
+      const [t] = await tx
+        .select({ settings: tenants.settings })
+        .from(tenants)
+        .where(eq(tenants.id, tenantId))
+        .limit(1);
+      return t;
+    });
+    const language = (tenantData?.settings as Record<string, unknown> | null)?.preferredLanguage as string | undefined;
+
     // Generate summary
-    const summary = await generateSummary(context);
+    const summary = await generateSummary(context, language);
 
     // Generate manager addendum
-    const addendum = await generateManagerAddendum(context);
+    const addendum = await generateManagerAddendum(context, language);
 
     // Store summary + addendum
     await withTenantContext(tenantId, managerId, async (tx) => {
@@ -65,7 +77,7 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
     });
 
     // Generate action suggestions
-    const suggestions = await generateActionSuggestions(context, summary);
+    const suggestions = await generateActionSuggestions(context, summary, language);
 
     // Store suggestions
     await withTenantContext(tenantId, managerId, async (tx) => {
@@ -79,7 +91,7 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
     });
 
     // Generate nudges
-    const nudges = await generateNudges(context);
+    const nudges = await generateNudges(context, language);
 
     const seriesData = await withTenantContext(
       tenantId,
@@ -146,6 +158,20 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       console.error(`[AI Pipeline] Analytics snapshot failed for session ${sessionId}:`, snapshotError);
     }
 
+    // Send post-session summary emails (non-fatal)
+    try {
+      await sendPostSessionSummaryEmails({
+        sessionId,
+        seriesId,
+        tenantId,
+        managerId,
+        reportId,
+      });
+      console.log(`[AI Pipeline] Summary emails sent for session ${sessionId}`);
+    } catch (emailError) {
+      console.error(`[AI Pipeline] Summary email failed for session ${sessionId}:`, emailError);
+    }
+
     console.log(`[AI Pipeline] Completed for session ${sessionId}`);
   } catch (error) {
     console.error(`[AI Pipeline] Failed for session ${sessionId}:`, error);
@@ -160,6 +186,19 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       });
     } catch (failError) {
       console.error("[AI Pipeline] Failed to set failed status:", failError);
+    }
+
+    // Still send degraded summary email (without AI content)
+    try {
+      await sendPostSessionSummaryEmails({
+        sessionId,
+        seriesId,
+        tenantId,
+        managerId,
+        reportId,
+      });
+    } catch (emailError) {
+      console.error("[AI Pipeline] Summary email failed after AI failure:", emailError);
     }
   }
 }

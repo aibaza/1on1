@@ -77,6 +77,7 @@ export async function PUT(request: Request) {
             timezone: data.timezone,
             defaultCadence: data.defaultCadence,
             defaultDurationMinutes: data.defaultDurationMinutes,
+            preferredLanguage: data.preferredLanguage ?? "en",
           },
           updatedAt: new Date(),
         };

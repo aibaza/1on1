@@ -37,6 +37,7 @@ export default async function CompanySettingsPage() {
     timezone?: string;
     defaultCadence?: string;
     defaultDurationMinutes?: number;
+    preferredLanguage?: string;
   };
 
   return (

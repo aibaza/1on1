@@ -25,6 +25,29 @@ import {
   buildActionSuggestionsUserPrompt,
 } from "./prompts/action-items";
 
+/** Map language codes to full language names */
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English",
+  ro: "Romanian",
+  de: "German",
+  fr: "French",
+  es: "Spanish",
+  pt: "Portuguese",
+};
+
+/**
+ * Append a language instruction to the system prompt when the org
+ * has a non-English preferred language.
+ */
+function withLanguageInstruction(
+  systemPrompt: string,
+  language?: string
+): string {
+  if (!language || language === "en") return systemPrompt;
+  const languageName = LANGUAGE_NAMES[language] || language;
+  return `${systemPrompt}\n\nIMPORTANT: Respond entirely in ${languageName}. All text content must be in ${languageName}.`;
+}
+
 /**
  * Generate a structured session summary from session context.
  *
@@ -32,13 +55,14 @@ import {
  * a summary visible to both manager and report. Private notes are excluded.
  */
 export async function generateSummary(
-  context: SessionContext
+  context: SessionContext,
+  language?: string
 ): Promise<AISummary> {
   try {
     const { output } = await generateText({
       model: models.summary,
       output: Output.object({ schema: summarySchema }),
-      system: buildSummarySystemPrompt(),
+      system: withLanguageInstruction(buildSummarySystemPrompt(), language),
       prompt: buildSummaryUserPrompt(context),
     });
 
@@ -60,7 +84,8 @@ export async function generateSummary(
  * deeper insights visible only to the manager.
  */
 export async function generateManagerAddendum(
-  context: SessionContext
+  context: SessionContext,
+  language?: string
 ): Promise<AIManagerAddendum> {
   try {
     const systemPrompt = BASE_SYSTEM + `Confidential manager-only addendum. NOT visible to the report.
@@ -119,7 +144,7 @@ export async function generateManagerAddendum(
     const { output } = await generateText({
       model: models.managerAddendum,
       output: Output.object({ schema: managerAddendumSchema }),
-      system: systemPrompt,
+      system: withLanguageInstruction(systemPrompt, language),
       prompt: parts.join("\n"),
     });
 
@@ -141,13 +166,14 @@ export async function generateManagerAddendum(
  * open action items, and undiscussed talking points.
  */
 export async function generateNudges(
-  context: SessionContext
+  context: SessionContext,
+  language?: string
 ): Promise<AINudges> {
   try {
     const { output } = await generateText({
       model: models.nudges,
       output: Output.object({ schema: nudgesSchema }),
-      system: buildNudgesSystemPrompt(),
+      system: withLanguageInstruction(buildNudgesSystemPrompt(), language),
       prompt: buildNudgesUserPrompt(context),
     });
 
@@ -170,13 +196,14 @@ export async function generateNudges(
  */
 export async function generateActionSuggestions(
   context: SessionContext,
-  summary: AISummary
+  summary: AISummary,
+  language?: string
 ): Promise<AIActionSuggestions> {
   try {
     const { output } = await generateText({
       model: models.actionSuggestions,
       output: Output.object({ schema: actionSuggestionsSchema }),
-      system: buildActionSuggestionsSystemPrompt(),
+      system: withLanguageInstruction(buildActionSuggestionsSystemPrompt(), language),
       prompt: buildActionSuggestionsUserPrompt(context, summary),
     });
 

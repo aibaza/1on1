@@ -53,6 +53,15 @@ const TIMEZONES = [
 
 const DURATION_OPTIONS = [15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 75, 90, 120];
 
+const LANGUAGES = [
+  { value: "en", label: "English" },
+  { value: "ro", label: "Romanian" },
+  { value: "de", label: "German" },
+  { value: "fr", label: "French" },
+  { value: "es", label: "Spanish" },
+  { value: "pt", label: "Portuguese" },
+];
+
 interface CompanySettingsFormProps {
   initialData: {
     name: string;
@@ -62,6 +71,7 @@ interface CompanySettingsFormProps {
       timezone?: string;
       defaultCadence?: string;
       defaultDurationMinutes?: number;
+      preferredLanguage?: string;
     };
   };
 }
@@ -76,6 +86,9 @@ export function CompanySettingsForm({ initialData }: CompanySettingsFormProps) {
   );
   const [duration, setDuration] = useState(
     String(initialData.settings?.defaultDurationMinutes || 30)
+  );
+  const [language, setLanguage] = useState(
+    initialData.settings?.preferredLanguage || "en"
   );
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{
@@ -96,6 +109,7 @@ export function CompanySettingsForm({ initialData }: CompanySettingsFormProps) {
           timezone,
           defaultCadence: cadence,
           defaultDurationMinutes: parseInt(duration, 10),
+          preferredLanguage: language,
         }),
       });
 
@@ -245,6 +259,33 @@ export function CompanySettingsForm({ initialData }: CompanySettingsFormProps) {
                 {DURATION_OPTIONS.map((d) => (
                   <SelectItem key={d} value={String(d)}>
                     {d} minutes
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Organization Language</CardTitle>
+          <CardDescription>
+            AI-generated content (summaries, nudges, suggestions) will use this
+            language
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <Label htmlFor="language">Preferred language</Label>
+            <Select value={language} onValueChange={setLanguage}>
+              <SelectTrigger id="language" className="w-[200px]">
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                {LANGUAGES.map((lang) => (
+                  <SelectItem key={lang.value} value={lang.value}>
+                    {lang.label}
                   </SelectItem>
                 ))}
               </SelectContent>

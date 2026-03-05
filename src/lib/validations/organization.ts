@@ -2,6 +2,15 @@ import { z } from "zod";
 
 export const orgTypeEnum = z.enum(["for_profit", "non_profit"]);
 
+export const supportedLanguages = [
+  "en",
+  "ro",
+  "de",
+  "fr",
+  "es",
+  "pt",
+] as const;
+
 export const orgSettingsSchema = z.object({
   name: z
     .string()
@@ -14,6 +23,7 @@ export const orgSettingsSchema = z.object({
     .number()
     .min(15, "Minimum 15 minutes")
     .max(120, "Maximum 120 minutes"),
+  preferredLanguage: z.enum(supportedLanguages).optional(),
 });
 
 export type OrgSettings = z.infer<typeof orgSettingsSchema>;
