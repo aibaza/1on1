@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Internationalization
 status: executing
-stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-03-05T21:19:21Z"
-last_activity: 2026-03-05 -- Executed 11-01 i18n infrastructure plan
+stopped_at: Completed 11-02-PLAN.md
+last_updated: "2026-03-05T21:26:13Z"
+last_activity: 2026-03-05 -- Executed 11-02 login translation and language switcher
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
-  percent: 12
+  completed_plans: 2
+  percent: 25
 ---
 
 # Project State
@@ -21,29 +21,29 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-05)
 
 **Core value:** The AI context layer that makes every meeting smarter than the last
-**Current focus:** v1.1 Internationalization -- Phase 11 plan 01 complete
+**Current focus:** v1.1 Internationalization -- Phase 11 complete (2/2 plans), Phase 12 next
 
 ## Current Position
 
-Phase: 11 of 14 (i18n Foundation)
-Plan: 1 of 2 in current phase
-Status: Executing
-Last activity: 2026-03-05 -- Executed 11-01 i18n infrastructure plan
+Phase: 11 of 14 (i18n Foundation) -- COMPLETE
+Plan: 2 of 2 in current phase (all done)
+Status: Phase Complete
+Last activity: 2026-03-05 -- Executed 11-02 login translation and language switcher
 
-Progress: [#░░░░░░░░░] 12%
+Progress: [##░░░░░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1 (v1.1)
-- Average duration: 5min
-- Total execution time: 5min
+- Total plans completed: 2 (v1.1)
+- Average duration: 4.5min
+- Total execution time: 9min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 11-i18n-foundation | 1/2 | 5min | 5min |
+| 11-i18n-foundation | 2/2 | 9min | 4.5min |
 
 *Updated after each plan completion*
 
@@ -60,6 +60,9 @@ Recent decisions affecting current work:
 - [11-01]: Manual migration SQL instead of drizzle-kit generate (interactive prompts incompatible with automation)
 - [11-01]: Accept-Language parsing uses 2-char extraction for simplicity
 - [11-01]: NEXT_LOCALE cookie maxAge set to 1 year
+- [11-02]: Hidden <data> element for formatting proof (no visual impact on login page)
+- [11-02]: Language names as proper nouns (English, Romana) not translated -- standard i18n convention
+- [11-02]: Full page reload after language switch (server-side message loading requires fresh request)
 
 ### Blockers/Concerns
 
@@ -67,6 +70,6 @@ None active.
 
 ## Session Continuity
 
-Last session: 2026-03-05T21:19:21Z
-Stopped at: Completed 11-01-PLAN.md
-Resume file: .planning/phases/11-i18n-foundation/11-01-SUMMARY.md
+Last session: 2026-03-05T21:26:13Z
+Stopped at: Completed 11-02-PLAN.md
+Resume file: .planning/phases/11-i18n-foundation/11-02-SUMMARY.md
