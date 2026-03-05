@@ -15,9 +15,9 @@ function capitalizeCategory(cat: string): string {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 4.0) return "hsl(142, 76%, 36%)";
-  if (score >= 3.0) return "hsl(38, 92%, 50%)";
-  return "hsl(0, 72%, 51%)";
+  if (score >= 4.0) return "var(--color-success)";
+  if (score >= 3.0) return "var(--color-warning)";
+  return "var(--color-danger)";
 }
 
 export function TeamOverview({ data, loading, anonymize, memberCount }: TeamOverviewProps) {

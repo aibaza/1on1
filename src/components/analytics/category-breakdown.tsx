@@ -15,13 +15,12 @@ interface CategoryBreakdownProps {
   data: Array<{ category: string; avgScore: number; sampleCount: number }>;
 }
 
-const CATEGORY_COLORS = [
-  "var(--primary)",
-  "hsl(220, 70%, 55%)",
-  "hsl(280, 60%, 55%)",
-  "hsl(340, 65%, 55%)",
-  "hsl(160, 55%, 45%)",
-  "hsl(40, 70%, 50%)",
+const CHART_COLORS = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
 ];
 
 function capitalizeCategory(cat: string): string {
@@ -95,10 +94,10 @@ export function CategoryBreakdown({ data }: CategoryBreakdownProps) {
             {chartData.map((entry, index) => (
               <Cell
                 key={entry.category}
-                fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]}
+                fill={CHART_COLORS[index % CHART_COLORS.length]}
                 opacity={entry.limited ? 0.5 : 1}
                 strokeDasharray={entry.limited ? "4 2" : undefined}
-                stroke={entry.limited ? CATEGORY_COLORS[index % CATEGORY_COLORS.length] : undefined}
+                stroke={entry.limited ? CHART_COLORS[index % CHART_COLORS.length] : undefined}
               />
             ))}
           </Bar>

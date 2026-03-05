@@ -16,6 +16,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Semantic chart CSS variables (`--color-success`, `--color-warning`, `--color-danger`) for theme-aware status colors
 - Tiptap editor dark mode CSS overrides for ProseMirror
 - `colorTheme` field in organization settings validation schema and API endpoint
+
+### Changed
+- All analytics chart components now use CSS variable-based monochrome palette instead of hardcoded HSL colors
+- `category-breakdown.tsx`: 5 hardcoded HSL colors replaced with `var(--chart-1)` through `var(--chart-5)`
+- `adherence-chart.tsx`: hardcoded green/amber/red replaced with `var(--color-success/warning/danger)`
+- `velocity-chart.tsx`: hardcoded green reference line replaced with `var(--color-success)`
+- `team-heatmap.tsx` and `team-overview.tsx`: hardcoded score-to-color mapping replaced with semantic CSS variables
+- `score-sparkline.tsx`: fixed `hsl(var(--primary))` to `var(--primary)` for oklch compatibility
 - Horizontal top navigation bar (`TopNav`) replacing sidebar as primary navigation
 - Standalone `UserMenu` dropdown component with avatar, role badge, and sign out
 - Mobile responsive hamburger menu (Sheet slide-in) for small screens

@@ -15,11 +15,11 @@ interface TeamHeatmapProps {
   categories: string[];
 }
 
-// Score-to-color mapping: green (>=4), amber (3-3.9), red (<3)
+// Score-to-color mapping using semantic CSS variables
 function scoreToColor(score: number): string {
-  if (score >= 4.0) return "hsl(142, 76%, 36%)";
-  if (score >= 3.0) return "hsl(38, 92%, 50%)";
-  return "hsl(0, 72%, 51%)";
+  if (score >= 4.0) return "var(--color-success)";
+  if (score >= 3.0) return "var(--color-warning)";
+  return "var(--color-danger)";
 }
 
 // Sample count to radius: min 6px, max 16px

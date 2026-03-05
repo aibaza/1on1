@@ -100,7 +100,7 @@ export function VelocityChart({ data, loading }: VelocityChartProps) {
           />
           <ReferenceLine
             y={7}
-            stroke="hsl(142, 76%, 36%)"
+            stroke="var(--color-success)"
             strokeDasharray="4 4"
             strokeOpacity={0.5}
             label={{

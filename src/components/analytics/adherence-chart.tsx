@@ -24,9 +24,9 @@ interface AdherenceChartProps {
 }
 
 const STATUS_COLORS = {
-  completed: "hsl(142, 76%, 36%)",
-  cancelled: "hsl(38, 92%, 50%)",
-  missed: "hsl(0, 72%, 51%)",
+  completed: "var(--color-success)",
+  cancelled: "var(--color-warning)",
+  missed: "var(--color-danger)",
 } as const;
 
 export function AdherenceChart({ data, loading }: AdherenceChartProps) {
@@ -85,13 +85,13 @@ export function AdherenceChart({ data, loading }: AdherenceChartProps) {
               return (
                 <div className="rounded-md border bg-popover px-3 py-2 text-sm shadow-md">
                   <p className="font-medium">{point.month}</p>
-                  <p style={{ color: STATUS_COLORS.completed }}>
+                  <p style={{ color: "var(--color-success)" }}>
                     Completed: {point.completed}
                   </p>
-                  <p style={{ color: STATUS_COLORS.cancelled }}>
+                  <p style={{ color: "var(--color-warning)" }}>
                     Cancelled: {point.cancelled}
                   </p>
-                  <p style={{ color: STATUS_COLORS.missed }}>
+                  <p style={{ color: "var(--color-danger)" }}>
                     Missed: {point.missed}
                   </p>
                   <p className="mt-1 font-medium text-muted-foreground">
