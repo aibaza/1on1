@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth/config";
 import { redirect, notFound } from "next/navigation";
+import { getTranslations, getFormatter } from "next-intl/server";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { users, teams, teamMembers } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -28,12 +29,6 @@ function getStatusColor(status: string) {
   }
 }
 
-const roleLabels: Record<string, string> = {
-  admin: "Admin",
-  manager: "Manager",
-  member: "Member",
-};
-
 export default async function UserProfilePage({
   params,
 }: {
@@ -42,6 +37,8 @@ export default async function UserProfilePage({
   const session = await auth();
   if (!session?.user) redirect("/login");
 
+  const t = await getTranslations("people");
+  const format = await getFormatter();
   const { id } = await params;
 
   const data = await withTenantContext(
@@ -109,13 +106,25 @@ export default async function UserProfilePage({
   const isSelf = id === session.user.id;
   const canEdit = isSelf || session.user.role === "admin";
 
+  const roleLabel = data.role === "admin"
+    ? t("table.admin")
+    : data.role === "manager"
+      ? t("table.manager")
+      : t("table.member");
+
+  const statusLabel = data.status === "active"
+    ? t("table.active")
+    : data.status === "pending"
+      ? t("table.pending")
+      : t("table.deactivated");
+
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
           <Link href="/people">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to People
+            {t("profile.backToPeople")}
           </Link>
         </Button>
       </div>
@@ -139,10 +148,10 @@ export default async function UserProfilePage({
           )}
           <div className="flex items-center gap-2 pt-1">
             <Badge variant="secondary">
-              {roleLabels[data.role] ?? data.role}
+              {roleLabel}
             </Badge>
             <Badge variant="outline" className={getStatusColor(data.status)}>
-              {data.status.charAt(0).toUpperCase() + data.status.slice(1)}
+              {statusLabel}
             </Badge>
           </div>
         </div>
@@ -154,17 +163,17 @@ export default async function UserProfilePage({
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Manager
+            {t("profile.manager")}
           </p>
-          <p className="mt-1 text-sm">{data.managerName || "None assigned"}</p>
+          <p className="mt-1 text-sm">{data.managerName || t("profile.noneAssigned")}</p>
         </div>
 
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Joined
+            {t("profile.joined")}
           </p>
           <p className="mt-1 text-sm">
-            {new Date(data.createdAt).toLocaleDateString("en-US", {
+            {format.dateTime(new Date(data.createdAt), {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -175,7 +184,7 @@ export default async function UserProfilePage({
         {data.teams.length > 0 && (
           <div className="sm:col-span-2">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Teams
+              {t("profile.teams")}
             </p>
             <div className="mt-2 flex flex-wrap gap-1">
               {data.teams.map((team) => (
@@ -193,9 +202,9 @@ export default async function UserProfilePage({
         <>
           <Separator />
           <div>
-            <h2 className="text-lg font-semibold">Edit Profile</h2>
+            <h2 className="text-lg font-semibold">{t("profile.editProfile")}</h2>
             <p className="text-sm text-muted-foreground mb-4">
-              Update your personal information
+              {t("profile.editProfileDesc")}
             </p>
             <ProfileEditForm
               userId={id}

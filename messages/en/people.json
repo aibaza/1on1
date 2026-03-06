@@ -47,10 +47,15 @@
       "failed": "Failed to send invites"
     },
     "profile": {
+      "backToPeople": "Back to People",
+      "editProfile": "Edit Profile",
+      "editProfileDesc": "Update your personal information",
       "jobTitle": "Job Title",
       "manager": "Manager",
+      "joined": "Joined",
       "teams": "Teams",
       "none": "None",
+      "noneAssigned": "None assigned",
       "viewProfile": "View Full Profile"
     },
     "role": {
@@ -64,6 +69,32 @@
       "deactivated": "User deactivated",
       "reactivated": "User reactivated",
       "inviteResent": "Invite resent"
+    },
+    "managerSelect": {
+      "none": "None",
+      "searchPlaceholder": "Search users...",
+      "noUserFound": "No user found.",
+      "updated": "Manager updated"
+    },
+    "memberPicker": {
+      "title": "Add Members",
+      "description": "Select users to add to this team.",
+      "searchPlaceholder": "Search users...",
+      "loading": "Loading users...",
+      "noUsersAvailable": "No users available.",
+      "cancel": "Cancel",
+      "adding": "Adding...",
+      "addSelected": "Add Selected ({count})",
+      "added": "Added {count} member(s)"
+    },
+    "profileForm": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "jobTitle": "Job Title",
+      "jobTitlePlaceholder": "e.g. Software Engineer",
+      "saving": "Saving...",
+      "saveChanges": "Save Changes",
+      "updated": "Profile updated"
     }
   }
 }

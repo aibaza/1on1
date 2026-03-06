@@ -10,6 +10,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFormatter, useTranslations } from "next-intl";
 
 interface ScoreTrendChartProps {
   data: Array<{ date: string; score: number }>;
@@ -17,6 +18,9 @@ interface ScoreTrendChartProps {
 }
 
 export function ScoreTrendChart({ data, loading }: ScoreTrendChartProps) {
+  const format = useFormatter();
+  const t = useTranslations("analytics.chart");
+
   if (loading) {
     return <Skeleton className="h-[300px] w-full rounded-lg" />;
   }
@@ -24,7 +28,7 @@ export function ScoreTrendChart({ data, loading }: ScoreTrendChartProps) {
   if (data.length === 0) {
     return (
       <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
-        No score data available for this period.
+        {t("noScoreData")}
       </div>
     );
   }
@@ -45,13 +49,12 @@ export function ScoreTrendChart({ data, loading }: ScoreTrendChartProps) {
               dataKey="date"
               tick={{ fontSize: 12 }}
               className="text-muted-foreground"
-              tickFormatter={(val: string) => {
-                const d = new Date(val);
-                return d.toLocaleDateString("en-US", {
+              tickFormatter={(val: string) =>
+                format.dateTime(new Date(val), {
                   month: "short",
                   day: "numeric",
-                });
-              }}
+                })
+              }
             />
             <YAxis
               domain={[1, 5]}
@@ -69,14 +72,18 @@ export function ScoreTrendChart({ data, loading }: ScoreTrendChartProps) {
                 return (
                   <div className="rounded-md border bg-popover px-3 py-2 text-sm shadow-md">
                     <p className="font-medium">
-                      {new Date(point.date).toLocaleDateString("en-US", {
+                      {format.dateTime(new Date(point.date), {
                         month: "long",
                         day: "numeric",
                         year: "numeric",
                       })}
                     </p>
                     <p className="text-muted-foreground">
-                      Score: {point.score.toFixed(2)}
+                      {t("score", {
+                        value: format.number(point.score, {
+                          maximumFractionDigits: 2,
+                        }),
+                      })}
                     </p>
                   </div>
                 );
@@ -96,7 +103,7 @@ export function ScoreTrendChart({ data, loading }: ScoreTrendChartProps) {
       </div>
       {data.length < 3 && (
         <p className="text-center text-xs text-muted-foreground">
-          More data after 3+ sessions
+          {t("moreData")}
         </p>
       )}
     </div>

@@ -4,7 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
+import { useZodI18nErrors } from "@/lib/i18n/zod-error-map";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createTeamSchema } from "@/lib/validations/team";
@@ -49,6 +52,9 @@ export function TeamCreateDialog({
   onSuccess,
   users,
 }: TeamCreateDialogProps) {
+  const t = useTranslations("teams");
+  const { showApiError } = useApiErrorToast();
+  useZodI18nErrors();
   const [leadOpen, setLeadOpen] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
 
@@ -86,15 +92,13 @@ export function TeamCreateDialog({
         throw new Error(json.error || "Failed to create team");
       }
 
-      toast.success("Team created");
+      toast.success(t("create.created"));
       reset();
       setSelectedLeadId(null);
       onOpenChange(false);
       onSuccess();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create team"
-      );
+      showApiError(error);
     }
   }
 
@@ -111,17 +115,17 @@ export function TeamCreateDialog({
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create Team</DialogTitle>
+          <DialogTitle>{t("create.title")}</DialogTitle>
           <DialogDescription>
-            Create a new team and optionally assign a team lead.
+            {t("create.description")}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="teamName">Team Name</Label>
+            <Label htmlFor="teamName">{t("create.nameLabel")}</Label>
             <Input
               id="teamName"
-              placeholder="e.g. Engineering"
+              placeholder={t("create.namePlaceholder")}
               {...register("name")}
             />
             {errors.name && (
@@ -130,10 +134,10 @@ export function TeamCreateDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="teamDescription">Description</Label>
+            <Label htmlFor="teamDescription">{t("create.descriptionLabel")}</Label>
             <Textarea
               id="teamDescription"
-              placeholder="What does this team do?"
+              placeholder={t("create.descriptionPlaceholder")}
               rows={3}
               {...register("description")}
             />
@@ -145,7 +149,7 @@ export function TeamCreateDialog({
           </div>
 
           <div className="space-y-2">
-            <Label>Team Lead</Label>
+            <Label>{t("create.teamLead")}</Label>
             <Popover open={leadOpen} onOpenChange={setLeadOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -157,16 +161,16 @@ export function TeamCreateDialog({
                   <span className="truncate">
                     {selectedLead
                       ? `${selectedLead.firstName} ${selectedLead.lastName}`
-                      : "Select team lead..."}
+                      : t("create.selectLead")}
                   </span>
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[380px] p-0" align="start">
                 <Command>
-                  <CommandInput placeholder="Search users..." />
+                  <CommandInput placeholder={t("create.searchPlaceholder")} />
                   <CommandList>
-                    <CommandEmpty>No user found.</CommandEmpty>
+                    <CommandEmpty>{t("create.noUserFound")}</CommandEmpty>
                     <CommandGroup>
                       <CommandItem
                         value="none"
@@ -182,7 +186,7 @@ export function TeamCreateDialog({
                             !selectedLeadId ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        None
+                        {t("create.none")}
                       </CommandItem>
                       {users.map((user) => (
                         <CommandItem
@@ -218,10 +222,10 @@ export function TeamCreateDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              {t("create.cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create Team"}
+              {isSubmitting ? t("create.creating") : t("create.submit")}
             </Button>
           </DialogFooter>
         </form>

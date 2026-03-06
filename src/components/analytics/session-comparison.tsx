@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { ArrowUp, ArrowDown, Minus } from "lucide-react";
 import { useState, useCallback } from "react";
+import { useFormatter, useTranslations } from "next-intl";
 
 interface SessionOption {
   id: string;
@@ -41,33 +42,13 @@ function capitalizeCategory(cat: string): string {
   return cat.charAt(0).toUpperCase() + cat.slice(1);
 }
 
-function DeltaCell({ delta }: { delta: number }) {
-  if (delta > 0) {
-    return (
-      <span className="inline-flex items-center gap-1 text-emerald-600">
-        <ArrowUp className="h-3.5 w-3.5" />+{delta.toFixed(1)}
-      </span>
-    );
-  }
-  if (delta < 0) {
-    return (
-      <span className="inline-flex items-center gap-1 text-red-500">
-        <ArrowDown className="h-3.5 w-3.5" />{delta.toFixed(1)}
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1 text-muted-foreground">
-      <Minus className="h-3.5 w-3.5" />0.0
-    </span>
-  );
-}
-
 export function SessionComparison({
   sessions: sessionOptions,
   onCompare,
   comparisonData,
 }: SessionComparisonProps) {
+  const format = useFormatter();
+  const t = useTranslations("analytics.chart");
   const [session1, setSession1] = useState<string>("");
   const [session2, setSession2] = useState<string>("");
 
@@ -90,26 +71,51 @@ export function SessionComparison({
   if (sessionOptions.length < 2) {
     return (
       <div className="flex h-[120px] items-center justify-center text-sm text-muted-foreground">
-        At least 2 completed sessions needed for comparison.
+        {t("minSessionsComparison")}
       </div>
     );
   }
 
   const formatOption = (s: SessionOption) =>
-    `Session ${s.number} - ${new Date(s.date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    })}`;
+    t("sessionLabel", {
+      number: s.number,
+      date: format.dateTime(new Date(s.date), {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+    });
+
+  function DeltaCell({ delta }: { delta: number }) {
+    if (delta > 0) {
+      return (
+        <span className="inline-flex items-center gap-1 text-emerald-600">
+          <ArrowUp className="h-3.5 w-3.5" />+{format.number(delta, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+        </span>
+      );
+    }
+    if (delta < 0) {
+      return (
+        <span className="inline-flex items-center gap-1 text-red-500">
+          <ArrowDown className="h-3.5 w-3.5" />{format.number(delta, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center gap-1 text-muted-foreground">
+        <Minus className="h-3.5 w-3.5" />{format.number(0, { minimumFractionDigits: 1 })}
+      </span>
+    );
+  }
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-3">
         <div className="space-y-1">
-          <span className="text-xs text-muted-foreground">Session A</span>
+          <span className="text-xs text-muted-foreground">{t("sessionA")}</span>
           <Select value={session1} onValueChange={handleSession1Change}>
             <SelectTrigger className="w-[240px]">
-              <SelectValue placeholder="Select session..." />
+              <SelectValue placeholder={t("selectSession")} />
             </SelectTrigger>
             <SelectContent>
               {sessionOptions.map((s) => (
@@ -121,10 +127,10 @@ export function SessionComparison({
           </Select>
         </div>
         <div className="space-y-1">
-          <span className="text-xs text-muted-foreground">Session B</span>
+          <span className="text-xs text-muted-foreground">{t("sessionB")}</span>
           <Select value={session2} onValueChange={handleSession2Change}>
             <SelectTrigger className="w-[240px]">
-              <SelectValue placeholder="Select session..." />
+              <SelectValue placeholder={t("selectSession")} />
             </SelectTrigger>
             <SelectContent>
               {sessionOptions.map((s) => (
@@ -141,10 +147,10 @@ export function SessionComparison({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Category</TableHead>
-              <TableHead className="text-right">Session A</TableHead>
-              <TableHead className="text-right">Session B</TableHead>
-              <TableHead className="text-right">Delta</TableHead>
+              <TableHead>{t("category")}</TableHead>
+              <TableHead className="text-right">{t("sessionA")}</TableHead>
+              <TableHead className="text-right">{t("sessionB")}</TableHead>
+              <TableHead className="text-right">{t("delta")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -154,10 +160,10 @@ export function SessionComparison({
                   {capitalizeCategory(row.category)}
                 </TableCell>
                 <TableCell className="text-right">
-                  {row.score1.toFixed(1)}
+                  {format.number(row.score1, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
                 </TableCell>
                 <TableCell className="text-right">
-                  {row.score2.toFixed(1)}
+                  {format.number(row.score2, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
                 </TableCell>
                 <TableCell className="text-right">
                   <DeltaCell delta={row.delta} />
@@ -170,7 +176,7 @@ export function SessionComparison({
 
       {comparisonData && comparisonData.length === 0 && (
         <p className="text-center text-sm text-muted-foreground">
-          No scorable category data found for these sessions.
+          {t("noComparisonData")}
         </p>
       )}
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Check } from "lucide-react";
@@ -47,6 +48,7 @@ export function MemberPicker({
   onOpenChange,
   onSuccess,
 }: MemberPickerProps) {
+  const t = useTranslations("people");
   const { showApiError } = useApiErrorToast();
   const [availableUsers, setAvailableUsers] = useState<UserOption[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -124,9 +126,7 @@ export function MemberPicker({
         throw new Error(json.error || "Failed to add members");
       }
 
-      toast.success(
-        `Added ${selectedIds.size} member${selectedIds.size > 1 ? "s" : ""}`
-      );
+      toast.success(t("memberPicker.added", { count: selectedIds.size }));
       setSelectedIds(new Set());
       onOpenChange(false);
       onSuccess();
@@ -141,21 +141,21 @@ export function MemberPicker({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Members</DialogTitle>
+          <DialogTitle>{t("memberPicker.title")}</DialogTitle>
           <DialogDescription>
-            Select users to add to this team.
+            {t("memberPicker.description")}
           </DialogDescription>
         </DialogHeader>
         <Command className="rounded-lg border">
-          <CommandInput placeholder="Search users..." />
+          <CommandInput placeholder={t("memberPicker.searchPlaceholder")} />
           <CommandList className="max-h-[300px]">
             {isLoading ? (
               <div className="py-6 text-center text-sm text-muted-foreground">
-                Loading users...
+                {t("memberPicker.loading")}
               </div>
             ) : (
               <>
-                <CommandEmpty>No users available.</CommandEmpty>
+                <CommandEmpty>{t("memberPicker.noUsersAvailable")}</CommandEmpty>
                 <CommandGroup>
                   {availableUsers.map((user) => {
                     const isSelected = selectedIds.has(user.id);
@@ -209,15 +209,15 @@ export function MemberPicker({
             variant="outline"
             onClick={() => onOpenChange(false)}
           >
-            Cancel
+            {t("memberPicker.cancel")}
           </Button>
           <Button
             onClick={handleAdd}
             disabled={selectedIds.size === 0 || isAdding}
           >
             {isAdding
-              ? "Adding..."
-              : `Add Selected (${selectedIds.size})`}
+              ? t("memberPicker.adding")
+              : t("memberPicker.addSelected", { count: selectedIds.size })}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import {
@@ -63,6 +63,7 @@ export function TeamDetailClient({
   currentUserRole,
 }: TeamDetailClientProps) {
   const t = useTranslations("teams");
+  const format = useFormatter();
   const { showApiError } = useApiErrorToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -382,13 +383,14 @@ export function TeamDetailClient({
               <TableBody>
                 {members.map((member) => {
                   const initials = `${member.firstName[0] ?? ""}${member.lastName[0] ?? ""}`.toUpperCase();
-                  const joinedDate = new Date(
-                    member.joinedAt
-                  ).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  });
+                  const joinedDate = format.dateTime(
+                    new Date(member.joinedAt),
+                    {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }
+                  );
 
                   return (
                     <TableRow key={member.userId}>

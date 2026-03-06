@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -36,6 +37,7 @@ export function ManagerSelect({
   users: allUsers,
   disabled,
 }: ManagerSelectProps) {
+  const t = useTranslations("people");
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const { showApiError } = useApiErrorToast();
@@ -86,7 +88,7 @@ export function ManagerSelect({
       showApiError(error);
     },
     onSuccess: () => {
-      toast.success("Manager updated");
+      toast.success(t("managerSelect.updated"));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -96,7 +98,7 @@ export function ManagerSelect({
   if (disabled) {
     return (
       <span className="text-sm text-muted-foreground">
-        {currentManagerName || "None"}
+        {currentManagerName || t("managerSelect.none")}
       </span>
     );
   }
@@ -114,16 +116,16 @@ export function ManagerSelect({
             disabled={mutation.isPending}
           >
             <span className="truncate">
-              {currentManagerName || "None"}
+              {currentManagerName || t("managerSelect.none")}
             </span>
             <ChevronsUpDown className="ml-1 h-3 w-3 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0" align="start">
           <Command>
-            <CommandInput placeholder="Search users..." />
+            <CommandInput placeholder={t("managerSelect.searchPlaceholder")} />
             <CommandList>
-              <CommandEmpty>No user found.</CommandEmpty>
+              <CommandEmpty>{t("managerSelect.noUserFound")}</CommandEmpty>
               <CommandGroup>
                 <CommandItem
                   value="none"
@@ -138,7 +140,7 @@ export function ManagerSelect({
                       !currentManagerId ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  None
+                  {t("managerSelect.none")}
                 </CommandItem>
                 {managerOptions.map((user) => (
                   <CommandItem

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,8 @@ interface TeamCardProps {
 }
 
 export function TeamCard({ team }: TeamCardProps) {
+  const t = useTranslations("teams");
+
   const initials = team.managerName
     ? team.managerName
         .split(" ")
@@ -46,12 +49,12 @@ export function TeamCard({ team }: TeamCardProps) {
               <Avatar className="h-6 w-6">
                 <AvatarImage
                   src={team.managerAvatarUrl ?? undefined}
-                  alt={team.managerName ?? "Team lead"}
+                  alt={team.managerName ?? t("noLead")}
                 />
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
               </Avatar>
               <span className="text-sm text-muted-foreground">
-                {team.managerName ?? "No lead"}
+                {team.managerName ?? t("noLead")}
               </span>
             </div>
             <Badge variant="secondary" className="gap-1">

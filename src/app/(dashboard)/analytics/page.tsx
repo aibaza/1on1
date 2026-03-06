@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Users } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getFormatter } from "next-intl/server";
 
 interface ReportSummary {
   userId: string;
@@ -30,6 +30,7 @@ export default async function AnalyticsPage() {
   const session = await auth();
   if (!session) redirect("/login");
   const t = await getTranslations("analytics");
+  const format = await getFormatter();
 
   const { user } = session;
 
@@ -231,7 +232,7 @@ export default async function AnalyticsPage() {
                       <div className="flex flex-col items-end gap-1">
                         {report.latestScore !== null && (
                           <Badge variant="secondary" className="text-xs">
-                            {report.latestScore.toFixed(1)}
+                            {format.number(report.latestScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
                           </Badge>
                         )}
                         <span className="text-xs text-muted-foreground">

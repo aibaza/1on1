@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import {
   BarChart,
   Bar,
@@ -30,6 +30,7 @@ function capitalizeCategory(cat: string): string {
 
 export function CategoryBreakdown({ data }: CategoryBreakdownProps) {
   const t = useTranslations("analytics");
+  const format = useFormatter();
   if (data.length === 0) {
     return (
       <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
@@ -78,7 +79,7 @@ export function CategoryBreakdown({ data }: CategoryBreakdownProps) {
                 <div className="rounded-md border bg-popover px-3 py-2 text-sm shadow-md">
                   <p className="font-medium">{d.label}</p>
                   <p className="text-muted-foreground">
-                    {t("chart.avg", { value: d.avgScore.toFixed(2) })}
+                    {t("chart.avg", { value: format.number(d.avgScore, { maximumFractionDigits: 2 }) })}
                   </p>
                   <p className="text-muted-foreground">
                     {t("chart.samples", { count: d.sampleCount })}

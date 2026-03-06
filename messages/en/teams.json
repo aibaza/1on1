@@ -21,6 +21,24 @@
     "member": "Member",
     "updated": "Team updated",
     "memberRemoved": "Member removed",
-    "deleted": "Team deleted"
+    "deleted": "Team deleted",
+    "noLead": "No lead",
+    "create": {
+      "title": "Create Team",
+      "description": "Create a new team and optionally assign a team lead.",
+      "nameLabel": "Team Name",
+      "namePlaceholder": "e.g. Engineering",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "What does this team do?",
+      "teamLead": "Team Lead",
+      "selectLead": "Select team lead...",
+      "searchPlaceholder": "Search users...",
+      "noUserFound": "No user found.",
+      "none": "None",
+      "cancel": "Cancel",
+      "creating": "Creating...",
+      "submit": "Create Team",
+      "created": "Team created"
+    }
   }
 }

@@ -3,8 +3,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
+import { useZodI18nErrors } from "@/lib/i18n/zod-error-map";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,8 +33,10 @@ export function ProfileEditForm({
   userId,
   defaultValues,
 }: ProfileEditFormProps) {
+  const t = useTranslations("people");
   const router = useRouter();
   const { showApiError } = useApiErrorToast();
+  useZodI18nErrors();
   const {
     register,
     handleSubmit,
@@ -59,7 +63,7 @@ export function ProfileEditForm({
         throw new Error(json.error || "Failed to update profile");
       }
 
-      toast.success("Profile updated");
+      toast.success(t("profileForm.updated"));
       router.refresh();
     } catch (error) {
       showApiError(error);
@@ -70,7 +74,7 @@ export function ProfileEditForm({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="firstName">First Name</Label>
+          <Label htmlFor="firstName">{t("profileForm.firstName")}</Label>
           <Input id="firstName" {...register("firstName")} />
           {errors.firstName && (
             <p className="text-xs text-destructive">
@@ -80,7 +84,7 @@ export function ProfileEditForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="lastName">Last Name</Label>
+          <Label htmlFor="lastName">{t("profileForm.lastName")}</Label>
           <Input id="lastName" {...register("lastName")} />
           {errors.lastName && (
             <p className="text-xs text-destructive">
@@ -91,10 +95,10 @@ export function ProfileEditForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="jobTitle">Job Title</Label>
+        <Label htmlFor="jobTitle">{t("profileForm.jobTitle")}</Label>
         <Input
           id="jobTitle"
-          placeholder="e.g. Software Engineer"
+          placeholder={t("profileForm.jobTitlePlaceholder")}
           {...register("jobTitle")}
         />
         {errors.jobTitle && (
@@ -103,7 +107,7 @@ export function ProfileEditForm({
       </div>
 
       <Button type="submit" disabled={isSubmitting || !isDirty}>
-        {isSubmitting ? "Saving..." : "Save Changes"}
+        {isSubmitting ? t("profileForm.saving") : t("profileForm.saveChanges")}
       </Button>
     </form>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import type { TeamAverage } from "@/lib/analytics/queries";
 
@@ -23,6 +23,7 @@ function scoreColor(score: number): string {
 
 export function TeamOverview({ data, loading, anonymize, memberCount }: TeamOverviewProps) {
   const t = useTranslations("analytics");
+  const format = useFormatter();
   if (loading) {
     return (
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -65,7 +66,7 @@ export function TeamOverview({ data, loading, anonymize, memberCount }: TeamOver
                 {capitalizeCategory(item.category)}
               </p>
               <p className="mt-1 text-2xl font-semibold tabular-nums">
-                {item.avgScore.toFixed(1)}
+                {format.number(item.avgScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
               </p>
               {/* Score bar */}
               <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">

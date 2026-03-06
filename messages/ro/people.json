@@ -1,7 +1,7 @@
 {
   "people": {
     "title": "Persoane",
-    "description": "Gestionează membrii organizației tale",
+    "description": "Gestioneaza membrii organizatiei tale",
     "tabs": {
       "people": "Persoane",
       "teams": "Echipe"
@@ -13,7 +13,7 @@
       "teams": "Echipe",
       "manager": "Manager",
       "status": "Status",
-      "searchPlaceholder": "Caută după nume, email sau titlu...",
+      "searchPlaceholder": "Cauta dupa nume, email sau titlu...",
       "allRoles": "Toate rolurile",
       "admin": "Admin",
       "manager": "Manager",
@@ -21,36 +21,41 @@
       "allTeams": "Toate echipele",
       "allStatus": "Toate statusurile",
       "active": "Activ",
-      "pending": "În așteptare",
+      "pending": "In asteptare",
       "deactivated": "Dezactivat",
-      "noUsers": "Niciun utilizator găsit.",
-      "showing": "Se afișează {from}-{to} din {total} utilizatori",
+      "noUsers": "Niciun utilizator gasit.",
+      "showing": "Se afiseaza {from}-{to} din {total} utilizatori",
       "previous": "Anterior",
-      "next": "Următor"
+      "next": "Urmator"
     },
     "invite": {
-      "button": "Invită",
-      "title": "Invită persoane",
-      "description": "Trimite invitații prin email pentru a se alătura organizației.",
+      "button": "Invita",
+      "title": "Invita persoane",
+      "description": "Trimite invitatii prin email pentru a se alatura organizatiei.",
       "emailLabel": "Adrese de email",
-      "emailPlaceholder": "Introduceți adrese de email, câte una pe rând sau separate prin virgulă",
-      "emailDesc": "Poți invita până la 50 de persoane simultan.",
+      "emailPlaceholder": "Introduceti adrese de email, cate una pe rand sau separate prin virgula",
+      "emailDesc": "Poti invita pana la 50 de persoane simultan.",
       "roleLabel": "Rol",
-      "rolePlaceholder": "Selectează un rol",
-      "roleDesc": "Toți invitații vor primi acest rol.",
-      "cancel": "Anulează",
+      "rolePlaceholder": "Selecteaza un rol",
+      "roleDesc": "Toti invitatii vor primi acest rol.",
+      "cancel": "Anuleaza",
       "sending": "Se trimite...",
-      "send": "Trimite invitațiile",
-      "success": "{count} invitație/invitații trimise cu succes",
+      "send": "Trimite invitatiile",
+      "success": "{count} invitatie/invitatii trimise cu succes",
       "skipped": "Unele emailuri au fost omise",
-      "error": "Ceva nu a funcționat. Încearcă din nou.",
-      "failed": "Trimiterea invitațiilor a eșuat"
+      "error": "Ceva nu a functionat. Incearca din nou.",
+      "failed": "Trimiterea invitatiilor a esuat"
     },
     "profile": {
-      "jobTitle": "Funcție",
+      "backToPeople": "Inapoi la persoane",
+      "editProfile": "Editeaza profilul",
+      "editProfileDesc": "Actualizeaza informatiile personale",
+      "jobTitle": "Functie",
       "manager": "Manager",
+      "joined": "Inregistrat",
       "teams": "Echipe",
       "none": "Niciunul",
+      "noneAssigned": "Niciun manager asignat",
       "viewProfile": "Vezi profilul complet"
     },
     "role": {
@@ -58,12 +63,38 @@
     },
     "actions": {
       "viewProfile": "Vezi profil",
-      "resendInvite": "Retrimite invitația",
-      "deactivate": "Dezactivează",
-      "reactivate": "Reactivează",
+      "resendInvite": "Retrimite invitatia",
+      "deactivate": "Dezactiveaza",
+      "reactivate": "Reactiveaza",
       "deactivated": "Utilizator dezactivat",
       "reactivated": "Utilizator reactivat",
-      "inviteResent": "Invitație retrimisă"
+      "inviteResent": "Invitatie retrimisa"
+    },
+    "managerSelect": {
+      "none": "Niciunul",
+      "searchPlaceholder": "Cauta utilizatori...",
+      "noUserFound": "Niciun utilizator gasit.",
+      "updated": "Manager actualizat"
+    },
+    "memberPicker": {
+      "title": "Adauga membri",
+      "description": "Selecteaza utilizatori pentru a-i adauga in echipa.",
+      "searchPlaceholder": "Cauta utilizatori...",
+      "loading": "Se incarca utilizatorii...",
+      "noUsersAvailable": "Niciun utilizator disponibil.",
+      "cancel": "Anuleaza",
+      "adding": "Se adauga...",
+      "addSelected": "Adauga selectia ({count})",
+      "added": "{count} membru/membri adaugat(i)"
+    },
+    "profileForm": {
+      "firstName": "Prenume",
+      "lastName": "Nume de familie",
+      "jobTitle": "Functie",
+      "jobTitlePlaceholder": "ex. Inginer Software",
+      "saving": "Se salveaza...",
+      "saveChanges": "Salveaza modificarile",
+      "updated": "Profil actualizat"
     }
   }
 }

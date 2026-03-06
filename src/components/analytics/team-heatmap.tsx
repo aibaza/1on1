@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useCallback } from "react";
+import { useFormatter, useTranslations } from "next-intl";
 
 interface HeatmapDatum {
   userId: string;
@@ -34,6 +35,9 @@ function capitalizeCategory(cat: string): string {
 }
 
 export function TeamHeatmap({ data, categories }: TeamHeatmapProps) {
+  const format = useFormatter();
+  const t = useTranslations("analytics.chart");
+
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
@@ -110,7 +114,7 @@ export function TeamHeatmap({ data, categories }: TeamHeatmapProps) {
   if (data.length === 0 || categories.length === 0) {
     return (
       <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
-        No heatmap data available for this period.
+        {t("noHeatmapData")}
       </div>
     );
   }
@@ -123,7 +127,7 @@ export function TeamHeatmap({ data, categories }: TeamHeatmapProps) {
           height={svgHeight}
           className="text-foreground"
           role="img"
-          aria-label="Team performance heatmap"
+          aria-label={t("heatmapLabel")}
         >
           {/* Column headers (categories) - rotated 45deg */}
           {categories.map((cat, ci) => {
@@ -237,11 +241,11 @@ export function TeamHeatmap({ data, categories }: TeamHeatmapProps) {
           >
             <p className="font-medium">{tooltip.userName}</p>
             <p className="text-muted-foreground">
-              {capitalizeCategory(tooltip.category)}: {tooltip.score.toFixed(2)}
+              {capitalizeCategory(tooltip.category)}: {format.number(tooltip.score, { maximumFractionDigits: 2 })}
             </p>
             <p className="text-muted-foreground">
-              {tooltip.sampleCount} {tooltip.sampleCount === 1 ? "sample" : "samples"}
-              {tooltip.sampleCount < 3 && " (insufficient data)"}
+              {t("sampleCount", { count: tooltip.sampleCount })}
+              {tooltip.sampleCount < 3 && ` ${t("insufficientData")}`}
             </p>
           </div>
         )}

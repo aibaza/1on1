@@ -11,6 +11,7 @@ import {
   ReferenceLine,
 } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFormatter, useTranslations } from "next-intl";
 
 interface VelocityChartProps {
   data: Array<{ month: string; avgDays: number; count: number }>;
@@ -18,6 +19,9 @@ interface VelocityChartProps {
 }
 
 export function VelocityChart({ data, loading }: VelocityChartProps) {
+  const format = useFormatter();
+  const t = useTranslations("analytics.chart");
+
   if (loading) {
     return <Skeleton className="h-[300px] w-full rounded-lg" />;
   }
@@ -25,7 +29,7 @@ export function VelocityChart({ data, loading }: VelocityChartProps) {
   if (data.length === 0) {
     return (
       <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
-        No action item velocity data available for this period.
+        {t("noVelocityData")}
       </div>
     );
   }
@@ -64,7 +68,7 @@ export function VelocityChart({ data, loading }: VelocityChartProps) {
             tickFormatter={(val: string) => {
               const [year, month] = val.split("-");
               const d = new Date(parseInt(year!), parseInt(month!) - 1);
-              return d.toLocaleDateString("en-US", {
+              return format.dateTime(d, {
                 month: "short",
                 year: "2-digit",
               });
@@ -75,7 +79,7 @@ export function VelocityChart({ data, loading }: VelocityChartProps) {
             tick={{ fontSize: 12 }}
             className="text-muted-foreground"
             width={36}
-            tickFormatter={(val: number) => `${val}d`}
+            tickFormatter={(val: number) => t("daysUnit", { value: val })}
           />
           <Tooltip
             content={({ active, payload }) => {
@@ -85,14 +89,18 @@ export function VelocityChart({ data, loading }: VelocityChartProps) {
                 avgDays: number;
                 count: number;
               };
+              const [year, month] = point.month.split("-");
+              const d = new Date(parseInt(year!), parseInt(month!) - 1);
               return (
                 <div className="rounded-md border bg-popover px-3 py-2 text-sm shadow-md">
-                  <p className="font-medium">{point.month}</p>
-                  <p className="text-muted-foreground">
-                    Avg: {point.avgDays} days
+                  <p className="font-medium">
+                    {format.dateTime(d, { month: "long", year: "numeric" })}
                   </p>
                   <p className="text-muted-foreground">
-                    {point.count} {point.count === 1 ? "item" : "items"} completed
+                    {t("avgDays", { value: point.avgDays })}
+                  </p>
+                  <p className="text-muted-foreground">
+                    {t("itemsCompleted", { count: point.count })}
                   </p>
                 </div>
               );
@@ -104,7 +112,7 @@ export function VelocityChart({ data, loading }: VelocityChartProps) {
             strokeDasharray="4 4"
             strokeOpacity={0.5}
             label={{
-              value: "7d target",
+              value: t("targetDays", { value: 7 }),
               position: "insideTopRight",
               className: "text-xs fill-muted-foreground",
             }}
