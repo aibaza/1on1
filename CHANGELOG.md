@@ -6,8 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-03-06
+
 ### Changed
 - Session summary and question history dialog now display star ratings (⭐) for rating_1_5, emoji faces for mood, and a segmented bar for rating_1_10 — instead of numeric text like "4/5"
+- Applied visual ratings to the completed session summary page (`/sessions/[id]/summary`) as well
 
 ### Fixed
 - Invite acceptance now handles pre-existing users (admin pre-created accounts): updates the existing record instead of failing with a unique constraint error
