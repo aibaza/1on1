@@ -28,6 +28,7 @@ interface Series {
     sessionScore: string | null;
   } | null;
   topNudge: string | null;
+  scoreHistory: number[];
 }
 
 interface SeriesListProps {

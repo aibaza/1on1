@@ -6,7 +6,7 @@ import { logAuditEvent } from "@/lib/audit/log";
 import { createSeriesSchema } from "@/lib/validations/series";
 import { scheduleSeriesNotifications } from "@/lib/notifications/scheduler";
 import { meetingSeries, sessions, users, aiNudges } from "@/lib/db/schema";
-import { eq, and, sql, desc } from "drizzle-orm";
+import { eq, and, asc, sql, desc } from "drizzle-orm";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
 
 export async function GET(request: Request) {
@@ -106,6 +106,29 @@ export async function GET(request: Request) {
           if (!nudgeMap.has(n.seriesId)) nudgeMap.set(n.seriesId, n.content);
         }
 
+        // Fetch score history per series
+        const scoreRows = await tx
+          .select({
+            seriesId: sessions.seriesId,
+            sessionScore: sessions.sessionScore,
+          })
+          .from(sessions)
+          .where(
+            and(
+              sql`${sessions.seriesId} IN ${seriesIds}`,
+              eq(sessions.status, "completed"),
+              sql`${sessions.sessionScore} IS NOT NULL`
+            )
+          )
+          .orderBy(asc(sessions.sessionNumber));
+
+        const scoreHistoryMap = new Map<string, number[]>();
+        for (const r of scoreRows) {
+          const arr = scoreHistoryMap.get(r.seriesId) ?? [];
+          arr.push(parseFloat(r.sessionScore!));
+          scoreHistoryMap.set(r.seriesId, arr);
+        }
+
         return seriesList.map((s) => {
           const latest = latestSessionMap.get(s.id);
           return {
@@ -135,6 +158,7 @@ export async function GET(request: Request) {
                 }
               : null,
             topNudge: nudgeMap.get(s.id) ?? null,
+            scoreHistory: scoreHistoryMap.get(s.id) ?? [],
           };
         });
       }

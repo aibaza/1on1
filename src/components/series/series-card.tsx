@@ -11,6 +11,8 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { useTranslations, useFormatter } from "next-intl";
+import { useMemo } from "react";
+import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
 
 interface SeriesCardProps {
   series: {
@@ -34,8 +36,47 @@ interface SeriesCardProps {
       sessionScore: string | null;
     } | null;
     topNudge: string | null;
+    scoreHistory: number[];
   };
   currentUserId: string;
+}
+
+function ScoreSparkline({ data, id }: { data: number[]; id: string }) {
+  const chartData = useMemo(
+    () => data.map((value, index) => ({ index, value })),
+    [data]
+  );
+
+  if (data.length < 2) return null;
+
+  const minValue = Math.min(...data);
+  const maxValue = Math.max(...data);
+  const padding = (maxValue - minValue) * 0.1 || 0.5;
+  const gradientId = `sparkGrad-${id}`;
+
+  return (
+    <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[30%] opacity-[0.08] dark:opacity-[0.25]">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+          <defs>
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={1} />
+              <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <YAxis domain={[minValue - padding, maxValue + padding]} hide />
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke="var(--chart-1)"
+            strokeWidth={2}
+            fill={`url(#${gradientId})`}
+            isAnimationActive={false}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
 }
 
 const statusVariant: Record<string, "default" | "secondary" | "outline"> = {
@@ -129,8 +170,9 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
     (series.report.lastName?.[0] ?? "");
 
   return (
-    <Card className="group relative flex flex-col transition-all duration-200 hover:border-foreground/20 hover:shadow-md">
+    <Card className="group relative flex flex-col overflow-hidden transition-all duration-200 hover:border-foreground/20 hover:shadow-md">
       <Link href={`/sessions/${series.id}`} className="absolute inset-0 z-0" />
+      <ScoreSparkline data={series.scoreHistory} id={series.id} />
       <CardHeader className="flex flex-row items-center gap-3 pb-2">
         <Avatar className="h-10 w-10">
           <AvatarImage src={series.report.avatarUrl ?? undefined} />
