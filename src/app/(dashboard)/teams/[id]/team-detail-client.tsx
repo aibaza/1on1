@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import {
   ArrowLeft,
   Pencil,
@@ -62,6 +63,7 @@ export function TeamDetailClient({
   currentUserRole,
 }: TeamDetailClientProps) {
   const t = useTranslations("teams");
+  const { showApiError } = useApiErrorToast();
   const router = useRouter();
   const queryClient = useQueryClient();
   const canManage =
@@ -127,7 +129,7 @@ export function TeamDetailClient({
       queryClient.invalidateQueries({ queryKey: ["teams"] });
     },
     onError: (error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 
@@ -155,7 +157,7 @@ export function TeamDetailClient({
       queryClient.invalidateQueries({ queryKey: ["teams"] });
     },
     onError: (error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 
@@ -176,7 +178,7 @@ export function TeamDetailClient({
       router.push("/teams");
     },
     onError: (error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,7 @@ interface SeriesFormProps {
 
 export function SeriesForm({ userGroups, templates }: SeriesFormProps) {
   const t = useTranslations("sessions");
+  const { showApiError } = useApiErrorToast();
   const router = useRouter();
 
   const cadenceOptions = [
@@ -138,7 +140,7 @@ export function SeriesForm({ userGroups, templates }: SeriesFormProps) {
       router.push("/sessions");
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 

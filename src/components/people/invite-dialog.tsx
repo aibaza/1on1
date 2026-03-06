@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/form";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 
 // Client-side form schema: emails as raw string, role selection
 const inviteFormSchema = z.object({
@@ -52,6 +53,7 @@ export function InviteDialog({
   onSuccess,
 }: InviteDialogProps) {
   const t = useTranslations("people");
+  const { showApiError } = useApiErrorToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<InviteFormValues>({
@@ -77,7 +79,7 @@ export function InviteDialog({
 
       if (!response.ok) {
         const data = await response.json();
-        toast.error(data.error || "Failed to send invites");
+        showApiError(new Error(data.error || "Failed to send invites"));
         return;
       }
 

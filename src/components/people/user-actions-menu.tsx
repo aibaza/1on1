@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { MoreHorizontal, UserX, UserCheck, Send, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +32,7 @@ export function UserActionsMenu({
 }: UserActionsMenuProps) {
   const t = useTranslations("people");
   const queryClient = useQueryClient();
+  const { showApiError } = useApiErrorToast();
   const isAdmin = currentUserRole === "admin";
   const isSelf = user.id === currentUserId;
 
@@ -48,7 +50,7 @@ export function UserActionsMenu({
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
     onError: (error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 
@@ -70,7 +72,7 @@ export function UserActionsMenu({
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
     onError: (error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 
@@ -91,7 +93,7 @@ export function UserActionsMenu({
       toast.success(t("actions.inviteResent"));
     },
     onError: (error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 

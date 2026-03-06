@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,7 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const t = useTranslations("sessions");
+  const { showApiError } = useApiErrorToast();
   const isManager = series.manager?.id === currentUserId;
   const hasInProgress = series.sessions.some(
     (s) => s.status === "in_progress"
@@ -87,7 +89,7 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
       router.push(`/wizard/${data.id}`);
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 
@@ -110,7 +112,7 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
       router.refresh();
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 
@@ -131,7 +133,7 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
       router.refresh();
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 

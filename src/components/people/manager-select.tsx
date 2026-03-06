@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ export function ManagerSelect({
 }: ManagerSelectProps) {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
+  const { showApiError } = useApiErrorToast();
 
   // Filter out the user themselves from the manager list
   const managerOptions = allUsers.filter((u) => u.id !== userId);
@@ -81,7 +83,7 @@ export function ManagerSelect({
       if (context?.previous) {
         queryClient.setQueryData(["users"], context.previous);
       }
-      toast.error(error.message);
+      showApiError(error);
     },
     onSuccess: () => {
       toast.success("Manager updated");

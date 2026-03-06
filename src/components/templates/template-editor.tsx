@@ -8,6 +8,7 @@ import { z } from "zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import Link from "next/link";
 import {
   DndContext,
@@ -185,6 +186,7 @@ interface TemplateEditorProps {
 
 export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
   const t = useTranslations("templates");
+  const { showApiError } = useApiErrorToast();
   const router = useRouter();
   const queryClient = useQueryClient();
   const isCreateMode = !template;
@@ -286,7 +288,7 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       router.push(`/templates/${newTemplate.id}`);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to create template");
+      showApiError(error);
     },
   });
 
@@ -309,7 +311,7 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       toast.success(t("editor.saved"));
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to save template");
+      showApiError(error);
     },
   });
 
@@ -329,7 +331,7 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       router.refresh();
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to toggle publish");
+      showApiError(error);
     },
   });
 
@@ -349,7 +351,7 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       router.refresh();
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to set default");
+      showApiError(error);
     },
   });
 
@@ -369,7 +371,7 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       router.push(`/templates/${data.id}`);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to duplicate");
+      showApiError(error);
     },
   });
 
@@ -389,7 +391,7 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
       router.push("/templates");
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to archive");
+      showApiError(error);
     },
   });
 

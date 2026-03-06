@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import {
   Card,
   CardContent,
@@ -55,6 +56,7 @@ function SessionCard({
 }) {
   const router = useRouter();
   const t = useTranslations("dashboard.upcoming");
+  const { showApiError } = useApiErrorToast();
 
   const startSession = useMutation({
     mutationFn: async () => {
@@ -72,7 +74,7 @@ function SessionCard({
       router.push(`/wizard/${data.id}`);
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 

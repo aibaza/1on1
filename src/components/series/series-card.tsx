@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarDays, Play, RotateCcw } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { useTranslations } from "next-intl";
 
 interface SeriesCardProps {
@@ -63,6 +64,7 @@ function formatRelativeDate(
 
 export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
   const t = useTranslations("sessions");
+  const { showApiError } = useApiErrorToast();
   const router = useRouter();
   const hasInProgress = series.latestSession?.status === "in_progress";
   const isManager = series.managerId === currentUserId;
@@ -83,7 +85,7 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
       router.push(`/wizard/${data.id}`);
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 

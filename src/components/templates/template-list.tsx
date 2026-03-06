@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Plus, FileText, Hash } from "lucide-react";
 import { createTemplateSchema } from "@/lib/validations/template";
 import { Button } from "@/components/ui/button";
@@ -61,6 +62,7 @@ export function TemplateList({
   currentUserRole,
 }: TemplateListProps) {
   const t = useTranslations("templates");
+  const { showApiError } = useApiErrorToast();
   const [createOpen, setCreateOpen] = useState(false);
   const canCreate =
     currentUserRole === "admin" || currentUserRole === "manager";
@@ -97,9 +99,7 @@ export function TemplateList({
       reset();
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create template"
-      );
+      showApiError(error);
     },
   });
 

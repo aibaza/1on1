@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -21,6 +22,7 @@ interface RoleSelectProps {
 export function RoleSelect({ userId, currentRole, disabled }: RoleSelectProps) {
   const t = useTranslations("people");
   const queryClient = useQueryClient();
+  const { showApiError } = useApiErrorToast();
 
   const mutation = useMutation({
     mutationFn: async (newRole: string) => {
@@ -51,7 +53,7 @@ export function RoleSelect({ userId, currentRole, disabled }: RoleSelectProps) {
       if (context?.previous) {
         queryClient.setQueryData(["users"], context.previous);
       }
-      toast.error(error.message);
+      showApiError(error);
     },
     onSuccess: () => {
       toast.success(t("role.updated"));

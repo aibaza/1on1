@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -46,6 +47,7 @@ export function MemberPicker({
   onOpenChange,
   onSuccess,
 }: MemberPickerProps) {
+  const { showApiError } = useApiErrorToast();
   const [availableUsers, setAvailableUsers] = useState<UserOption[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
@@ -86,7 +88,7 @@ export function MemberPicker({
           }
         )
         .catch(() => {
-          toast.error("Failed to load users");
+          showApiError(new Error("Failed to load users"));
         })
         .finally(() => {
           setIsLoading(false);
@@ -129,9 +131,7 @@ export function MemberPicker({
       onOpenChange(false);
       onSuccess();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to add members"
-      );
+      showApiError(error);
     } finally {
       setIsAdding(false);
     }

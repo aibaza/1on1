@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ export function ProfileEditForm({
   defaultValues,
 }: ProfileEditFormProps) {
   const router = useRouter();
+  const { showApiError } = useApiErrorToast();
   const {
     register,
     handleSubmit,
@@ -60,9 +62,7 @@ export function ProfileEditForm({
       toast.success("Profile updated");
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to update profile"
-      );
+      showApiError(error);
     }
   }
 
