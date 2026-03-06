@@ -1,0 +1,61 @@
+{
+  "emails": {
+    "invite": {
+      "subject": "Join {organizationName} on 1on1",
+      "heading": "You have been invited",
+      "body": "{inviterName} has invited you to join {organizationName} as a {role}. Click the button below to set up your account and get started.",
+      "button": "Accept Invitation",
+      "footer": "This invitation expires in 7 days. If you did not expect this invitation, you can safely ignore this email."
+    },
+    "verification": {
+      "subject": "Verify your email address",
+      "heading": "Verify your email",
+      "body": "Thanks for signing up. Please verify your email address by clicking the button below.",
+      "button": "Verify Email Address",
+      "footer": "If you did not create an account, you can safely ignore this email. This link expires in 24 hours."
+    },
+    "passwordReset": {
+      "subject": "Reset your password",
+      "heading": "Reset your password",
+      "body": "We received a request to reset your password. Click the button below to choose a new one.",
+      "button": "Reset Password",
+      "footer": "This link expires in 1 hour. If you did not request a password reset, you can safely ignore this email."
+    },
+    "sessionSummary": {
+      "subject": "1:1 Session #{sessionNumber} Summary",
+      "heading": "Session #{sessionNumber} Summary",
+      "greeting": "Hi {recipientName}, here is the summary of your 1:1 with {otherPartyName}.",
+      "score": "Score: {score} / 5.0",
+      "keyTakeaways": "Key Takeaways",
+      "areasOfConcern": "Areas of Concern",
+      "aiPending": "AI summary is being generated and will be available in the app shortly.",
+      "actionItems": "Action Items",
+      "assignedTo": "Assigned to: {assigneeName}",
+      "due": "Due: {dueDate}",
+      "managerInsights": "Manager Insights",
+      "coachingSuggestions": "Coaching Suggestions",
+      "riskIndicators": "Risk Indicators",
+      "button": "View Full Session",
+      "footer": "This email was sent by 1on1"
+    },
+    "preMeeting": {
+      "subject": "Upcoming 1:1 with {otherPartyName}",
+      "heading": "Upcoming 1:1 Meeting",
+      "greeting": "Hi {recipientName},",
+      "body": "You have a 1:1 meeting with {otherPartyName} coming up on {meetingDate} at {meetingTime}.",
+      "button": "Open Meeting Series",
+      "footer": "This email was sent by 1on1"
+    },
+    "agendaPrep": {
+      "subject": "Prepare for your 1:1 with {otherPartyName}",
+      "heading": "Prepare for Your 1:1",
+      "greeting": "Hi {recipientName},",
+      "bodyReport": "Your 1:1 with {otherPartyName} is on {meetingDate}. Take a moment to add your talking points before the meeting.",
+      "bodyManager": "Your 1:1 with {otherPartyName} is on {meetingDate}. Here are some things to consider before your session.",
+      "aiNudges": "AI Coaching Nudges",
+      "buttonManager": "Open Meeting Series",
+      "buttonReport": "Add Talking Points",
+      "footer": "This email was sent by 1on1"
+    }
+  }
+}

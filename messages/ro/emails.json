@@ -1,0 +1,61 @@
+{
+  "emails": {
+    "invite": {
+      "subject": "Alătură-te {organizationName} pe 1on1",
+      "heading": "Ai primit o invitație",
+      "body": "{inviterName} te-a invitat să te alături organizației {organizationName} cu rolul de {role}. Apasă butonul de mai jos pentru a-ți configura contul.",
+      "button": "Acceptă invitația",
+      "footer": "Această invitație expiră în 7 zile. Dacă nu ai solicitat această invitație, poți ignora acest email."
+    },
+    "verification": {
+      "subject": "Verifică adresa de email",
+      "heading": "Verifică adresa de email",
+      "body": "Mulțumim că te-ai înregistrat. Te rugăm să îți verifici adresa de email apăsând butonul de mai jos.",
+      "button": "Verifică adresa de email",
+      "footer": "Dacă nu ai creat un cont, poți ignora acest email. Linkul expiră în 24 de ore."
+    },
+    "passwordReset": {
+      "subject": "Resetează parola",
+      "heading": "Resetează parola",
+      "body": "Am primit o solicitare de resetare a parolei tale. Apasă butonul de mai jos pentru a alege una nouă.",
+      "button": "Resetează parola",
+      "footer": "Linkul expiră în 1 oră. Dacă nu ai solicitat resetarea parolei, poți ignora acest email."
+    },
+    "sessionSummary": {
+      "subject": "Rezumat ședință 1:1 #{sessionNumber}",
+      "heading": "Rezumat ședință #{sessionNumber}",
+      "greeting": "Salut {recipientName}, iată rezumatul ședinței tale 1:1 cu {otherPartyName}.",
+      "score": "Scor: {score} / 5.0",
+      "keyTakeaways": "Concluzii principale",
+      "areasOfConcern": "Zone de îmbunătățit",
+      "aiPending": "Rezumatul AI este în curs de generare și va fi disponibil în aplicație în scurt timp.",
+      "actionItems": "Acțiuni de urmat",
+      "assignedTo": "Responsabil: {assigneeName}",
+      "due": "Termen: {dueDate}",
+      "managerInsights": "Observații manager",
+      "coachingSuggestions": "Sugestii de coaching",
+      "riskIndicators": "Indicatori de risc",
+      "button": "Vezi ședința completă",
+      "footer": "Acest email a fost trimis de 1on1"
+    },
+    "preMeeting": {
+      "subject": "Ședință 1:1 cu {otherPartyName} — memento",
+      "heading": "Ședință 1:1 în curând",
+      "greeting": "Salut {recipientName},",
+      "body": "Ai o ședință 1:1 cu {otherPartyName} pe {meetingDate} la ora {meetingTime}.",
+      "button": "Deschide seria de ședințe",
+      "footer": "Acest email a fost trimis de 1on1"
+    },
+    "agendaPrep": {
+      "subject": "Pregătire ședință 1:1 cu {otherPartyName}",
+      "heading": "Pregătire ședință 1:1",
+      "greeting": "Salut {recipientName},",
+      "bodyReport": "Ședința ta 1:1 cu {otherPartyName} este pe {meetingDate}. Ia un moment pentru a adăuga punctele tale pe agendă.",
+      "bodyManager": "Ședința ta 1:1 cu {otherPartyName} este pe {meetingDate}. Iată câteva aspecte de luat în considerare înainte de sesiune.",
+      "aiNudges": "Sugestii de coaching AI",
+      "buttonManager": "Deschide seria de ședințe",
+      "buttonReport": "Adaugă puncte pe agendă",
+      "footer": "Acest email a fost trimis de 1on1"
+    }
+  }
+}
