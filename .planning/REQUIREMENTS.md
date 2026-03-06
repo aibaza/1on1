@@ -20,7 +20,7 @@ Requirements for internationalization milestone. Each maps to roadmap phases.
 - [ ] **UITR-01**: User can switch UI language between English and Romanian via language picker in user menu
 - [ ] **UITR-02**: All navigation, layout, and shared component strings are translated
 - [x] **UITR-03**: All auth pages (login, register, invite, forgot-password, verification, reset) are translated
-- [ ] **UITR-04**: All dashboard components (stats, upcoming, overdue, recent) are translated
+- [x] **UITR-04**: All dashboard components (stats, upcoming, overdue, recent) are translated
 - [ ] **UITR-05**: All session wizard components (steps, context panel, talking points, notes) are translated
 - [ ] **UITR-06**: All people/teams management pages are translated
 - [ ] **UITR-07**: All template builder pages are translated
@@ -30,9 +30,9 @@ Requirements for internationalization milestone. Each maps to roadmap phases.
 
 ### Formatting
 
-- [ ] **FMT-01**: All dates display in locale-appropriate format (DD.MM.YYYY for Romanian, MM/DD/YYYY for English)
-- [ ] **FMT-02**: All numbers use locale-appropriate decimal and thousands separators
-- [ ] **FMT-03**: All relative times ("3 days ago" / "acum 3 zile") respect user locale
+- [x] **FMT-01**: All dates display in locale-appropriate format (DD.MM.YYYY for Romanian, MM/DD/YYYY for English)
+- [x] **FMT-02**: All numbers use locale-appropriate decimal and thousands separators
+- [x] **FMT-03**: All relative times ("3 days ago" / "acum 3 zile") respect user locale
 - [ ] **FMT-04**: Analytics chart labels, tooltips, and axes are formatted per user locale
 
 ### Email
@@ -95,16 +95,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UITR-01 | Phase 12 | Pending |
 | UITR-02 | Phase 12 | Pending |
 | UITR-03 | Phase 12 | Complete |
-| UITR-04 | Phase 12 | Pending |
+| UITR-04 | Phase 12 | Complete |
 | UITR-05 | Phase 12 | Pending |
 | UITR-06 | Phase 12 | Pending |
 | UITR-07 | Phase 12 | Pending |
 | UITR-08 | Phase 12 | Pending |
 | UITR-09 | Phase 12 | Pending |
 | UITR-10 | Phase 12 | Pending |
-| FMT-01 | Phase 12 | Pending |
-| FMT-02 | Phase 12 | Pending |
-| FMT-03 | Phase 12 | Pending |
+| FMT-01 | Phase 12 | Complete |
+| FMT-02 | Phase 12 | Complete |
+| FMT-03 | Phase 12 | Complete |
 | FMT-04 | Phase 12 | Pending |
 | VALD-01 | Phase 12 | Complete |
 | VALD-02 | Phase 12 | Complete |

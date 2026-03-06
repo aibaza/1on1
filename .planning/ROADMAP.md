@@ -126,6 +126,6 @@ Phase 11 (foundation)
 | 9. Email Notifications | v1.0 | 2/2 | Complete | 2026-03-05 |
 | 10. Integration & Polish | v1.0 | 5/5 | Complete | 2026-03-05 |
 | 11. i18n Foundation | 2/2 | Complete    | 2026-03-05 | - |
-| 12. UI Translation | 1/5 | In Progress|  | - |
+| 12. UI Translation | 2/5 | In Progress|  | - |
 | 13. Email Translation | v1.1 | 0/1 | Not started | - |
 | 14. Romanian & Quality | v1.1 | 0/2 | Not started | - |
