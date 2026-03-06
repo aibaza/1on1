@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, ChevronRight, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,19 +42,9 @@ interface AuditResponse {
   totalPages: number;
 }
 
-function formatTimestamp(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
-}
-
 export function AuditLogClient() {
   const t = useTranslations("settings");
+  const format = useFormatter();
 
   const ACTION_TYPES = [
     { value: "invite_sent", label: t("auditLog.actions.inviteSent") },
@@ -278,7 +268,13 @@ export function AuditLogClient() {
                           ))}
                       </TableCell>
                       <TableCell className="text-sm whitespace-nowrap">
-                        {formatTimestamp(entry.createdAt)}
+                        {format.dateTime(new Date(entry.createdAt), {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col">
