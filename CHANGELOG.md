@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- `createEmailTranslator` utility in `src/lib/email/translator.ts` — standalone email translator using `use-intl/core`, no Next.js request context required, falls back to `en` for unsupported locales
+
 ## [1.1.4] - 2026-03-06
 
 ### Added
