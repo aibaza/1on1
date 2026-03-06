@@ -61,7 +61,7 @@ Plans:
   2. All pages display translated strings with no hardcoded English visible: auth pages, dashboard, session wizard, people/teams, templates, analytics, settings, and command palette
   3. A Romanian-locale user sees dates as "05.03.2026", numbers as "1.234,56", and relative times as "acum 3 zile" -- an English-locale user sees US formats -- consistently across all pages including analytics chart axes, tooltips, and labels
   4. A Romanian-locale user submitting an invalid form sees validation errors in Romanian; API error responses (rate limits, permission denied, not found) display in the user's UI language in toast notifications
-**Plans**: 5 plans
+**Plans**: 6 plans
 
 Plans:
 - [ ] 12-01-PLAN.md — Validation infrastructure (useZodI18nErrors hook, validation namespace, API error keys) and auth page translations
@@ -69,6 +69,7 @@ Plans:
 - [ ] 12-03-PLAN.md — Session wizard full translation (all ~20 components, widgets, context panel, dates)
 - [ ] 12-04-PLAN.md — People/teams management and template builder translation
 - [ ] 12-05-PLAN.md — Analytics charts locale-aware formatting, settings pages, and verification of nav/command palette
+- [ ] 12-06-PLAN.md — Gap closure: wire session-started toasts, summary-screen error toast, and .toFixed(1) score formatting
 
 ### Phase 13: Email Translation
 **Goal**: All email notifications render in the correct language for the recipient, using a standalone translator that works outside the Next.js request lifecycle
@@ -126,6 +127,6 @@ Phase 11 (foundation)
 | 9. Email Notifications | v1.0 | 2/2 | Complete | 2026-03-05 |
 | 10. Integration & Polish | v1.0 | 5/5 | Complete | 2026-03-05 |
 | 11. i18n Foundation | 2/2 | Complete    | 2026-03-05 | - |
-| 12. UI Translation | 5/5 | Complete   | 2026-03-06 | - |
+| 12. UI Translation | 6/6 | In Progress | 2026-03-06 | - |
 | 13. Email Translation | v1.1 | 0/1 | Not started | - |
 | 14. Romanian & Quality | v1.1 | 0/2 | Not started | - |
