@@ -80,10 +80,12 @@ Plans:
   2. A session summary email renders in the company's content language with AI-generated content in the same language
   3. Transactional emails (password reset, email verification) render in the recipient's UI language preference
   4. The email translation system works correctly when called from background jobs outside the Next.js request lifecycle
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 13-01: TBD
+- [ ] 13-01-PLAN.md — Foundation: createEmailTranslator utility (use-intl/core standalone), messages/en/emails.json + messages/ro/emails.json namespaces
+- [ ] 13-02-PLAN.md — Template refactor: all 6 email templates accept translated string props (no hardcoded English, no i18n hooks)
+- [ ] 13-03-PLAN.md — Call site wiring: locale resolution + createEmailTranslator integration in send.ts, invites routes, summary-email, sender
 
 ### Phase 14: Romanian & Quality
 **Goal**: Complete, natural-sounding Romanian translations across the entire application with correct grammar, no layout breakage, and automated CI enforcement preventing translation regressions
@@ -128,5 +130,5 @@ Phase 11 (foundation)
 | 10. Integration & Polish | v1.0 | 5/5 | Complete | 2026-03-05 |
 | 11. i18n Foundation | 2/2 | Complete    | 2026-03-05 | - |
 | 12. UI Translation | 6/6 | Complete    | 2026-03-06 | - |
-| 13. Email Translation | v1.1 | 0/1 | Not started | - |
+| 13. Email Translation | v1.1 | 0/3 | Not started | - |
 | 14. Romanian & Quality | v1.1 | 0/2 | Not started | - |
