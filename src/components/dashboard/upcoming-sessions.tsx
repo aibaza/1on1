@@ -39,6 +39,7 @@ function SessionCard({
 }) {
   const router = useRouter();
   const t = useTranslations("dashboard.upcoming");
+  const tSessions = useTranslations("sessions");
   const format = useFormatter();
   const { showApiError } = useApiErrorToast();
 
@@ -54,7 +55,7 @@ function SessionCard({
       return res.json();
     },
     onSuccess: (data) => {
-      toast.success(`Session #${data.sessionNumber} started`);
+      toast.success(tSessions("detail.sessionStarted", { number: data.sessionNumber }));
       router.push(`/wizard/${data.id}`);
     },
     onError: (error: Error) => {

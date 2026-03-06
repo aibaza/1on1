@@ -83,7 +83,7 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
       return res.json();
     },
     onSuccess: (data) => {
-      toast.success(`Session #${data.sessionNumber} started`);
+      toast.success(t("detail.sessionStarted", { number: data.sessionNumber }));
       router.push(`/wizard/${data.id}`);
     },
     onError: (error: Error) => {

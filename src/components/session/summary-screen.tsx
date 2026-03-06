@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations, useFormatter } from "next-intl";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import {
   CheckCircle2,
   AlertTriangle,
@@ -122,6 +123,7 @@ export function SummaryScreen({
   const router = useRouter();
   const t = useTranslations("sessions.summary");
   const format = useFormatter();
+  const { showApiError } = useApiErrorToast();
 
   // Compute score from current answers
   const scoreInput = categories.flatMap((cat) =>
@@ -155,7 +157,7 @@ export function SummaryScreen({
       router.push(`/sessions/${seriesId}`);
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      showApiError(error);
     },
   });
 
