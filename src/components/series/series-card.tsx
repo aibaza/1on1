@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, Play, RotateCcw, Star, Sparkles } from "lucide-react";
+import { CalendarDays, Play, RotateCcw, Star } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
@@ -35,7 +35,7 @@ interface SeriesCardProps {
       sessionNumber: number;
       sessionScore: string | null;
     } | null;
-    topNudge: string | null;
+    latestSummary: { blurb: string; sentiment: string } | null;
     scoreHistory: number[];
   };
   currentUserId: string;
@@ -227,14 +227,22 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
         </Badge>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-2 pt-0">
-        {series.topNudge ? (
-          <p className="text-xs text-muted-foreground line-clamp-2">
-            <Sparkles className="mr-1 inline h-3 w-3 text-amber-500/70" />
-            {series.topNudge}
+        {series.latestSummary ? (
+          <p className="flex items-start gap-1.5 text-xs text-muted-foreground line-clamp-2">
+            <span
+              className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${
+                series.latestSummary.sentiment === "positive"
+                  ? "bg-green-500"
+                  : series.latestSummary.sentiment === "concerning"
+                    ? "bg-red-500"
+                    : "bg-amber-500"
+              }`}
+            />
+            {series.latestSummary.blurb}
           </p>
         ) : (
           <p className="text-xs text-muted-foreground/40 line-clamp-2 italic">
-            {t("series.nudgePlaceholder")}
+            {t("series.summaryPlaceholder")}
           </p>
         )}
         {hasInProgress && series.latestSession && (

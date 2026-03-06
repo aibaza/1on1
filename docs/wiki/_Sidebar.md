@@ -21,3 +21,5 @@
 - [[Phase-08]] — Manager Dashboard & Analytics
 - [[Phase-09]] — Email Notifications
 - [[Phase-10]] — Integration & Polish
+- [[Phase-11]] — i18n Foundation
+- [[Phase-12]] — UI Translation

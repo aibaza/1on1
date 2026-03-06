@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Internationalization
 status: completed
-stopped_at: Completed 12-06-PLAN.md
-last_updated: "2026-03-06T11:51:32.500Z"
-last_activity: 2026-03-06 -- Executed 12-06 gap closure (toasts + format.number)
+stopped_at: v1.1.0 released
+last_updated: "2026-03-06T14:00:00.000Z"
+last_activity: 2026-03-06 -- Released v1.1.0 (i18n + series card redesign + AI session summary on cards)
 progress:
   total_phases: 4
   completed_phases: 2
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-05)
 
 **Core value:** The AI context layer that makes every meeting smarter than the last
-**Current focus:** v1.1 Internationalization -- Phase 12 complete (6/6 plans)
+**Current focus:** v1.1 Internationalization -- Phases 11 + 12 shipped as v1.1.0; Phases 13–14 next
 
 ## Current Position
 
 Phase: 12 of 14 (UI Translation) -- COMPLETE
 Plan: 6 of 6 in current phase (12-06 complete)
-Status: Complete
-Last activity: 2026-03-06 -- Executed 12-06 gap closure (toasts + format.number)
+Status: Released as v1.1.0 (2026-03-06)
+Last activity: 2026-03-06 -- Released v1.1.0; AI session summary on series cards (cardBlurb + sentiment dot)
 
 Progress: [██████████] 100%
 

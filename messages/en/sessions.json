@@ -22,7 +22,7 @@
       "statusActive": "Active",
       "statusPaused": "Paused",
       "statusArchived": "Archived",
-      "nudgePlaceholder": "AI insights will appear after your first session",
+      "summaryPlaceholder": "AI summary will appear after your first session",
       "noRating": "No rating yet",
       "scheduleDayMon": "Monday",
       "scheduleDayTue": "Tuesday",

@@ -1,6 +1,9 @@
 import { z } from "zod";
 
 export const summarySchema = z.object({
+  cardBlurb: z
+    .string()
+    .describe("1-2 sentence plain-language summary for card preview, max 25 words"),
   keyTakeaways: z
     .array(z.string())
     .describe("2-5 key takeaways, each max 10 words"),

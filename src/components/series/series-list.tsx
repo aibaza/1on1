@@ -27,7 +27,7 @@ interface Series {
     sessionNumber: number;
     sessionScore: string | null;
   } | null;
-  topNudge: string | null;
+  latestSummary: { blurb: string; sentiment: string } | null;
   scoreHistory: number[];
 }
 

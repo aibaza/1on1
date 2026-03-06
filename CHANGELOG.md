@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+<!-- Add new changes here -->
+
+## [1.1.0] - 2026-03-06
+
 ### Added
 - SVG logo component (`Logo`, `LogoIcon`) with theme-reactive `--logo-color` CSS variable
 - Logo replaces plain "1on1" text in top nav, mobile sheet, sidebar, and auth layout
@@ -15,11 +19,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `nextSessionAt` field added to series update API for direct date override
 - Dashboard upcoming sessions now reuses `SeriesCard` component (same cards as sessions page), limited to next 3 active series
 - Star rating display on series cards — amber filled stars for scored sessions, gray empty stars when no rating; numeric score appears on hover
-- AI nudge preview on series cards — 2-line clamped text with sparkle icon; grayed italic placeholder when no nudge exists
+- Score history sparkline area chart as subtle background on series cards (bottom 30% of card)
+- AI session summary on series cards — `cardBlurb` (1-2 sentence plain-language blurb) with colored sentiment dot: green for positive, amber for neutral/mixed, red for concerning; grayed italic placeholder before first session completes
 - Human-readable schedule label in bottom-right of series cards (e.g. "Weekly on Mondays at 11:30" / "Săptămânal, lunea la 11:30")
 - Shared `getSeriesCardData()` query in `src/lib/queries/series.ts` used by sessions page, dashboard, and API route
-- `topNudge` field added to series API response and series card data
-- Translation keys for schedule labels, nudge placeholder, and schedule-context day names in EN/RO
+- `cardBlurb` field added to `AISummary` schema — generated alongside session summary at pipeline completion
+- `latestSummary` field (blurb + sentiment) in series API response and series card data, extracted from latest completed session's `aiSummary`
+- Translation key `summaryPlaceholder` in EN/RO for series cards with no completed session yet
+- Translation keys for schedule labels and schedule-context day names in EN/RO
 - Translation keys for edit series dialog in EN/RO
 - Translation keys for people management: `managerSelect`, `memberPicker`, `profileForm` namespaces in EN/RO
 - Translation keys for team creation dialog: `teams.create` namespace in EN/RO

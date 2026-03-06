@@ -1,6 +1,6 @@
-import { eq, sql, and, asc, desc } from "drizzle-orm";
+import { eq, sql, and, asc } from "drizzle-orm";
 import type { TransactionClient } from "@/lib/db/tenant-context";
-import { meetingSeries, sessions, users, aiNudges } from "@/lib/db/schema";
+import { meetingSeries, sessions, users } from "@/lib/db/schema";
 
 export interface SeriesCardData {
   id: string;
@@ -22,7 +22,7 @@ export interface SeriesCardData {
     sessionNumber: number;
     sessionScore: string | null;
   } | null;
-  topNudge: string | null;
+  latestSummary: { blurb: string; sentiment: string } | null;
   scoreHistory: number[];
 }
 
@@ -122,31 +122,12 @@ export async function getSeriesCardData(
 
   const latestMap = new Map(latestSessions.map((s) => [s.seriesId, s]));
 
-  // Fetch most recent non-dismissed nudge per series
-  const nudgeRows = await tx
-    .select({
-      seriesId: aiNudges.seriesId,
-      content: aiNudges.content,
-    })
-    .from(aiNudges)
-    .where(
-      and(
-        sql`${aiNudges.seriesId} IN ${seriesIds}`,
-        eq(aiNudges.isDismissed, false)
-      )
-    )
-    .orderBy(desc(aiNudges.createdAt));
-
-  const nudgeMap = new Map<string, string>();
-  for (const n of nudgeRows) {
-    if (!nudgeMap.has(n.seriesId)) nudgeMap.set(n.seriesId, n.content);
-  }
-
-  // Fetch score history (completed sessions ordered by session number)
+  // Fetch score history and latest aiSummary (completed sessions ordered by session number)
   const scoreRows = await tx
     .select({
       seriesId: sessions.seriesId,
       sessionScore: sessions.sessionScore,
+      aiSummary: sessions.aiSummary,
     })
     .from(sessions)
     .where(
@@ -159,10 +140,17 @@ export async function getSeriesCardData(
     .orderBy(asc(sessions.sessionNumber));
 
   const scoreHistoryMap = new Map<string, number[]>();
+  const latestSummaryMap = new Map<string, { blurb: string; sentiment: string }>();
   for (const r of scoreRows) {
     const arr = scoreHistoryMap.get(r.seriesId) ?? [];
     arr.push(parseFloat(r.sessionScore!));
     scoreHistoryMap.set(r.seriesId, arr);
+    if (r.aiSummary?.cardBlurb) {
+      latestSummaryMap.set(r.seriesId, {
+        blurb: r.aiSummary.cardBlurb,
+        sentiment: r.aiSummary.overallSentiment,
+      });
+    }
   }
 
   return seriesList.map((s) => {
@@ -190,7 +178,7 @@ export async function getSeriesCardData(
             sessionScore: latest.sessionScore,
           }
         : null,
-      topNudge: nudgeMap.get(s.id) ?? null,
+      latestSummary: latestSummaryMap.get(s.id) ?? null,
       scoreHistory: scoreHistoryMap.get(s.id) ?? [],
     };
   });

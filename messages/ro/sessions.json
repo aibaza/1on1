@@ -22,7 +22,7 @@
       "statusActive": "Activă",
       "statusPaused": "Pauză",
       "statusArchived": "Arhivată",
-      "nudgePlaceholder": "Sugestiile AI vor apărea după prima sesiune",
+      "summaryPlaceholder": "Rezumatul AI va apărea după prima sesiune",
       "noRating": "Fără evaluare",
       "scheduleDayMon": "lunea",
       "scheduleDayTue": "marțea",

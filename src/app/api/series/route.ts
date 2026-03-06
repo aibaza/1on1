@@ -5,8 +5,8 @@ import { canManageSeries } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
 import { createSeriesSchema } from "@/lib/validations/series";
 import { scheduleSeriesNotifications } from "@/lib/notifications/scheduler";
-import { meetingSeries, sessions, users, aiNudges } from "@/lib/db/schema";
-import { eq, and, asc, sql, desc } from "drizzle-orm";
+import { meetingSeries, sessions, users } from "@/lib/db/schema";
+import { eq, and, asc, sql } from "drizzle-orm";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
 
 export async function GET(request: Request) {
@@ -86,31 +86,12 @@ export async function GET(request: Request) {
           latestSessions.map((s) => [s.seriesId, s])
         );
 
-        // Fetch most recent non-dismissed nudge per series
-        const nudgeRows = await tx
-          .select({
-            seriesId: aiNudges.seriesId,
-            content: aiNudges.content,
-          })
-          .from(aiNudges)
-          .where(
-            and(
-              sql`${aiNudges.seriesId} IN ${seriesIds}`,
-              eq(aiNudges.isDismissed, false)
-            )
-          )
-          .orderBy(desc(aiNudges.createdAt));
-
-        const nudgeMap = new Map<string, string>();
-        for (const n of nudgeRows) {
-          if (!nudgeMap.has(n.seriesId)) nudgeMap.set(n.seriesId, n.content);
-        }
-
-        // Fetch score history per series
+        // Fetch score history and latest aiSummary (completed sessions ordered by session number)
         const scoreRows = await tx
           .select({
             seriesId: sessions.seriesId,
             sessionScore: sessions.sessionScore,
+            aiSummary: sessions.aiSummary,
           })
           .from(sessions)
           .where(
@@ -123,10 +104,17 @@ export async function GET(request: Request) {
           .orderBy(asc(sessions.sessionNumber));
 
         const scoreHistoryMap = new Map<string, number[]>();
+        const latestSummaryMap = new Map<string, { blurb: string; sentiment: string }>();
         for (const r of scoreRows) {
           const arr = scoreHistoryMap.get(r.seriesId) ?? [];
           arr.push(parseFloat(r.sessionScore!));
           scoreHistoryMap.set(r.seriesId, arr);
+          if (r.aiSummary?.cardBlurb) {
+            latestSummaryMap.set(r.seriesId, {
+              blurb: r.aiSummary.cardBlurb,
+              sentiment: r.aiSummary.overallSentiment,
+            });
+          }
         }
 
         return seriesList.map((s) => {
@@ -157,7 +145,7 @@ export async function GET(request: Request) {
                   sessionScore: latest.sessionScore,
                 }
               : null,
-            topNudge: nudgeMap.get(s.id) ?? null,
+            latestSummary: latestSummaryMap.get(s.id) ?? null,
             scoreHistory: scoreHistoryMap.get(s.id) ?? [],
           };
         });

@@ -49,8 +49,8 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Plans**: 2 plans
 
 Plans:
-- [ ] 11-01-PLAN.md — i18n infrastructure: next-intl setup, DB migration, JWT extension, proxy locale detection, translation files
-- [ ] 11-02-PLAN.md — Proof-of-concept: login page translation (EN+RO), language switcher, formatting demo
+- [x] 11-01-PLAN.md — i18n infrastructure: next-intl setup, DB migration, JWT extension, proxy locale detection, translation files
+- [x] 11-02-PLAN.md — Proof-of-concept: login page translation (EN+RO), language switcher, formatting demo
 
 ### Phase 12: UI Translation
 **Goal**: Every user-facing page and component displays translated strings, locale-aware formatting, and translated validation errors -- the entire UI works in any supported language
@@ -64,12 +64,12 @@ Plans:
 **Plans**: 6 plans
 
 Plans:
-- [ ] 12-01-PLAN.md — Validation infrastructure (useZodI18nErrors hook, validation namespace, API error keys) and auth page translations
-- [ ] 12-02-PLAN.md — Dashboard, history, action items, and series date/number formatting replacement
-- [ ] 12-03-PLAN.md — Session wizard full translation (all ~20 components, widgets, context panel, dates)
-- [ ] 12-04-PLAN.md — People/teams management and template builder translation
-- [ ] 12-05-PLAN.md — Analytics charts locale-aware formatting, settings pages, and verification of nav/command palette
-- [ ] 12-06-PLAN.md — Gap closure: wire session-started toasts, summary-screen error toast, and .toFixed(1) score formatting
+- [x] 12-01-PLAN.md — Validation infrastructure (useZodI18nErrors hook, validation namespace, API error keys) and auth page translations
+- [x] 12-02-PLAN.md — Dashboard, history, action items, and series date/number formatting replacement
+- [x] 12-03-PLAN.md — Session wizard full translation (all ~20 components, widgets, context panel, dates)
+- [x] 12-04-PLAN.md — People/teams management and template builder translation
+- [x] 12-05-PLAN.md — Analytics charts locale-aware formatting, settings pages, and verification of nav/command palette
+- [x] 12-06-PLAN.md — Gap closure: wire session-started toasts, summary-screen error toast, and .toFixed(1) score formatting
 
 ### Phase 13: Email Translation
 **Goal**: All email notifications render in the correct language for the recipient, using a standalone translator that works outside the Next.js request lifecycle

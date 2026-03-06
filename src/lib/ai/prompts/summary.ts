@@ -4,6 +4,7 @@ import { BASE_SYSTEM } from "./base";
 export function buildSummarySystemPrompt(): string {
   return BASE_SYSTEM + `Summarize a 1-on-1 session.
 
+- Card blurb: 1-2 plain sentences, max 25 words, no jargon — shown as preview on the series card
 - Each takeaway: a few words, not a sentence
 - Discussion highlights: 1 sentence per section, skip score-only sections
 - Follow-ups: only if explicitly needed
