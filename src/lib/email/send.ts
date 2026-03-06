@@ -1,13 +1,16 @@
 import { createTransport } from "nodemailer";
 import { render } from "@react-email/render";
 import { randomBytes } from "crypto";
+import { eq } from "drizzle-orm";
 import { adminDb } from "@/lib/db";
 import {
   emailVerificationTokens,
   passwordResetTokens,
 } from "@/lib/db/schema/auth";
+import { users } from "@/lib/db/schema";
 import { VerificationEmail } from "./templates/verification";
 import { PasswordResetEmail } from "./templates/password-reset";
+import { createEmailTranslator } from "./translator";
 
 // Lazy-initialize SMTP transport
 let _transport: ReturnType<typeof createTransport> | null = null;
@@ -35,6 +38,13 @@ export async function sendVerificationEmail(
   userId: string,
   baseUrl?: string
 ) {
+  const userRow = await adminDb.query.users.findFirst({
+    where: eq(users.id, userId),
+    columns: { language: true },
+  });
+  const locale = userRow?.language ?? "en";
+  const t = await createEmailTranslator(locale);
+
   const token = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
@@ -49,18 +59,17 @@ export async function sendVerificationEmail(
   const html = await render(
     VerificationEmail({
       verifyUrl,
-      // TODO(13-03): replace with createEmailTranslator
-      heading: "Verify your email",
-      body: "Thanks for signing up. Please verify your email address by clicking the button below.",
-      buttonLabel: "Verify Email Address",
-      footer: "If you did not create an account, you can safely ignore this email. This link expires in 24 hours.",
+      heading: t("emails.verification.heading"),
+      body: t("emails.verification.body"),
+      buttonLabel: t("emails.verification.button"),
+      footer: t("emails.verification.footer"),
     })
   );
 
   await getTransport().sendMail({
     from: getEmailFrom(),
     to: email,
-    subject: "Verify your email address",
+    subject: t("emails.verification.subject"),
     html,
   });
 }
@@ -70,6 +79,13 @@ export async function sendPasswordResetEmail(
   userId: string,
   baseUrl?: string
 ) {
+  const userRow = await adminDb.query.users.findFirst({
+    where: eq(users.id, userId),
+    columns: { language: true },
+  });
+  const locale = userRow?.language ?? "en";
+  const t = await createEmailTranslator(locale);
+
   const token = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
@@ -84,18 +100,17 @@ export async function sendPasswordResetEmail(
   const html = await render(
     PasswordResetEmail({
       resetUrl,
-      // TODO(13-03): replace with createEmailTranslator
-      heading: "Reset your password",
-      body: "We received a request to reset your password. Click the button below to choose a new one.",
-      buttonLabel: "Reset Password",
-      footer: "This link expires in 1 hour. If you did not request a password reset, you can safely ignore this email.",
+      heading: t("emails.passwordReset.heading"),
+      body: t("emails.passwordReset.body"),
+      buttonLabel: t("emails.passwordReset.button"),
+      footer: t("emails.passwordReset.footer"),
     })
   );
 
   await getTransport().sendMail({
     from: getEmailFrom(),
     to: email,
-    subject: "Reset your password",
+    subject: t("emails.passwordReset.subject"),
     html,
   });
 }

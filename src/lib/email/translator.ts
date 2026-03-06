@@ -14,6 +14,7 @@ export async function createEmailTranslator(locale: string) {
   const safeLocale = isValidLocale(locale) ? locale : "en";
   const filePath = join(process.cwd(), "messages", safeLocale, "emails.json");
   const raw = await readFile(filePath, "utf-8");
-  const messages = JSON.parse(raw) as Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const messages = JSON.parse(raw) as Record<string, any>;
   return createTranslator({ locale: safeLocale, messages });
 }

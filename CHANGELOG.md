@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `messages/ro/emails.json` — Romanian email translation keys mirroring en structure
 
 ### Changed
+- `sendVerificationEmail` resolves `users.language`, calls `createEmailTranslator`, passes translated props and subject — no hardcoded English strings
+- `sendPasswordResetEmail` resolves `users.language`, calls `createEmailTranslator`, passes translated props and subject — no hardcoded English strings
+- `createEmailTranslator` messages typed as `Record<string, any>` to allow TypeScript to traverse nested message keys without resolving to `never`
 - Email templates (invite, verification, password-reset) accept translated string props (`heading`, `body`, `buttonLabel`, `footer`) — hardcoded English strings removed from JSX
 - `EmailLayout` default `footerText` changed from hardcoded English to empty string — callers always pass translated footer
 - `SessionSummaryEmail` accepts `labels` prop bag and extended `ActionItem` with `assignedToLabel`/`dueLabel` for pre-interpolated strings
