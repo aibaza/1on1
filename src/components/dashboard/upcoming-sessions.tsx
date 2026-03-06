@@ -24,27 +24,10 @@ import {
 } from "lucide-react";
 import type { UpcomingSession } from "@/lib/queries/dashboard";
 import { NudgesModal } from "@/components/dashboard/nudges-modal";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 
 interface UpcomingSessionsProps {
   sessions: UpcomingSession[];
-}
-
-function formatSessionTime(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function formatTime(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-  });
 }
 
 function SessionCard({
@@ -56,6 +39,7 @@ function SessionCard({
 }) {
   const router = useRouter();
   const t = useTranslations("dashboard.upcoming");
+  const format = useFormatter();
   const { showApiError } = useApiErrorToast();
 
   const startSession = useMutation({
@@ -101,9 +85,9 @@ function SessionCard({
           </CardTitle>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Calendar className="size-3" />
-            <span>{formatSessionTime(session.scheduledAt)}</span>
+            <span>{format.dateTime(new Date(session.scheduledAt), { weekday: "short", month: "short", day: "numeric" })}</span>
             <span>&middot;</span>
-            <span>{formatTime(session.scheduledAt)}</span>
+            <span>{format.dateTime(new Date(session.scheduledAt), { hour: "numeric", minute: "2-digit" })}</span>
           </div>
         </div>
         {session.isToday && (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useRef } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -93,6 +93,7 @@ export function HistoryPage({
   seriesOptions,
 }: HistoryPageProps) {
   const t = useTranslations("history");
+  const format = useFormatter();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -419,7 +420,7 @@ export function HistoryPage({
                         {r.reportName}
                       </span>
                       <span className="text-muted-foreground">
-                        {new Date(r.scheduledAt).toLocaleDateString("en-US", {
+                        {format.dateTime(new Date(r.scheduledAt), {
                           month: "short",
                           day: "numeric",
                           year: "numeric",
@@ -511,14 +512,11 @@ export function HistoryPage({
                               #{s.sessionNumber}
                             </span>
                             <span className="text-muted-foreground">
-                              {new Date(s.scheduledAt).toLocaleDateString(
-                                "en-US",
-                                {
-                                  month: "short",
-                                  day: "numeric",
-                                  year: "numeric",
-                                }
-                              )}
+                              {format.dateTime(new Date(s.scheduledAt), {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })}
                             </span>
                           </div>
                           <div className="flex items-center gap-3 shrink-0">
@@ -526,7 +524,7 @@ export function HistoryPage({
                               <span
                                 className={`font-medium tabular-nums ${getScoreColor(s.sessionScore)}`}
                               >
-                                {s.sessionScore.toFixed(1)}
+                                {format.number(s.sessionScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
                               </span>
                             )}
                             {s.durationMinutes && (
@@ -538,7 +536,7 @@ export function HistoryPage({
                               variant={statusVariant[s.status] ?? "outline"}
                               className="text-xs"
                             >
-                              {s.status.replace("_", " ")}
+                              {t(`status_${s.status}` as Parameters<typeof t>[0])}
                             </Badge>
                           </div>
                         </div>

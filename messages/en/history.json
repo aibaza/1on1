@@ -25,6 +25,11 @@
     "clearFilters": "Clear Filters",
     "goToSessions": "Go to Sessions",
     "loadMore": "Load more",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "status_completed": "completed",
+    "status_in_progress": "in progress",
+    "status_scheduled": "scheduled",
+    "status_cancelled": "cancelled",
+    "status_missed": "missed"
   }
 }

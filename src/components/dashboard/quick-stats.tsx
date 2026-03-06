@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Users, Calendar, TrendingUp } from "lucide-react";
 import type { QuickStats as QuickStatsData, StatsTrends } from "@/lib/queries/dashboard";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
 import { useMemo } from "react";
 
@@ -56,6 +56,7 @@ function BackgroundSparkline({ data }: { data: number[] }) {
 
 export function QuickStats({ stats, trends }: QuickStatsProps) {
   const t = useTranslations("dashboard.quickStats");
+  const format = useFormatter();
 
   const items = [
     {
@@ -72,7 +73,7 @@ export function QuickStats({ stats, trends }: QuickStatsProps) {
     },
     {
       label: t("averageScore"),
-      value: stats.avgScore !== null ? stats.avgScore.toFixed(1) : t("na"),
+      value: stats.avgScore !== null ? format.number(stats.avgScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : t("na"),
       icon: TrendingUp,
       history: trends?.scoresHistory,
     },

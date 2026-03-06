@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { RecentSession } from "@/lib/queries/dashboard";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 
 interface RecentSessionsProps {
   sessions: RecentSession[];
@@ -17,16 +17,9 @@ function scoreBadgeVariant(score: number): string {
   return "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300";
 }
 
-function formatCompletedDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
-
 export function RecentSessions({ sessions }: RecentSessionsProps) {
   const t = useTranslations("dashboard.recent");
+  const format = useFormatter();
 
   if (sessions.length === 0) {
     return (
@@ -55,7 +48,7 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
               </span>
               <span className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Clock className="size-3" />
-                {formatCompletedDate(s.completedAt)}
+                {format.dateTime(new Date(s.completedAt), { month: "short", day: "numeric" })}
               </span>
             </div>
             {s.aiSummarySnippet && (
@@ -72,7 +65,7 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
                 scoreBadgeVariant(s.sessionScore)
               )}
             >
-              {s.sessionScore.toFixed(1)}
+              {format.number(s.sessionScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
             </Badge>
           )}
         </Link>

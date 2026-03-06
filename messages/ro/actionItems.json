@@ -11,6 +11,7 @@
     "reopened": "Acțiune redeschisă",
     "updateFailed": "Actualizarea acțiunii a eșuat",
     "updated": "Acțiune actualizată",
+    "sessionBadge": "Sesiunea #{number}",
     "edit": {
       "title": "Editează acțiunea",
       "description": "Actualizează detaliile acțiunii.",

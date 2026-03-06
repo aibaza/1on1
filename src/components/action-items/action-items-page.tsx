@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
@@ -64,20 +64,7 @@ function isOverdue(dueDate: string | null, status: string): boolean {
   return new Date(dueDate) < today;
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-function formatShortDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
+// Date formatting moved to useFormatter() inside the component
 
 interface SeriesGroup {
   seriesId: string;
@@ -88,6 +75,7 @@ interface SeriesGroup {
 
 export function ActionItemsPage({ initialItems }: ActionItemsPageProps) {
   const t = useTranslations("actionItems");
+  const format = useFormatter();
   const queryClient = useQueryClient();
   const [editItem, setEditItem] = useState<ActionItemRow | null>(null);
 
@@ -375,7 +363,7 @@ export function ActionItemsPage({ initialItems }: ActionItemsPageProps) {
                             )}
                           >
                             <CalendarDays className="size-3" />
-                            {formatShortDate(item.dueDate)}
+                            {format.dateTime(new Date(item.dueDate), { month: "short", day: "numeric" })}
                             {overdue && (
                               <AlertCircle className="size-3 ml-0.5" />
                             )}
@@ -385,7 +373,7 @@ export function ActionItemsPage({ initialItems }: ActionItemsPageProps) {
                           variant="outline"
                           className="text-[10px] font-normal"
                         >
-                          Session #{item.sessionNumber}
+                          {t("sessionBadge", { number: item.sessionNumber })}
                         </Badge>
                       </div>
                     </div>
