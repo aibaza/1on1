@@ -11,6 +11,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Translation keys for team creation dialog: `teams.create` namespace in EN/RO
 - Translation keys for template builder: `questionCard`, `answerConfig`, `conditionalLogic` namespaces in EN/RO
 
+### Fixed
+- Session-started toast in series-card and upcoming-sessions now uses translated text instead of hardcoded English
+- summary-screen error toast now uses `showApiError()` for translated API errors instead of raw `error.message`
+- Score display in five session components (summary-screen, context-panel, recap-screen, floating-context-widgets, session-summary-view) now uses locale-aware `format.number()` instead of `.toFixed(1)`
+
 ### Changed
 - Session wizard context panel, recap screen, talking points, action items inline, nudge list, AI suggestions, and AI summary sections now use `useTranslations` for all visible strings
 - All session date formatting replaced with locale-aware `useFormatter().dateTime()` across wizard-top-bar, context-panel, floating-context-widgets, summary-screen, session-summary-view, question-history-dialog (no hardcoded `toLocaleDateString("en-US")` remains)
