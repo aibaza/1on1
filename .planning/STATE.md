@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Internationalization
 status: in-progress
-stopped_at: Completed 12-02-PLAN.md
-last_updated: "2026-03-06T11:03:25Z"
-last_activity: 2026-03-06 -- Executed 12-02 dashboard & series locale formatting
+stopped_at: Completed 12-05-PLAN.md
+last_updated: "2026-03-06T11:07:18Z"
+last_activity: 2026-03-06 -- Executed 12-05 analytics charts & settings translation
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 7
-  completed_plans: 4
-  percent: 57
+  completed_plans: 5
+  percent: 71
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-05)
 
 **Core value:** The AI context layer that makes every meeting smarter than the last
-**Current focus:** v1.1 Internationalization -- Phase 12 in progress (2/5 plans complete)
+**Current focus:** v1.1 Internationalization -- Phase 12 in progress (5/5 plans complete)
 
 ## Current Position
 
 Phase: 12 of 14 (UI Translation) -- IN PROGRESS
-Plan: 2 of 5 in current phase (12-02 complete)
+Plan: 5 of 5 in current phase (12-05 complete)
 Status: In Progress
-Last activity: 2026-03-06 -- Executed 12-02 dashboard & series locale formatting
+Last activity: 2026-03-06 -- Executed 12-05 analytics charts & settings translation
 
-Progress: [██████░░░░] 57%
+Progress: [███████░░░] 71%
 
 ## Performance Metrics
 
@@ -69,6 +69,9 @@ Recent decisions affecting current work:
 - [12-01]: Server components use getTranslations, client components use useTranslations
 - [12-02]: nudge-card.tsx already locale-aware via t() keys -- no changes needed
 - [12-02]: useFormatter passed as parameter to helpers outside component scope
+- [12-05]: useFormatter() called at component level, captured in closures for Recharts callbacks
+- [12-05]: format.number() replaces all .toFixed() for locale-aware decimal display
+- [12-05]: Session component en-US references deferred -- out of scope for analytics/settings plan
 
 ### Blockers/Concerns
 
@@ -76,6 +79,6 @@ None active.
 
 ## Session Continuity
 
-Last session: 2026-03-06T11:03:25Z
-Stopped at: Completed 12-02-PLAN.md
-Resume file: .planning/phases/12-ui-translation/12-02-SUMMARY.md
+Last session: 2026-03-06T11:07:18Z
+Stopped at: Completed 12-05-PLAN.md
+Resume file: .planning/phases/12-ui-translation/12-05-SUMMARY.md
