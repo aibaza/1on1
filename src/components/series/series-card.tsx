@@ -10,7 +10,7 @@ import { CalendarDays, Play, RotateCcw } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 
 interface SeriesCardProps {
   series: {
@@ -43,7 +43,8 @@ const statusVariant: Record<string, "default" | "secondary" | "outline"> = {
 
 function formatRelativeDate(
   dateStr: string,
-  t: ReturnType<typeof useTranslations<"sessions">>
+  t: ReturnType<typeof useTranslations<"sessions">>,
+  format: ReturnType<typeof useFormatter>
 ): string {
   const date = new Date(dateStr);
   const now = new Date();
@@ -56,7 +57,7 @@ function formatRelativeDate(
   if (diffDays > 0 && diffDays <= 7) return t("series.inDays", { count: diffDays });
   if (diffDays < 0 && diffDays >= -7) return t("series.daysAgo", { count: Math.abs(diffDays) });
 
-  return date.toLocaleDateString(undefined, {
+  return format.dateTime(date, {
     month: "short",
     day: "numeric",
   });
@@ -64,6 +65,7 @@ function formatRelativeDate(
 
 export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
   const t = useTranslations("sessions");
+  const format = useFormatter();
   const { showApiError } = useApiErrorToast();
   const router = useRouter();
   const hasInProgress = series.latestSession?.status === "in_progress";
@@ -125,14 +127,14 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
             <CalendarDays className="h-3.5 w-3.5" />
             {series.nextSessionAt ? (
-              <span>{formatRelativeDate(series.nextSessionAt, t)}</span>
+              <span>{formatRelativeDate(series.nextSessionAt, t, format)}</span>
             ) : (
               <span>{t("series.notScheduled")}</span>
             )}
           </div>
           {series.latestSession?.sessionScore && series.latestSession.status === "completed" && (
             <span className="text-sm font-medium tabular-nums text-muted-foreground">
-              {parseFloat(series.latestSession.sessionScore).toFixed(1)} / 5
+              {format.number(parseFloat(series.latestSession.sessionScore), { maximumFractionDigits: 1, minimumFractionDigits: 1 })} / 5
             </span>
           )}
         </div>

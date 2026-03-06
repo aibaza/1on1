@@ -51,7 +51,8 @@
       "statusInProgress": "în desfășurare",
       "statusScheduled": "programată",
       "statusCancelled": "anulată",
-      "statusMissed": "ratată"
+      "statusMissed": "ratată",
+      "duration": "({count} min)"
     },
     "form": {
       "report": "Raport",
@@ -97,7 +98,22 @@
       "notes": "Note",
       "talkingPoints": "Puncte de discuție",
       "actionItems": "Acțiuni",
-      "questionCount": "{count, plural, one {1 întrebare} other {# întrebări}}"
+      "questionCount": "{count, plural, one {1 întrebare} other {# întrebări}}",
+      "unsupportedType": "Tip de întrebare nesuportat: {type}",
+      "typeResponse": "Scrie răspunsul tău...",
+      "sharedNotes": "Note partajate",
+      "privateNotes": "Note private",
+      "onlyYouCanSee": "Doar tu poți vedea asta",
+      "bold": "Îngroșat",
+      "italic": "Cursiv",
+      "bulletList": "Listă cu puncte",
+      "orderedList": "Listă numerotată",
+      "link": "Link",
+      "enterUrl": "URL",
+      "answered": "{answered}/{total} completate",
+      "previousStep": "Pasul anterior",
+      "nextStep": "Pasul următor",
+      "wizardSteps": "Pași asistent"
     },
     "summary": {
       "backToSeries": "Înapoi la serie",
@@ -154,7 +170,8 @@
       "ratingFair": "Acceptabil",
       "ratingGood": "Bine",
       "ratingVeryGood": "Foarte bine",
-      "ratingExcellent": "Excelent"
+      "ratingExcellent": "Excelent",
+      "ratingOutOf10": "{rating} din 10"
     },
     "context": {
       "sessionContext": "Contextul sesiunii",

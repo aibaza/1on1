@@ -18,7 +18,7 @@ import {
   Clock,
   Settings,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 
 interface SeriesDetailData {
   id: string;
@@ -63,6 +63,7 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const t = useTranslations("sessions");
+  const format = useFormatter();
   const { showApiError } = useApiErrorToast();
   const isManager = series.manager?.id === currentUserId;
   const hasInProgress = series.sessions.some(
@@ -296,7 +297,7 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
         <div className="rounded-md bg-muted/50 px-4 py-3">
           <p className="text-sm">
             <span className="font-medium">{t("detail.nextSession")}</span>{" "}
-            {new Date(series.nextSessionAt).toLocaleDateString(undefined, {
+            {format.dateTime(new Date(series.nextSessionAt), {
               weekday: "long",
               month: "long",
               day: "numeric",

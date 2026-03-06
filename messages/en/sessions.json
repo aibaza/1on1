@@ -51,7 +51,8 @@
       "statusInProgress": "in progress",
       "statusScheduled": "scheduled",
       "statusCancelled": "cancelled",
-      "statusMissed": "missed"
+      "statusMissed": "missed",
+      "duration": "({count} min)"
     },
     "form": {
       "report": "Report",
@@ -97,7 +98,22 @@
       "notes": "Notes",
       "talkingPoints": "Talking Points",
       "actionItems": "Action Items",
-      "questionCount": "{count, plural, one {1 question} other {# questions}}"
+      "questionCount": "{count, plural, one {1 question} other {# questions}}",
+      "unsupportedType": "Unsupported question type: {type}",
+      "typeResponse": "Type your response...",
+      "sharedNotes": "Shared Notes",
+      "privateNotes": "Private Notes",
+      "onlyYouCanSee": "Only you can see this",
+      "bold": "Bold",
+      "italic": "Italic",
+      "bulletList": "Bullet List",
+      "orderedList": "Ordered List",
+      "link": "Link",
+      "enterUrl": "URL",
+      "answered": "{answered}/{total} answered",
+      "previousStep": "Previous step",
+      "nextStep": "Next step",
+      "wizardSteps": "Wizard steps"
     },
     "summary": {
       "backToSeries": "Back to series",
@@ -154,7 +170,8 @@
       "ratingFair": "Fair",
       "ratingGood": "Good",
       "ratingVeryGood": "Very Good",
-      "ratingExcellent": "Excellent"
+      "ratingExcellent": "Excellent",
+      "ratingOutOf10": "{rating} out of 10"
     },
     "context": {
       "sessionContext": "Session Context",

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 
 interface SessionEntry {
   id: string;
@@ -43,6 +43,7 @@ const statusKeys: Record<string, string> = {
 export function SessionTimeline({ sessions }: SessionTimelineProps) {
   const router = useRouter();
   const t = useTranslations("sessions.timeline");
+  const format = useFormatter();
 
   if (sessions.length === 0) {
     return (
@@ -90,13 +91,13 @@ export function SessionTimeline({ sessions }: SessionTimelineProps) {
                   {t("sessionNumber", { number: s.sessionNumber })}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {new Date(s.scheduledAt).toLocaleDateString(undefined, {
+                  {format.dateTime(new Date(s.scheduledAt), {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
                   })}
                   {s.durationMinutes && (
-                    <span className="ml-1.5">({s.durationMinutes} min)</span>
+                    <span className="ml-1.5">{t("duration", { count: s.durationMinutes })}</span>
                   )}
                 </p>
               </div>
@@ -104,7 +105,7 @@ export function SessionTimeline({ sessions }: SessionTimelineProps) {
               <div className="flex items-center gap-2">
                 {s.sessionScore && (
                   <span className="text-sm font-medium tabular-nums">
-                    {parseFloat(s.sessionScore).toFixed(1)}
+                    {format.number(parseFloat(s.sessionScore), { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
                   </span>
                 )}
                 {isInProgress && (
