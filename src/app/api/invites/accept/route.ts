@@ -64,24 +64,54 @@ export async function POST(request: Request) {
         sql`SELECT set_config('app.current_tenant_id', ${invite.tenantId}, true)`
       );
 
-      // Create the new user
-      const [newUser] = await tx
-        .insert(users)
-        .values({
-          tenantId: invite.tenantId,
-          name: `${firstName} ${lastName}`,
-          email: invite.email,
-          emailVerified: new Date(), // Verified by accepting the invite
-          firstName,
-          lastName,
-          role: invite.role,
-          jobTitle: jobTitle || null,
-          passwordHash,
-          isActive: true,
-          invitedAt: invite.createdAt,
-          inviteAcceptedAt: new Date(),
-        })
-        .returning({ id: users.id, email: users.email });
+      // Check if user already exists (admin pre-created the account)
+      const existingUser = await tx.query.users.findFirst({
+        where: (u, { and: a, eq: e }) =>
+          a(e(u.tenantId, invite.tenantId), e(u.email, invite.email)),
+        columns: { id: true, email: true },
+      });
+
+      let newUser: { id: string; email: string };
+
+      if (existingUser) {
+        // Update the pre-existing user record
+        const [updated] = await tx
+          .update(users)
+          .set({
+            name: `${firstName} ${lastName}`,
+            firstName,
+            lastName,
+            role: invite.role,
+            jobTitle: jobTitle || null,
+            passwordHash,
+            isActive: true,
+            emailVerified: new Date(),
+            inviteAcceptedAt: new Date(),
+          })
+          .where(eq(users.id, existingUser.id))
+          .returning({ id: users.id, email: users.email });
+        newUser = updated;
+      } else {
+        // Create the new user
+        const [inserted] = await tx
+          .insert(users)
+          .values({
+            tenantId: invite.tenantId,
+            name: `${firstName} ${lastName}`,
+            email: invite.email,
+            emailVerified: new Date(),
+            firstName,
+            lastName,
+            role: invite.role,
+            jobTitle: jobTitle || null,
+            passwordHash,
+            isActive: true,
+            invitedAt: invite.createdAt,
+            inviteAcceptedAt: new Date(),
+          })
+          .returning({ id: users.id, email: users.email });
+        newUser = inserted;
+      }
 
       // Mark invite as accepted
       await tx

@@ -6,7 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-<!-- Add new changes here -->
+### Fixed
+- Invite acceptance now handles pre-existing users (admin pre-created accounts): updates the existing record instead of failing with a unique constraint error
 
 ## [1.1.1] - 2026-03-06
 
