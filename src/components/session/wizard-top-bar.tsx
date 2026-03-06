@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 
 export type SaveStatus = "saved" | "saving" | "error";
 
@@ -37,13 +37,14 @@ export function WizardTopBar({
   hasUnsavedChanges,
 }: WizardTopBarProps) {
   const t = useTranslations("sessions");
+  const format = useFormatter();
   const router = useRouter();
 
   const handleExit = () => {
     router.push(`/sessions/${seriesId}`);
   };
 
-  const formattedDate = new Date(date).toLocaleDateString("en-US", {
+  const formattedDate = format.dateTime(new Date(date), {
     month: "short",
     day: "numeric",
     year: "numeric",

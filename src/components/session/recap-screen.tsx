@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations, useFormatter } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, CheckCircle2, Circle, Clock } from "lucide-react";
@@ -41,6 +42,8 @@ export function RecapScreen({
   previousSessions,
   openActionItems,
 }: RecapScreenProps) {
+  const t = useTranslations("sessions.recap");
+  const format = useFormatter();
   const hasPrevious = previousSessions.length > 0;
   const lastSession = hasPrevious ? previousSessions[0] : null;
 
@@ -49,12 +52,12 @@ export function RecapScreen({
       <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-semibold tracking-tight">
-            Session Recap
+            {t("title")}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasPrevious
-              ? `Review what happened in your last session with ${reportName}`
-              : `This is your first session with ${reportName}`}
+              ? t("reviewLast", { name: reportName })
+              : t("firstSession", { name: reportName })}
           </p>
         </div>
 
@@ -62,10 +65,9 @@ export function RecapScreen({
           <Card>
             <CardContent className="flex flex-col items-center py-12 text-center">
               <Calendar className="mb-4 h-12 w-12 text-muted-foreground/40" />
-              <h3 className="text-lg font-medium">First Session</h3>
+              <h3 className="text-lg font-medium">{t("firstSessionTitle")}</h3>
               <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                This is your first 1:1 session with {reportName}. Take this
-                opportunity to set the tone and establish expectations.
+                {t("firstSessionDesc", { name: reportName })}
               </p>
             </CardContent>
           </Card>
@@ -82,30 +84,27 @@ export function RecapScreen({
                     <div className="flex items-center gap-2">
                       {lastSession.sessionScore != null && (
                         <Badge variant="secondary">
-                          Score: {lastSession.sessionScore.toFixed(1)}
+                          {t("score", { score: lastSession.sessionScore.toFixed(1) })}
                         </Badge>
                       )}
                       <span className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         {lastSession.completedAt
-                          ? new Date(
-                              lastSession.completedAt
-                            ).toLocaleDateString("en-US", {
+                          ? format.dateTime(new Date(lastSession.completedAt), {
                               month: "short",
                               day: "numeric",
                               year: "numeric",
                             })
-                          : "Not completed"}
+                          : t("notCompleted")}
                       </span>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* Shared notes by category */}
                   {lastSession.sharedNotes &&
                     Object.entries(lastSession.sharedNotes).length > 0 && (
                       <div className="space-y-3">
-                        <h4 className="text-sm font-medium">Notes</h4>
+                        <h4 className="text-sm font-medium">{t("notes")}</h4>
                         {Object.entries(lastSession.sharedNotes).map(
                           ([category, content]) => (
                             <div
@@ -125,21 +124,17 @@ export function RecapScreen({
                       </div>
                     )}
 
-                  {/* Answers summary */}
                   {lastSession.answers.length > 0 && (
                     <div>
                       <h4 className="mb-2 text-sm font-medium">
-                        {lastSession.answers.length} answer
-                        {lastSession.answers.length !== 1 ? "s" : ""} recorded
+                        {t("answersRecorded", { count: lastSession.answers.length })}
                       </h4>
                       <p className="text-xs text-muted-foreground">
-                        Answer details are available in the context panel during
-                        the session.
+                        {t("answersAvailable")}
                       </p>
                     </div>
                   )}
 
-                  {/* Score trend placeholder */}
                   <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
                     Score trend sparkline (Plan 03)
                   </div>
@@ -147,12 +142,11 @@ export function RecapScreen({
               </Card>
             )}
 
-            {/* Open action items */}
             {openActionItems.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base">
-                    Open Action Items
+                    {t("openActionItems")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -175,18 +169,18 @@ export function RecapScreen({
                               }
                               className="text-xs"
                             >
-                              {item.status.replace("_", " ")}
+                              {item.status === "in_progress"
+                                ? t("statusInProgress")
+                                : t("statusOpen")}
                             </Badge>
                             {item.dueDate && (
                               <span className="text-xs text-muted-foreground">
-                                Due{" "}
-                                {new Date(item.dueDate).toLocaleDateString(
-                                  "en-US",
-                                  {
+                                {t("dueDateLabel", {
+                                  date: format.dateTime(new Date(item.dueDate), {
                                     month: "short",
                                     day: "numeric",
-                                  }
-                                )}
+                                  }),
+                                })}
                               </span>
                             )}
                             {item.category && (

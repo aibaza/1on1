@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslations, useFormatter } from "next-intl";
 import {
   CalendarDays,
   CheckCircle2,
@@ -49,13 +50,6 @@ interface ActionItemInlineProps {
   onSavingChange?: (saving: boolean) => void;
 }
 
-function formatDueDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
-
 export function ActionItemInline({
   sessionId,
   category,
@@ -64,6 +58,8 @@ export function ActionItemInline({
   readOnly,
   onSavingChange,
 }: ActionItemInlineProps) {
+  const t = useTranslations("sessions.actionItemsInline");
+  const format = useFormatter();
   const [items, setItems] = useState<ActionItemData[]>(initialItems);
   const [showForm, setShowForm] = useState(false);
   const [formTitle, setFormTitle] = useState("");
@@ -225,7 +221,10 @@ export function ActionItemInline({
                   {item.dueDate && (
                     <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                       <CalendarDays className="size-2.5" />
-                      {formatDueDate(item.dueDate)}
+                      {format.dateTime(new Date(item.dueDate), {
+                        month: "short",
+                        day: "numeric",
+                      })}
                     </span>
                   )}
                 </div>
@@ -253,7 +252,7 @@ export function ActionItemInline({
               <Input
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
-                placeholder="Action item title..."
+                placeholder={t("titlePlaceholder")}
                 className="h-8 text-sm"
                 autoFocus
                 onKeyDown={(e) => {
@@ -271,7 +270,7 @@ export function ActionItemInline({
               <div className="flex items-center gap-2">
                 <Select value={formAssignee} onValueChange={setFormAssignee}>
                   <SelectTrigger className="h-8 flex-1 text-xs">
-                    <SelectValue placeholder="Assign to..." />
+                    <SelectValue placeholder={t("assignTo")} />
                   </SelectTrigger>
                   <SelectContent>
                     {seriesParticipants.map((p) => (
@@ -287,7 +286,7 @@ export function ActionItemInline({
                   value={formDueDate}
                   onChange={(e) => setFormDueDate(e.target.value)}
                   className="h-8 w-[140px] text-xs"
-                  placeholder="Due date"
+                  placeholder={t("dueDate")}
                 />
               </div>
 
@@ -302,7 +301,7 @@ export function ActionItemInline({
                     setFormTitle("");
                   }}
                 >
-                  Cancel
+                  {t("cancel")}
                 </Button>
                 <Button
                   type="button"
@@ -311,7 +310,7 @@ export function ActionItemInline({
                   onClick={handleSubmit}
                   disabled={!formTitle.trim() || !formAssignee}
                 >
-                  Add
+                  {t("add")}
                 </Button>
               </div>
             </div>
@@ -324,7 +323,7 @@ export function ActionItemInline({
               onClick={() => setShowForm(true)}
             >
               <Plus className="size-3.5" />
-              Add action item
+              {t("addActionItem")}
             </Button>
           )}
         </>

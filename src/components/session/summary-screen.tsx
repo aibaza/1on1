@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -121,6 +121,7 @@ export function SummaryScreen({
 }: SummaryScreenProps) {
   const router = useRouter();
   const t = useTranslations("sessions.summary");
+  const format = useFormatter();
 
   // Compute score from current answers
   const scoreInput = categories.flatMap((cat) =>
@@ -339,10 +340,10 @@ export function SummaryScreen({
                           {ai.dueDate && (
                             <span className="flex items-center gap-1">
                               <CalendarDays className="h-3 w-3" />
-                              {new Date(ai.dueDate).toLocaleDateString(
-                                undefined,
-                                { month: "short", day: "numeric" }
-                              )}
+                              {format.dateTime(new Date(ai.dueDate), {
+                                month: "short",
+                                day: "numeric",
+                              })}
                             </span>
                           )}
                         </div>

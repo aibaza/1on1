@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -231,6 +231,7 @@ export function SessionSummaryView({
   reportName,
 }: SessionSummaryViewProps) {
   const t = useTranslations("sessions");
+  const format = useFormatter();
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(
     () => {
       const initial: Record<string, boolean> = {};
@@ -261,7 +262,7 @@ export function SessionSummaryView({
         </h1>
         <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
           <span>
-            {new Date(scheduledAt).toLocaleDateString("en-US", {
+            {format.dateTime(new Date(scheduledAt), {
               weekday: "long",
               month: "long",
               day: "numeric",
@@ -485,10 +486,10 @@ export function SessionSummaryView({
                             {ai.dueDate && (
                               <span className="flex items-center gap-1">
                                 <CalendarDays className="h-3 w-3" />
-                                {new Date(ai.dueDate).toLocaleDateString(
-                                  "en-US",
-                                  { month: "short", day: "numeric" }
-                                )}
+                                {format.dateTime(new Date(ai.dueDate), {
+                                  month: "short",
+                                  day: "numeric",
+                                })}
                               </span>
                             )}
                           </div>

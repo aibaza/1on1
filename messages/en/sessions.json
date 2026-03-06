@@ -115,6 +115,74 @@
       "nextStep": "Next step",
       "wizardSteps": "Wizard steps"
     },
+    "recap": {
+      "title": "Session Recap",
+      "reviewLast": "Review what happened in your last session with {name}",
+      "firstSession": "This is your first session with {name}",
+      "firstSessionTitle": "First Session",
+      "firstSessionDesc": "This is your first 1:1 session with {name}. Take this opportunity to set the tone and establish expectations.",
+      "score": "Score: {score}",
+      "notCompleted": "Not completed",
+      "notes": "Notes",
+      "answersRecorded": "{count, plural, one {1 answer recorded} other {# answers recorded}}",
+      "answersAvailable": "Answer details are available in the context panel during the session.",
+      "openActionItems": "Open Action Items",
+      "dueDateLabel": "Due {date}",
+      "statusInProgress": "in progress",
+      "statusOpen": "open"
+    },
+    "talkingPoints": {
+      "addPlaceholder": "Add a talking point...",
+      "fromSession": "From #{number}"
+    },
+    "actionItemsInline": {
+      "titlePlaceholder": "Action item title...",
+      "assignTo": "Assign to...",
+      "dueDate": "Due date",
+      "cancel": "Cancel",
+      "add": "Add",
+      "addActionItem": "Add action item"
+    },
+    "nudges": {
+      "title": "AI Nudges",
+      "dismiss": "Dismiss"
+    },
+    "aiSuggestions": {
+      "title": "AI Suggestions",
+      "generating": "Generating...",
+      "allHandled": "All suggestions have been handled.",
+      "remaining": "{count} remaining",
+      "labelTitle": "Title",
+      "titlePlaceholder": "Action item title",
+      "labelDescription": "Description",
+      "descriptionPlaceholder": "Brief description",
+      "labelAssignee": "Assignee",
+      "cancel": "Cancel",
+      "accept": "Accept",
+      "editAccept": "Edit + Accept",
+      "skip": "Skip"
+    },
+    "aiSummary": {
+      "title": "AI Summary",
+      "generating": "Generating...",
+      "retrying": "Retrying...",
+      "retry": "Retry",
+      "takingLong": "AI generation is taking longer than expected.",
+      "managerRetry": "Click retry to re-trigger the pipeline.",
+      "memberRetry": "The manager can retry generation.",
+      "failed": "AI summary generation failed.",
+      "managerRetryFailed": "Click retry to try again.",
+      "memberRetryFailed": "The manager can retry generation.",
+      "keyTakeaways": "Key Takeaways",
+      "discussionHighlights": "Discussion Highlights",
+      "followUpItems": "Follow-Up Items",
+      "managerAddendum": "Manager Addendum",
+      "managerOnly": "Manager Only",
+      "sentimentAnalysis": "Sentiment Analysis",
+      "patterns": "Patterns",
+      "coachingSuggestions": "Coaching Suggestions",
+      "followUpPriority": "Follow-Up Priority:"
+    },
     "summary": {
       "backToSeries": "Back to series",
       "sessionNumber": "Session #{number}",

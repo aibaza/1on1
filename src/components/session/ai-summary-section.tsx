@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -54,6 +55,7 @@ export function AISummarySection({
   initialSummary,
   initialAddendum,
 }: AISummarySectionProps) {
+  const t = useTranslations("sessions.aiSummary");
   const queryClient = useQueryClient();
   const [pollingTimedOut, setPollingTimedOut] = useState(false);
 
@@ -107,7 +109,7 @@ export function AISummarySection({
   const summary = data?.summary;
   const addendum = data?.addendum;
 
-  // Timed-out state — pipeline never completed
+  // Timed-out state -- pipeline never completed
   if (
     pollingTimedOut &&
     (status === "pending" || status === "generating")
@@ -117,7 +119,7 @@ export function AISummarySection({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-muted-foreground">
             <AlertTriangle className="h-5 w-5 text-amber-500" />
-            <h3 className="font-medium">AI Summary</h3>
+            <h3 className="font-medium">{t("title")}</h3>
           </div>
           {isManager && (
             <Button
@@ -132,15 +134,15 @@ export function AISummarySection({
               <RefreshCw
                 className={`mr-1.5 h-3.5 w-3.5 ${retryMutation.isPending ? "animate-spin" : ""}`}
               />
-              {retryMutation.isPending ? "Retrying..." : "Retry"}
+              {retryMutation.isPending ? t("retrying") : t("retry")}
             </Button>
           )}
         </div>
         <p className="mt-2 text-sm text-muted-foreground">
-          AI generation is taking longer than expected.{" "}
+          {t("takingLong")}{" "}
           {isManager
-            ? "Click retry to re-trigger the pipeline."
-            : "The manager can retry generation."}
+            ? t("managerRetry")
+            : t("memberRetry")}
         </p>
       </div>
     );
@@ -156,9 +158,9 @@ export function AISummarySection({
       <div className="mb-8 rounded-lg border p-6">
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="h-5 w-5 text-primary animate-pulse" />
-          <h3 className="font-medium">AI Summary</h3>
+          <h3 className="font-medium">{t("title")}</h3>
           <Badge variant="outline" className="text-xs">
-            Generating...
+            {t("generating")}
           </Badge>
         </div>
         <div className="space-y-3">
@@ -180,7 +182,7 @@ export function AISummarySection({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-muted-foreground">
             <AlertTriangle className="h-5 w-5 text-amber-500" />
-            <h3 className="font-medium">AI Summary</h3>
+            <h3 className="font-medium">{t("title")}</h3>
           </div>
           {isManager && (
             <Button
@@ -192,12 +194,12 @@ export function AISummarySection({
               <RefreshCw
                 className={`mr-1.5 h-3.5 w-3.5 ${retryMutation.isPending ? "animate-spin" : ""}`}
               />
-              {retryMutation.isPending ? "Retrying..." : "Retry"}
+              {retryMutation.isPending ? t("retrying") : t("retry")}
             </Button>
           )}
         </div>
         <p className="mt-2 text-sm text-muted-foreground">
-          AI summary generation failed. {isManager ? "Click retry to try again." : "The manager can retry generation."}
+          {t("failed")} {isManager ? t("managerRetryFailed") : t("memberRetryFailed")}
         </p>
       </div>
     );
@@ -215,7 +217,7 @@ export function AISummarySection({
       <div className="rounded-lg border p-6">
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="h-5 w-5 text-primary" />
-          <h3 className="font-medium">AI Summary</h3>
+          <h3 className="font-medium">{t("title")}</h3>
           <Badge
             className={`text-xs ${SENTIMENT_COLORS[summary.overallSentiment] ?? ""}`}
           >
@@ -227,7 +229,7 @@ export function AISummarySection({
         <div className="mb-4">
           <div className="flex items-center gap-1.5 mb-2">
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            <h4 className="text-sm font-medium">Key Takeaways</h4>
+            <h4 className="text-sm font-medium">{t("keyTakeaways")}</h4>
           </div>
           <ul className="space-y-1 pl-5">
             {summary.keyTakeaways.map((takeaway, i) => (
@@ -243,7 +245,7 @@ export function AISummarySection({
           <div className="mb-4">
             <div className="flex items-center gap-1.5 mb-2">
               <Lightbulb className="h-4 w-4 text-muted-foreground" />
-              <h4 className="text-sm font-medium">Discussion Highlights</h4>
+              <h4 className="text-sm font-medium">{t("discussionHighlights")}</h4>
             </div>
             <div className="space-y-3">
               {summary.discussionHighlights.map((highlight, i) => (
@@ -263,7 +265,7 @@ export function AISummarySection({
           <div>
             <div className="flex items-center gap-1.5 mb-2">
               <ListChecks className="h-4 w-4 text-muted-foreground" />
-              <h4 className="text-sm font-medium">Follow-Up Items</h4>
+              <h4 className="text-sm font-medium">{t("followUpItems")}</h4>
             </div>
             <ul className="space-y-1 pl-5">
               {summary.followUpItems.map((item, i) => (
@@ -284,16 +286,16 @@ export function AISummarySection({
         <div className="rounded-lg border border-dashed p-6 bg-muted/10">
           <div className="flex items-center gap-2 mb-4">
             <Lock className="h-4 w-4 text-muted-foreground" />
-            <h3 className="font-medium">Manager Addendum</h3>
+            <h3 className="font-medium">{t("managerAddendum")}</h3>
             <Badge variant="outline" className="text-xs gap-1">
               <Lock className="h-2.5 w-2.5" />
-              Manager Only
+              {t("managerOnly")}
             </Badge>
           </div>
 
           {/* Sentiment Analysis */}
           <div className="mb-3">
-            <h4 className="text-sm font-medium mb-1">Sentiment Analysis</h4>
+            <h4 className="text-sm font-medium mb-1">{t("sentimentAnalysis")}</h4>
             <p className="text-sm text-muted-foreground">
               {addendum.sentimentAnalysis}
             </p>
@@ -302,7 +304,7 @@ export function AISummarySection({
           {/* Patterns */}
           {addendum.patterns.length > 0 && (
             <div className="mb-3">
-              <h4 className="text-sm font-medium mb-1">Patterns</h4>
+              <h4 className="text-sm font-medium mb-1">{t("patterns")}</h4>
               <ul className="space-y-1 pl-5">
                 {addendum.patterns.map((pattern, i) => (
                   <li
@@ -320,7 +322,7 @@ export function AISummarySection({
           {addendum.coachingSuggestions.length > 0 && (
             <div className="mb-3">
               <h4 className="text-sm font-medium mb-1">
-                Coaching Suggestions
+                {t("coachingSuggestions")}
               </h4>
               <ul className="space-y-1 pl-5">
                 {addendum.coachingSuggestions.map((suggestion, i) => (
@@ -337,7 +339,7 @@ export function AISummarySection({
 
           {/* Follow-Up Priority */}
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Follow-Up Priority:</span>
+            <span className="text-sm font-medium">{t("followUpPriority")}</span>
             <Badge
               className={`text-xs ${PRIORITY_COLORS[addendum.followUpPriority] ?? ""}`}
             >

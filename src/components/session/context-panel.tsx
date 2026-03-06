@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations, useFormatter } from "next-intl";
 import {
   ChevronDown,
   ChevronRight,
@@ -47,34 +48,11 @@ export interface ContextPanelProps {
   isManager?: boolean;
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
-
 function isItemOverdue(dueDate: string | null, status: string): boolean {
   if (!dueDate || status === "completed") return false;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return new Date(dueDate) < today;
-}
-
-function formatAge(createdAt: string): string | null {
-  const created = new Date(createdAt);
-  const now = new Date();
-  const diffMs = now.getTime() - created.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays < 1) return null;
-  if (diffDays === 1) return "1 day ago";
-  if (diffDays < 7) return `${diffDays} days ago`;
-  const weeks = Math.floor(diffDays / 7);
-  if (weeks === 1) return "1 week ago";
-  if (diffDays < 30) return `${weeks} weeks ago`;
-  const months = Math.floor(diffDays / 30);
-  if (months === 1) return "1 month ago";
-  return `${months} months ago`;
 }
 
 function SectionHeader({
@@ -126,6 +104,8 @@ function RecapContent({
   openActionItems: OpenActionItem[];
   sessionScores: number[];
 }) {
+  const t = useTranslations("sessions.context");
+  const format = useFormatter();
   const [scoreTrendOpen, setScoreTrendOpen] = useState(true);
   const [actionItemsOpen, setActionItemsOpen] = useState(true);
   const [statsOpen, setStatsOpen] = useState(true);
@@ -150,12 +130,28 @@ function RecapContent({
     return Array.from(groups.entries()).sort(([a], [b]) => b - a);
   }, [openActionItems]);
 
+  function formatAge(createdAt: string): string | null {
+    const created = new Date(createdAt);
+    const now = new Date();
+    const diffMs = now.getTime() - created.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays < 1) return null;
+    if (diffDays === 1) return t("dayAgo");
+    if (diffDays < 7) return t("daysAgo", { count: diffDays });
+    const weeks = Math.floor(diffDays / 7);
+    if (weeks === 1) return t("weekAgo");
+    if (diffDays < 30) return t("weeksAgo", { count: weeks });
+    const months = Math.floor(diffDays / 30);
+    if (months === 1) return t("monthAgo");
+    return t("monthsAgo", { count: months });
+  }
+
   return (
     <div className="space-y-1">
       <Collapsible open={scoreTrendOpen} onOpenChange={setScoreTrendOpen}>
         <SectionHeader
           icon={TrendingUp}
-          title="Score Trend"
+          title={t("scoreTrend")}
           isOpen={scoreTrendOpen}
           onToggle={() => setScoreTrendOpen(!scoreTrendOpen)}
         />
@@ -164,7 +160,7 @@ function RecapContent({
             {sessionScores.length >= 2 ? (
               <ScoreSparkline data={sessionScores} height={48} />
             ) : (
-              <EmptyState message="Need at least 2 sessions for a trend" />
+              <EmptyState message={t("needTwoSessions")} />
             )}
           </div>
         </CollapsibleContent>
@@ -173,7 +169,7 @@ function RecapContent({
       <Collapsible open={actionItemsOpen} onOpenChange={setActionItemsOpen}>
         <SectionHeader
           icon={ListChecks}
-          title="Open Action Items"
+          title={t("openActionItems")}
           count={openActionItems.length}
           isOpen={actionItemsOpen}
           onToggle={() => setActionItemsOpen(!actionItemsOpen)}
@@ -181,13 +177,13 @@ function RecapContent({
         <CollapsibleContent>
           <div className="px-2 py-1">
             {groupedActions.length === 0 ? (
-              <EmptyState message="No open action items from previous sessions" />
+              <EmptyState message={t("noActionItems")} />
             ) : (
               <div className="space-y-3">
                 {groupedActions.map(([sessionNum, items]) => (
                   <div key={sessionNum}>
                     <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                      Session #{sessionNum}
+                      {t("fromSession", { number: sessionNum })}
                     </p>
                     <ul className="space-y-1">
                       {items.map((item) => {
@@ -207,12 +203,12 @@ function RecapContent({
                                 {item.assignee.firstName} {item.assignee.lastName}
                                 {item.dueDate && (
                                   <span className="ml-1">
-                                    &middot; due {formatDate(item.dueDate)}
+                                    &middot; {t("due", { date: format.dateTime(new Date(item.dueDate), { month: "short", day: "numeric" }) })}
                                   </span>
                                 )}
                                 {overdue && (
                                   <span className="ml-1 text-destructive font-medium">
-                                    &middot; Overdue
+                                    &middot; {t("overdue")}
                                   </span>
                                 )}
                                 {age && (
@@ -237,7 +233,7 @@ function RecapContent({
       <Collapsible open={statsOpen} onOpenChange={setStatsOpen}>
         <SectionHeader
           icon={Clock}
-          title="Summary"
+          title={t("summaryTitle")}
           isOpen={statsOpen}
           onToggle={() => setStatsOpen(!statsOpen)}
         />
@@ -247,13 +243,13 @@ function RecapContent({
               <p className="text-lg font-semibold tabular-nums">
                 {stats.totalSessions}
               </p>
-              <p className="text-[10px] text-muted-foreground">Past Sessions</p>
+              <p className="text-[10px] text-muted-foreground">{t("pastSessions")}</p>
             </div>
             <div className="rounded-md border p-2 text-center">
               <p className="text-lg font-semibold tabular-nums">
                 {stats.avgScore !== null ? stats.avgScore.toFixed(1) : "--"}
               </p>
-              <p className="text-[10px] text-muted-foreground">Avg Score</p>
+              <p className="text-[10px] text-muted-foreground">{t("avgScore")}</p>
             </div>
           </div>
         </CollapsibleContent>
@@ -273,6 +269,8 @@ function CategoryContent({
   openActionItems: OpenActionItem[];
   onQuestionHistoryOpen: (questionId: string) => void;
 }) {
+  const t = useTranslations("sessions.context");
+  const format = useFormatter();
   const [notesOpen, setNotesOpen] = useState(true);
   const [answersOpen, setAnswersOpen] = useState(false);
   const [actionsOpen, setActionsOpen] = useState(true);
@@ -297,12 +295,52 @@ function CategoryContent({
     );
   }, [openActionItems, currentCategory]);
 
+  function formatAge(createdAt: string): string | null {
+    const created = new Date(createdAt);
+    const now = new Date();
+    const diffMs = now.getTime() - created.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays < 1) return null;
+    if (diffDays === 1) return t("dayAgo");
+    if (diffDays < 7) return t("daysAgo", { count: diffDays });
+    const weeks = Math.floor(diffDays / 7);
+    if (weeks === 1) return t("weekAgo");
+    if (diffDays < 30) return t("weeksAgo", { count: weeks });
+    const months = Math.floor(diffDays / 30);
+    if (months === 1) return t("monthAgo");
+    return t("monthsAgo", { count: months });
+  }
+
+  function formatAnswerPreview(
+    answerType: string,
+    answerText: string | null,
+    answerNumeric: string | null
+  ): string {
+    switch (answerType) {
+      case "yes_no":
+        return answerText ?? t("noAnswer");
+      case "rating_1_5":
+        return answerNumeric !== null ? `${answerNumeric}/5` : t("noAnswer");
+      case "rating_1_10":
+        return answerNumeric !== null ? `${answerNumeric}/10` : t("noAnswer");
+      case "mood":
+        return answerNumeric !== null ? `Mood: ${answerNumeric}/5` : t("noAnswer");
+      case "free_text":
+        if (!answerText) return t("noAnswer");
+        return answerText.length > 80
+          ? answerText.slice(0, 80) + "..."
+          : answerText;
+      default:
+        return answerText ?? t("noAnswer");
+    }
+  }
+
   return (
     <div className="space-y-1">
       <Collapsible open={notesOpen} onOpenChange={setNotesOpen}>
         <SectionHeader
           icon={FileText}
-          title="Previous Notes"
+          title={t("previousNotes")}
           isOpen={notesOpen}
           onToggle={() => setNotesOpen(!notesOpen)}
         />
@@ -314,12 +352,12 @@ function CategoryContent({
                 dangerouslySetInnerHTML={{ __html: previousNotes }}
               />
             ) : (
-              <EmptyState message="No previous notes for this section" />
+              <EmptyState message={t("noPreviousNotes")} />
             )}
             {lastSession && previousNotes && (
               <p className="mt-1 text-[10px] text-muted-foreground">
-                From session #{lastSession.sessionNumber} &middot;{" "}
-                {formatDate(lastSession.completedAt)}
+                {t("fromSession", { number: lastSession.sessionNumber })} &middot;{" "}
+                {format.dateTime(new Date(lastSession.completedAt), { month: "short", day: "numeric" })}
               </p>
             )}
           </div>
@@ -329,7 +367,7 @@ function CategoryContent({
       <Collapsible open={answersOpen} onOpenChange={setAnswersOpen}>
         <SectionHeader
           icon={History}
-          title="Previous Answers"
+          title={t("previousAnswers")}
           count={previousAnswers.length}
           isOpen={answersOpen}
           onToggle={() => setAnswersOpen(!answersOpen)}
@@ -337,7 +375,7 @@ function CategoryContent({
         <CollapsibleContent>
           <div className="px-2 py-1">
             {previousAnswers.length === 0 ? (
-              <EmptyState message="No previous answers for this section" />
+              <EmptyState message={t("noPreviousAnswers")} />
             ) : (
               <ul className="space-y-2">
                 {previousAnswers.map((answer) => (
@@ -354,7 +392,7 @@ function CategoryContent({
                         size="icon"
                         className="size-6 shrink-0"
                         onClick={() => onQuestionHistoryOpen(answer.questionId)}
-                        title="View history"
+                        title={t("viewHistory")}
                       >
                         <History className="size-3" />
                       </Button>
@@ -377,7 +415,7 @@ function CategoryContent({
       <Collapsible open={actionsOpen} onOpenChange={setActionsOpen}>
         <SectionHeader
           icon={ListChecks}
-          title="Open Action Items"
+          title={t("openActionItems")}
           count={categoryActions.length}
           isOpen={actionsOpen}
           onToggle={() => setActionsOpen(!actionsOpen)}
@@ -385,7 +423,7 @@ function CategoryContent({
         <CollapsibleContent>
           <div className="px-2 py-1">
             {categoryActions.length === 0 ? (
-              <EmptyState message="No open action items for this section" />
+              <EmptyState message={t("noActionItemsForSection")} />
             ) : (
               <ul className="space-y-1">
                 {categoryActions.map((item) => {
@@ -405,12 +443,12 @@ function CategoryContent({
                           {item.assignee.firstName} {item.assignee.lastName}
                           {item.dueDate && (
                             <span className="ml-1">
-                              &middot; due {formatDate(item.dueDate)}
+                              &middot; {t("due", { date: format.dateTime(new Date(item.dueDate), { month: "short", day: "numeric" }) })}
                             </span>
                           )}
                           {overdue && (
                             <span className="ml-1 text-destructive font-medium">
-                              &middot; Overdue
+                              &middot; {t("overdue")}
                             </span>
                           )}
                           {age && (
@@ -432,7 +470,7 @@ function CategoryContent({
                             variant="destructive"
                             className="text-[9px] px-1"
                           >
-                            Overdue
+                            {t("overdue")}
                           </Badge>
                         )}
                       </div>
@@ -448,30 +486,6 @@ function CategoryContent({
   );
 }
 
-function formatAnswerPreview(
-  answerType: string,
-  answerText: string | null,
-  answerNumeric: string | null
-): string {
-  switch (answerType) {
-    case "yes_no":
-      return answerText ?? "No answer";
-    case "rating_1_5":
-      return answerNumeric !== null ? `${answerNumeric}/5` : "No answer";
-    case "rating_1_10":
-      return answerNumeric !== null ? `${answerNumeric}/10` : "No answer";
-    case "mood":
-      return answerNumeric !== null ? `Mood: ${answerNumeric}/5` : "No answer";
-    case "free_text":
-      if (!answerText) return "No answer";
-      return answerText.length > 80
-        ? answerText.slice(0, 80) + "..."
-        : answerText;
-    default:
-      return answerText ?? "No answer";
-  }
-}
-
 export function ContextPanel({
   currentStep,
   currentCategory,
@@ -483,6 +497,7 @@ export function ContextPanel({
   sessionId,
   isManager,
 }: ContextPanelProps) {
+  const t = useTranslations("sessions.context");
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const isRecap = currentStep === 0 || currentCategory === null;
@@ -491,7 +506,7 @@ export function ContextPanel({
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b px-4 py-3">
         <h2 className="text-sm font-semibold">
-          {isRecap ? "Session Context" : `Context: ${currentCategory}`}
+          {isRecap ? t("sessionContext") : t("contextCategory", { category: currentCategory })}
         </h2>
         <Button
           variant="ghost"
@@ -514,9 +529,9 @@ export function ContextPanel({
         {previousSessions.length === 0 && openActionItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <History className="size-8 text-muted-foreground/40 mb-2" />
-            <p className="text-sm text-muted-foreground">No session history yet</p>
+            <p className="text-sm text-muted-foreground">{t("noHistory")}</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Context from previous sessions will appear here
+              {t("noHistoryDesc")}
             </p>
           </div>
         ) : isRecap ? (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import {
   ChevronDown,
   ChevronRight,
@@ -58,12 +58,7 @@ export interface FloatingContextWidgetsProps {
 
 // --- Helpers (moved from context-panel.tsx) ---
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
+// formatDate is now handled inline via useFormatter().dateTime()
 
 function isItemOverdue(dueDate: string | null, status: string): boolean {
   if (!dueDate || status === "completed") return false;
@@ -191,6 +186,7 @@ function ActionItemsWidget({
   currentCategory: string | null;
 }) {
   const t = useTranslations("sessions");
+  const format = useFormatter();
   const filteredItems = useMemo(() => {
     if (!currentCategory) return openActionItems;
     return openActionItems.filter((item) => item.category === currentCategory);
@@ -243,7 +239,7 @@ function ActionItemsWidget({
                           {item.assignee.firstName} {item.assignee.lastName}
                           {item.dueDate && (
                             <span className="ml-1">
-                              &middot; {t("context.due", { date: formatDate(item.dueDate) })}
+                              &middot; {t("context.due", { date: format.dateTime(new Date(item.dueDate), { month: "short", day: "numeric" }) })}
                             </span>
                           )}
                           {overdue && (
@@ -278,6 +274,7 @@ function PreviousNotesWidget({
   currentCategory: string | null;
 }) {
   const t = useTranslations("sessions");
+  const format = useFormatter();
   const lastSession = previousSessions[0] ?? null;
 
   const previousNotes = useMemo(() => {
@@ -299,7 +296,7 @@ function PreviousNotesWidget({
           {lastSession && (
             <p className="mt-1 text-[10px] text-muted-foreground">
               {t("context.fromSession", { number: lastSession.sessionNumber })} &middot;{" "}
-              {formatDate(lastSession.completedAt)}
+              {format.dateTime(new Date(lastSession.completedAt), { month: "short", day: "numeric" })}
             </p>
           )}
         </div>

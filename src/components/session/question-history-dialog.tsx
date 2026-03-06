@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -38,13 +38,7 @@ export interface QuestionHistoryDialogProps {
   previousSessions: PreviousSession[];
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
+// formatDate is now handled inline via useFormatter().dateTime()
 
 function formatAnswerValue(
   answerType: string,
@@ -139,6 +133,7 @@ export function QuestionHistoryDialog({
   previousSessions,
 }: QuestionHistoryDialogProps) {
   const t = useTranslations("sessions.history");
+  const format = useFormatter();
 
   const historyEntries = useMemo(() => {
     return previousSessions
@@ -213,7 +208,7 @@ export function QuestionHistoryDialog({
                       #{entry.sessionNumber}
                     </span>
                     <span className="text-[11px] text-muted-foreground">
-                      {formatDate(entry.completedAt)}
+                      {format.dateTime(new Date(entry.completedAt), { month: "short", day: "numeric", year: "numeric" })}
                     </span>
                   </div>
                   <div className="min-w-0 flex-1">

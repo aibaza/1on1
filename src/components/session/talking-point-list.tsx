@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Check, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ export function TalkingPointList({
   onSavingChange,
   sessionNumberMap,
 }: TalkingPointListProps) {
+  const t = useTranslations("sessions.talkingPoints");
   const [points, setPoints] = useState<TalkingPoint[]>(initialPoints);
   const [newContent, setNewContent] = useState("");
 
@@ -206,7 +208,7 @@ export function TalkingPointList({
                     variant="outline"
                     className="shrink-0 text-[10px] font-normal"
                   >
-                    From #{carriedSessionNumber}
+                    {t("fromSession", { number: carriedSessionNumber })}
                   </Badge>
                 )}
 
@@ -234,7 +236,7 @@ export function TalkingPointList({
             value={newContent}
             onChange={(e) => setNewContent(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Add a talking point..."
+            placeholder={t("addPlaceholder")}
             className="h-8 text-sm"
           />
           <Button

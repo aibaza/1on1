@@ -115,6 +115,74 @@
       "nextStep": "Pasul următor",
       "wizardSteps": "Pași asistent"
     },
+    "recap": {
+      "title": "Recapitulare sesiune",
+      "reviewLast": "Revizuiește ce s-a întâmplat în ultima sesiune cu {name}",
+      "firstSession": "Aceasta este prima sesiune cu {name}",
+      "firstSessionTitle": "Prima sesiune",
+      "firstSessionDesc": "Aceasta este prima sesiune 1:1 cu {name}. Profită de ocazie pentru a stabili tonul și așteptările.",
+      "score": "Scor: {score}",
+      "notCompleted": "Nefinalizată",
+      "notes": "Note",
+      "answersRecorded": "{count, plural, one {1 răspuns înregistrat} other {# răspunsuri înregistrate}}",
+      "answersAvailable": "Detaliile răspunsurilor sunt disponibile în panoul de context în timpul sesiunii.",
+      "openActionItems": "Acțiuni deschise",
+      "dueDateLabel": "Scadent {date}",
+      "statusInProgress": "în desfășurare",
+      "statusOpen": "deschis"
+    },
+    "talkingPoints": {
+      "addPlaceholder": "Adaugă un punct de discuție...",
+      "fromSession": "Din #{number}"
+    },
+    "actionItemsInline": {
+      "titlePlaceholder": "Titlul acțiunii...",
+      "assignTo": "Atribuie...",
+      "dueDate": "Data scadenței",
+      "cancel": "Anulează",
+      "add": "Adaugă",
+      "addActionItem": "Adaugă acțiune"
+    },
+    "nudges": {
+      "title": "Sugestii AI",
+      "dismiss": "Închide"
+    },
+    "aiSuggestions": {
+      "title": "Sugestii AI",
+      "generating": "Se generează...",
+      "allHandled": "Toate sugestiile au fost gestionate.",
+      "remaining": "{count} rămase",
+      "labelTitle": "Titlu",
+      "titlePlaceholder": "Titlul acțiunii",
+      "labelDescription": "Descriere",
+      "descriptionPlaceholder": "Descriere scurtă",
+      "labelAssignee": "Responsabil",
+      "cancel": "Anulează",
+      "accept": "Acceptă",
+      "editAccept": "Editează + Acceptă",
+      "skip": "Omite"
+    },
+    "aiSummary": {
+      "title": "Sumar AI",
+      "generating": "Se generează...",
+      "retrying": "Se reîncearcă...",
+      "retry": "Reîncearcă",
+      "takingLong": "Generarea AI durează mai mult decât era de așteptat.",
+      "managerRetry": "Apasă reîncearcă pentru a relansa procesul.",
+      "memberRetry": "Managerul poate relansa generarea.",
+      "failed": "Generarea sumarului AI a eșuat.",
+      "managerRetryFailed": "Apasă reîncearcă pentru a încerca din nou.",
+      "memberRetryFailed": "Managerul poate relansa generarea.",
+      "keyTakeaways": "Concluzii cheie",
+      "discussionHighlights": "Punctele importante ale discuției",
+      "followUpItems": "Elemente de urmărit",
+      "managerAddendum": "Addendum manager",
+      "managerOnly": "Doar manager",
+      "sentimentAnalysis": "Analiza sentimentului",
+      "patterns": "Tipare",
+      "coachingSuggestions": "Sugestii de coaching",
+      "followUpPriority": "Prioritate urmărire:"
+    },
     "summary": {
       "backToSeries": "Înapoi la serie",
       "sessionNumber": "Sesiunea #{number}",

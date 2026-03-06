@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 
 const AI_POLLING_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +49,7 @@ export function AISuggestionsSection({
   reportName,
   isManager,
 }: AISuggestionsSectionProps) {
+  const t = useTranslations("sessions.aiSuggestions");
   const queryClient = useQueryClient();
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
@@ -115,9 +117,9 @@ export function AISuggestionsSection({
       <div className="mb-8 rounded-lg border p-6">
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="h-5 w-5 text-primary animate-pulse" />
-          <h3 className="font-medium">AI Suggestions</h3>
+          <h3 className="font-medium">{t("title")}</h3>
           <Badge variant="outline" className="text-xs">
-            Generating...
+            {t("generating")}
           </Badge>
         </div>
         <div className="space-y-3">
@@ -139,10 +141,10 @@ export function AISuggestionsSection({
       <div className="mb-8 rounded-lg border border-dashed p-6">
         <div className="flex items-center gap-2 text-muted-foreground">
           <CheckCircle2 className="h-5 w-5 text-green-500" />
-          <h3 className="font-medium">AI Suggestions</h3>
+          <h3 className="font-medium">{t("title")}</h3>
         </div>
         <p className="mt-2 text-sm text-muted-foreground">
-          All suggestions have been handled.
+          {t("allHandled")}
         </p>
       </div>
     );
@@ -169,9 +171,9 @@ export function AISuggestionsSection({
     <div className="mb-8 rounded-lg border p-6">
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="h-5 w-5 text-primary" />
-        <h3 className="font-medium">AI Suggestions</h3>
+        <h3 className="font-medium">{t("title")}</h3>
         <Badge variant="outline" className="text-xs">
-          {suggestions.length} remaining
+          {t("remaining", { count: suggestions.length })}
         </Badge>
       </div>
 
@@ -192,27 +194,27 @@ export function AISuggestionsSection({
                 <div className="space-y-3">
                   <div>
                     <label className="text-xs font-medium mb-1 block">
-                      Title
+                      {t("labelTitle")}
                     </label>
                     <Input
                       value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
-                      placeholder="Action item title"
+                      placeholder={t("titlePlaceholder")}
                     />
                   </div>
                   <div>
                     <label className="text-xs font-medium mb-1 block">
-                      Description
+                      {t("labelDescription")}
                     </label>
                     <Input
                       value={editDescription}
                       onChange={(e) => setEditDescription(e.target.value)}
-                      placeholder="Brief description"
+                      placeholder={t("descriptionPlaceholder")}
                     />
                   </div>
                   <div>
                     <label className="text-xs font-medium mb-1 block">
-                      Assignee
+                      {t("labelAssignee")}
                     </label>
                     <Select
                       value={editAssigneeId}
@@ -237,7 +239,7 @@ export function AISuggestionsSection({
                       size="sm"
                       onClick={cancelEditing}
                     >
-                      Cancel
+                      {t("cancel")}
                     </Button>
                     <Button
                       size="sm"
@@ -255,7 +257,7 @@ export function AISuggestionsSection({
                       disabled={actionMutation.isPending}
                     >
                       <Check className="mr-1.5 h-3.5 w-3.5" />
-                      Accept
+                      {t("accept")}
                     </Button>
                   </div>
                 </div>
@@ -291,7 +293,7 @@ export function AISuggestionsSection({
                       variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-950/30"
-                      title="Accept"
+                      title={t("accept")}
                       onClick={() =>
                         actionMutation.mutate({
                           suggestionIndex: index,
@@ -306,7 +308,7 @@ export function AISuggestionsSection({
                       variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-                      title="Edit + Accept"
+                      title={t("editAccept")}
                       onClick={() => startEditing(index)}
                       disabled={actionMutation.isPending}
                     >
@@ -316,7 +318,7 @@ export function AISuggestionsSection({
                       variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
-                      title="Skip"
+                      title={t("skip")}
                       onClick={() =>
                         actionMutation.mutate({
                           suggestionIndex: index,

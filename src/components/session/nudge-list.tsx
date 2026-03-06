@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Sparkles, X, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +30,7 @@ interface NudgeListProps {
 }
 
 export function NudgeList({ seriesId }: NudgeListProps) {
+  const t = useTranslations("sessions.nudges");
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(true);
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
@@ -84,7 +86,7 @@ export function NudgeList({ seriesId }: NudgeListProps) {
             <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
           )}
           <Sparkles className="size-3.5 shrink-0 text-muted-foreground" />
-          <span className="flex-1 text-left">AI Nudges</span>
+          <span className="flex-1 text-left">{t("title")}</span>
           <Badge
             variant="secondary"
             className="h-5 px-1.5 text-[10px] font-normal"
@@ -128,7 +130,7 @@ export function NudgeList({ seriesId }: NudgeListProps) {
                     dismissMutation.mutate(nudge.id);
                   }}
                   disabled={dismissMutation.isPending}
-                  title="Dismiss"
+                  title={t("dismiss")}
                 >
                   <X className="size-3" />
                 </Button>
