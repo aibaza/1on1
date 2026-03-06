@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Translation keys for template builder: `questionCard`, `answerConfig`, `conditionalLogic` namespaces in EN/RO
 
 ### Changed
+- Session wizard context panel, recap screen, talking points, action items inline, nudge list, AI suggestions, and AI summary sections now use `useTranslations` for all visible strings
+- All session date formatting replaced with locale-aware `useFormatter().dateTime()` across wizard-top-bar, context-panel, floating-context-widgets, summary-screen, session-summary-view, question-history-dialog (no hardcoded `toLocaleDateString("en-US")` remains)
 - People management components (manager-select, member-picker, team-card, team-create-dialog, profile-edit-form) now use `useTranslations` for all visible strings
 - Profile page uses `getTranslations`/`getFormatter` for locale-aware dates and translated labels
 - Team detail page uses `useFormatter` for locale-aware joined dates instead of `toLocaleDateString("en-US")`
