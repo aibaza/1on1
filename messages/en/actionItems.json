@@ -12,6 +12,7 @@
     "updateFailed": "Failed to update action item",
     "updated": "Action item updated",
     "sessionBadge": "Session #{number}",
+    "completedSection": "Completed",
     "edit": {
       "title": "Edit Action Item",
       "description": "Update the details of this action item.",

@@ -29,7 +29,8 @@ export default async function ActionItemsRoute() {
         eq(actionItems.tenantId, session.user.tenantId),
         or(
           eq(actionItems.status, "open"),
-          eq(actionItems.status, "in_progress")
+          eq(actionItems.status, "in_progress"),
+          eq(actionItems.status, "completed")
         ),
       ];
 
@@ -104,7 +105,7 @@ export default async function ActionItemsRoute() {
         </p>
       </div>
 
-      <ActionItemsPage initialItems={data} />
+      <ActionItemsPage initialItems={data} currentUserId={session.user.id} />
     </div>
   );
 }

@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-03-06
+
+### Changed
+- Action items page: toggle (done/undone) and edit are now restricted to the assignee only — disabled/hidden for other participants
+- Completed items are now visible below active items in each group, greyed out with strikethrough title, and can be unchecked to reopen
+- Description is now shown inline in the list (below the title) for every item that has one
+- Group badge shows count of active (open/in_progress) items only
+
 ## [1.1.2] - 2026-03-06
 
 ### Changed

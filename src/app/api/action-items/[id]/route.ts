@@ -53,6 +53,7 @@ export async function PATCH(
         const rows = await tx
           .select({
             actionItemId: actionItems.id,
+            assigneeId: actionItems.assigneeId,
             sessionId: sessions.id,
             managerId: meetingSeries.managerId,
             reportId: meetingSeries.reportId,
@@ -81,6 +82,14 @@ export async function PATCH(
             managerId: row.managerId,
             reportId: row.reportId,
           })
+        ) {
+          return { error: "FORBIDDEN" as const };
+        }
+
+        // Only the assignee (or admin) can toggle status or edit fields
+        if (
+          !isAdmin(session.user.role) &&
+          session.user.id !== row.assigneeId
         ) {
           return { error: "FORBIDDEN" as const };
         }

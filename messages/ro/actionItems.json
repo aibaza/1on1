@@ -12,6 +12,7 @@
     "updateFailed": "Actualizarea acțiunii a eșuat",
     "updated": "Acțiune actualizată",
     "sessionBadge": "Sesiunea #{number}",
+    "completedSection": "Finalizate",
     "edit": {
       "title": "Editează acțiunea",
       "description": "Actualizează detaliile acțiunii.",
