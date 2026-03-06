@@ -39,6 +39,7 @@
 | Invite users | No | No | Yes |
 | Manage teams | No | No | Yes |
 | Deactivate users | No | No | Yes |
+| Impersonate users | No | No | Yes |
 | Company settings | No | No | Yes |
 | Company-wide analytics | No | No | Yes |
 | Billing/subscription | No | No | Yes |
@@ -147,6 +148,23 @@ Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=()
 Content-Security-Policy: default-src 'self'; ...
 ```
+
+## Admin Impersonation
+
+Admins can impersonate any active, non-admin user within their tenant for support and debugging purposes.
+
+### How it works
+1. Admin clicks **Impersonate** in the People table actions menu for an active non-admin user
+2. `POST /api/admin/impersonate` sets an `HttpOnly, SameSite=lax, Path=/, max-age=8h` cookie (`1on1_impersonate={targetUserId}`)
+3. On every request, the Auth.js `session` callback detects the cookie and overlays `session.user` with the target user's data, adding `session.user.impersonatedBy = { id, name }`
+4. A sticky amber banner ("Impersonating [Name]") appears at the top of every page with a **Return to admin** button
+5. Clicking Return calls `DELETE /api/admin/impersonate` to clear the cookie and reloads the app
+
+### Guards
+- Only admins can start impersonation (API enforces `role === "admin"`)
+- Target must be in the same tenant, active, and not an admin
+- Cookie is scoped `HttpOnly` — not readable by client JS
+- Impersonation auto-expires after 8 hours
 
 ## Audit Logging
 

@@ -18,6 +18,7 @@ The minimum viable product delivers structured 1:1 sessions with quantifiable an
 - Roles: Admin (full access), Manager (conducts 1:1s), Member (participates)
 - Org chart: `manager_id` establishes reporting lines
 - Deactivation: soft-delete preserving historical data
+- Admin impersonation: admins can impersonate active non-admin users for support (HttpOnly cookie, 8h expiry, amber banner)
 
 ### 3. Team Management
 - CRUD teams: name, description, manager
