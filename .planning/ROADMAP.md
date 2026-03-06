@@ -31,7 +31,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [x] **Phase 11: i18n Foundation** - next-intl setup, middleware, DB migration, JWT extension, dual-layer architecture (completed 2026-03-05)
 - [x] **Phase 12: UI Translation** - Language switcher, ALL string extraction, locale-aware formatting, validation error translation (completed 2026-03-06)
-- [ ] **Phase 13: Email Translation** - All email templates in correct language, standalone translator for background jobs
+- [x] **Phase 13: Email Translation** - All email templates in correct language, standalone translator for background jobs (completed 2026-03-06)
 - [ ] **Phase 14: Romanian & Quality** - Complete Romanian translations, plural forms, diacritics, layout verification, CI key parity, hardcoded string audit
 
 ## Phase Details
@@ -130,5 +130,5 @@ Phase 11 (foundation)
 | 10. Integration & Polish | v1.0 | 5/5 | Complete | 2026-03-05 |
 | 11. i18n Foundation | 2/2 | Complete    | 2026-03-05 | - |
 | 12. UI Translation | 6/6 | Complete    | 2026-03-06 | - |
-| 13. Email Translation | 2/3 | In Progress|  | - |
+| 13. Email Translation | 3/3 | Complete   | 2026-03-06 | - |
 | 14. Romanian & Quality | v1.1 | 0/2 | Not started | - |
