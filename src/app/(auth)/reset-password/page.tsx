@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,8 +16,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { resetPasswordAction } from "@/lib/auth/actions";
+import { useZodI18nErrors } from "@/lib/i18n/zod-error-map";
 
 export default function ResetPasswordPage() {
+  const t = useTranslations("auth");
+  useZodI18nErrors();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
   const [success, setSuccess] = useState(false);
@@ -27,14 +31,18 @@ export default function ResetPasswordPage() {
     return (
       <Card>
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Invalid link</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            {t("resetPassword.invalidLink")}
+          </CardTitle>
           <CardDescription>
-            This password reset link is invalid or has already been used.
+            {t("resetPassword.invalidLinkDesc")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Button asChild variant="outline" className="w-full">
-            <Link href="/forgot-password">Request a new reset link</Link>
+            <Link href="/forgot-password">
+              {t("resetPassword.requestNew")}
+            </Link>
           </Button>
         </CardContent>
       </Card>
@@ -57,7 +65,7 @@ export default function ResetPasswordPage() {
         setSuccess(true);
       }
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(t("resetPassword.error"));
     } finally {
       setLoading(false);
     }
@@ -67,15 +75,16 @@ export default function ResetPasswordPage() {
     return (
       <Card>
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Password reset</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            {t("resetPassword.successTitle")}
+          </CardTitle>
           <CardDescription>
-            Your password has been reset successfully. You can now sign in with
-            your new password.
+            {t("resetPassword.successDesc")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Button asChild className="w-full">
-            <Link href="/login">Sign in</Link>
+            <Link href="/login">{t("resetPassword.signIn")}</Link>
           </Button>
         </CardContent>
       </Card>
@@ -85,8 +94,10 @@ export default function ResetPasswordPage() {
   return (
     <Card>
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Reset password</CardTitle>
-        <CardDescription>Enter your new password below.</CardDescription>
+        <CardTitle className="text-2xl font-bold">
+          {t("resetPassword.title")}
+        </CardTitle>
+        <CardDescription>{t("resetPassword.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -97,7 +108,7 @@ export default function ResetPasswordPage() {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="password">New password</Label>
+            <Label htmlFor="password">{t("resetPassword.newPassword")}</Label>
             <Input
               id="password"
               name="password"
@@ -107,12 +118,14 @@ export default function ResetPasswordPage() {
               autoFocus
             />
             <p className="text-xs text-muted-foreground">
-              At least 8 characters with uppercase, lowercase, and a number
+              {t("resetPassword.passwordHelp")}
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm password</Label>
+            <Label htmlFor="confirmPassword">
+              {t("resetPassword.confirmPassword")}
+            </Label>
             <Input
               id="confirmPassword"
               name="confirmPassword"
@@ -123,18 +136,20 @@ export default function ResetPasswordPage() {
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Resetting..." : "Reset password"}
+            {loading
+              ? t("resetPassword.submitting")
+              : t("resetPassword.submit")}
           </Button>
         </form>
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">
-          Remember your password?{" "}
+          {t("resetPassword.rememberPassword")}{" "}
           <Link
             href="/login"
             className="font-medium text-foreground hover:underline"
           >
-            Sign in
+            {t("resetPassword.signIn")}
           </Link>
         </p>
       </CardFooter>

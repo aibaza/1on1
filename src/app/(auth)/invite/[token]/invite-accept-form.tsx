@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,18 +25,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
+import { useZodI18nErrors } from "@/lib/i18n/zod-error-map";
 
 // Combined form schema for both steps
 const formSchema = z.object({
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Must contain an uppercase letter")
-    .regex(/[a-z]/, "Must contain a lowercase letter")
-    .regex(/[0-9]/, "Must contain a number"),
-  confirmPassword: z.string().min(1, "Please confirm your password"),
-  firstName: z.string().min(1, "First name is required").max(100),
-  lastName: z.string().min(1, "Last name is required").max(100),
+    .min(8)
+    .regex(/[A-Z]/)
+    .regex(/[a-z]/)
+    .regex(/[0-9]/),
+  confirmPassword: z.string().min(1),
+  firstName: z.string().min(1).max(100),
+  lastName: z.string().min(1).max(100),
   jobTitle: z.string().max(200).optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
@@ -57,6 +59,8 @@ export function InviteAcceptForm({
   organizationName,
   role,
 }: InviteAcceptFormProps) {
+  const t = useTranslations("auth");
+  useZodI18nErrors();
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -103,7 +107,7 @@ export function InviteAcceptForm({
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Failed to create account");
+        setError(data.error || t("invite.createError"));
         return;
       }
 
@@ -114,7 +118,7 @@ export function InviteAcceptForm({
         callbackUrl: "/overview",
       });
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(t("invite.error"));
     } finally {
       setIsSubmitting(false);
     }
@@ -124,10 +128,10 @@ export function InviteAcceptForm({
     <Card>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">
-          Join {organizationName}
+          {t("invite.title", { organization: organizationName })}
         </CardTitle>
         <CardDescription>
-          Set up your account to get started
+          {t("invite.description")}
         </CardDescription>
         <div className="flex items-center gap-2 pt-2">
           <span className="text-sm text-muted-foreground">{email}</span>
@@ -171,7 +175,7 @@ export function InviteAcceptForm({
             {step === 1 && (
               <>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Step 1: Set your password
+                  {t("invite.step1")}
                 </p>
 
                 <FormField
@@ -179,7 +183,7 @@ export function InviteAcceptForm({
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{t("invite.password")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
@@ -203,8 +207,7 @@ export function InviteAcceptForm({
                         </div>
                       </FormControl>
                       <p className="text-xs text-muted-foreground">
-                        At least 8 characters with uppercase, lowercase, and a
-                        number
+                        {t("invite.passwordHelp")}
                       </p>
                       <FormMessage />
                     </FormItem>
@@ -216,7 +219,7 @@ export function InviteAcceptForm({
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirm password</FormLabel>
+                      <FormLabel>{t("invite.confirmPassword")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
@@ -248,7 +251,7 @@ export function InviteAcceptForm({
                   className="w-full gap-2"
                   onClick={handleNext}
                 >
-                  Continue
+                  {t("invite.continue")}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </>
@@ -257,7 +260,7 @@ export function InviteAcceptForm({
             {step === 2 && (
               <>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Step 2: Your profile
+                  {t("invite.step2")}
                 </p>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -266,10 +269,10 @@ export function InviteAcceptForm({
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>First name</FormLabel>
+                        <FormLabel>{t("invite.firstName")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Jane"
+                            placeholder={t("invite.firstNamePlaceholder")}
                             autoFocus
                             {...field}
                           />
@@ -284,9 +287,12 @@ export function InviteAcceptForm({
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Last name</FormLabel>
+                        <FormLabel>{t("invite.lastName")}</FormLabel>
                         <FormControl>
-                          <Input placeholder="Smith" {...field} />
+                          <Input
+                            placeholder={t("invite.lastNamePlaceholder")}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -300,14 +306,14 @@ export function InviteAcceptForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        Job title{" "}
+                        {t("invite.jobTitle")}{" "}
                         <span className="text-muted-foreground font-normal">
-                          (optional)
+                          {t("invite.jobTitleOptional")}
                         </span>
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Engineering Manager"
+                          placeholder={t("invite.jobTitlePlaceholder")}
                           {...field}
                         />
                       </FormControl>
@@ -324,14 +330,16 @@ export function InviteAcceptForm({
                     onClick={() => setStep(1)}
                   >
                     <ArrowLeft className="h-4 w-4" />
-                    Back
+                    {t("invite.back")}
                   </Button>
                   <Button
                     type="submit"
                     className="flex-1"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Creating account..." : "Complete setup"}
+                    {isSubmitting
+                      ? t("invite.submitting")
+                      : t("invite.submit")}
                   </Button>
                 </div>
               </>

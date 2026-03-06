@@ -1,4 +1,5 @@
 import { adminDb } from "@/lib/db";
+import { getTranslations } from "next-intl/server";
 import {
   Card,
   CardContent,
@@ -13,6 +14,7 @@ interface InvitePageProps {
 }
 
 export default async function InvitePage({ params }: InvitePageProps) {
+  const t = await getTranslations("auth");
   const { token } = await params;
 
   // Look up invite token using adminDb (no auth session)
@@ -26,12 +28,10 @@ export default async function InvitePage({ params }: InvitePageProps) {
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">
-            Invalid invitation
+            {t("invite.invalidTitle")}
           </CardTitle>
           <CardDescription>
-            This invitation link is not valid. It may have been used already or
-            the URL may be incorrect. Please contact your administrator to
-            request a new invitation.
+            {t("invite.invalidDesc")}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -44,11 +44,10 @@ export default async function InvitePage({ params }: InvitePageProps) {
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">
-            Invitation already used
+            {t("invite.usedTitle")}
           </CardTitle>
           <CardDescription>
-            This invitation has already been accepted. If you already have an
-            account, you can sign in.
+            {t("invite.usedDesc")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -56,7 +55,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
             href="/login"
             className="text-sm font-medium text-foreground hover:underline"
           >
-            Go to sign in
+            {t("invite.goToSignIn")}
           </a>
         </CardContent>
       </Card>
@@ -69,11 +68,10 @@ export default async function InvitePage({ params }: InvitePageProps) {
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">
-            Invitation expired
+            {t("invite.expiredTitle")}
           </CardTitle>
           <CardDescription>
-            This invitation has expired. Please contact your administrator to
-            request a new invitation.
+            {t("invite.expiredDesc")}
           </CardDescription>
         </CardHeader>
       </Card>

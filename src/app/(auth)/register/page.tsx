@@ -16,9 +16,11 @@ import {
 } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { registerAction } from "@/lib/auth/actions";
+import { useZodI18nErrors } from "@/lib/i18n/zod-error-map";
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
+  useZodI18nErrors();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [orgType, setOrgType] = useState("for_profit");
@@ -36,7 +38,9 @@ export default function RegisterPage() {
       }
       // On success, registerAction redirects server-side
     } catch {
-      // Redirect errors are re-thrown and handled by Next.js
+      // Redirect errors are re-thrown and handled by Next.js;
+      // other errors get a translated fallback
+      setError(t("register.error"));
     } finally {
       setLoading(false);
     }

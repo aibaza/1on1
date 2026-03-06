@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { verifyEmailAction } from "@/lib/auth/actions";
 import {
   Card,
@@ -18,21 +19,23 @@ export default async function VerifyEmailPage({
 }: {
   searchParams: Promise<{ token?: string }>;
 }) {
+  const t = await getTranslations("auth");
   const { token } = await searchParams;
 
   if (!token) {
     return (
       <Card>
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Check your email</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            {t("verifyEmail.title")}
+          </CardTitle>
           <CardDescription>
-            We sent you a verification link. Click the link in your email to
-            verify your account.
+            {t("verifyEmail.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Button asChild variant="outline" className="w-full">
-            <Link href="/login">Back to sign in</Link>
+            <Link href="/login">{t("verifyEmail.backToSignIn")}</Link>
           </Button>
         </CardContent>
       </Card>
@@ -45,15 +48,16 @@ export default async function VerifyEmailPage({
     return (
       <Card>
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Email verified</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            {t("verifyEmail.successTitle")}
+          </CardTitle>
           <CardDescription>
-            Your email has been verified successfully. You can now access all
-            features.
+            {t("verifyEmail.successDesc")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Button asChild className="w-full">
-            <Link href="/overview">Go to dashboard</Link>
+            <Link href="/overview">{t("verifyEmail.goToDashboard")}</Link>
           </Button>
         </CardContent>
       </Card>
@@ -64,13 +68,13 @@ export default async function VerifyEmailPage({
     <Card>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">
-          Verification failed
+          {t("verifyEmail.failedTitle")}
         </CardTitle>
         <CardDescription>{result.error}</CardDescription>
       </CardHeader>
       <CardContent>
         <Button asChild variant="outline" className="w-full">
-          <Link href="/login">Back to sign in</Link>
+          <Link href="/login">{t("verifyEmail.backToSignIn")}</Link>
         </Button>
       </CardContent>
     </Card>
