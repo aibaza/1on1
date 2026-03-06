@@ -30,7 +30,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Milestone Goal:** Add i18n support with two language layers -- UI language (per-user, browser locale default) and content language (per-company, admin setting) -- starting with English and Romanian.
 
 - [x] **Phase 11: i18n Foundation** - next-intl setup, middleware, DB migration, JWT extension, dual-layer architecture (completed 2026-03-05)
-- [ ] **Phase 12: UI Translation** - Language switcher, ALL string extraction, locale-aware formatting, validation error translation
+- [x] **Phase 12: UI Translation** - Language switcher, ALL string extraction, locale-aware formatting, validation error translation (completed 2026-03-06)
 - [ ] **Phase 13: Email Translation** - All email templates in correct language, standalone translator for background jobs
 - [ ] **Phase 14: Romanian & Quality** - Complete Romanian translations, plural forms, diacritics, layout verification, CI key parity, hardcoded string audit
 
@@ -126,6 +126,6 @@ Phase 11 (foundation)
 | 9. Email Notifications | v1.0 | 2/2 | Complete | 2026-03-05 |
 | 10. Integration & Polish | v1.0 | 5/5 | Complete | 2026-03-05 |
 | 11. i18n Foundation | 2/2 | Complete    | 2026-03-05 | - |
-| 12. UI Translation | 4/5 | In Progress|  | - |
+| 12. UI Translation | 5/5 | Complete   | 2026-03-06 | - |
 | 13. Email Translation | v1.1 | 0/1 | Not started | - |
 | 14. Romanian & Quality | v1.1 | 0/2 | Not started | - |
