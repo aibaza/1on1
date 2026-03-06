@@ -18,7 +18,7 @@ export const colorThemeValues = [
   "stone",
   "blue",
   "green",
-  "rose",
+  "yellow",
   "orange",
 ] as const;
 
