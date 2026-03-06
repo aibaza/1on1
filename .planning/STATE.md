@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Internationalization
-status: completed
-stopped_at: v1.1.0 released
-last_updated: "2026-03-06T14:00:00.000Z"
-last_activity: 2026-03-06 -- Released v1.1.0 (i18n + series card redesign + AI session summary on cards)
+status: Released as v1.1.0 (2026-03-06)
+stopped_at: Completed 13-01-PLAN.md
+last_updated: "2026-03-06T19:30:18.344Z"
+last_activity: 2026-03-06 -- Released v1.1.0; AI session summary on series cards (cardBlurb + sentiment dot)
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 11
+  completed_plans: 9
   percent: 100
 ---
 
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-03-05)
 
 ## Current Position
 
-Phase: 12 of 14 (UI Translation) -- COMPLETE
-Plan: 6 of 6 in current phase (12-06 complete)
-Status: Released as v1.1.0 (2026-03-06)
-Last activity: 2026-03-06 -- Released v1.1.0; AI session summary on series cards (cardBlurb + sentiment dot)
+Phase: 13 of 14 (Email Translation) -- In Progress
+Plan: 1 of 3 in current phase (13-01 complete)
+Status: In Progress
+Last activity: 2026-03-06 -- Completed 13-01: createEmailTranslator utility + emails.json for en/ro
 
-Progress: [██████████] 100%
+Progress: [████████░░] 82%
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Progress: [██████████] 100%
 *Updated after each plan completion*
 | Phase 12 P03 | 15min | 2 tasks | 14 files |
 | Phase 12 P06 | 3min | 2 tasks | 7 files |
+| Phase 13-email-translation P01 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,9 @@ Recent decisions affecting current work:
 - [12-04]: Mood emoji placeholders kept as English defaults (user-customizable, not UI chrome)
 - [Phase 12]: Session components use nested translation namespaces and inline format.dateTime() for all dates
 - [Phase 12]: sessionStarted key in sessions.detail namespace, corrected from plan
+- [Phase 13-email-translation]: use-intl/core createTranslator chosen for email translation — works outside Next.js request lifecycle unlike next-intl/server
+- [Phase 13-email-translation]: Messages loaded via fs/promises readFile at call time — no module caching issues in background jobs
+- [Phase 13-email-translation]: Locale fallback to en for unsupported locales — prevents crashes when future locales added before translations exist
 
 ### Blockers/Concerns
 
@@ -85,6 +89,6 @@ None active.
 
 ## Session Continuity
 
-Last session: 2026-03-06T11:48:05.955Z
-Stopped at: Completed 12-06-PLAN.md
+Last session: 2026-03-06T19:30:18.340Z
+Stopped at: Completed 13-01-PLAN.md
 Resume file: None

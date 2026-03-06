@@ -37,8 +37,8 @@ Requirements for internationalization milestone. Each maps to roadmap phases.
 
 ### Email
 
-- [ ] **MAIL-01**: All email templates render in the correct language (company content language for invites/summaries, user preference where applicable)
-- [ ] **MAIL-02**: Standalone email translator works outside Next.js request lifecycle for background jobs
+- [x] **MAIL-01**: All email templates render in the correct language (company content language for invites/summaries, user preference where applicable)
+- [x] **MAIL-02**: Standalone email translator works outside Next.js request lifecycle for background jobs
 
 ### Validation
 
@@ -108,8 +108,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FMT-04 | Phase 12 | Complete |
 | VALD-01 | Phase 12 | Complete |
 | VALD-02 | Phase 12 | Complete |
-| MAIL-01 | Phase 13 | Pending |
-| MAIL-02 | Phase 13 | Pending |
+| MAIL-01 | Phase 13 | Complete |
+| MAIL-02 | Phase 13 | Complete |
 | ROLN-01 | Phase 14 | Pending |
 | ROLN-02 | Phase 14 | Pending |
 | ROLN-03 | Phase 14 | Pending |
