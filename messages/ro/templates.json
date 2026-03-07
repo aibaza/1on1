@@ -110,6 +110,13 @@
       "allowMultiple": "Permite selecții multiple",
       "moodLabels": "Etichete dispoziție"
     },
+    "export": {
+      "button": "Exportă",
+      "exporting": "Se exportă...",
+      "downloaded": "Șablon exportat",
+      "failed": "Export eșuat",
+      "schemaLink": "Documentație schemă"
+    },
     "conditionalLogic": {
       "title": "Afișează această întrebare condiționat",
       "description": "Afișează doar când un răspuns anterior se potrivește unei condiții",

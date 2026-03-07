@@ -110,6 +110,13 @@
       "allowMultiple": "Allow multiple selections",
       "moodLabels": "Mood Labels"
     },
+    "export": {
+      "button": "Export",
+      "exporting": "Exporting...",
+      "downloaded": "Template exported",
+      "failed": "Export failed",
+      "schemaLink": "Schema Docs"
+    },
     "conditionalLogic": {
       "title": "Show this question conditionally",
       "description": "Only show when a previous answer matches a condition",
