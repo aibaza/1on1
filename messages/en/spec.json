@@ -1,0 +1,54 @@
+{
+  "spec": {
+    "pageTitle": "Template Schema & Documentation",
+    "pageDescription": "Reference documentation for the 1on1 template JSON format, methodology principles, and score weight system.",
+    "tabs": {
+      "schema": "JSON Schema",
+      "methodology": "Methodology",
+      "weights": "Score Weights"
+    },
+    "schema": {
+      "title": "Template JSON Schema",
+      "description": "The canonical schema for template export and import. Always in English as a technical standard. Use this schema to validate templates created with external AI tools before importing.",
+      "download": "Download Schema",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "schemaDocsLink": "View in template list"
+    },
+    "methodology": {
+      "title": "1:1 Meeting Principles",
+      "intro": "Effective 1:1 meetings follow a consistent structure that builds trust, surfaces blockers early, and creates accountability. These principles guide how templates should be designed.",
+      "principles": {
+        "continuity": {
+          "title": "Continuity over completeness",
+          "body": "A good template is used every session. Keep it short enough that both participants can complete it without rushing — 8 to 12 questions is a practical ceiling."
+        },
+        "specificity": {
+          "title": "Specific questions surface real signal",
+          "body": "Vague questions like \"How are things going?\" yield vague answers. Specific questions like \"What's the one thing blocking your progress this week?\" surface actionable information."
+        },
+        "balance": {
+          "title": "Balance retrospective and prospective",
+          "body": "Effective templates include both backward-looking questions (what happened, how do you feel about it) and forward-looking questions (what will you focus on, what do you need)."
+        },
+        "helpText": {
+          "title": "Help text reduces ambiguity",
+          "body": "Each question should have help text that explains what a good answer looks like. This is especially important for rating scales — anchor the low and high ends."
+        }
+      }
+    },
+    "weights": {
+      "title": "Score Weight System",
+      "intro": "Each question can carry a score weight that affects how much it contributes to the overall session score shown in analytics. The default weight is 1.",
+      "validRange": "Valid range: 0 to 10",
+      "defaultValue": "Default: 1",
+      "zeroMeaning": "Weight 0 means the question is unscored — it appears in the session but does not affect analytics.",
+      "examples": {
+        "title": "Worked examples",
+        "basic": "A template with three rating questions all weighted 1 contributes equally to the session score.",
+        "emphasized": "Increase weight to 2 or 3 for questions that signal high-importance outcomes — for example, a \"blockers\" question or an overall satisfaction rating.",
+        "unscored": "Set weight to 0 for open-ended text questions where a numeric score doesn't make sense, such as \"What's on your mind this week?\""
+      }
+    }
+  }
+}

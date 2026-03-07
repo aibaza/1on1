@@ -1,0 +1,54 @@
+{
+  "spec": {
+    "pageTitle": "Schema și documentație șabloane",
+    "pageDescription": "Documentație de referință pentru formatul JSON al șabloanelor 1:1, principii metodologice și sistemul de ponderi pentru scoruri.",
+    "tabs": {
+      "schema": "Schema JSON",
+      "methodology": "Metodologie",
+      "weights": "Ponderi scoruri"
+    },
+    "schema": {
+      "title": "Schema JSON pentru șabloane",
+      "description": "Schema canonică pentru exportul și importul șabloanelor. Mereu în engleză ca standard tehnic. Utilizați această schemă pentru a valida șabloanele create cu instrumente AI externe înainte de import.",
+      "download": "Descarcă schema",
+      "copy": "Copiază",
+      "copied": "Copiat!",
+      "schemaDocsLink": "Vezi în lista de șabloane"
+    },
+    "methodology": {
+      "title": "Principii pentru ședințele 1:1",
+      "intro": "Ședințele 1:1 eficiente urmează o structură consistentă care construiește încredere, identifică blocajele timpuriu și creează responsabilitate. Aceste principii ghidează modul în care ar trebui concepute șabloanele.",
+      "principles": {
+        "continuity": {
+          "title": "Continuitate în locul completitudinii",
+          "body": "Un șablon bun este folosit la fiecare ședință. Păstrați-l suficient de scurt pentru ca ambii participanți să îl poată completa fără grabă — 8 până la 12 întrebări este un plafon practic."
+        },
+        "specificity": {
+          "title": "Întrebările specifice generează semnale reale",
+          "body": "Întrebările vagi precum «Cum merg lucrurile?» duc la răspunsuri vagi. Întrebările specifice precum «Care este singurul lucru care îți blochează progresul săptămâna aceasta?» generează informații acționabile."
+        },
+        "balance": {
+          "title": "Echilibru între retrospectiv și prospectiv",
+          "body": "Șabloanele eficiente includ atât întrebări retrospective (ce s-a întâmplat, cum te simți în legătură cu asta), cât și întrebări prospective (pe ce te vei concentra, de ce ai nevoie)."
+        },
+        "helpText": {
+          "title": "Textul de ajutor reduce ambiguitatea",
+          "body": "Fiecare întrebare ar trebui să aibă un text de ajutor care explică cum arată un răspuns bun. Acest lucru este deosebit de important pentru scalele de evaluare — ancorați capetele inferior și superior."
+        }
+      }
+    },
+    "weights": {
+      "title": "Sistemul de ponderi pentru scoruri",
+      "intro": "Fiecare întrebare poate purta o pondere care afectează cât de mult contribuie la scorul general al ședinței afișat în analize. Ponderea implicită este 1.",
+      "validRange": "Interval valid: 0 până la 10",
+      "defaultValue": "Implicit: 1",
+      "zeroMeaning": "Ponderea 0 înseamnă că întrebarea nu este punctată — apare în ședință, dar nu afectează analizele.",
+      "examples": {
+        "title": "Exemple de calcul",
+        "basic": "Un șablon cu trei întrebări de evaluare toate ponderate cu 1 contribuie în mod egal la scorul ședinței.",
+        "emphasized": "Măriți ponderea la 2 sau 3 pentru întrebările care semnalează rezultate importante — de exemplu, o întrebare despre blocaje sau o evaluare generală a satisfacției.",
+        "unscored": "Setați ponderea la 0 pentru întrebările text cu răspuns liber unde un scor numeric nu are sens, cum ar fi «Ce îți trece prin minte săptămâna aceasta?»"
+      }
+    }
+  }
+}
