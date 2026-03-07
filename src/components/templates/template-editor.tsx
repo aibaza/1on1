@@ -76,6 +76,8 @@ import {
 } from "@/components/ui/collapsible";
 import { QuestionCard } from "./question-card";
 import { QuestionForm } from "./question-form";
+import { ExportButton } from "@/components/templates/export-button";
+import { canManageTemplates } from "@/lib/auth/rbac";
 
 type TemplateFormValues = z.infer<typeof createTemplateSchema>;
 
@@ -560,6 +562,9 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
 
         {!isCreateMode && canEdit && (
           <div className="flex items-center gap-2">
+            {canManageTemplates(userRole) && (
+              <ExportButton templateId={template!.id} variant="full" />
+            )}
             <Button
               variant="outline"
               size="sm"
