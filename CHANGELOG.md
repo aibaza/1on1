@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `src/lib/ai/prompts/template-editor.ts` — `buildTemplateEditorSystemPrompt(existingTemplate?)` builder with 4 sections (Role & Persona, JSON schema Spec, 1:1 Methodology Principles, Score Weight System); embeds existing template as JSON when provided; exports `TEMPLATE_EDITOR_SYSTEM` constant
+- `src/lib/ai/models.ts` — added `templateEditor: anthropic("claude-sonnet-4-6")` model entry for AI template editor
+- `src/lib/ai/service.ts` — exported `withLanguageInstruction` (previously private); added `generateTemplateChatTurn(messages, currentTemplate, language)` that calls the template editor model with structured output via `templateChatResponseSchema`
 - `src/lib/ai/schemas/template-chat.ts` — `templateChatResponseSchema` Zod schema with required `chatMessage` (min 1 char) and nullable `templateJson` (full TemplateExport-shaped object); exports `ChatTurnResponse` TypeScript type; turns Wave 0 template-chat tests GREEN
 - `messages/en/spec.json` — added `spec.tabs.promptKit` and `spec.promptKit.*` keys (title, intro, copy, copied, sections.schema/methodology/weights/example) for DIY Prompt Kit tab
 - `messages/ro/spec.json` — Romanian translations of all `spec.promptKit.*` keys with correct diacritics; key parity with EN maintained

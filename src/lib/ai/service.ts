@@ -1,4 +1,5 @@
 import { generateText, Output } from "ai";
+import type { ModelMessage } from "ai";
 import { models } from "./models";
 import { summarySchema, type AISummary } from "./schemas/summary";
 import {
@@ -10,7 +11,12 @@ import {
   actionSuggestionsSchema,
   type AIActionSuggestions,
 } from "./schemas/action-items";
+import {
+  templateChatResponseSchema,
+  type ChatTurnResponse,
+} from "./schemas/template-chat";
 import type { SessionContext } from "./context";
+import type { TemplateExport } from "../templates/export-schema";
 import { BASE_SYSTEM } from "./prompts/base";
 import {
   buildSummarySystemPrompt,
@@ -24,6 +30,7 @@ import {
   buildActionSuggestionsSystemPrompt,
   buildActionSuggestionsUserPrompt,
 } from "./prompts/action-items";
+import { buildTemplateEditorSystemPrompt } from "./prompts/template-editor";
 
 /** Map language codes to full language names */
 const LANGUAGE_NAMES: Record<string, string> = {
@@ -38,8 +45,10 @@ const LANGUAGE_NAMES: Record<string, string> = {
 /**
  * Append a language instruction to the system prompt when the org
  * has a non-English preferred language.
+ *
+ * Exported so tests and other callers (e.g. template editor) can use it directly.
  */
-function withLanguageInstruction(
+export function withLanguageInstruction(
   systemPrompt: string,
   language?: string
 ): string {
@@ -220,5 +229,46 @@ export async function generateActionSuggestions(
       error
     );
     throw error;
+  }
+}
+
+/**
+ * Generate one turn of the AI template editor conversation.
+ *
+ * The AI receives the full chat history and the current template state.
+ * It responds with a conversational message (always) and optionally a full
+ * replacement template (when it generates or modifies the template).
+ *
+ * @param messages - Full conversation history (ModelMessage[]) including the new user message
+ * @param currentTemplate - The current template state, or null if starting from scratch
+ * @param language - Company content language code (e.g. "en", "ro"); defaults to English
+ */
+export async function generateTemplateChatTurn(
+  messages: ModelMessage[],
+  currentTemplate: TemplateExport | null,
+  language?: string
+): Promise<ChatTurnResponse> {
+  try {
+    const systemPrompt = buildTemplateEditorSystemPrompt(
+      currentTemplate ?? undefined
+    );
+    const finalSystemPrompt = withLanguageInstruction(systemPrompt, language);
+
+    const { output } = await generateText({
+      model: models.templateEditor,
+      output: Output.object({ schema: templateChatResponseSchema }),
+      system: finalSystemPrompt,
+      messages,
+    });
+
+    if (!output) {
+      throw new Error(
+        "AI SDK returned null output for template chat turn generation"
+      );
+    }
+
+    return output;
+  } catch (e) {
+    throw new Error("AI generation failed: " + String(e));
   }
 }

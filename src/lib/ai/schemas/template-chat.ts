@@ -44,7 +44,7 @@ export const templateChatResponseSchema = z.object({
                   "mood",
                   "scale_custom",
                 ]),
-                answerConfig: z.record(z.unknown()),
+                answerConfig: z.record(z.string(), z.unknown()),
                 isRequired: z.boolean(),
                 sortOrder: z.number(),
                 scoreWeight: z.number(),
