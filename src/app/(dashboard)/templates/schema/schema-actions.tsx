@@ -63,3 +63,43 @@ export function SchemaActions({
     </div>
   );
 }
+
+interface PromptKitActionsProps {
+  content: string;
+  copyLabel: string;
+  copiedLabel: string;
+}
+
+/**
+ * Client component: copy-to-clipboard button for the DIY Prompt Kit block.
+ * Receives translated labels as props from the Server Component parent.
+ */
+export function PromptKitActions({
+  content,
+  copyLabel,
+  copiedLabel,
+}: PromptKitActionsProps) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <Button variant="outline" size="sm" onClick={handleCopy}>
+      {copied ? (
+        <>
+          <Check className="mr-2 h-4 w-4" />
+          {copiedLabel}
+        </>
+      ) : (
+        <>
+          <Copy className="mr-2 h-4 w-4" />
+          {copyLabel}
+        </>
+      )}
+    </Button>
+  );
+}

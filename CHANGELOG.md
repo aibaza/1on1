@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `src/app/(dashboard)/templates/schema/page.tsx` — added 4th "Prompt Kit" tab with `PROMPT_KIT_EXAMPLE` constant (Engineering 1:1 worked example), `promptKitBlock` assembled server-side (section headers translated, JSON content always English), `PromptKitActions` copy button component
+- `src/app/(dashboard)/templates/schema/schema-actions.tsx` — added `PromptKitActions` export: clipboard copy button with 2-second toggle to "Copied!" label
 - `src/app/api/templates/ai-chat/route.ts` — `POST /api/templates/ai-chat` handler; RBAC-gated (admin/manager only), validates request body with Zod, resolves tenant content language from session, calls `generateTemplateChatTurn`, returns `{ chatMessage, templateJson }`; returns 401/403/400/500 on failure
 - `src/lib/ai/prompts/template-editor.ts` — `buildTemplateEditorSystemPrompt(existingTemplate?)` builder with 4 sections (Role & Persona, JSON schema Spec, 1:1 Methodology Principles, Score Weight System); embeds existing template as JSON when provided; exports `TEMPLATE_EDITOR_SYSTEM` constant
 - `src/lib/ai/models.ts` — added `templateEditor: anthropic("claude-sonnet-4-6")` model entry for AI template editor
