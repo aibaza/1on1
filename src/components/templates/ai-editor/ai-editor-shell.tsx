@@ -78,7 +78,10 @@ export function AiEditorShell({
     setIsLoading(true);
     postAiChat(greetingMessages, initialTemplate ?? null)
       .then((result) => {
-        setMessages([{ role: "assistant", content: result.chatMessage }]);
+        setMessages([
+          { role: "user", content: greetingContent, hidden: true },
+          { role: "assistant", content: result.chatMessage },
+        ]);
         if (result.templateJson !== null) {
           setCurrentTemplate(result.templateJson);
         }

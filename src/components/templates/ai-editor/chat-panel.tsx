@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
+  hidden?: boolean;
 }
 
 interface ChatPanelProps {
@@ -22,7 +23,7 @@ export function ChatPanel({ messages, isLoading }: ChatPanelProps) {
   return (
     <div className="flex-1 overflow-y-auto p-4">
       <div className="space-y-4">
-        {messages.map((msg, i) => (
+        {messages.filter((msg) => !msg.hidden).map((msg, i) => (
           <div
             key={i}
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
