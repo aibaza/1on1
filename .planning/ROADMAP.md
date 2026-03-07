@@ -201,4 +201,4 @@ Phase 15 (schema + export)
 | 14. Romanian & Quality | v1.1 | 2/2 | Complete | 2026-03-07 |
 | 15. Schema, Spec & Export | v1.2 | 4/4 | Complete | 2026-03-07 |
 | 16. Template Import | 5/5 | Complete    | 2026-03-07 | - |
-| 17. AI Generator & DIY Kit | 5/7 | In Progress|  | - |
+| 17. AI Generator & DIY Kit | 6/7 | In Progress|  | - |

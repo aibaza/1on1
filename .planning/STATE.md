@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: AI-Ready Templates
 status: verifying
-stopped_at: Completed 17-06-PLAN.md (DIY Prompt Kit + AI editor entry points)
-last_updated: "2026-03-07T16:18:38.502Z"
+stopped_at: Completed 17-05-PLAN.md (AI editor UI)
+last_updated: "2026-03-07T16:21:10.267Z"
 last_activity: 2026-03-07 -- 15-04 verified complete (user approved export RBAC and schema docs)
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 29
-  completed_plans: 27
+  completed_plans: 28
   percent: 100
 ---
 
@@ -62,6 +62,7 @@ Progress: [██████████] 100%
 | Phase 17-ai-generator-diy-kit P02 | 8 | 2 tasks | 4 files |
 | Phase 17-ai-generator-diy-kit P04 | 3 | 1 tasks | 2 files |
 | Phase 17 P06 | 3 | 2 tasks | 4 files |
+| Phase 17-ai-generator-diy-kit P05 | 286 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,8 @@ v1.1 decisions archived below for reference:
 - [Phase 17-ai-generator-diy-kit]: No audit log for AI chat turns — template audited on explicit Save only (separate API call to existing endpoint)
 - [Phase 17]: Prompt kit block assembled server-side: translated section headers, English JSON content (technical standard not UI chrome)
 - [Phase 17]: PROMPT_KIT_EXAMPLE defined inline in schema page, not imported from test files — avoids test/production coupling
+- [Phase 17-05]: ScrollArea (shadcn/ui) not installed — replaced with overflow-y-auto div in ChatPanel and TemplatePreviewPanel for identical scroll behavior
+- [Phase 17-05]: Save for both new and existing templates uses POST /api/templates/import — avoids complexity of PATCH batch-save UUID tracking; clean import creates fresh copy with AI-generated content
 
 ### v1.2 Roadmap Decisions
 
@@ -153,6 +156,6 @@ None active.
 
 ## Session Continuity
 
-Last session: 2026-03-07T16:18:32.928Z
-Stopped at: Completed 17-06-PLAN.md (DIY Prompt Kit + AI editor entry points)
+Last session: 2026-03-07T16:21:10.262Z
+Stopped at: Completed 17-05-PLAN.md (AI editor UI)
 Resume file: None
