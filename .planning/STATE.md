@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: AI-Ready Templates
 status: verifying
-stopped_at: Completed 16-02-PLAN.md
-last_updated: "2026-03-07T08:47:09.951Z"
+stopped_at: Completed 16-03-PLAN.md
+last_updated: "2026-03-07T08:49:58.164Z"
 last_activity: 2026-03-07 -- 15-04 verified complete (user approved export RBAC and schema docs)
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 22
-  completed_plans: 19
+  completed_plans: 20
   percent: 100
 ---
 
@@ -55,6 +55,7 @@ Progress: [██████████] 100%
 | Phase 15-schema-spec-export P04 | checkpoint | 1 tasks | 0 files |
 | Phase 16-template-import P01 | 5 | 2 tasks | 3 files |
 | Phase 16-template-import P02 | 14 | 2 tasks | 4 files |
+| Phase 16-template-import P03 | 8 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -110,6 +111,8 @@ v1.1 decisions archived below for reference:
 - [Phase 16-template-import]: TDD Wave 0: test contracts written before implementation; module-not-found errors are the expected RED signal
 - [Phase 16-template-import]: zod CJS alias in vitest.config.ts — zod v4 ESM namespace binding breaks Vite SSR; CJS build resolves correctly
 - [Phase 16-template-import]: import-schema.ts uses import { z } from 'zod' consistent with all other validation files; zod alias routes to CJS
+- [Phase 16-03]: logAuditEvent called inside withTenantContext callback -- audit entry rolls back if insert fails
+- [Phase 16-03]: templateQuestions has no tenantId column -- omitted from insert values
 
 ### v1.2 Roadmap Decisions
 
@@ -128,6 +131,6 @@ None active.
 
 ## Session Continuity
 
-Last session: 2026-03-07T08:47:02.386Z
-Stopped at: Completed 16-02-PLAN.md
+Last session: 2026-03-07T08:49:58.160Z
+Stopped at: Completed 16-03-PLAN.md
 Resume file: None
