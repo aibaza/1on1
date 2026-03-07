@@ -1,9 +1,9 @@
 import type { SessionContext } from "../context";
 import type { AISummary } from "../schemas/summary";
-import { BASE_SYSTEM } from "./base";
+import { buildBaseSystem } from "./base";
 
-export function buildActionSuggestionsSystemPrompt(): string {
-  return BASE_SYSTEM + `Suggest follow-up action items after a 1-on-1.
+export function buildActionSuggestionsSystemPrompt(language?: string): string {
+  return buildBaseSystem(language) + `Suggest follow-up action items after a 1-on-1.
 
 - Title: max 8 words. Description: 1 sentence.
 - Only suggest what's clearly warranted — 0 items is fine for routine sessions

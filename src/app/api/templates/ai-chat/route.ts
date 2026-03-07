@@ -3,6 +3,9 @@ import type { ModelMessage } from "ai";
 import { auth } from "@/lib/auth/config";
 import { canManageTemplates } from "@/lib/auth/rbac";
 import { generateTemplateChatTurn } from "@/lib/ai/service";
+import { adminDb } from "@/lib/db";
+import { tenants } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 /**
  * Request body schema for POST /api/templates/ai-chat
@@ -74,15 +77,25 @@ export async function POST(req: Request) {
     );
   }
 
-  // 4. Resolve tenant content language from session (populated at auth time from tenants.contentLanguage)
-  const contentLanguage = session.user.contentLanguage ?? "en";
+  // 4. Fetch company language fresh from DB.
+  //    The settings page saves language to tenants.settings.preferredLanguage (JSONB).
+  //    tenants.contentLanguage is a legacy column never written by the settings page.
+  //    uiLanguage comes from JWT (user's personal preference, always up-to-date).
+  const [tenantRow] = await adminDb
+    .select({ settings: tenants.settings })
+    .from(tenants)
+    .where(eq(tenants.id, session.user.tenantId));
+  const tenantSettings = (tenantRow?.settings ?? {}) as Record<string, unknown>;
+  const contentLanguage = (tenantSettings.preferredLanguage as string | undefined) ?? "en";
+  const uiLanguage = session.user.uiLanguage ?? "en";
 
   // 5. Call AI service and return result
   try {
     const result = await generateTemplateChatTurn(
       parsed.data.messages as ModelMessage[],
       parsed.data.currentTemplate,
-      contentLanguage
+      contentLanguage,
+      uiLanguage
     );
 
     return Response.json(result);

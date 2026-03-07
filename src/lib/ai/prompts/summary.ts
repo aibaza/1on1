@@ -1,8 +1,8 @@
 import type { SessionContext } from "../context";
-import { BASE_SYSTEM } from "./base";
+import { buildBaseSystem } from "./base";
 
-export function buildSummarySystemPrompt(): string {
-  return BASE_SYSTEM + `Summarize a 1-on-1 session.
+export function buildSummarySystemPrompt(language?: string): string {
+  return buildBaseSystem(language) + `Summarize a 1-on-1 session.
 
 - Card blurb: 1-2 plain sentences, max 25 words, no jargon — shown as preview on the series card
 - Each takeaway: a few words, not a sentence

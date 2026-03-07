@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Markdown from "react-markdown";
 
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
+  /** Hide from the chat UI (e.g. synthetic seed messages) */
   hidden?: boolean;
+  /** Exclude from the messages array sent to the AI (e.g. UI-language greeting) */
+  hiddenFromAI?: boolean;
 }
 
 interface ChatPanelProps {
@@ -35,7 +39,28 @@ export function ChatPanel({ messages, isLoading }: ChatPanelProps) {
                   : "bg-transparent text-foreground"
               }`}
             >
-              <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+              {msg.role === "assistant" ? (
+                <div className="text-sm">
+                <Markdown
+                  components={{
+                    p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
+                    ul: ({ children }) => <ul className="list-disc pl-4 mb-1 space-y-0.5">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal pl-4 mb-1 space-y-0.5">{children}</ol>,
+                    li: ({ children }) => <li>{children}</li>,
+                    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                    em: ({ children }) => <em className="italic">{children}</em>,
+                    h1: ({ children }) => <p className="font-semibold mb-1">{children}</p>,
+                    h2: ({ children }) => <p className="font-semibold mb-1">{children}</p>,
+                    h3: ({ children }) => <p className="font-medium mb-0.5">{children}</p>,
+                    code: ({ children }) => <code className="bg-muted rounded px-1 text-xs font-mono">{children}</code>,
+                  }}
+                >
+                  {msg.content}
+                </Markdown>
+                </div>
+              ) : (
+                <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+              )}
             </div>
           </div>
         ))}

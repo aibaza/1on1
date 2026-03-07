@@ -52,11 +52,12 @@ const config = {
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
 
-        // Fetch tenant for content language
+        // Fetch tenant for content language (stored in settings.preferredLanguage JSONB)
         const tenant = await adminDb.query.tenants.findFirst({
           where: (t, { eq }) => eq(t.id, user.tenantId),
-          columns: { contentLanguage: true },
+          columns: { settings: true },
         });
+        const tenantSettings = (tenant?.settings ?? {}) as Record<string, unknown>;
 
         return {
           id: user.id,
@@ -66,7 +67,7 @@ const config = {
           role: user.role,
           emailVerified: user.emailVerified,
           uiLanguage: user.language ?? "en",
-          contentLanguage: tenant?.contentLanguage ?? "en",
+          contentLanguage: (tenantSettings.preferredLanguage as string | undefined) ?? "en",
         };
       },
     }),
@@ -87,13 +88,14 @@ const config = {
           return false;
         }
 
-        // Set language claims for OAuth users
+        // Set language claims for OAuth users (contentLanguage from settings.preferredLanguage)
         const tenant = await adminDb.query.tenants.findFirst({
           where: (t, { eq }) => eq(t.id, existingUser.tenantId),
-          columns: { contentLanguage: true },
+          columns: { settings: true },
         });
+        const oauthTenantSettings = (tenant?.settings ?? {}) as Record<string, unknown>;
         user.uiLanguage = existingUser.language ?? "en";
-        user.contentLanguage = tenant?.contentLanguage ?? "en";
+        user.contentLanguage = (oauthTenantSettings.preferredLanguage as string | undefined) ?? "en";
 
         return true;
       }
@@ -119,9 +121,10 @@ const config = {
           token.uiLanguage = dbUser.language ?? "en";
           const tenant = await adminDb.query.tenants.findFirst({
             where: (t, { eq }) => eq(t.id, dbUser.tenantId),
-            columns: { contentLanguage: true },
+            columns: { settings: true },
           });
-          token.contentLanguage = tenant?.contentLanguage ?? "en";
+          const jwtTenantSettings = (tenant?.settings ?? {}) as Record<string, unknown>;
+          token.contentLanguage = (jwtTenantSettings.preferredLanguage as string | undefined) ?? "en";
         }
       }
 

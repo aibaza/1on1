@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth/config";
-import { withTenantContext } from "@/lib/db/tenant-context";
+import { withTenantContext, type TransactionClient } from "@/lib/db/tenant-context";
 import { canManageTemplates } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
 import {
@@ -114,14 +114,153 @@ export async function POST(request: Request) {
   }
   const importedPayload = result.data;
 
-  // 7-8. Atomic insert inside withTenantContext
+  // Optional: update an existing template instead of creating a new one
+  const targetTemplateId =
+    body !== null &&
+    typeof body === "object" &&
+    "targetTemplateId" in body &&
+    typeof (body as Record<string, unknown>).targetTemplateId === "string"
+      ? ((body as Record<string, unknown>).targetTemplateId as string)
+      : null;
+
+  // Helper: insert sections + questions under a given templateId, returning the template row
+  async function insertSectionsAndQuestions(
+    tx: TransactionClient,
+    templateId: string,
+    tenantId: string
+  ) {
+    const sectionIdBySortOrder = new Map<number, string>();
+    for (const section of importedPayload.sections) {
+      const [sec] = await tx
+        .insert(templateSections)
+        .values({
+          templateId,
+          tenantId,
+          name: section.name,
+          description: section.description ?? null,
+          sortOrder: section.sortOrder,
+        })
+        .returning();
+      sectionIdBySortOrder.set(section.sortOrder, sec.id);
+    }
+
+    // Flatten questions across all sections, sorted by global sortOrder.
+    // conditionalOnQuestionSortOrder references this global flat list.
+    const allQuestions = importedPayload.sections
+      .flatMap((s) =>
+        s.questions.map((q) => ({ ...q, sectionSortOrder: s.sortOrder }))
+      )
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+
+    const questionIdBySortOrder = new Map<number, string>();
+    for (const q of allQuestions) {
+      const sectionId = sectionIdBySortOrder.get(q.sectionSortOrder)!;
+      const conditionalOnQuestionId =
+        q.conditionalOnQuestionSortOrder !== null
+          ? (questionIdBySortOrder.get(q.conditionalOnQuestionSortOrder) ?? null)
+          : null;
+
+      const [inserted] = await tx
+        .insert(templateQuestions)
+        .values({
+          templateId,
+          sectionId,
+          questionText: q.questionText,
+          helpText: q.helpText ?? null,
+          answerType: q.answerType,
+          answerConfig: q.answerConfig ?? {},
+          isRequired: q.isRequired,
+          sortOrder: q.sortOrder,
+          scoreWeight: String(q.scoreWeight),
+          conditionalOnQuestionId,
+          conditionalOperator: q.conditionalOperator ?? null,
+          conditionalValue: q.conditionalValue ?? null,
+        })
+        .returning();
+
+      questionIdBySortOrder.set(q.sortOrder, inserted.id);
+    }
+  }
+
+  // 7-8. Atomic insert/update inside withTenantContext
   try {
     const created = await withTenantContext(
       session.user.tenantId,
       session.user.id,
       async (tx) => {
-        // Conflict check: name must be unique among non-archived templates
-        const existing = await tx
+        if (targetTemplateId) {
+          // Update mode: replace content of an existing template
+          const [existing] = await tx
+            .select({ id: questionnaireTemplates.id })
+            .from(questionnaireTemplates)
+            .where(
+              and(
+                eq(questionnaireTemplates.id, targetTemplateId),
+                eq(questionnaireTemplates.tenantId, session.user.tenantId),
+                eq(questionnaireTemplates.isArchived, false)
+              )
+            )
+            .limit(1);
+
+          if (!existing) {
+            return NextResponse.json(
+              { error: "Template not found" },
+              { status: 404 }
+            );
+          }
+
+          // Archive all existing non-archived sections and questions
+          await tx
+            .update(templateSections)
+            .set({ isArchived: true })
+            .where(
+              and(
+                eq(templateSections.templateId, targetTemplateId),
+                eq(templateSections.isArchived, false)
+              )
+            );
+          await tx
+            .update(templateQuestions)
+            .set({ isArchived: true })
+            .where(
+              and(
+                eq(templateQuestions.templateId, targetTemplateId),
+                eq(templateQuestions.isArchived, false)
+              )
+            );
+
+          // Insert fresh sections and questions
+          await insertSectionsAndQuestions(tx, targetTemplateId, session.user.tenantId);
+
+          // Update template header
+          const [updated] = await tx
+            .update(questionnaireTemplates)
+            .set({
+              name: importName,
+              description: importedPayload.description ?? null,
+              updatedAt: new Date(),
+            })
+            .where(eq(questionnaireTemplates.id, targetTemplateId))
+            .returning();
+
+          await logAuditEvent(tx, {
+            tenantId: session.user.tenantId,
+            actorId: session.user.id,
+            action: "template_updated",
+            resourceType: "template",
+            resourceId: targetTemplateId,
+            metadata: {
+              name: importName,
+              sourceLanguage: importedPayload.language,
+              via: "ai_editor",
+            },
+          });
+
+          return updated;
+        }
+
+        // Create mode: conflict check + insert new template
+        const conflictCheck = await tx
           .select({ id: questionnaireTemplates.id })
           .from(questionnaireTemplates)
           .where(
@@ -133,7 +272,7 @@ export async function POST(request: Request) {
           )
           .limit(1);
 
-        if (existing.length > 0) {
+        if (conflictCheck.length > 0) {
           throw new ConflictError(importName);
         }
 
@@ -150,61 +289,8 @@ export async function POST(request: Request) {
           })
           .returning();
 
-        // Insert sections, build sortOrder → sectionId map
-        const sectionIdBySortOrder = new Map<number, string>();
-        for (const section of importedPayload.sections) {
-          const [sec] = await tx
-            .insert(templateSections)
-            .values({
-              templateId: template.id,
-              tenantId: session.user.tenantId,
-              name: section.name,
-              description: section.description ?? null,
-              sortOrder: section.sortOrder,
-            })
-            .returning();
-          sectionIdBySortOrder.set(section.sortOrder, sec.id);
-        }
+        await insertSectionsAndQuestions(tx, template.id, session.user.tenantId);
 
-        // Flatten questions across all sections, sorted by global sortOrder.
-        // conditionalOnQuestionSortOrder references this global flat list.
-        const allQuestions = importedPayload.sections
-          .flatMap((s) =>
-            s.questions.map((q) => ({ ...q, sectionSortOrder: s.sortOrder }))
-          )
-          .sort((a, b) => a.sortOrder - b.sortOrder);
-
-        const questionIdBySortOrder = new Map<number, string>();
-        for (const q of allQuestions) {
-          const sectionId = sectionIdBySortOrder.get(q.sectionSortOrder)!;
-          const conditionalOnQuestionId =
-            q.conditionalOnQuestionSortOrder !== null
-              ? (questionIdBySortOrder.get(q.conditionalOnQuestionSortOrder) ??
-                null)
-              : null;
-
-          const [inserted] = await tx
-            .insert(templateQuestions)
-            .values({
-              templateId: template.id,
-              sectionId,
-              questionText: q.questionText,
-              helpText: q.helpText ?? null,
-              answerType: q.answerType,
-              answerConfig: q.answerConfig ?? {},
-              isRequired: q.isRequired,
-              sortOrder: q.sortOrder,
-              scoreWeight: String(q.scoreWeight),
-              conditionalOnQuestionId,
-              conditionalOperator: q.conditionalOperator ?? null,
-              conditionalValue: q.conditionalValue ?? null,
-            })
-            .returning();
-
-          questionIdBySortOrder.set(q.sortOrder, inserted.id);
-        }
-
-        // Audit log inside the transaction so it rolls back on failure
         await logAuditEvent(tx, {
           tenantId: session.user.tenantId,
           actorId: session.user.id,
@@ -221,9 +307,11 @@ export async function POST(request: Request) {
       }
     );
 
+    if (created instanceof NextResponse) return created;
+
     return NextResponse.json(
       { templateId: created.id, name: created.name },
-      { status: 201 }
+      { status: targetTemplateId ? 200 : 201 }
     );
   } catch (error) {
     if (error instanceof ConflictError) {

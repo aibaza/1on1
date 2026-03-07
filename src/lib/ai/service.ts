@@ -17,7 +17,7 @@ import {
 } from "./schemas/template-chat";
 import type { SessionContext } from "./context";
 import type { TemplateExport } from "../templates/export-schema";
-import { BASE_SYSTEM } from "./prompts/base";
+import { buildBaseSystem } from "./prompts/base";
 import {
   buildSummarySystemPrompt,
   buildSummaryUserPrompt,
@@ -54,7 +54,7 @@ export function withLanguageInstruction(
 ): string {
   if (!language || language === "en") return systemPrompt;
   const languageName = LANGUAGE_NAMES[language] || language;
-  return `${systemPrompt}\n\nIMPORTANT: Respond entirely in ${languageName}. All text content must be in ${languageName}.`;
+  return `${systemPrompt}\n\nORGANIZATION LANGUAGE — MANDATORY: All output text must be in ${languageName}. This applies to every field: summaries, takeaways, action items, nudges, section names, question text — everything. The session participants may have written answers in any language; ignore that and always respond in ${languageName}.`;
 }
 
 /**
@@ -71,7 +71,7 @@ export async function generateSummary(
     const { output } = await generateText({
       model: models.summary,
       output: Output.object({ schema: summarySchema }),
-      system: withLanguageInstruction(buildSummarySystemPrompt(), language),
+      system: buildSummarySystemPrompt(language),
       prompt: buildSummaryUserPrompt(context),
     });
 
@@ -97,7 +97,7 @@ export async function generateManagerAddendum(
   language?: string
 ): Promise<AIManagerAddendum> {
   try {
-    const systemPrompt = BASE_SYSTEM + `Confidential manager-only addendum. NOT visible to the report.
+    const systemPrompt = buildBaseSystem(language) + `Confidential manager-only addendum. NOT visible to the report.
 
 - Sentiment: 1 sentence
 - Patterns: a few words each, only if real
@@ -153,7 +153,7 @@ export async function generateManagerAddendum(
     const { output } = await generateText({
       model: models.managerAddendum,
       output: Output.object({ schema: managerAddendumSchema }),
-      system: withLanguageInstruction(systemPrompt, language),
+      system: systemPrompt,
       prompt: parts.join("\n"),
     });
 
@@ -182,7 +182,7 @@ export async function generateNudges(
     const { output } = await generateText({
       model: models.nudges,
       output: Output.object({ schema: nudgesSchema }),
-      system: withLanguageInstruction(buildNudgesSystemPrompt(), language),
+      system: buildNudgesSystemPrompt(language),
       prompt: buildNudgesUserPrompt(context),
     });
 
@@ -212,7 +212,7 @@ export async function generateActionSuggestions(
     const { output } = await generateText({
       model: models.actionSuggestions,
       output: Output.object({ schema: actionSuggestionsSchema }),
-      system: withLanguageInstruction(buildActionSuggestionsSystemPrompt(), language),
+      system: buildActionSuggestionsSystemPrompt(language),
       prompt: buildActionSuggestionsUserPrompt(context, summary),
     });
 
@@ -246,19 +246,24 @@ export async function generateActionSuggestions(
 export async function generateTemplateChatTurn(
   messages: ModelMessage[],
   currentTemplate: TemplateExport | null,
-  language?: string
+  contentLanguage?: string,
+  uiLanguage?: string
 ): Promise<ChatTurnResponse> {
   try {
+    // Language instruction is embedded in the system prompt with full nuance:
+    // conversation in uiLanguage, template content in contentLanguage.
+    // withLanguageInstruction is intentionally NOT called here — it would override
+    // the nuanced instruction with a blanket "respond entirely in X".
     const systemPrompt = buildTemplateEditorSystemPrompt(
       currentTemplate ?? undefined,
-      language
+      contentLanguage,
+      uiLanguage
     );
-    const finalSystemPrompt = withLanguageInstruction(systemPrompt, language);
 
     const { object } = await generateObject({
       model: models.templateEditor,
       schema: templateChatResponseSchema,
-      system: finalSystemPrompt,
+      system: systemPrompt,
       messages,
     });
 

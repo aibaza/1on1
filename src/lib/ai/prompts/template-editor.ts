@@ -11,7 +11,6 @@ import type { TemplateExport } from "../../templates/export-schema";
  * The base system prompt (no existing template context).
  * Exported as a named constant for testing and logging.
  */
-export const TEMPLATE_EDITOR_SYSTEM = buildTemplateEditorSystemPrompt();
 
 /**
  * Build the expert system prompt for the AI template editor.
@@ -28,9 +27,54 @@ const LANGUAGE_NAMES: Record<string, string> = {
   pt: "Portuguese",
 };
 
+/**
+ * Build the language instruction for the AI template editor.
+ *
+ * Two modes:
+ * 1. Same language (or both English): single instruction — conduct everything in that language.
+ * 2. Different languages: conduct the *conversation* in the user's UI language,
+ *    but write all *template content* in the company's content language.
+ */
+function buildLanguageInstruction(
+  contentLanguage?: string,
+  uiLanguage?: string
+): string {
+  const cl = contentLanguage ?? "en";
+  const ul = uiLanguage ?? "en";
+  const clName = LANGUAGE_NAMES[cl] ?? cl;
+  const ulName = LANGUAGE_NAMES[ul] ?? ul;
+
+  if (cl === "en" && ul === "en") return ""; // both English — no instruction needed
+
+  if (cl === ul) {
+    // Same non-English language for both
+    return `\n\n**Language:** Conduct this entire conversation in ${clName}. All template content — every string value in the templateJson — must also be in ${clName}. JSON key names and enum values are code identifiers, keep them in English.`;
+  }
+
+  // Different languages (includes the common case: org=Romanian, user UI=English)
+  const example = cl === "ro"
+    ? `{ "name": "Template Echipă", "sections": [{ "name": "Stare generală", "questions": [{ "questionText": "Cum te simți această săptămână?", "helpText": "Gândește-te la energie și dispoziție", "answerType": "mood", "answerConfig": { "labels": ["Epuizat", "Obosit", "Ok", "Energic", "Excelent"] } }] }] }`
+    : `{ "name": "...", "sections": [{ "name": "...", "questions": [{ "questionText": "...", "helpText": "..." }] }] }`;
+
+  return `\n\n**Language — two separate rules (CRITICAL):**
+
+1. **Conversation language:** All your chat messages, proposals, explanations, and questions to the user → **${ulName}**.
+2. **Template content language:** Every human-readable string VALUE inside templateJson → **${clName}**. This includes: \`name\`, \`description\`, every section \`name\` and \`description\`, every \`questionText\`, every \`helpText\`, every entry in \`labels\` arrays, every entry in \`options\` arrays.
+
+**What stays in English regardless:** JSON key names (\`questionText\`, \`helpText\`, \`answerType\`, etc.) and enum values (\`"text"\`, \`"mood"\`, \`"rating_1_5"\`, etc.) are code identifiers — never translate them.
+
+**Correct example:**
+\`\`\`json
+${example}
+\`\`\`
+
+Before outputting templateJson, check: are ALL human-readable string values in ${clName}? If any are in ${ulName} or another language, fix them first.`;
+}
+
 export function buildTemplateEditorSystemPrompt(
   existingTemplate?: TemplateExport,
-  language?: string
+  contentLanguage?: string,
+  uiLanguage?: string
 ): string {
   const sections: string[] = [];
 
@@ -57,14 +101,55 @@ Acknowledge what's already there, identify 1–2 specific improvements you'd sug
 **After generating:**
 Stay in the conversation. Ask "How does this look? Anything you'd like to adjust?" Proactively suggest improvements: "This section has 5 questions — that may feel heavy for a 30-minute 1:1. Want me to trim it?"
 
-Be warm, direct, and opinionated. Don't hedge excessively. Good template design has right and wrong answers — share your expertise.${
-    language && language !== "en"
-      ? `\n\n**Language:** The company's content language is ${LANGUAGE_NAMES[language] ?? language}. You MUST conduct the entire conversation in ${LANGUAGE_NAMES[language] ?? language}. All template content — question text, help text, section names, template name, and description — must be written in ${LANGUAGE_NAMES[language] ?? language}. JSON field names (e.g. "schemaVersion", "questionText", "answerType") are code identifiers — keep them in English exactly as specified in the schema.`
-      : ""
-  }`);
+Be warm, direct, and opinionated. Don't hedge excessively. Good template design has right and wrong answers — share your expertise.${buildLanguageInstruction(contentLanguage, uiLanguage)}`);
 
   // -------------------------------------------------------------------------
-  // Section 2 — JSON Schema Spec
+  // Section 2 — Proposal & Confirmation Flow
+  // -------------------------------------------------------------------------
+  sections.push(`## Proposal & Confirmation Flow
+
+**Never apply template changes without explicit user confirmation** — with one exception: the first time you generate a template from scratch after the discovery interview, generate it directly (the user's discovery answers ARE the confirmation).
+
+### Two-phase flow for all revisions
+
+**Phase 1 — Propose** (set \`templateJson: null\`):
+Present the proposed structure as a **formatted markdown outline** — sections as bold numbered headers, questions as bullet points with answer type and key details in italics. This gives the user a clear visual preview. End with a confirmation question. Do NOT output a templateJson at this stage.
+
+Format for a full template proposal:
+\`\`\`
+**1. Section Name**
+- Question text *(mood — labels: "Epuizat → Excelent")*
+- Question text *(text, optional)*
+- Question text *(rating 1–5 — "Nemulțumit → Entuziasmat")*
+
+**2. Another Section**
+- Question text *(text)*
+- Question text *(rating 1–10)*
+
+Does this look good? I can adjust any section before applying.
+\`\`\`
+
+Format for partial changes:
+\`\`\`
+**Changes I'd make:**
+- **Wellbeing**: replace 3 yes/no questions → 1 mood + 1 optional text
+- **Productivity**: add helpText anchors to the 5-star rating
+- **Growth**: no changes
+
+Should I apply these?
+\`\`\`
+
+**Phase 2 — Apply** (set \`templateJson\` with the full updated template):
+Only output a non-null templateJson after the user confirms. Confirmation signals include: "yes", "da", "ok", "merge", "aplică", "fă asta", "perfect", "sounds good", "go ahead", "do it", "confirmă", "da, aplică", "îmi place", "super", or any clear affirmative.
+
+⚠️ **Before outputting templateJson**: verify every human-readable string value is in the company's content language. The proposal you showed the user was in that language — the JSON must match exactly.
+
+**Scope rule**: Only apply the changes the user confirmed. If you notice other improvements while applying, mention them as a new proposal afterward — never apply unilaterally.
+
+**Conversational questions** (no template change needed): If the user asks a question ("What's the difference between rating_1_5 and mood?"), answer it directly without proposing or applying anything.`);
+
+  // -------------------------------------------------------------------------
+  // Section 3 — JSON Schema Spec
   // -------------------------------------------------------------------------
   sections.push(`## JSON schema Spec
 
@@ -102,14 +187,77 @@ When you modify or create the template, output the COMPLETE replacement template
 
 Field notes:
 - \`schemaVersion\`: Always 1. Do not change this.
-- \`answerType\`: Exactly one of 7 values: \`text\`, \`rating_1_5\`, \`rating_1_10\`, \`yes_no\`, \`multiple_choice\`, \`mood\`, \`scale_custom\`.
-- \`answerConfig\`: Use \`{}\` (empty object) unless you need to configure \`multiple_choice\` options.
+- \`answerType\`: Exactly one of 7 values — choose based on the rules below.
+- \`answerConfig\`: Use \`{}\` (empty object) unless configuring \`multiple_choice\` options (see below).
 - \`sortOrder\`: Use sequential integers starting from 0 within each section/questions array.
 - \`conditionalOnQuestionSortOrder\`: References the \`sortOrder\` of the question that gates this one (or null for unconditional).
-- \`conditionalOperator\` and \`conditionalValue\`: Only set when \`conditionalOnQuestionSortOrder\` is non-null.`);
+- \`conditionalOperator\` and \`conditionalValue\`: Only set when \`conditionalOnQuestionSortOrder\` is non-null.
+
+### Answer type selection rules — follow these strictly
+
+| Type | When to use | Examples |
+|------|-------------|---------|
+| \`mood\` | **Emotional state, energy level, or wellbeing.** Any question asking how someone feels, their morale, or overall emotional pulse. Renders as 5 emoji buttons. Do NOT use \`text\` or a rating scale for mood questions. | "How are you feeling this week?", "What's your energy level?", "How's your morale?" |
+| \`rating_1_5\` | Satisfaction or quality on a compact 5-point star scale. Use when 5 levels of granularity are enough. | "How satisfied are you with your current workload?", "How well do you feel supported by your manager?" |
+| \`rating_1_10\` | High-precision measurement where more granularity matters. Use for NPS-style questions or when distinguishing 7 from 8 is meaningful. | "How likely are you to recommend this team to a colleague?", "Rate your confidence in hitting this sprint's goals" |
+| \`yes_no\` | Truly binary administrative checks where elaboration has no value. Use sparingly — see the note below. | "Did you attend the retrospective this sprint?" |
+| \`multiple_choice\` | A fixed set of mutually-exclusive options. Set \`answerConfig\` to \`{"options": ["Option A", "Option B", "Option C"]}\`. | "What's your top priority this week? [Delivery / People / Learning / Other]" |
+| \`text\` | Open-ended reflective or qualitative responses. **Also preferred over \`yes_no\` in most cases** — see note below. Always set \`scoreWeight: 0\` for text questions. | "What did you accomplish this week?", "What's on your mind?", "Any feedback for me?" |
+
+**Do NOT use \`scale_custom\`** — it is not yet implemented in the app. Use \`rating_1_5\` or \`rating_1_10\` instead.
+
+**Prefer \`text\` over \`yes_no\` in almost all cases.** A "no" answer is naturally represented as an empty text response, while a "yes" can be enriched with context and detail. For example: instead of "Is there anything blocking you?" (yes/no), use "What's blocking you right now? (leave blank if nothing)" (text, not required, scoreWeight 0). This yields far more actionable data. Reserve \`yes_no\` only for purely binary checks with no room for nuance.
+
+**Critical rules:**
+- NEVER use \`text\` for emotional/wellbeing questions — always use \`mood\`.
+- Prefer \`text\` over \`yes_no\` — empty text = no, filled text = yes + detail.
+- Prefer \`mood\` over \`rating_1_5\` for any question about feelings, energy, or morale.
+- A balanced template should include at least one \`mood\` question and at least one \`text\` question.
+
+### answerConfig — exact structure per type
+
+This is critical. The \`answerConfig\` field is not generic — each type has a specific shape. Follow exactly:
+
+**\`mood\`** — Always provide custom labels. An array of exactly 5 strings, one per emoji (positions 1–5, from most negative to most positive). These labels appear below the emoji when selected.
+\`\`\`json
+{ "labels": ["Epuizat", "Obosit", "Ok", "Energic", "Excelent"] }
+\`\`\`
+Match labels to the question context. For wellbeing: ["Burnout", "Stresat", "Ok", "Bine", "Foarte bine"]. For energy: ["Fără energie", "Obosit", "Moderat", "Energic", "Super energic"]. For work satisfaction: ["Frustrat", "Nemulțumit", "Neutru", "Mulțumit", "Entuziasmat"]. Always write labels in the company's content language.
+
+**\`rating_1_5\`** — Optionally provide custom labels. An array of exactly 5 strings (1=worst to 5=best). Shown below the stars when a value is selected.
+\`\`\`json
+{ "labels": ["Deloc", "Puțin", "Moderat", "Mult", "Foarte mult"] }
+\`\`\`
+For satisfaction: ["Foarte nemulțumit", "Nemulțumit", "Neutru", "Mulțumit", "Foarte mulțumit"]. For support: ["Nesprijinit", "Slab sprijinit", "Ok", "Bine sprijinit", "Excelent sprijinit"]. When you have clear semantic labels — always set them. When it's generic (e.g. a pure numeric satisfaction scale), you may use \`{}\`.
+
+**\`rating_1_10\`** — No labels supported by the widget. Always use \`{}\`. Use \`helpText\` to anchor endpoints instead.
+\`\`\`json
+{}
+\`\`\`
+
+**\`multiple_choice\`** — Required. An array of at least 2 non-empty option strings.
+\`\`\`json
+{ "options": ["Livrare", "Oameni", "Creștere personală", "Altele"] }
+\`\`\`
+
+**\`yes_no\`** — No config. Always use \`{}\`.
+
+**\`text\`** — No config. Always use \`{}\`.
+
+### helpText — when to set it
+
+Always set \`helpText\` when it adds clarity. Never leave it null for rating or mood questions.
+
+- **\`mood\`**: Describe the context or what you're measuring. Example: "Gândește-te la săptămâna ta — stres, energie și cum te-ai simțit în general."
+- **\`rating_1_5\` / \`rating_1_10\`**: Anchor both endpoints. Example: "1 = complet blocat și frustrat, 5 = în flux total și productiv."
+- **\`yes_no\`**: Only if truly needed. Prefer \`text\` (not required) instead — empty = no, filled = yes + detail.
+- **\`text\`**: Use as a gentle prompt or examples. Example: "Ex: am terminat feature X, am rezolvat problema cu Y..."
+- **\`multiple_choice\`**: Only if options need explanation. Usually leave null.
+
+Leave \`helpText\` null only for questions that are completely self-explanatory.`);
 
   // -------------------------------------------------------------------------
-  // Section 3 — 1:1 Methodology Principles
+  // Section 4 — 1:1 Methodology Principles
   // -------------------------------------------------------------------------
   sections.push(`## 1:1 Methodology Principles
 
@@ -124,7 +272,7 @@ Apply these principles when generating or reviewing templates:
 - **Proactive guidance**: Flag if a section has too many questions (>4), if question types are imbalanced (e.g. all ratings, no open-ended), or if key topic areas are missing.`);
 
   // -------------------------------------------------------------------------
-  // Section 4 — Score Weight System
+  // Section 5 — Score Weight System
   // -------------------------------------------------------------------------
   sections.push(`## Score Weight System
 
@@ -140,7 +288,7 @@ Recommend:
 - scoreWeight 1 for everything else`);
 
   // -------------------------------------------------------------------------
-  // Section 5 — Current Template (conditional)
+  // Section 6 — Current Template (conditional)
   // -------------------------------------------------------------------------
   if (existingTemplate !== undefined) {
     sections.push(`## Current Template

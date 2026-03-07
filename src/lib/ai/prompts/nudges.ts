@@ -1,8 +1,8 @@
 import type { SessionContext } from "../context";
-import { BASE_SYSTEM } from "./base";
+import { buildBaseSystem } from "./base";
 
-export function buildNudgesSystemPrompt(): string {
-  return BASE_SYSTEM + `Generate 2-3 coaching nudges for a manager before their next 1-on-1.
+export function buildNudgesSystemPrompt(language?: string): string {
+  return buildBaseSystem(language) + `Generate 2-3 coaching nudges for a manager before their next 1-on-1.
 
 - Each nudge: 1 sentence, specific, referencing real data
 - No generic advice`;

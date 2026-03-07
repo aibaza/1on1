@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useMutation } from "@tanstack/react-query";
@@ -35,10 +35,13 @@ async function postAiChat(
   messages: ChatMessage[],
   currentTemplate: TemplateExport | null
 ): Promise<ChatTurnResponse> {
+  // Strip hiddenFromAI messages before sending — prevents UI-language greeting
+  // from contaminating the AI's language context.
+  const aiMessages = messages.filter((m) => !m.hiddenFromAI);
   const res = await fetch("/api/templates/ai-chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages, currentTemplate }),
+    body: JSON.stringify({ messages: aiMessages, currentTemplate }),
   });
   if (!res.ok) {
     throw new Error(`AI chat failed: ${res.status}`);
@@ -61,8 +64,10 @@ export function AiEditorShell({
     : t("aiEditor.chat.greetingNew");
 
   const initialMessages: ChatMessage[] = [
-    { role: "user", content: "__start__", hidden: true },
-    { role: "assistant", content: greetingText },
+    { role: "user", content: "__start__", hidden: true, hiddenFromAI: true },
+    // Greeting is shown in the user's UI language but excluded from AI context
+    // so it doesn't bias the AI towards the UI language instead of the company's content language.
+    { role: "assistant", content: greetingText, hiddenFromAI: true },
   ];
 
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
@@ -71,6 +76,40 @@ export function AiEditorShell({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [chatWidth, setChatWidth] = useState(360);
+
+  // Version history — one entry per AI-applied template change
+  const initialVersions = initialTemplate
+    ? [{ label: "v1", template: initialTemplate }]
+    : [];
+  const [versions, setVersions] = useState<{ label: string; template: TemplateExport }[]>(initialVersions);
+  const [selectedVersionIdx, setSelectedVersionIdx] = useState<number | null>(
+    initialTemplate ? 0 : null
+  );
+  const isDragging = useRef(false);
+
+  const handleDragStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    isDragging.current = true;
+    const startX = e.clientX;
+    const startWidth = chatWidth;
+
+    function onMouseMove(ev: MouseEvent) {
+      if (!isDragging.current) return;
+      const delta = startX - ev.clientX;
+      const newWidth = Math.min(600, Math.max(240, startWidth + delta));
+      setChatWidth(newWidth);
+    }
+
+    function onMouseUp() {
+      isDragging.current = false;
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    }
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+  }, [chatWidth]);
 
   const chatMutation = useMutation({
     mutationFn: ({
@@ -87,6 +126,12 @@ export function AiEditorShell({
       ]);
       if (result.templateJson !== null) {
         setCurrentTemplate(result.templateJson);
+        setVersions((prev) => {
+          const newLabel = `v${prev.length + 1}`;
+          const next = [...prev, { label: newLabel, template: result.templateJson! }];
+          setSelectedVersionIdx(next.length - 1);
+          return next;
+        });
       }
     },
     onError: () => {
@@ -111,37 +156,21 @@ export function AiEditorShell({
     mutationFn: async () => {
       if (!currentTemplate) throw new Error("No template to save");
 
-      if (templateId) {
-        // Update existing template via import (replaces with fresh data)
-        const res = await fetch("/api/templates/import", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            payload: currentTemplate,
-            importName: currentTemplate.name,
-          }),
-        });
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error ?? "Save failed");
-        }
-        return res.json();
-      } else {
-        // Create new template via import
-        const res = await fetch("/api/templates/import", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            payload: currentTemplate,
-            importName: currentTemplate.name,
-          }),
-        });
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error ?? "Save failed");
-        }
-        return res.json();
+      const res = await fetch("/api/templates/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          payload: currentTemplate,
+          importName: currentTemplate.name,
+          // When editing an existing template, replace its content in-place
+          ...(templateId ? { targetTemplateId: templateId } : {}),
+        }),
+      });
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string; conflict?: boolean; name?: string };
+        throw new Error(data.error ?? "Save failed");
       }
+      return res.json();
     },
     onSuccess: () => {
       toast.success(t("aiEditor.saveSuccess"));
@@ -155,9 +184,25 @@ export function AiEditorShell({
     saveMutation.mutate();
   }
 
+  function handleVersionSelect(idx: number) {
+    const v = versions[idx];
+    setSelectedVersionIdx(idx);
+    setCurrentTemplate(v.template);
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "user",
+        content: `[System context: user switched the template preview to ${v.label}. This version is now the active template context.]`,
+        hidden: true,
+      },
+    ]);
+  }
+
   function handleReset() {
     setMessages(initialMessages);
     setCurrentTemplate(initialTemplate ?? null);
+    setVersions(initialVersions);
+    setSelectedVersionIdx(initialTemplate ? 0 : null);
     setResetDialogOpen(false);
   }
 
@@ -203,15 +248,37 @@ export function AiEditorShell({
       {/* Main split-screen */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left: Template Preview */}
-        <div className="flex-1 border-r overflow-y-auto p-6">
-          <h2 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wide">
-            {t("aiEditor.preview.title")}
-          </h2>
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+              {t("aiEditor.preview.title")}
+            </h2>
+            {versions.length > 1 && (
+              <select
+                value={selectedVersionIdx ?? versions.length - 1}
+                onChange={(e) => handleVersionSelect(Number(e.target.value))}
+                className="text-xs border rounded px-2 py-1 bg-background text-foreground cursor-pointer"
+              >
+                {versions.map((v, i) => (
+                  <option key={i} value={i}>
+                    {v.label}
+                    {v.template.name ? ` — ${v.template.name}` : ""}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
           <TemplatePreviewPanel template={currentTemplate} />
         </div>
 
-        {/* Right: Chat — fixed narrow column */}
-        <div className="w-[360px] shrink-0 flex flex-col overflow-hidden">
+        {/* Drag handle */}
+        <div
+          className="w-1 shrink-0 cursor-col-resize hover:bg-primary/30 active:bg-primary/50 transition-colors"
+          onMouseDown={handleDragStart}
+        />
+
+        {/* Right: Chat — resizable column */}
+        <div className="shrink-0 flex flex-col overflow-hidden" style={{ width: chatWidth }}>
           <ChatPanel messages={messages} isLoading={isLoading} />
           <div className="border-t p-4 shrink-0">
             <ChatInput onSend={handleSend} disabled={isLoading} />
