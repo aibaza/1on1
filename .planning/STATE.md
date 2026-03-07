@@ -4,8 +4,8 @@ milestone: v1.2
 milestone_name: AI-Ready Templates
 status: verifying
 stopped_at: Completed 15-04-PLAN.md — Phase 15 fully verified and complete
-last_updated: "2026-03-07T08:03:33.590Z"
-last_activity: "2026-03-07 -- 15-04 checkpoint: manual RBAC verification for EXP-01"
+last_updated: "2026-03-07T08:08:45.882Z"
+last_activity: 2026-03-07 -- 15-04 verified complete (user approved export RBAC and schema docs)
 progress:
   total_phases: 7
   completed_phases: 5
