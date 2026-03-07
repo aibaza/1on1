@@ -33,6 +33,11 @@
             "type": "command",
             "command": "/home/dc/work/1on1/scripts/wiki-phase-hook.sh",
             "statusMessage": "Checking phase wiki..."
+          },
+          {
+            "type": "command",
+            "command": "/home/dc/work/1on1/scripts/hooks/1on1-progress-hook.sh",
+            "statusMessage": "Checking progress milestones..."
           }
         ]
       }
