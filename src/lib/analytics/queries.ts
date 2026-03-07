@@ -465,6 +465,124 @@ export async function getTeamAverages(
     }));
 }
 
+// ---------- Session History Table ----------
+
+export interface SessionHistoryColumn {
+  id: string;
+  number: number;
+  date: string;
+}
+
+export interface SessionHistoryRow {
+  section: string;
+  question: string;
+  answerType: string;
+  /** One value per session column (null = not answered / not in that session's template) */
+  values: (number | string | null)[];
+}
+
+export interface SessionHistoryData {
+  sessions: SessionHistoryColumn[];
+  rows: SessionHistoryRow[];
+}
+
+/**
+ * Build a full question × session answer matrix for a user.
+ * All completed sessions, all answered questions, ordered by section sort order + question sort order.
+ */
+export async function getSessionHistoryTable(
+  tx: TransactionClient,
+  userId: string,
+): Promise<SessionHistoryData> {
+  // Fetch all completed sessions for this user ordered chronologically
+  const sessionRows = await tx
+    .select({
+      id: sessions.id,
+      number: sessions.sessionNumber,
+      date: sql<string>`to_char(${sessions.completedAt}, 'YYYY-MM-DD')`,
+    })
+    .from(sessions)
+    .where(
+      and(
+        eq(sessions.status, "completed"),
+        sql`${sessions.seriesId} IN (SELECT id FROM meeting_series WHERE report_id = ${userId})`,
+      ),
+    )
+    .orderBy(sessions.completedAt);
+
+  if (sessionRows.length === 0) return { sessions: [], rows: [] };
+
+  const sessionIds = sessionRows.map((s) => s.id);
+
+  // Fetch all answers for these sessions (numeric + text), with section/question metadata
+  const answerRows = await tx
+    .select({
+      sessionId: sessionAnswers.sessionId,
+      sectionName: templateSections.name,
+      sectionSort: templateSections.sortOrder,
+      questionText: templateQuestions.questionText,
+      questionSort: templateQuestions.sortOrder,
+      answerType: templateQuestions.answerType,
+      answerNumeric: sessionAnswers.answerNumeric,
+      answerText: sessionAnswers.answerText,
+      skipped: sessionAnswers.skipped,
+    })
+    .from(sessionAnswers)
+    .innerJoin(templateQuestions, eq(sessionAnswers.questionId, templateQuestions.id))
+    .innerJoin(templateSections, eq(templateQuestions.sectionId, templateSections.id))
+    .where(
+      and(
+        sql`${sessionAnswers.sessionId} IN ${sessionIds}`,
+        sql`${sessionAnswers.skipped} = false`,
+      ),
+    )
+    .orderBy(templateSections.sortOrder, templateQuestions.sortOrder);
+
+  // Build a map: sectionName+questionText -> { meta, values by sessionIndex }
+  const sessionIndexMap = new Map(sessionRows.map((s, i) => [s.id, i]));
+  const rowKey = (section: string, question: string) => `${section}|||${question}`;
+
+  const rowMap = new Map<string, {
+    section: string; sectionSort: number;
+    question: string; questionSort: number;
+    answerType: string;
+    values: (number | string | null)[];
+  }>();
+
+  for (const ans of answerRows) {
+    const key = rowKey(ans.sectionName, ans.questionText);
+    if (!rowMap.has(key)) {
+      rowMap.set(key, {
+        section: ans.sectionName,
+        sectionSort: ans.sectionSort,
+        question: ans.questionText,
+        questionSort: ans.questionSort,
+        answerType: ans.answerType,
+        values: new Array(sessionRows.length).fill(null),
+      });
+    }
+    const row = rowMap.get(key)!;
+    const idx = sessionIndexMap.get(ans.sessionId);
+    if (idx !== undefined) {
+      if (ans.answerNumeric !== null) {
+        row.values[idx] = Number(ans.answerNumeric);
+      } else if (ans.answerText) {
+        row.values[idx] = ans.answerText;
+      }
+    }
+  }
+
+  // Sort rows by section sort order then question sort order
+  const rows = Array.from(rowMap.values())
+    .sort((a, b) => a.sectionSort - b.sectionSort || a.questionSort - b.questionSort)
+    .map(({ section, question, answerType, values }) => ({ section, question, answerType, values }));
+
+  return {
+    sessions: sessionRows.map((s) => ({ id: s.id, number: s.number, date: s.date! })),
+    rows,
+  };
+}
+
 // ---------- Team Heatmap ----------
 
 /**

@@ -49,3 +49,9 @@ wiki: already up to date
 [2026-03-07T19:12:28Z] Checking commit: chore(release): v1.2.0 — AI-Ready Templates milestone
 [2026-03-07T19:26:45Z] Checking commit: feat(ai-editor): persist chat history and version snapshots per template
 [2026-03-07T19:35:36Z] Checking commit: feat(series-card): subtle sentiment tint on card background from AI assessment
+[2026-03-07T19:43:06Z] Checking commit: feat(series-card): AI assessment score 1-100 + bottom-border sentiment + sparkline rebased
+[2026-03-07T20:01:37Z] Checking commit: feat(sparkline): overlay per-question numeric sparklines on series cards
+[2026-03-07T20:07:28Z] Checking commit: fix(sparkline): normalize question answers to 1-100 scale
+[2026-03-07T20:18:42Z] Checking commit: chore(release): v1.2.1
+[2026-03-07T20:26:23Z] Checking commit: feat(analytics): background sparklines on category average cards
+[2026-03-07T20:30:32Z] Checking commit: refactor(chart-colors): extract hashSeriesColor to shared utility

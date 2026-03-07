@@ -12,7 +12,7 @@ import {
 } from "@/components/analytics/period-selector";
 import { ScoreTrendChart } from "@/components/analytics/score-trend-chart";
 import { CategoryBreakdown } from "@/components/analytics/category-breakdown";
-import { SessionComparison } from "@/components/analytics/session-comparison";
+import { SessionHistoryTable } from "@/components/analytics/session-history-table";
 import { VelocityChart } from "@/components/analytics/velocity-chart";
 import { AdherenceChart } from "@/components/analytics/adherence-chart";
 import { CsvExportButton } from "@/components/analytics/csv-export-button";
@@ -22,6 +22,7 @@ import type {
   SessionComparisonRow,
   VelocityPoint,
   AdherencePoint,
+  SessionHistoryData,
 } from "@/lib/analytics/queries";
 
 interface TargetUser {
@@ -45,6 +46,7 @@ interface AnalyticsApiResponse {
   comparison: SessionComparisonRow[] | null;
   velocity: VelocityPoint[];
   adherence: AdherencePoint[];
+  historyTable: SessionHistoryData;
 }
 
 interface IndividualAnalyticsClientProps {
@@ -54,6 +56,7 @@ interface IndividualAnalyticsClientProps {
   initialSessions: SessionOption[];
   initialVelocity: VelocityPoint[];
   initialAdherence: AdherencePoint[];
+  initialHistoryTable: SessionHistoryData;
   targetUserId: string;
 }
 
@@ -64,6 +67,7 @@ export function IndividualAnalyticsClient({
   initialSessions,
   initialVelocity,
   initialAdherence,
+  initialHistoryTable,
   targetUserId,
 }: IndividualAnalyticsClientProps) {
   const defaultRange = periodToDateRange("3mo");
@@ -73,10 +77,7 @@ export function IndividualAnalyticsClient({
     endDate: defaultRange.endDate,
   });
 
-  const [compareIds, setCompareIds] = useState<{
-    id1: string;
-    id2: string;
-  } | null>(null);
+  const [compareIds] = useState<{ id1: string; id2: string } | null>(null);
 
   const startStr = period.startDate.toISOString().split("T")[0];
   const endStr = period.endDate.toISOString().split("T")[0];
@@ -107,6 +108,7 @@ export function IndividualAnalyticsClient({
             comparison: null,
             velocity: initialVelocity,
             adherence: initialAdherence,
+            historyTable: initialHistoryTable,
           }
         : undefined,
     staleTime: 60_000,
@@ -136,14 +138,12 @@ export function IndividualAnalyticsClient({
     staleTime: 60_000,
   });
 
-  const handleCompare = useCallback((id1: string, id2: string) => {
-    setCompareIds({ id1, id2 });
-  }, []);
 
   const scoreTrend = analyticsData?.scoreTrend ?? [];
   const categoryAverages = analyticsData?.categoryAverages ?? [];
   const sessionList = analyticsData?.sessions ?? [];
   const comparisonData = comparisonResult?.comparison ?? null;
+  const historyTable = analyticsData?.historyTable ?? { sessions: [], rows: [] };
   const velocity = analyticsData?.velocity ?? [];
   const adherence = analyticsData?.adherence ?? [];
 
@@ -251,17 +251,13 @@ export function IndividualAnalyticsClient({
         </Card>
       </div>
 
-      {/* Session comparison */}
+      {/* Full session history table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">{t("chart.sessionComparison")}</CardTitle>
+          <CardTitle className="text-base">{t("chart.sessionHistory")}</CardTitle>
         </CardHeader>
-        <CardContent>
-          <SessionComparison
-            sessions={sessionList}
-            onCompare={handleCompare}
-            comparisonData={comparisonData}
-          />
+        <CardContent className="p-0">
+          <SessionHistoryTable data={historyTable} />
         </CardContent>
       </Card>
     </div>

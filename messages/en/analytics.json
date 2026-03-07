@@ -25,6 +25,7 @@
       "actionItemVelocity": "Action Item Velocity",
       "meetingAdherence": "Meeting Adherence",
       "sessionComparison": "Session Comparison",
+      "sessionHistory": "Session History",
       "anonymizedNote": "Anonymized averages require at least 2 contributors per category to protect privacy.",
       "noData": "No completed sessions with scored answers in this period.",
       "limitedData": "Limited data ({count} contributor(s))",

@@ -8,6 +8,7 @@ import {
   getCategoryAverages,
   getActionItemVelocity,
   getMeetingAdherence,
+  getSessionHistoryTable,
 } from "@/lib/analytics/queries";
 import { periodToDateRange } from "@/lib/analytics/period";
 import { IndividualAnalyticsClient } from "./client";
@@ -71,7 +72,7 @@ export default async function IndividualAnalyticsPage({
       // Use "member" role to scope velocity/adherence to this specific user
       const effectiveRole = targetUserId === user.id ? user.role : "member";
 
-      const [scoreTrend, categoryAverages, sessionList, velocity, adherence] = await Promise.all([
+      const [scoreTrend, categoryAverages, sessionList, velocity, adherence, historyTable] = await Promise.all([
         getScoreTrend(tx, targetUserId, startDate, endDate),
         getCategoryAverages(tx, targetUserId, startDate, endDate),
         tx
@@ -92,6 +93,7 @@ export default async function IndividualAnalyticsPage({
           .orderBy(sessions.completedAt),
         getActionItemVelocity(tx, targetUserId, effectiveRole, startDate, endDate),
         getMeetingAdherence(tx, targetUserId, effectiveRole, startDate, endDate),
+        getSessionHistoryTable(tx, targetUserId),
       ]);
 
       return {
@@ -101,6 +103,7 @@ export default async function IndividualAnalyticsPage({
         sessions: sessionList.filter((s) => s.date !== null),
         velocity,
         adherence,
+        historyTable,
       };
     },
   );
@@ -115,6 +118,7 @@ export default async function IndividualAnalyticsPage({
       initialSessions={data.sessions}
       initialVelocity={data.velocity}
       initialAdherence={data.adherence}
+      initialHistoryTable={data.historyTable}
       targetUserId={targetUserId}
     />
   );

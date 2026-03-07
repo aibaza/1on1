@@ -9,7 +9,9 @@ import {
   getSessionComparison,
   getActionItemVelocity,
   getMeetingAdherence,
+  getSessionHistoryTable,
 } from "@/lib/analytics/queries";
+import type { SessionHistoryData } from "@/lib/analytics/queries";
 import { periodToDateRange } from "@/lib/analytics/period";
 
 /**
@@ -87,10 +89,9 @@ export async function GET(
         const effectiveRole = targetUserId === user.id ? user.role : "member";
 
         // Fetch analytics in parallel
-        const [scoreTrend, categoryAverages, sessionList, velocity, adherence] = await Promise.all([
+        const [scoreTrend, categoryAverages, sessionList, velocity, adherence, historyTable] = await Promise.all([
           getScoreTrend(tx, targetUserId, startDate, endDate),
           getCategoryAverages(tx, targetUserId, startDate, endDate),
-          // Get completed sessions for comparison selector
           tx
             .select({
               id: sessions.id,
@@ -109,9 +110,10 @@ export async function GET(
             .orderBy(sessions.completedAt),
           getActionItemVelocity(tx, targetUserId, effectiveRole, startDate, endDate),
           getMeetingAdherence(tx, targetUserId, effectiveRole, startDate, endDate),
+          getSessionHistoryTable(tx, targetUserId),
         ]);
 
-        // Comparison data (optional)
+        // Comparison data (optional — kept for backwards compat)
         let comparison = null;
         if (compare) {
           const [id1, id2] = compare.split(",");
@@ -127,6 +129,7 @@ export async function GET(
           comparison,
           velocity,
           adherence,
+          historyTable,
         };
       },
     );
