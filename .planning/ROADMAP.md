@@ -124,7 +124,13 @@ Plans:
   2. An admin reading the methodology docs sees the core 1:1 principles and question-quality guidance rendered in the company's content language (not hardcoded English)
   3. An admin reading the weight system docs sees how `scoreWeight` affects analytics, valid value ranges, and worked examples -- all rendered in the company's content language
   4. An admin or manager clicks "Export" on any template in the template list or builder, and a `.json` file downloads with `schemaVersion`, `language`, all question metadata (`scoreWeight`, `answerConfig`, conditional logic, section structure), and no internal tenant IDs or per-org UUIDs
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 15-01-PLAN.md — TDD: TemplateExport interface, SCHEMA_VERSION constant, buildExportPayload() with 7 unit tests (EXP-02 through EXP-05)
+- [ ] 15-02-PLAN.md — Export API route (GET /api/templates/[id]/export) + spec.json translation namespace (en + ro) + /templates/schema docs page (SPEC-01, SPEC-02, SPEC-03)
+- [ ] 15-03-PLAN.md — ExportButton component + wire into template-list.tsx and template-editor.tsx + translation keys (EXP-01)
+- [ ] 15-04-PLAN.md — Manual verification: role-gating UI check (member sees no button, admin/manager sees button + working download)
 
 ### Phase 16: Template Import
 **Goal**: Users can import a template from a portable JSON file with full visibility into what they are importing, warnings about mismatches, and actionable error messages if the file is invalid
@@ -177,6 +183,6 @@ Phase 15 (schema + export)
 | 12. UI Translation | v1.1 | 6/6 | Complete | 2026-03-06 |
 | 13. Email Translation | v1.1 | 3/3 | Complete | 2026-03-06 |
 | 14. Romanian & Quality | v1.1 | 2/2 | Complete | 2026-03-07 |
-| 15. Schema, Spec & Export | v1.2 | 0/? | Not started | - |
+| 15. Schema, Spec & Export | v1.2 | 0/4 | Not started | - |
 | 16. Template Import | v1.2 | 0/? | Not started | - |
 | 17. AI Generator & DIY Kit | v1.2 | 0/? | Not started | - |
