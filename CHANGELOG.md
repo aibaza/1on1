@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- `messages/ro/analytics.json` — fixed 16 diacritic errors (acțiune, acțiuni, eșantion, eșantioane, întâlniri, Tendința, aderență, diferență, comparație, necesită, opțiune, etc.); added `few` form to 4 ICU plural keys (memberCount, sessionCount, itemsCompleted, sampleCount)
+- `messages/ro/sessions.json` — added `few` form to 2 ICU plural keys (questionCount, answersRecorded); Romanian counts 0/2/5/19 now render correct plural surface forms
+
 ### Added
 - `createEmailTranslator` utility in `src/lib/email/translator.ts` — standalone email translator using `use-intl/core`, no Next.js request context required, falls back to `en` for unsupported locales
 - `messages/en/emails.json` — English email translation keys for all 6 email types (invite, verification, passwordReset, sessionSummary, preMeeting, agendaPrep)
