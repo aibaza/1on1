@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Phase 17 (AI Generator & DIY Kit) verified complete — all 7 verification scenarios confirmed; v1.2 milestone (AI-Ready Templates) delivered
 - `src/app/(dashboard)/templates/ai-editor/page.tsx` — server page for new template AI editor; auth + RBAC guard (admin/manager only); passes contentLanguage and userRole from session to AiEditorShell
 - `src/app/(dashboard)/templates/[id]/ai-editor/page.tsx` — server page for existing template AI editor; fetches template from DB via withTenantContext; converts to TemplateExport via buildExportPayload; passes initialTemplate and templateId to AiEditorShell
 - `src/components/templates/ai-editor/chat-input.tsx` — controlled Textarea + Send button; submits on button click or Ctrl+Enter; disabled and shows "Thinking..." when AI is loading

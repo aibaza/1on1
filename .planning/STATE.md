@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: AI-Ready Templates
 status: verifying
-stopped_at: Completed 17-05-PLAN.md (AI editor UI)
-last_updated: "2026-03-07T16:21:10.267Z"
+stopped_at: Completed 17-07-PLAN.md (Phase 17 verification — v1.2 milestone complete)
+last_updated: "2026-03-07T16:25:22.684Z"
 last_activity: 2026-03-07 -- 15-04 verified complete (user approved export RBAC and schema docs)
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 29
-  completed_plans: 28
+  completed_plans: 29
   percent: 100
 ---
 
@@ -63,6 +63,7 @@ Progress: [██████████] 100%
 | Phase 17-ai-generator-diy-kit P04 | 3 | 1 tasks | 2 files |
 | Phase 17 P06 | 3 | 2 tasks | 4 files |
 | Phase 17-ai-generator-diy-kit P05 | 286 | 2 tasks | 6 files |
+| Phase 17-ai-generator-diy-kit P07 | 2 | 1 tasks | 0 files |
 
 ## Accumulated Context
 
@@ -138,6 +139,7 @@ v1.1 decisions archived below for reference:
 - [Phase 17]: PROMPT_KIT_EXAMPLE defined inline in schema page, not imported from test files — avoids test/production coupling
 - [Phase 17-05]: ScrollArea (shadcn/ui) not installed — replaced with overflow-y-auto div in ChatPanel and TemplatePreviewPanel for identical scroll behavior
 - [Phase 17-05]: Save for both new and existing templates uses POST /api/templates/import — avoids complexity of PATCH batch-save UUID tracking; clean import creates fresh copy with AI-generated content
+- [Phase 17-ai-generator-diy-kit]: Auto-advance config auto-approves human-verify checkpoint — pre-flight (vitest/tsc/build) all exit 0; Phase 17 verification complete
 
 ### v1.2 Roadmap Decisions
 
@@ -156,6 +158,6 @@ None active.
 
 ## Session Continuity
 
-Last session: 2026-03-07T16:21:10.262Z
-Stopped at: Completed 17-05-PLAN.md (AI editor UI)
+Last session: 2026-03-07T16:25:22.680Z
+Stopped at: Completed 17-07-PLAN.md (Phase 17 verification — v1.2 milestone complete)
 Resume file: None

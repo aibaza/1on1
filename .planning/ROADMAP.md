@@ -44,7 +44,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [x] **Phase 15: Schema, Spec & Export** - JSON schema spec with methodology and weight docs, single-template portable JSON export (completed 2026-03-07)
 - [x] **Phase 16: Template Import** - JSON upload with preview, language mismatch warning, conflict resolution, field-specific validation errors (completed 2026-03-07)
-- [ ] **Phase 17: AI Generator & DIY Kit** - In-app AI template generation in company language, copyable prompt kit for external AI tools
+- [x] **Phase 17: AI Generator & DIY Kit** - In-app AI template generation in company language, copyable prompt kit for external AI tools (completed 2026-03-07)
 
 ## Phase Details
 
@@ -201,4 +201,4 @@ Phase 15 (schema + export)
 | 14. Romanian & Quality | v1.1 | 2/2 | Complete | 2026-03-07 |
 | 15. Schema, Spec & Export | v1.2 | 4/4 | Complete | 2026-03-07 |
 | 16. Template Import | 5/5 | Complete    | 2026-03-07 | - |
-| 17. AI Generator & DIY Kit | 6/7 | In Progress|  | - |
+| 17. AI Generator & DIY Kit | 7/7 | Complete   | 2026-03-07 | - |
