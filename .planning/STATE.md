@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: AI-Ready Templates
 status: verifying
-stopped_at: Completed 16-03-PLAN.md
-last_updated: "2026-03-07T08:49:58.164Z"
+stopped_at: Completed 16-04-PLAN.md
+last_updated: "2026-03-07T08:55:01.612Z"
 last_activity: 2026-03-07 -- 15-04 verified complete (user approved export RBAC and schema docs)
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 22
-  completed_plans: 20
+  completed_plans: 21
   percent: 100
 ---
 
@@ -56,6 +56,7 @@ Progress: [██████████] 100%
 | Phase 16-template-import P01 | 5 | 2 tasks | 3 files |
 | Phase 16-template-import P02 | 14 | 2 tasks | 4 files |
 | Phase 16-template-import P03 | 8 | 1 tasks | 1 files |
+| Phase 16-template-import P04 | 8 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -113,6 +114,8 @@ v1.1 decisions archived below for reference:
 - [Phase 16-template-import]: import-schema.ts uses import { z } from 'zod' consistent with all other validation files; zod alias routes to CJS
 - [Phase 16-03]: logAuditEvent called inside withTenantContext callback -- audit entry rolls back if insert fails
 - [Phase 16-03]: templateQuestions has no tenantId column -- omitted from insert values
+- [Phase 16-04]: Alert component absent from shadcn/ui install -- used inline div with Tailwind yellow classes for language mismatch warning
+- [Phase 16-04]: ImportDialog uses controlled open state (setOpen) + sibling file input -- avoids nested interactive element pitfall from DialogTrigger wrapping
 
 ### v1.2 Roadmap Decisions
 
@@ -131,6 +134,6 @@ None active.
 
 ## Session Continuity
 
-Last session: 2026-03-07T08:49:58.160Z
-Stopped at: Completed 16-03-PLAN.md
+Last session: 2026-03-07T08:55:01.608Z
+Stopped at: Completed 16-04-PLAN.md
 Resume file: None
