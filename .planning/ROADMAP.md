@@ -43,7 +43,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Milestone Goal:** Give every user the tools to leverage AI as a template co-author -- in-app generator, portable JSON export/import, and a DIY prompt kit for external AI tools. All content in the company's language.
 
 - [x] **Phase 15: Schema, Spec & Export** - JSON schema spec with methodology and weight docs, single-template portable JSON export (completed 2026-03-07)
-- [ ] **Phase 16: Template Import** - JSON upload with preview, language mismatch warning, conflict resolution, field-specific validation errors
+- [x] **Phase 16: Template Import** - JSON upload with preview, language mismatch warning, conflict resolution, field-specific validation errors (completed 2026-03-07)
 - [ ] **Phase 17: AI Generator & DIY Kit** - In-app AI template generation in company language, copyable prompt kit for external AI tools
 
 ## Phase Details
@@ -191,5 +191,5 @@ Phase 15 (schema + export)
 | 13. Email Translation | v1.1 | 3/3 | Complete | 2026-03-06 |
 | 14. Romanian & Quality | v1.1 | 2/2 | Complete | 2026-03-07 |
 | 15. Schema, Spec & Export | v1.2 | 4/4 | Complete | 2026-03-07 |
-| 16. Template Import | 4/5 | In Progress|  | - |
+| 16. Template Import | 5/5 | Complete   | 2026-03-07 | - |
 | 17. AI Generator & DIY Kit | v1.2 | 0/? | Not started | - |

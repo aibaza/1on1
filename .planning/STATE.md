@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: AI-Ready Templates
 status: verifying
-stopped_at: Completed 16-04-PLAN.md
-last_updated: "2026-03-07T08:55:01.612Z"
+stopped_at: Completed 16-05-PLAN.md
+last_updated: "2026-03-07T08:56:25.129Z"
 last_activity: 2026-03-07 -- 15-04 verified complete (user approved export RBAC and schema docs)
 progress:
   total_phases: 7
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 22
-  completed_plans: 21
+  completed_plans: 22
   percent: 100
 ---
 
@@ -116,6 +116,7 @@ v1.1 decisions archived below for reference:
 - [Phase 16-03]: templateQuestions has no tenantId column -- omitted from insert values
 - [Phase 16-04]: Alert component absent from shadcn/ui install -- used inline div with Tailwind yellow classes for language mismatch warning
 - [Phase 16-04]: ImportDialog uses controlled open state (setOpen) + sibling file input -- avoids nested interactive element pitfall from DialogTrigger wrapping
+- [Phase 16-template-import]: Phase 16 (Template Import) verified complete via manual browser walkthrough of all 6 test scenarios — RBAC, happy path, language mismatch, conflict resolution, invalid file errors, dialog reset
 
 ### v1.2 Roadmap Decisions
 
@@ -134,6 +135,6 @@ None active.
 
 ## Session Continuity
 
-Last session: 2026-03-07T08:55:01.608Z
-Stopped at: Completed 16-04-PLAN.md
+Last session: 2026-03-07T08:56:17.780Z
+Stopped at: Completed 16-05-PLAN.md
 Resume file: None
