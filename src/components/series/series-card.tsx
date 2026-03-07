@@ -85,6 +85,13 @@ const statusVariant: Record<string, "default" | "secondary" | "outline"> = {
   archived: "outline",
 };
 
+const sentimentTint: Record<string, string> = {
+  positive: "bg-green-500/[0.04] dark:bg-green-500/[0.07]",
+  concerning: "bg-red-500/[0.04] dark:bg-red-500/[0.07]",
+  mixed: "bg-amber-500/[0.04] dark:bg-amber-500/[0.07]",
+  neutral: "",
+};
+
 function formatRelativeDate(
   dateStr: string,
   t: ReturnType<typeof useTranslations<"sessions">>,
@@ -170,7 +177,7 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
     (series.report.lastName?.[0] ?? "");
 
   return (
-    <Card className="group relative flex flex-col overflow-hidden transition-all duration-200 hover:border-foreground/20 hover:shadow-md">
+    <Card className={`group relative flex flex-col overflow-hidden transition-all duration-200 hover:border-foreground/20 hover:shadow-md ${sentimentTint[series.latestSummary?.sentiment ?? ""] ?? ""}`}>
       <Link href={`/sessions/${series.id}`} className="absolute inset-0 z-0" />
       <ScoreSparkline data={series.scoreHistory} id={series.id} />
       <CardHeader className="flex flex-row items-center gap-3 pb-2">
