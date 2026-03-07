@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- `src/lib/i18n/__tests__/translation-parity.test.ts` — Vitest test enforcing en/ro key parity for all 16 translation namespaces; CI fails if any key is added to en.json but not ro.json or vice versa
+
 ### Changed
 - `messages/ro/analytics.json` — fixed 16 diacritic errors (acțiune, acțiuni, eșantion, eșantioane, întâlniri, Tendința, aderență, diferență, comparație, necesită, opțiune, etc.); added `few` form to 4 ICU plural keys (memberCount, sessionCount, itemsCompleted, sampleCount)
 - `messages/ro/sessions.json` — added `few` form to 2 ICU plural keys (questionCount, answersRecorded); Romanian counts 0/2/5/19 now render correct plural surface forms
