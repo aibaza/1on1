@@ -124,6 +124,7 @@ export async function GET(request: Request) {
             sessionNumber: sessions.sessionNumber,
             questionText: templateQuestions.questionText,
             scoreWeight: templateQuestions.scoreWeight,
+            answerType: templateQuestions.answerType,
             answerNumeric: sessionAnswers.answerNumeric,
           })
           .from(sessionAnswers)
@@ -146,7 +147,9 @@ export async function GET(request: Request) {
           if (!qMap) { qMap = new Map(); questionHistoriesMap.set(r.seriesId, qMap); }
           let entry = qMap.get(r.questionText);
           if (!entry) { entry = { scoreWeight: parseFloat(r.scoreWeight ?? "1"), values: [] }; qMap.set(r.questionText, entry); }
-          entry.values.push(parseFloat(r.answerNumeric!));
+          const raw = parseFloat(r.answerNumeric!);
+          const scaled = r.answerType === "rating_1_10" ? raw * 10 : raw * 20;
+          entry.values.push(Math.min(100, scaled));
         }
 
         return seriesList.map((s) => {
