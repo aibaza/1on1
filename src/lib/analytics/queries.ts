@@ -28,6 +28,7 @@ export interface CategoryAverage {
   category: string;
   avgScore: number;
   sampleCount: number;
+  history: number[];
 }
 
 export interface SessionComparisonRow {
@@ -41,6 +42,7 @@ export interface TeamAverage {
   category: string;
   avgScore: number;
   memberCount: number;
+  history: number[];
 }
 
 export interface HeatmapDataPoint {
@@ -160,12 +162,47 @@ export async function getCategoryAverages(
     )
     .groupBy(analyticsSnapshots.metricName);
 
+  // Per-session history query (always live — used for sparklines)
+  const historyRows = await tx
+    .select({
+      sectionName: templateSections.name,
+      sessionId: sessions.id,
+      completedAt: sessions.completedAt,
+      avgScore: sql<string>`AVG(${sessionAnswers.answerNumeric}::numeric)`,
+    })
+    .from(sessionAnswers)
+    .innerJoin(templateQuestions, eq(sessionAnswers.questionId, templateQuestions.id))
+    .innerJoin(templateSections, eq(templateQuestions.sectionId, templateSections.id))
+    .innerJoin(sessions, eq(sessionAnswers.sessionId, sessions.id))
+    .where(
+      and(
+        eq(sessions.status, "completed"),
+        sql`${sessionAnswers.answerNumeric} IS NOT NULL`,
+        sql`${sessionAnswers.skipped} = false`,
+        sql`${sessions.completedAt} >= ${startDate}::date`,
+        sql`${sessions.completedAt} <= ${endDate}::date + interval '1 day'`,
+        sql`${sessions.seriesId} IN (SELECT id FROM meeting_series WHERE report_id = ${userId})`,
+        sql`${templateQuestions.answerType} IN (${sql.join([...SCORABLE_ANSWER_TYPES].map((t) => sql`${t}`), sql`, `)})`,
+      ),
+    )
+    .groupBy(templateSections.name, sessions.id, sessions.completedAt)
+    .orderBy(templateSections.name, sessions.completedAt);
+
+  const historyMap = new Map<string, number[]>();
+  for (const row of historyRows) {
+    const cat = row.sectionName.trim();
+    const arr = historyMap.get(cat) ?? [];
+    arr.push(Number(row.avgScore));
+    historyMap.set(cat, arr);
+  }
+
   if (snapshots.length > 0) {
     // metricName IS the category display name (stored as section name directly)
     return snapshots.map((s) => ({
       category: s.metricName,
       avgScore: Number(s.avgScore),
       sampleCount: s.sampleCount,
+      history: historyMap.get(s.metricName) ?? [],
     }));
   }
 
@@ -208,6 +245,7 @@ export async function getCategoryAverages(
     category: r.sectionName.trim(),
     avgScore: Number(r.avgScore),
     sampleCount: r.sampleCount,
+    history: historyMap.get(r.sectionName.trim()) ?? [],
   }));
 }
 
@@ -333,6 +371,41 @@ export async function getTeamAverages(
     )
     .groupBy(analyticsSnapshots.metricName);
 
+  // Per-session history query for sparklines
+  const teamHistoryRows = await tx
+    .select({
+      sectionName: templateSections.name,
+      sessionId: sessions.id,
+      completedAt: sessions.completedAt,
+      avgScore: sql<string>`AVG(${sessionAnswers.answerNumeric}::numeric)`,
+    })
+    .from(sessionAnswers)
+    .innerJoin(templateQuestions, eq(sessionAnswers.questionId, templateQuestions.id))
+    .innerJoin(templateSections, eq(templateQuestions.sectionId, templateSections.id))
+    .innerJoin(sessions, eq(sessionAnswers.sessionId, sessions.id))
+    .innerJoin(meetingSeries, eq(sessions.seriesId, meetingSeries.id))
+    .where(
+      and(
+        eq(sessions.status, "completed"),
+        sql`${sessionAnswers.answerNumeric} IS NOT NULL`,
+        sql`${sessionAnswers.skipped} = false`,
+        sql`${sessions.completedAt} >= ${startDate}::date`,
+        sql`${sessions.completedAt} <= ${endDate}::date + interval '1 day'`,
+        inArray(meetingSeries.reportId, memberIds),
+        sql`${templateQuestions.answerType} IN (${sql.join([...SCORABLE_ANSWER_TYPES].map((t) => sql`${t}`), sql`, `)})`,
+      ),
+    )
+    .groupBy(templateSections.name, sessions.id, sessions.completedAt)
+    .orderBy(templateSections.name, sessions.completedAt);
+
+  const teamHistoryMap = new Map<string, number[]>();
+  for (const row of teamHistoryRows) {
+    const cat = row.sectionName.trim();
+    const arr = teamHistoryMap.get(cat) ?? [];
+    arr.push(Number(row.avgScore));
+    teamHistoryMap.set(cat, arr);
+  }
+
   const snapshotData = results
     .filter((r) => Number(r.avgScore) > 0)
     .filter((r) => !anonymize || Number(r.memberCount) >= 2)
@@ -340,6 +413,7 @@ export async function getTeamAverages(
       category: r.metricName,
       avgScore: Number(r.avgScore),
       memberCount: r.memberCount,
+      history: teamHistoryMap.get(r.metricName) ?? [],
     }));
 
   if (snapshotData.length > 0) {
@@ -387,6 +461,7 @@ export async function getTeamAverages(
       category: r.sectionName.trim(),
       avgScore: Number(r.avgScore),
       memberCount: r.memberCount,
+      history: teamHistoryMap.get(r.sectionName.trim()) ?? [],
     }));
 }
 
