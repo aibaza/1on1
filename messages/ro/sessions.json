@@ -129,7 +129,9 @@
       "answered": "{answered}/{total} completate",
       "previousStep": "Pasul anterior",
       "nextStep": "Pasul următor",
-      "wizardSteps": "Pași asistent"
+      "wizardSteps": "Pași asistent",
+      "loadError": "Sesiunea nu a putut fi încărcată",
+      "exitWizard": "Ieși din wizard"
     },
     "recap": {
       "title": "Recapitulare sesiune",

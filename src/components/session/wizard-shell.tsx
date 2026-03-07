@@ -299,7 +299,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
     queryKey: ["session", sessionId],
     queryFn: async () => {
       const res = await fetch(`/api/sessions/${sessionId}`);
-      if (!res.ok) throw new Error("Failed to load session");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     },
   });
@@ -763,7 +763,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
   if (error || !data) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-        <p className="text-lg font-medium">Failed to load session</p>
+        <p className="text-lg font-medium">{t("wizard.loadError")}</p>
         <p className="text-sm text-muted-foreground">
           {error instanceof Error ? error.message : "Unknown error"}
         </p>

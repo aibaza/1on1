@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -41,6 +42,7 @@ export function TeamAnalyticsClient({
   initialHeatmapData,
   teamId,
 }: TeamAnalyticsClientProps) {
+  const t = useTranslations("analytics");
   const defaultRange = periodToDateRange("3mo");
   const [period, setPeriod] = useState<PeriodValue>({
     preset: "3mo",
@@ -125,14 +127,14 @@ export function TeamAnalyticsClient({
 
       {/* Team overview (aggregated scores) */}
       <div>
-        <h2 className="mb-3 text-base font-medium">Category Averages</h2>
+        <h2 className="mb-3 text-base font-medium">{t("categoryAverages")}</h2>
         <TeamOverview data={teamAverages} loading={isLoading} anonymize={anonymize} memberCount={data?.memberCount ?? memberCount} />
       </div>
 
       {/* Heatmap */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Team Heatmap</CardTitle>
+          <CardTitle className="text-base">{t("teamHeatmap")}</CardTitle>
         </CardHeader>
         <CardContent>
           <TeamHeatmap data={heatmapData} categories={categories} />

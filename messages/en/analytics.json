@@ -4,6 +4,8 @@
     "description": "View performance trends and insights for your reports.",
     "teamsSection": "Teams",
     "individualsSection": "Individuals",
+    "categoryAverages": "Category Averages",
+    "teamHeatmap": "Team Heatmap",
     "memberCount": "{count, plural, one {# member} other {# members}}",
     "sessionCount": "{count, plural, one {# session} other {# sessions}}",
     "empty": "No session data available yet. Complete sessions to see analytics.",

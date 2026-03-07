@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - `src/lib/i18n/__tests__/translation-parity.test.ts` — Vitest test enforcing en/ro key parity for all 16 translation namespaces; CI fails if any key is added to en.json but not ro.json or vice versa
+- `messages/en/sessions.json` — added `wizard.loadError` and `wizard.exitWizard` keys for newly translated strings
+- `messages/ro/sessions.json` — added Romanian translations: `wizard.loadError` = "Sesiunea nu a putut fi încărcată", `wizard.exitWizard` = "Ieși din wizard"
+- `messages/en/analytics.json` — added `categoryAverages` and `teamHeatmap` keys
+- `messages/ro/analytics.json` — added Romanian translations: `categoryAverages` = "Medii pe Categorii", `teamHeatmap` = "Harta Echipei"
+
+### Fixed
+- `src/components/session/wizard-shell.tsx` — replaced hardcoded "Failed to load session" heading with `t("wizard.loadError")`; queryFn now throws generic HTTP status error instead of hardcoded English message
+- `src/components/session/wizard-top-bar.tsx` — replaced hardcoded "Exit wizard" sr-only text with `t("wizard.exitWizard")`
+- `src/app/(dashboard)/analytics/team/[id]/client.tsx` — replaced hardcoded "Category Averages" and "Team Heatmap" with `t("categoryAverages")` and `t("teamHeatmap")` via `useTranslations("analytics")`
 
 ### Changed
 - `messages/ro/analytics.json` — fixed 16 diacritic errors (acțiune, acțiuni, eșantion, eșantioane, întâlniri, Tendința, aderență, diferență, comparație, necesită, opțiune, etc.); added `few` form to 4 ICU plural keys (memberCount, sessionCount, itemsCompleted, sampleCount)

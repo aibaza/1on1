@@ -129,7 +129,9 @@
       "answered": "{answered}/{total} answered",
       "previousStep": "Previous step",
       "nextStep": "Next step",
-      "wizardSteps": "Wizard steps"
+      "wizardSteps": "Wizard steps",
+      "loadError": "Failed to load session",
+      "exitWizard": "Exit wizard"
     },
     "recap": {
       "title": "Session Recap",

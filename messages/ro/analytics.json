@@ -4,6 +4,8 @@
     "description": "Vizualizează tendințele de performanță și informațiile despre rapoartele tale.",
     "teamsSection": "Echipe",
     "individualsSection": "Individuali",
+    "categoryAverages": "Medii pe Categorii",
+    "teamHeatmap": "Harta Echipei",
     "memberCount": "{count, plural, one {# membru} few {# membri} other {# membri}}",
     "sessionCount": "{count, plural, one {# sesiune} few {# sesiuni} other {# sesiuni}}",
     "empty": "Nu există date de sesiuni. Finalizează sesiuni pentru a vedea analize.",

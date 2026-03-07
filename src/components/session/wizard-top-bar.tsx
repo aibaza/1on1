@@ -53,7 +53,7 @@ export function WizardTopBar({
   const exitButton = (
     <Button variant="ghost" size="icon" className="h-8 w-8">
       <X className="h-4 w-4" />
-      <span className="sr-only">Exit wizard</span>
+      <span className="sr-only">{t("wizard.exitWizard")}</span>
     </Button>
   );
 
