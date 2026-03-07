@@ -347,3 +347,163 @@ describe('Round-trip: buildExportPayload → templateImportSchema', () => {
     expect(result.success).toBe(true);
   });
 });
+
+// ---------------------------------------------------------------------------
+// DIY kit worked example (Phase 17 — AIGEN+DIY)
+// A realistic high-quality template that can be used as prompt context and
+// as a validation fixture for the AI generator output.
+// ---------------------------------------------------------------------------
+
+const DIY_WORKED_EXAMPLE = {
+  schemaVersion: 1 as const,
+  language: 'en',
+  name: 'Engineering 1:1 Template',
+  description: 'A structured template for weekly engineering 1:1 meetings.',
+  sections: [
+    {
+      name: 'Check-in & Wellbeing',
+      description: 'Understand how the person is doing overall.',
+      sortOrder: 0,
+      questions: [
+        {
+          questionText: 'How are you feeling this week overall?',
+          helpText: '1 = struggling, 5 = excellent',
+          answerType: 'rating_1_5' as const,
+          answerConfig: {},
+          isRequired: true,
+          sortOrder: 0,
+          scoreWeight: 3,
+          conditionalOnQuestionSortOrder: null,
+          conditionalOperator: null,
+          conditionalValue: null,
+        },
+        {
+          questionText: 'Is there anything on your mind outside of work?',
+          helpText: 'Optional — share only if comfortable',
+          answerType: 'text' as const,
+          answerConfig: {},
+          isRequired: false,
+          sortOrder: 1,
+          scoreWeight: 0,
+          conditionalOnQuestionSortOrder: null,
+          conditionalOperator: null,
+          conditionalValue: null,
+        },
+        {
+          questionText: 'Is your workload manageable right now?',
+          helpText: null,
+          answerType: 'yes_no' as const,
+          answerConfig: {},
+          isRequired: true,
+          sortOrder: 2,
+          scoreWeight: 2,
+          conditionalOnQuestionSortOrder: null,
+          conditionalOperator: null,
+          conditionalValue: null,
+        },
+      ],
+    },
+    {
+      name: 'Work & Progress',
+      description: 'Review progress, blockers, and priorities.',
+      sortOrder: 1,
+      questions: [
+        {
+          questionText: 'What did you accomplish since our last 1:1?',
+          helpText: 'List 1-3 key things you completed or moved forward.',
+          answerType: 'text' as const,
+          answerConfig: {},
+          isRequired: true,
+          sortOrder: 0,
+          scoreWeight: 0,
+          conditionalOnQuestionSortOrder: null,
+          conditionalOperator: null,
+          conditionalValue: null,
+        },
+        {
+          questionText: 'What is blocking you or slowing you down?',
+          helpText: 'Technical, organizational, or interpersonal blockers.',
+          answerType: 'text' as const,
+          answerConfig: {},
+          isRequired: false,
+          sortOrder: 1,
+          scoreWeight: 0,
+          conditionalOnQuestionSortOrder: null,
+          conditionalOperator: null,
+          conditionalValue: null,
+        },
+        {
+          questionText: 'How confident are you in your priorities for next week?',
+          helpText: '1 = unclear, 10 = very clear',
+          answerType: 'rating_1_10' as const,
+          answerConfig: {},
+          isRequired: true,
+          sortOrder: 2,
+          scoreWeight: 2,
+          conditionalOnQuestionSortOrder: null,
+          conditionalOperator: null,
+          conditionalValue: null,
+        },
+      ],
+    },
+    {
+      name: 'Growth & Development',
+      description: 'Support career growth and continuous learning.',
+      sortOrder: 2,
+      questions: [
+        {
+          questionText: 'What skill or area are you actively developing right now?',
+          helpText: 'Can be technical, soft skills, or leadership.',
+          answerType: 'text' as const,
+          answerConfig: {},
+          isRequired: false,
+          sortOrder: 0,
+          scoreWeight: 0,
+          conditionalOnQuestionSortOrder: null,
+          conditionalOperator: null,
+          conditionalValue: null,
+        },
+        {
+          questionText: 'How satisfied are you with your growth opportunities here?',
+          helpText: '1 = very dissatisfied, 5 = very satisfied',
+          answerType: 'rating_1_5' as const,
+          answerConfig: {},
+          isRequired: true,
+          sortOrder: 1,
+          scoreWeight: 3,
+          conditionalOnQuestionSortOrder: null,
+          conditionalOperator: null,
+          conditionalValue: null,
+        },
+        {
+          questionText: 'Is there anything I can do better as your manager?',
+          helpText: 'Honest feedback helps us both improve.',
+          answerType: 'text' as const,
+          answerConfig: {},
+          isRequired: false,
+          sortOrder: 2,
+          scoreWeight: 0,
+          conditionalOnQuestionSortOrder: null,
+          conditionalOperator: null,
+          conditionalValue: null,
+        },
+      ],
+    },
+  ],
+};
+
+describe('DIY kit worked example', () => {
+  it('DIY_WORKED_EXAMPLE passes templateImportSchema.parse() without error', () => {
+    expect(() => templateImportSchema.parse(DIY_WORKED_EXAMPLE)).not.toThrow();
+  });
+
+  it('parsed DIY_WORKED_EXAMPLE has 3 sections and 9 questions total', () => {
+    const parsed = templateImportSchema.parse(DIY_WORKED_EXAMPLE);
+    const questionCount = parsed.sections.reduce(
+      (sum, s) => sum + s.questions.length,
+      0
+    );
+    expect(parsed.sections.length).toBe(3);
+    expect(questionCount).toBe(9);
+  });
+});
