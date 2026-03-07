@@ -1,6 +1,6 @@
 import { eq, sql, and, asc } from "drizzle-orm";
 import type { TransactionClient } from "@/lib/db/tenant-context";
-import { meetingSeries, sessions, users } from "@/lib/db/schema";
+import { meetingSeries, sessions, users, sessionAnswers, templateQuestions } from "@/lib/db/schema";
 
 export interface SeriesCardData {
   id: string;
@@ -24,6 +24,7 @@ export interface SeriesCardData {
   } | null;
   latestSummary: { blurb: string; sentiment: string } | null;
   assessmentHistory: number[];
+  questionHistories: { questionText: string; scoreWeight: number; values: number[] }[];
 }
 
 /**
@@ -153,9 +154,56 @@ export async function getSeriesCardData(
     }
   }
 
+  // Fetch per-question numeric answer histories for weighted questions
+  const questionRows = await tx
+    .select({
+      seriesId: sessions.seriesId,
+      sessionNumber: sessions.sessionNumber,
+      questionText: templateQuestions.questionText,
+      scoreWeight: templateQuestions.scoreWeight,
+      answerNumeric: sessionAnswers.answerNumeric,
+    })
+    .from(sessionAnswers)
+    .innerJoin(sessions, eq(sessionAnswers.sessionId, sessions.id))
+    .innerJoin(templateQuestions, eq(sessionAnswers.questionId, templateQuestions.id))
+    .where(
+      and(
+        sql`${sessions.seriesId} IN ${seriesIds}`,
+        eq(sessions.status, "completed"),
+        sql`CAST(${templateQuestions.scoreWeight} AS numeric) > 0.5`,
+        sql`${templateQuestions.answerType} IN ('rating_1_5', 'rating_1_10', 'mood')`,
+        sql`${sessionAnswers.answerNumeric} IS NOT NULL`
+      )
+    )
+    .orderBy(asc(sessions.sessionNumber));
+
+  // Map: seriesId -> questionText -> { scoreWeight, values[] }
+  const questionHistoriesMap = new Map<string, Map<string, { scoreWeight: number; values: number[] }>>();
+  for (const r of questionRows) {
+    let qMap = questionHistoriesMap.get(r.seriesId);
+    if (!qMap) {
+      qMap = new Map();
+      questionHistoriesMap.set(r.seriesId, qMap);
+    }
+    let entry = qMap.get(r.questionText);
+    if (!entry) {
+      entry = { scoreWeight: parseFloat(r.scoreWeight ?? "1"), values: [] };
+      qMap.set(r.questionText, entry);
+    }
+    entry.values.push(parseFloat(r.answerNumeric!));
+  }
+
   return seriesList.map((s) => {
     const report = reportMap.get(s.reportId);
     const latest = latestMap.get(s.id);
+    const qMap = questionHistoriesMap.get(s.id);
+    const questionHistories = qMap
+      ? Array.from(qMap.entries()).map(([questionText, { scoreWeight, values }]) => ({
+          questionText,
+          scoreWeight,
+          values,
+        }))
+      : [];
     return {
       id: s.id,
       managerId: s.managerId,
@@ -180,6 +228,7 @@ export async function getSeriesCardData(
         : null,
       latestSummary: latestSummaryMap.get(s.id) ?? null,
       assessmentHistory: assessmentHistoryMap.get(s.id) ?? [],
+      questionHistories,
     };
   });
 }

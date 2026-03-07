@@ -5,7 +5,7 @@ import { canManageSeries } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
 import { createSeriesSchema } from "@/lib/validations/series";
 import { scheduleSeriesNotifications } from "@/lib/notifications/scheduler";
-import { meetingSeries, sessions, users } from "@/lib/db/schema";
+import { meetingSeries, sessions, users, sessionAnswers, templateQuestions } from "@/lib/db/schema";
 import { eq, and, asc, sql } from "drizzle-orm";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
 
@@ -86,11 +86,11 @@ export async function GET(request: Request) {
           latestSessions.map((s) => [s.seriesId, s])
         );
 
-        // Fetch score history and latest aiSummary (completed sessions ordered by session number)
+        // Fetch AI assessment history and latest aiSummary (completed sessions ordered by session number)
         const scoreRows = await tx
           .select({
             seriesId: sessions.seriesId,
-            sessionScore: sessions.sessionScore,
+            aiAssessmentScore: sessions.aiAssessmentScore,
             aiSummary: sessions.aiSummary,
           })
           .from(sessions)
@@ -98,17 +98,17 @@ export async function GET(request: Request) {
             and(
               sql`${sessions.seriesId} IN ${seriesIds}`,
               eq(sessions.status, "completed"),
-              sql`${sessions.sessionScore} IS NOT NULL`
+              sql`${sessions.aiAssessmentScore} IS NOT NULL`
             )
           )
           .orderBy(asc(sessions.sessionNumber));
 
-        const scoreHistoryMap = new Map<string, number[]>();
+        const assessmentHistoryMap = new Map<string, number[]>();
         const latestSummaryMap = new Map<string, { blurb: string; sentiment: string }>();
         for (const r of scoreRows) {
-          const arr = scoreHistoryMap.get(r.seriesId) ?? [];
-          arr.push(parseFloat(r.sessionScore!));
-          scoreHistoryMap.set(r.seriesId, arr);
+          const arr = assessmentHistoryMap.get(r.seriesId) ?? [];
+          arr.push(r.aiAssessmentScore!);
+          assessmentHistoryMap.set(r.seriesId, arr);
           if (r.aiSummary?.cardBlurb) {
             latestSummaryMap.set(r.seriesId, {
               blurb: r.aiSummary.cardBlurb,
@@ -117,8 +117,44 @@ export async function GET(request: Request) {
           }
         }
 
+        // Fetch per-question numeric answer histories for weighted questions
+        const questionRows = await tx
+          .select({
+            seriesId: sessions.seriesId,
+            sessionNumber: sessions.sessionNumber,
+            questionText: templateQuestions.questionText,
+            scoreWeight: templateQuestions.scoreWeight,
+            answerNumeric: sessionAnswers.answerNumeric,
+          })
+          .from(sessionAnswers)
+          .innerJoin(sessions, eq(sessionAnswers.sessionId, sessions.id))
+          .innerJoin(templateQuestions, eq(sessionAnswers.questionId, templateQuestions.id))
+          .where(
+            and(
+              sql`${sessions.seriesId} IN ${seriesIds}`,
+              eq(sessions.status, "completed"),
+              sql`CAST(${templateQuestions.scoreWeight} AS numeric) > 0.5`,
+              sql`${templateQuestions.answerType} IN ('rating_1_5', 'rating_1_10', 'mood')`,
+              sql`${sessionAnswers.answerNumeric} IS NOT NULL`
+            )
+          )
+          .orderBy(asc(sessions.sessionNumber));
+
+        const questionHistoriesMap = new Map<string, Map<string, { scoreWeight: number; values: number[] }>>();
+        for (const r of questionRows) {
+          let qMap = questionHistoriesMap.get(r.seriesId);
+          if (!qMap) { qMap = new Map(); questionHistoriesMap.set(r.seriesId, qMap); }
+          let entry = qMap.get(r.questionText);
+          if (!entry) { entry = { scoreWeight: parseFloat(r.scoreWeight ?? "1"), values: [] }; qMap.set(r.questionText, entry); }
+          entry.values.push(parseFloat(r.answerNumeric!));
+        }
+
         return seriesList.map((s) => {
           const latest = latestSessionMap.get(s.id);
+          const qMap = questionHistoriesMap.get(s.id);
+          const questionHistories = qMap
+            ? Array.from(qMap.entries()).map(([questionText, { scoreWeight, values }]) => ({ questionText, scoreWeight, values }))
+            : [];
           return {
             id: s.id,
             managerId: s.managerId,
@@ -146,7 +182,8 @@ export async function GET(request: Request) {
                 }
               : null,
             latestSummary: latestSummaryMap.get(s.id) ?? null,
-            scoreHistory: scoreHistoryMap.get(s.id) ?? [],
+            assessmentHistory: assessmentHistoryMap.get(s.id) ?? [],
+            questionHistories,
           };
         });
       }

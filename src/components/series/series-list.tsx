@@ -29,6 +29,7 @@ interface Series {
   } | null;
   latestSummary: { blurb: string; sentiment: string } | null;
   assessmentHistory: number[];
+  questionHistories: { questionText: string; scoreWeight: number; values: number[] }[];
 }
 
 interface SeriesListProps {

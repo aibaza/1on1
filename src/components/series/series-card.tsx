@@ -37,40 +37,107 @@ interface SeriesCardProps {
     } | null;
     latestSummary: { blurb: string; sentiment: string } | null;
     assessmentHistory: number[];
+    questionHistories: { questionText: string; scoreWeight: number; values: number[] }[];
   };
   currentUserId: string;
 }
 
-function ScoreSparkline({ data, id }: { data: number[]; id: string }) {
-  const chartData = useMemo(
-    () => data.map((value, index) => ({ index, value })),
-    [data]
-  );
+const Q_PALETTE = [
+  "#6366f1", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981",
+  "#06b6d4", "#f97316", "#84cc16", "#ef4444", "#14b8a6",
+];
 
-  if (data.length < 2) return null;
+function hashQuestionColor(text: string): string {
+  let sum = 0;
+  for (let i = 0; i < text.length; i++) sum += text.charCodeAt(i);
+  return Q_PALETTE[sum % Q_PALETTE.length];
+}
 
-  const minValue = Math.max(0, Math.min(...data) - 5);
-  const maxValue = Math.min(100, Math.max(...data) + 5);
-  const gradientId = `sparkGrad-${id}`;
+function questionOpacity(weight: number): number {
+  return ((weight - 0.5) / 1.5) * 0.18 + 0.02;
+}
+
+interface SparklineProps {
+  assessmentHistory: number[];
+  questionHistories: { questionText: string; scoreWeight: number; values: number[] }[];
+  id: string;
+}
+
+function ScoreSparkline({ assessmentHistory, questionHistories, id }: SparklineProps) {
+  const allValues = useMemo(() => {
+    const combined: number[] = [...assessmentHistory];
+    for (const q of questionHistories) combined.push(...q.values);
+    return combined;
+  }, [assessmentHistory, questionHistories]);
+
+  const chartData = useMemo(() => {
+    const len = Math.max(assessmentHistory.length, ...questionHistories.map((q) => q.values.length));
+    if (len < 2) return [];
+    return Array.from({ length: len }, (_, i) => {
+      const point: Record<string, number | undefined> = { index: i };
+      if (i < assessmentHistory.length) point.main = assessmentHistory[i];
+      questionHistories.forEach((q, qi) => {
+        if (i < q.values.length) point[`q${qi}`] = q.values[i];
+      });
+      return point;
+    });
+  }, [assessmentHistory, questionHistories]);
+
+  if (chartData.length < 2) return null;
+
+  const minValue = Math.max(0, Math.min(...allValues) - 5);
+  const maxValue = Math.min(100, Math.max(...allValues) + 5);
+  const mainGradId = `sparkGrad-${id}`;
 
   return (
-    <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[30%] opacity-[0.20] dark:opacity-[0.35]">
+    <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[30%]">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
           <defs>
-            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={mainGradId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={1} />
               <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
             </linearGradient>
+            {questionHistories.map((q, qi) => {
+              const color = hashQuestionColor(q.questionText);
+              const gid = `sparkGrad-q-${id}-${qi}`;
+              return (
+                <linearGradient key={gid} id={gid} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={color} stopOpacity={0.4} />
+                  <stop offset="100%" stopColor={color} stopOpacity={0} />
+                </linearGradient>
+              );
+            })}
           </defs>
           <YAxis domain={[minValue, maxValue]} hide />
+          {/* Per-question areas (rendered first = behind) */}
+          {questionHistories.map((q, qi) => {
+            const color = hashQuestionColor(q.questionText);
+            const opacity = questionOpacity(q.scoreWeight);
+            return (
+              <Area
+                key={`q${qi}`}
+                type="monotone"
+                dataKey={`q${qi}`}
+                stroke={color}
+                strokeWidth={1.5}
+                fill={`url(#sparkGrad-q-${id}-${qi})`}
+                opacity={opacity}
+                isAnimationActive={false}
+                connectNulls
+              />
+            );
+          })}
+          {/* Main assessment area (on top) */}
           <Area
             type="monotone"
-            dataKey="value"
+            dataKey="main"
             stroke="var(--chart-1)"
             strokeWidth={2}
-            fill={`url(#${gradientId})`}
+            fill={`url(#${mainGradId})`}
+            opacity={0.28}
             isAnimationActive={false}
+            connectNulls
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -178,7 +245,7 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
   return (
     <Card className={`group relative flex flex-col overflow-hidden transition-all duration-200 hover:shadow-md ${sentimentBorder[series.latestSummary?.sentiment ?? ""] ?? ""}`}>
       <Link href={`/sessions/${series.id}`} className="absolute inset-0 z-0" />
-      <ScoreSparkline data={series.assessmentHistory} id={series.id} />
+      <ScoreSparkline assessmentHistory={series.assessmentHistory} questionHistories={series.questionHistories} id={series.id} />
       <CardHeader className="flex flex-row items-center gap-3 pb-2">
         <Avatar className="h-10 w-10">
           <AvatarImage src={series.report.avatarUrl ?? undefined} />
