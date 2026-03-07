@@ -141,7 +141,14 @@ Plans:
   2. When the imported file's `language` field does not match the company's content language, the user sees a warning (naming both languages) and must explicitly confirm before proceeding
   3. When a template with the same name already exists, the user is offered three choices -- rename, create as copy, or cancel -- and the import only proceeds after an explicit choice
   4. When the uploaded file fails validation, the user sees field-specific error messages (e.g., "Question 3, field `answerType`: invalid value `checkbox`") rather than a generic failure toast
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 16-01-PLAN.md — Wave 0 TDD: failing test scaffolds for import-schema and RBAC guard
+- [ ] 16-02-PLAN.md — import-schema.ts (Zod schema, formatImportErrors, derivePreviewStats) + import.* translation keys (EN + RO)
+- [ ] 16-03-PLAN.md — POST /api/templates/import route: validation, atomic insert, conflict detection, audit log
+- [ ] 16-04-PLAN.md — ImportDialog component (4-step) + wire Import button into template-list.tsx
+- [ ] 16-05-PLAN.md — Manual verification: RBAC gating, happy path round-trip, language mismatch, conflict resolution, invalid file errors
 
 ### Phase 17: AI Generator & DIY Kit
 **Goal**: Users can generate a complete, ready-to-use template draft through an in-app AI flow, and can access a copyable prompt kit to build templates with external AI tools on their own
@@ -183,6 +190,6 @@ Phase 15 (schema + export)
 | 12. UI Translation | v1.1 | 6/6 | Complete | 2026-03-06 |
 | 13. Email Translation | v1.1 | 3/3 | Complete | 2026-03-06 |
 | 14. Romanian & Quality | v1.1 | 2/2 | Complete | 2026-03-07 |
-| 15. Schema, Spec & Export | 4/4 | Complete    | 2026-03-07 | - |
-| 16. Template Import | v1.2 | 0/? | Not started | - |
+| 15. Schema, Spec & Export | v1.2 | 4/4 | Complete | 2026-03-07 |
+| 16. Template Import | v1.2 | 0/5 | Not started | - |
 | 17. AI Generator & DIY Kit | v1.2 | 0/? | Not started | - |
