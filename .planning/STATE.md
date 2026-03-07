@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: AI-Ready Templates
-status: ready_to_plan
-stopped_at: Completed 15-04-PLAN.md — Phase 15 fully verified and complete
-last_updated: "2026-03-07T08:08:45.882Z"
+status: verifying
+stopped_at: Completed 16-01-PLAN.md
+last_updated: "2026-03-07T08:32:20.819Z"
 last_activity: 2026-03-07 -- 15-04 verified complete (user approved export RBAC and schema docs)
 progress:
   total_phases: 7
   completed_phases: 5
-  total_plans: 17
-  completed_plans: 17
+  total_plans: 22
+  completed_plans: 18
   percent: 100
 ---
 
@@ -53,6 +53,7 @@ Progress: [██████████] 100%
 | Phase 15-schema-spec-export P02 | 20 | 2 tasks | 7 files |
 | Phase 15-schema-spec-export P03 | 5 | 2 tasks | 5 files |
 | Phase 15-schema-spec-export P04 | checkpoint | 1 tasks | 0 files |
+| Phase 16-template-import P01 | 5 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,8 @@ v1.1 decisions archived below for reference:
 - [Phase 15-03]: ExportButton variant=icon placed in relative wrapper div alongside Link-wrapped Card to avoid nested interactive elements
 - [Phase 15-03]: Schema Docs link visible to all roles — documentation is universally useful regardless of role
 - [Phase 15-schema-spec-export]: Phase 15 (Schema, Spec & Export) verified complete via manual browser walkthrough of role-gating, download, and schema docs tabs
+- [Phase 16-template-import]: Fixture helpers copied inline (not imported across test files) — Vitest test files are not modules for cross-import
+- [Phase 16-template-import]: TDD Wave 0: test contracts written before implementation; module-not-found errors are the expected RED signal
 
 ### v1.2 Roadmap Decisions
 
@@ -122,6 +125,6 @@ None active.
 
 ## Session Continuity
 
-Last session: 2026-03-07
-Stopped at: Phase 15 complete, transitioning to Phase 16 (Template Import)
+Last session: 2026-03-07T08:32:20.816Z
+Stopped at: Completed 16-01-PLAN.md
 Resume file: None
