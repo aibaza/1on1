@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `messages/en/spec.json` — added `spec.tabs.promptKit` and `spec.promptKit.*` keys (title, intro, copy, copied, sections.schema/methodology/weights/example) for DIY Prompt Kit tab
 - `messages/ro/spec.json` — Romanian translations of all `spec.promptKit.*` keys with correct diacritics; key parity with EN maintained
 - `src/lib/ai/schemas/__tests__/template-chat.test.ts` — Wave 0 RED test stub for `templateChatResponseSchema` and `ChatTurnResponse` type; 5 tests covering valid/invalid parse cases; fails with module-not-found until Wave 1 (17-02) creates the implementation
+- `src/lib/ai/prompts/__tests__/template-editor.test.ts` — Wave 0 RED test stub for `buildTemplateEditorSystemPrompt`; 5 tests covering schema spec, methodology, scoreWeight sections, and optional existingTemplate embedding; fails with module-not-found until Wave 1
+- `src/lib/ai/__tests__/service.test.ts` — Wave 0 RED test stub for `withLanguageInstruction`; 4 tests covering ro/de language injection and en/undefined passthrough; fails because function is not yet exported from service.ts
 - `src/lib/templates/__tests__/import-schema.test.ts` — 11 Vitest unit tests (RED) for `templateImportSchema`, `formatImportErrors`, and `derivePreviewStats`; covers valid payload, schema version rejection, invalid/valid answerTypes, error path formatting, preview stats, language mismatch convention, copy suffix convention, and round-trip with `buildExportPayload`
 - `src/lib/auth/__tests__/rbac.test.ts` — 5 Vitest unit tests for `canManageTemplates`; all pass GREEN (rbac.ts already implemented)
 - `src/global.d.ts` — added `spec.json` to Messages type union for next-intl type safety
