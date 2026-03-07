@@ -4,9 +4,9 @@
 
 Implementation follows a phase-based roadmap managed via the [GSD workflow](https://github.com/cyanheads/claude-gsd). Each phase delivers a coherent, verifiable capability. Phases execute sequentially with some parallelization opportunities after Phase 5.
 
-**Total phases**: 14 (10 v1.0 + 4 v1.1)
-**Completed**: 12/14
-**Current**: Milestone v1.1 in progress (Phases 13–14 remaining)
+**Total phases**: 17 (10 v1.0 + 4 v1.1 + 3 v1.2)
+**Completed**: 16/17
+**Current**: Milestone v1.2 in progress (Phase 17 remaining)
 
 ## Phase Summary
 
@@ -31,8 +31,16 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 |-------|------|-------|--------|--------------|
 | [[Phase-11]] | i18n Foundation | next-intl setup, DB migration, JWT extension, dual-layer locale architecture | Complete | Phase 10 |
 | [[Phase-12]] | UI Translation | All string extraction, locale-aware formatting, validation errors, series card redesign | Complete | Phase 11 |
-| Phase-13 | Email Translation | Email templates in correct content language, standalone translator for background jobs | Not Started | Phase 11 |
-| Phase-14 | Romanian & Quality | Complete RO translations, plural forms, diacritics, CI key parity | Not Started | Phase 12, 13 |
+| [[Phase-13]] | Email Translation | Email templates in correct content language, standalone translator for background jobs | Complete | Phase 11 |
+| [[Phase-14]] | Romanian & Quality | Complete RO translations, plural forms, diacritics, CI key parity | Complete | Phase 12, 13 |
+
+### Milestone v1.2 — AI-Ready Templates (In Progress)
+
+| Phase | Name | Focus | Status | Dependencies |
+|-------|------|-------|--------|--------------|
+| [[Phase-15]] | Schema, Spec & Export | JSON schema spec with methodology and weight docs, portable JSON template export | Complete | Phase 14 |
+| [[Phase-16]] | Template Import | JSON upload with preview, language mismatch warning, conflict resolution, field-specific validation errors | Complete | Phase 15 |
+| [[Phase-17]] | AI Generator & DIY Kit | In-app AI chat editor for template generation, live preview, DIY prompt kit tab | In Progress | Phase 15 |
 
 ## Execution Order
 
@@ -64,6 +72,17 @@ Phase 10 (Polish, v1.0 complete)
               │
         Phase 12 + 13 ──► Phase 14 (Romanian & Quality)
 ```
+
+### v1.2 Phases
+
+```
+Phase 14 (v1.1 complete)
+  └── Phase 15 (Schema, Spec & Export)
+        ├── Phase 16 (Template Import)    ← parallel
+        └── Phase 17 (AI Generator & DIY Kit)
+```
+
+Phases 16 and 17 both depend only on Phase 15 and can execute in parallel.
 
 ## Conventions
 
