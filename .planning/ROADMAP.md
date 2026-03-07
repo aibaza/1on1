@@ -83,9 +83,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 13-01-PLAN.md — Foundation: createEmailTranslator utility (use-intl/core standalone), messages/en/emails.json + messages/ro/emails.json namespaces
-- [ ] 13-02-PLAN.md — Template refactor: all 6 email templates accept translated string props (no hardcoded English, no i18n hooks)
-- [ ] 13-03-PLAN.md — Call site wiring: locale resolution + createEmailTranslator integration in send.ts, invites routes, summary-email, sender
+- [x] 13-01-PLAN.md — Foundation: createEmailTranslator utility (use-intl/core standalone), messages/en/emails.json + messages/ro/emails.json namespaces
+- [x] 13-02-PLAN.md — Template refactor: all 6 email templates accept translated string props (no hardcoded English, no i18n hooks)
+- [x] 13-03-PLAN.md — Call site wiring: locale resolution + createEmailTranslator integration in send.ts, invites routes, summary-email, sender
 
 ### Phase 14: Romanian & Quality
 **Goal**: Complete, natural-sounding Romanian translations across the entire application with correct grammar, no layout breakage, and automated CI enforcement preventing translation regressions
@@ -97,11 +97,11 @@ Plans:
   3. All Romanian text uses correct comma-below diacritics (U+0219/U+021B), never cedilla variants -- and no UI element overflows or truncates when displaying Romanian text
   4. CI pipeline fails if `en.json` and `ro.json` have different sets of translation keys
   5. A code audit confirms no hardcoded English strings remain in user-facing components -- all strings go through `t()` or formatter APIs
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 14-01: TBD
-- [ ] 14-02: TBD
+- [ ] 14-01-PLAN.md — Diacritic fixes (~100 corrections across 6 ro.json files) and ICU plural three-form fixes (add `few` to 6 keys in analytics.json + sessions.json)
+- [ ] 14-02-PLAN.md — CI key parity Vitest test, hardcoded English string elimination in 3 components, layout overflow verification
 
 ## Progress
 
