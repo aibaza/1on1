@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - `messages/ro/analytics.json` — fixed 16 diacritic errors (acțiune, acțiuni, eșantion, eșantioane, întâlniri, Tendința, aderență, diferență, comparație, necesită, opțiune, etc.); added `few` form to 4 ICU plural keys (memberCount, sessionCount, itemsCompleted, sampleCount)
 - `messages/ro/sessions.json` — added `few` form to 2 ICU plural keys (questionCount, answersRecorded); Romanian counts 0/2/5/19 now render correct plural surface forms
+- `messages/ro/templates.json` — fixed 39 diacritic errors (Creează, Adaugă, Elimină, Selectează, Anulează and related forms); also fixed Înapoi, Șablon, Secțiuni, Opțiuni, Dispoziție, Condiționat and more
+- `messages/ro/teams.json` — fixed 24 diacritic errors (Creează, Adaugă, Șterge, ștearsă, Fără, Înapoi, asignează, găsit, etc.)
+- `messages/ro/people.json` — fixed 18 diacritic errors (Adaugă, Anulează, Selectează, Caută, găsit, Înregistrat, Înapoi, etc.)
+- `messages/ro/auth.json` — fixed 2 diacritic errors (nouă parolă — two occurrences in resetPassword section)
+- `messages/ro/settings.json` — no changes needed (existing content already correct)
 
 ### Added
 - `createEmailTranslator` utility in `src/lib/email/translator.ts` — standalone email translator using `use-intl/core`, no Next.js request context required, falls back to `en` for unsupported locales
