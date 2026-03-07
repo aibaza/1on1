@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-03-07
+
 ### Added
 - Phase 17 (AI Generator & DIY Kit) verified complete — all 7 verification scenarios confirmed; v1.2 milestone (AI-Ready Templates) delivered
 - `src/app/(dashboard)/templates/ai-editor/page.tsx` — server page for new template AI editor; auth + RBAC guard (admin/manager only); passes contentLanguage and userRole from session to AiEditorShell
