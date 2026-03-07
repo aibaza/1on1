@@ -86,7 +86,8 @@ export async function POST(req: Request) {
     );
 
     return Response.json(result);
-  } catch {
+  } catch (err) {
+    console.error("[ai-chat] generation failed:", err);
     return Response.json({ error: "Generation failed" }, { status: 500 });
   }
 }

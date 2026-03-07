@@ -1,4 +1,4 @@
-import { generateText, Output } from "ai";
+import { generateText, generateObject, Output } from "ai";
 import type { ModelMessage } from "ai";
 import { models } from "./models";
 import { summarySchema, type AISummary } from "./schemas/summary";
@@ -253,24 +253,16 @@ export async function generateTemplateChatTurn(
       currentTemplate ?? undefined,
       language
     );
-    // withLanguageInstruction is a no-op here since language is already embedded
-    // in the template editor prompt with precise scope. Keep for consistency.
     const finalSystemPrompt = withLanguageInstruction(systemPrompt, language);
 
-    const { output } = await generateText({
+    const { object } = await generateObject({
       model: models.templateEditor,
-      output: Output.object({ schema: templateChatResponseSchema }),
+      schema: templateChatResponseSchema,
       system: finalSystemPrompt,
       messages,
     });
 
-    if (!output) {
-      throw new Error(
-        "AI SDK returned null output for template chat turn generation"
-      );
-    }
-
-    return output;
+    return object;
   } catch (e) {
     throw new Error("AI generation failed: " + String(e));
   }
