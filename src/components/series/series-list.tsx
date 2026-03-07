@@ -28,7 +28,7 @@ interface Series {
     sessionScore: string | null;
   } | null;
   latestSummary: { blurb: string; sentiment: string } | null;
-  scoreHistory: number[];
+  assessmentHistory: number[];
 }
 
 interface SeriesListProps {

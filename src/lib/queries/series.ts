@@ -23,7 +23,7 @@ export interface SeriesCardData {
     sessionScore: string | null;
   } | null;
   latestSummary: { blurb: string; sentiment: string } | null;
-  scoreHistory: number[];
+  assessmentHistory: number[];
 }
 
 /**
@@ -126,7 +126,7 @@ export async function getSeriesCardData(
   const scoreRows = await tx
     .select({
       seriesId: sessions.seriesId,
-      sessionScore: sessions.sessionScore,
+      aiAssessmentScore: sessions.aiAssessmentScore,
       aiSummary: sessions.aiSummary,
     })
     .from(sessions)
@@ -134,17 +134,17 @@ export async function getSeriesCardData(
       and(
         sql`${sessions.seriesId} IN ${seriesIds}`,
         eq(sessions.status, "completed"),
-        sql`${sessions.sessionScore} IS NOT NULL`
+        sql`${sessions.aiAssessmentScore} IS NOT NULL`
       )
     )
     .orderBy(asc(sessions.sessionNumber));
 
-  const scoreHistoryMap = new Map<string, number[]>();
+  const assessmentHistoryMap = new Map<string, number[]>();
   const latestSummaryMap = new Map<string, { blurb: string; sentiment: string }>();
   for (const r of scoreRows) {
-    const arr = scoreHistoryMap.get(r.seriesId) ?? [];
-    arr.push(parseFloat(r.sessionScore!));
-    scoreHistoryMap.set(r.seriesId, arr);
+    const arr = assessmentHistoryMap.get(r.seriesId) ?? [];
+    arr.push(r.aiAssessmentScore!);
+    assessmentHistoryMap.set(r.seriesId, arr);
     if (r.aiSummary?.cardBlurb) {
       latestSummaryMap.set(r.seriesId, {
         blurb: r.aiSummary.cardBlurb,
@@ -179,7 +179,7 @@ export async function getSeriesCardData(
           }
         : null,
       latestSummary: latestSummaryMap.get(s.id) ?? null,
-      scoreHistory: scoreHistoryMap.get(s.id) ?? [],
+      assessmentHistory: assessmentHistoryMap.get(s.id) ?? [],
     };
   });
 }

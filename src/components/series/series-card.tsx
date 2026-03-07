@@ -36,7 +36,7 @@ interface SeriesCardProps {
       sessionScore: string | null;
     } | null;
     latestSummary: { blurb: string; sentiment: string } | null;
-    scoreHistory: number[];
+    assessmentHistory: number[];
   };
   currentUserId: string;
 }
@@ -49,9 +49,8 @@ function ScoreSparkline({ data, id }: { data: number[]; id: string }) {
 
   if (data.length < 2) return null;
 
-  const minValue = Math.min(...data);
-  const maxValue = Math.max(...data);
-  const padding = (maxValue - minValue) * 0.1 || 0.5;
+  const minValue = Math.max(0, Math.min(...data) - 5);
+  const maxValue = Math.min(100, Math.max(...data) + 5);
   const gradientId = `sparkGrad-${id}`;
 
   return (
@@ -64,7 +63,7 @@ function ScoreSparkline({ data, id }: { data: number[]; id: string }) {
               <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <YAxis domain={[minValue - padding, maxValue + padding]} hide />
+          <YAxis domain={[minValue, maxValue]} hide />
           <Area
             type="monotone"
             dataKey="value"
@@ -85,10 +84,10 @@ const statusVariant: Record<string, "default" | "secondary" | "outline"> = {
   archived: "outline",
 };
 
-const sentimentTint: Record<string, string> = {
-  positive: "bg-green-500/[0.04] dark:bg-green-500/[0.07]",
-  concerning: "bg-red-500/[0.04] dark:bg-red-500/[0.07]",
-  mixed: "bg-amber-500/[0.04] dark:bg-amber-500/[0.07]",
+const sentimentBorder: Record<string, string> = {
+  positive: "border-b-4 border-b-green-500/50 dark:border-b-green-400/60",
+  concerning: "border-b-4 border-b-red-500/50 dark:border-b-red-400/60",
+  mixed: "border-b-4 border-b-amber-500/50 dark:border-b-amber-400/60",
   neutral: "",
 };
 
@@ -177,9 +176,9 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
     (series.report.lastName?.[0] ?? "");
 
   return (
-    <Card className={`group relative flex flex-col overflow-hidden transition-all duration-200 hover:border-foreground/20 hover:shadow-md ${sentimentTint[series.latestSummary?.sentiment ?? ""] ?? ""}`}>
+    <Card className={`group relative flex flex-col overflow-hidden transition-all duration-200 hover:shadow-md ${sentimentBorder[series.latestSummary?.sentiment ?? ""] ?? ""}`}>
       <Link href={`/sessions/${series.id}`} className="absolute inset-0 z-0" />
-      <ScoreSparkline data={series.scoreHistory} id={series.id} />
+      <ScoreSparkline data={series.assessmentHistory} id={series.id} />
       <CardHeader className="flex flex-row items-center gap-3 pb-2">
         <Avatar className="h-10 w-10">
           <AvatarImage src={series.report.avatarUrl ?? undefined} />

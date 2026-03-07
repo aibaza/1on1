@@ -42,3 +42,10 @@ wiki: already up to date
 [2026-03-07T16:50:52Z] Checking commit: fix(i18n): escape curly quotes in RO template guidelines JSON
 [2026-03-07T16:56:17Z] Checking commit: fix(ai-editor): use fixed inset-0 to escape dashboard layout overflow
 [2026-03-07T16:59:12Z] Checking commit: feat(ai-editor): embed precise language instruction in template editor system prompt
+[2026-03-07T17:10:21Z] Checking commit: fix(ai-editor): move to (fullscreen) route group to fix h-screen layout
+[2026-03-07T17:21:26Z] Checking commit: fix(ai-chat): switch to generateObject for structured output, add error logging
+[2026-03-07T17:23:42Z] Checking commit: fix(ai-chat): switch to generateObject for structured output, add error logging
+[2026-03-07T19:06:35Z] Checking commit: feat(ai-editor): full AI template editor with language awareness and save fix
+[2026-03-07T19:12:28Z] Checking commit: chore(release): v1.2.0 — AI-Ready Templates milestone
+[2026-03-07T19:26:45Z] Checking commit: feat(ai-editor): persist chat history and version snapshots per template
+[2026-03-07T19:35:36Z] Checking commit: feat(series-card): subtle sentiment tint on card background from AI assessment

@@ -64,13 +64,14 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
     // Generate manager addendum
     const addendum = await generateManagerAddendum(context, language);
 
-    // Store summary + addendum
+    // Store summary + addendum + AI assessment score
     await withTenantContext(tenantId, managerId, async (tx) => {
       await tx
         .update(sessions)
         .set({
           aiSummary: summary,
           aiManagerAddendum: addendum,
+          aiAssessmentScore: addendum.assessmentScore,
           updatedAt: new Date(),
         })
         .where(eq(sessions.id, sessionId));

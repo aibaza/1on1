@@ -40,6 +40,7 @@ export const sessions = pgTable(
     aiSummary: jsonb("ai_summary").$type<AISummary | null>(),
     aiManagerAddendum: jsonb("ai_manager_addendum").$type<AIManagerAddendum | null>(),
     aiSuggestions: jsonb("ai_suggestions").$type<AIActionSuggestions | null>(),
+    aiAssessmentScore: integer("ai_assessment_score"),
     aiStatus: aiStatusEnum("ai_status").default("pending"),
     aiCompletedAt: timestamp("ai_completed_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })

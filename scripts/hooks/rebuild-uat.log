@@ -1991,3 +1991,1125 @@ failed to solve: process "/bin/sh -c bun run build" did not complete successfull
  Container 1on1-app-1 Starting 
  Container 1on1-app-1 Started 
 [2026-03-07T17:00:11Z] UAT rebuild complete — https://1on1.surmont.co/
+[2026-03-07T17:10:24Z] Starting UAT rebuild...
+ Image 1on1-app Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 470B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 906B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 ...
+
+#4 [internal] load metadata for docker.io/library/node:22-alpine
+#4 DONE 0.8s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 DONE 0.8s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 102B done
+#5 DONE 0.0s
+
+#6 [runner 1/6] FROM docker.io/library/node:22-alpine@sha256:8094c002d08262dba12645a3b4a15cd6cd627d30bc782f53229a2ec13ee22a00
+#6 DONE 0.0s
+
+#7 [deps 1/4] FROM docker.io/oven/bun:1-alpine@sha256:32f1fcccb1523960b254c4f80973bee1a910d60be000a45c20c9129a1efcffee
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 533.86kB 0.0s done
+#8 DONE 0.1s
+
+#9 [deps 2/4] WORKDIR /app
+#9 CACHED
+
+#10 [deps 3/4] COPY package.json bun.lock ./
+#10 CACHED
+
+#11 [deps 4/4] RUN bun install --frozen-lockfile
+#11 CACHED
+
+#12 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#12 CACHED
+
+#13 [builder 4/5] COPY . .
+#13 DONE 0.3s
+
+#14 [builder 5/5] RUN bun run build
+#14 0.320 $ next build
+#14 2.719 ▲ Next.js 16.1.6 (Turbopack)
+#14 2.719 - Environments: .env
+#14 2.719 
+#14 2.770   Creating an optimized production build ...
+#14 27.39 ✓ Compiled successfully in 23.0s
+#14 27.40   Running TypeScript ...
+#14 49.45   Collecting page data using 3 workers ...
+#14 51.17   Generating static pages using 3 workers (0/44) ...
+#14 51.23   Generating static pages using 3 workers (11/44) 
+#14 51.34   Generating static pages using 3 workers (22/44) 
+#14 51.53   Generating static pages using 3 workers (33/44) 
+#14 51.65 ✓ Generating static pages using 3 workers (44/44) in 479.8ms
+#14 51.66   Finalizing page optimization ...
+#14 51.96 
+#14 51.97 Route (app)
+#14 51.97 ┌ ƒ /
+#14 51.97 ├ ƒ /_not-found
+#14 51.97 ├ ƒ /action-items
+#14 51.97 ├ ƒ /analytics
+#14 51.97 ├ ƒ /analytics/individual/[id]
+#14 51.97 ├ ƒ /analytics/team/[id]
+#14 51.97 ├ ƒ /api/action-items
+#14 51.97 ├ ƒ /api/action-items/[id]
+#14 51.97 ├ ƒ /api/admin/impersonate
+#14 51.97 ├ ƒ /api/analytics/export
+#14 51.97 ├ ƒ /api/analytics/individual/[id]
+#14 51.97 ├ ƒ /api/analytics/team/[id]
+#14 51.97 ├ ƒ /api/audit-log
+#14 51.97 ├ ƒ /api/auth/[...nextauth]
+#14 51.97 ├ ƒ /api/cron/notifications
+#14 51.97 ├ ƒ /api/history
+#14 51.97 ├ ƒ /api/invites
+#14 51.97 ├ ƒ /api/invites/accept
+#14 51.97 ├ ƒ /api/invites/resend
+#14 51.97 ├ ƒ /api/labels
+#14 51.97 ├ ƒ /api/labels/[id]
+#14 51.97 ├ ƒ /api/nudges
+#14 51.97 ├ ƒ /api/nudges/[id]/dismiss
+#14 51.97 ├ ƒ /api/search
+#14 51.97 ├ ƒ /api/series
+#14 51.97 ├ ƒ /api/series/[id]
+#14 51.97 ├ ƒ /api/series/[id]/start
+#14 51.97 ├ ƒ /api/sessions/[id]
+#14 51.97 ├ ƒ /api/sessions/[id]/action-items
+#14 51.97 ├ ƒ /api/sessions/[id]/ai-retry
+#14 51.97 ├ ƒ /api/sessions/[id]/ai-suggestions
+#14 51.97 ├ ƒ /api/sessions/[id]/ai-summary
+#14 51.97 ├ ƒ /api/sessions/[id]/answers
+#14 51.97 ├ ƒ /api/sessions/[id]/complete
+#14 51.97 ├ ƒ /api/sessions/[id]/notes
+#14 51.97 ├ ƒ /api/sessions/[id]/notes/private
+#14 51.97 ├ ƒ /api/sessions/[id]/talking-points
+#14 51.97 ├ ƒ /api/settings/company
+#14 51.97 ├ ƒ /api/teams
+#14 51.97 ├ ƒ /api/teams/[id]
+#14 51.97 ├ ƒ /api/teams/[id]/members
+#14 51.97 ├ ƒ /api/templates
+#14 51.97 ├ ƒ /api/templates/[id]
+#14 51.97 ├ ƒ /api/templates/[id]/default
+#14 51.97 ├ ƒ /api/templates/[id]/duplicate
+#14 51.97 ├ ƒ /api/templates/[id]/export
+#14 51.97 ├ ƒ /api/templates/[id]/publish
+#14 51.97 ├ ƒ /api/templates/[id]/questions
+#14 51.97 ├ ƒ /api/templates/[id]/questions/[questionId]
+#14 51.97 ├ ƒ /api/templates/[id]/questions/reorder
+#14 51.97 ├ ƒ /api/templates/ai-chat
+#14 51.97 ├ ƒ /api/templates/import
+#14 51.97 ├ ƒ /api/user/language
+#14 51.97 ├ ƒ /api/users
+#14 51.97 ├ ƒ /api/users/[id]
+#14 51.97 ├ ○ /apple-icon.png
+#14 51.97 ├ ƒ /forgot-password
+#14 51.97 ├ ƒ /history
+#14 51.97 ├ ○ /icon.svg
+#14 51.97 ├ ƒ /invite/[token]
+#14 51.97 ├ ƒ /login
+#14 51.97 ├ ƒ /overview
+#14 51.97 ├ ƒ /people
+#14 51.97 ├ ƒ /people/[id]
+#14 51.97 ├ ƒ /register
+#14 51.97 ├ ƒ /reset-password
+#14 51.97 ├ ƒ /sessions
+#14 51.97 ├ ƒ /sessions/[id]
+#14 51.97 ├ ƒ /sessions/[id]/summary
+#14 51.97 ├ ƒ /sessions/new
+#14 51.97 ├ ƒ /settings/audit-log
+#14 51.97 ├ ƒ /settings/company
+#14 51.97 ├ ƒ /teams
+#14 51.97 ├ ƒ /teams/[id]
+#14 51.97 ├ ƒ /templates
+#14 51.97 ├ ƒ /templates/[id]
+#14 51.97 ├ ƒ /templates/[id]/ai-editor
+#14 51.97 ├ ƒ /templates/ai-editor
+#14 51.97 ├ ƒ /templates/new
+#14 51.97 ├ ƒ /templates/schema
+#14 51.97 ├ ƒ /verify-email
+#14 51.97 └ ƒ /wizard/[sessionId]
+#14 51.97 
+#14 51.97 
+#14 51.97 ○  (Static)   prerendered as static content
+#14 51.97 ƒ  (Dynamic)  server-rendered on demand
+#14 51.97 
+#14 DONE 52.3s
+
+#15 [runner 2/6] WORKDIR /app
+#15 CACHED
+
+#16 [runner 3/6] RUN addgroup --system --gid 1001 nodejs &&     adduser --system --uid 1001 nextjs
+#16 CACHED
+
+#17 [runner 4/6] COPY --from=builder /app/public ./public
+#17 CACHED
+
+#18 [runner 5/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+#18 DONE 0.4s
+
+#19 [runner 6/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+#19 DONE 0.1s
+
+#20 exporting to image
+#20 exporting layers
+#20 exporting layers 0.6s done
+#20 writing image sha256:8e85ddfb4f377b250db45744101013d715e16e88cd654251439ab7f1d018cdfb
+#20 writing image sha256:8e85ddfb4f377b250db45744101013d715e16e88cd654251439ab7f1d018cdfb done
+#20 naming to docker.io/library/1on1-app done
+#20 DONE 0.6s
+
+#21 resolving provenance for metadata file
+#21 DONE 0.0s
+ Image 1on1-app Built 
+ Container 1on1-db-1 Running 
+ Container 1on1-app-1 Recreate 
+ Container 1on1-app-1 Recreated 
+ Container 1on1-db-1 Waiting 
+ Container 1on1-db-1 Healthy 
+ Container 1on1-app-1 Starting 
+ Container 1on1-app-1 Started 
+[2026-03-07T17:11:21Z] UAT rebuild complete — https://1on1.surmont.co/
+[2026-03-07T17:21:26Z] Starting UAT rebuild...
+ Image 1on1-app Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 470B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 906B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 ...
+
+#4 [internal] load metadata for docker.io/library/node:22-alpine
+#4 DONE 0.8s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 DONE 0.8s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 102B done
+#5 DONE 0.0s
+
+#6 [runner 1/6] FROM docker.io/library/node:22-alpine@sha256:8094c002d08262dba12645a3b4a15cd6cd627d30bc782f53229a2ec13ee22a00
+#6 DONE 0.0s
+
+#7 [deps 1/4] FROM docker.io/oven/bun:1-alpine@sha256:32f1fcccb1523960b254c4f80973bee1a910d60be000a45c20c9129a1efcffee
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 538.48kB 0.0s done
+#8 DONE 0.1s
+
+#9 [deps 4/4] RUN bun install --frozen-lockfile
+#9 CACHED
+
+#10 [deps 3/4] COPY package.json bun.lock ./
+#10 CACHED
+
+#11 [deps 2/4] WORKDIR /app
+#11 CACHED
+
+#12 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#12 CACHED
+
+#13 [builder 4/5] COPY . .
+#13 DONE 0.1s
+
+#14 [builder 5/5] RUN bun run build
+#14 0.173 $ next build
+#14 2.524 ▲ Next.js 16.1.6 (Turbopack)
+#14 2.524 - Environments: .env
+#14 2.524 
+#14 2.575   Creating an optimized production build ...
+#14 24.29 ✓ Compiled successfully in 20.1s
+#14 24.29   Running TypeScript ...
+#14 45.45   Collecting page data using 3 workers ...
+#14 47.16   Generating static pages using 3 workers (0/44) ...
+#14 47.28   Generating static pages using 3 workers (11/44) 
+#14 47.40   Generating static pages using 3 workers (22/44) 
+#14 47.61   Generating static pages using 3 workers (33/44) 
+#14 47.69 ✓ Generating static pages using 3 workers (44/44) in 526.4ms
+#14 47.70   Finalizing page optimization ...
+#14 47.95 
+#14 47.95 Route (app)
+#14 47.95 ┌ ƒ /
+#14 47.95 ├ ƒ /_not-found
+#14 47.95 ├ ƒ /action-items
+#14 47.95 ├ ƒ /analytics
+#14 47.95 ├ ƒ /analytics/individual/[id]
+#14 47.95 ├ ƒ /analytics/team/[id]
+#14 47.95 ├ ƒ /api/action-items
+#14 47.95 ├ ƒ /api/action-items/[id]
+#14 47.95 ├ ƒ /api/admin/impersonate
+#14 47.95 ├ ƒ /api/analytics/export
+#14 47.95 ├ ƒ /api/analytics/individual/[id]
+#14 47.95 ├ ƒ /api/analytics/team/[id]
+#14 47.95 ├ ƒ /api/audit-log
+#14 47.95 ├ ƒ /api/auth/[...nextauth]
+#14 47.95 ├ ƒ /api/cron/notifications
+#14 47.95 ├ ƒ /api/history
+#14 47.95 ├ ƒ /api/invites
+#14 47.95 ├ ƒ /api/invites/accept
+#14 47.95 ├ ƒ /api/invites/resend
+#14 47.95 ├ ƒ /api/labels
+#14 47.95 ├ ƒ /api/labels/[id]
+#14 47.95 ├ ƒ /api/nudges
+#14 47.95 ├ ƒ /api/nudges/[id]/dismiss
+#14 47.95 ├ ƒ /api/search
+#14 47.95 ├ ƒ /api/series
+#14 47.95 ├ ƒ /api/series/[id]
+#14 47.95 ├ ƒ /api/series/[id]/start
+#14 47.95 ├ ƒ /api/sessions/[id]
+#14 47.95 ├ ƒ /api/sessions/[id]/action-items
+#14 47.95 ├ ƒ /api/sessions/[id]/ai-retry
+#14 47.95 ├ ƒ /api/sessions/[id]/ai-suggestions
+#14 47.95 ├ ƒ /api/sessions/[id]/ai-summary
+#14 47.95 ├ ƒ /api/sessions/[id]/answers
+#14 47.95 ├ ƒ /api/sessions/[id]/complete
+#14 47.95 ├ ƒ /api/sessions/[id]/notes
+#14 47.95 ├ ƒ /api/sessions/[id]/notes/private
+#14 47.95 ├ ƒ /api/sessions/[id]/talking-points
+#14 47.95 ├ ƒ /api/settings/company
+#14 47.95 ├ ƒ /api/teams
+#14 47.95 ├ ƒ /api/teams/[id]
+#14 47.95 ├ ƒ /api/teams/[id]/members
+#14 47.95 ├ ƒ /api/templates
+#14 47.95 ├ ƒ /api/templates/[id]
+#14 47.95 ├ ƒ /api/templates/[id]/default
+#14 47.95 ├ ƒ /api/templates/[id]/duplicate
+#14 47.95 ├ ƒ /api/templates/[id]/export
+#14 47.95 ├ ƒ /api/templates/[id]/publish
+#14 47.95 ├ ƒ /api/templates/[id]/questions
+#14 47.95 ├ ƒ /api/templates/[id]/questions/[questionId]
+#14 47.95 ├ ƒ /api/templates/[id]/questions/reorder
+#14 47.95 ├ ƒ /api/templates/ai-chat
+#14 47.95 ├ ƒ /api/templates/import
+#14 47.95 ├ ƒ /api/user/language
+#14 47.95 ├ ƒ /api/users
+#14 47.95 ├ ƒ /api/users/[id]
+#14 47.95 ├ ○ /apple-icon.png
+#14 47.95 ├ ƒ /forgot-password
+#14 47.95 ├ ƒ /history
+#14 47.95 ├ ○ /icon.svg
+#14 47.95 ├ ƒ /invite/[token]
+#14 47.95 ├ ƒ /login
+#14 47.95 ├ ƒ /overview
+#14 47.95 ├ ƒ /people
+#14 47.95 ├ ƒ /people/[id]
+#14 47.95 ├ ƒ /register
+#14 47.95 ├ ƒ /reset-password
+#14 47.95 ├ ƒ /sessions
+#14 47.95 ├ ƒ /sessions/[id]
+#14 47.95 ├ ƒ /sessions/[id]/summary
+#14 47.95 ├ ƒ /sessions/new
+#14 47.95 ├ ƒ /settings/audit-log
+#14 47.95 ├ ƒ /settings/company
+#14 47.95 ├ ƒ /teams
+#14 47.95 ├ ƒ /teams/[id]
+#14 47.95 ├ ƒ /templates
+#14 47.95 ├ ƒ /templates/[id]
+#14 47.95 ├ ƒ /templates/[id]/ai-editor
+#14 47.95 ├ ƒ /templates/ai-editor
+#14 47.95 ├ ƒ /templates/new
+#14 47.95 ├ ƒ /templates/schema
+#14 47.95 ├ ƒ /verify-email
+#14 47.95 └ ƒ /wizard/[sessionId]
+#14 47.95 
+#14 47.95 
+#14 47.95 ○  (Static)   prerendered as static content
+#14 47.95 ƒ  (Dynamic)  server-rendered on demand
+#14 47.95 
+#14 DONE 48.2s
+
+#15 [runner 2/6] WORKDIR /app
+#15 CACHED
+
+#16 [runner 3/6] RUN addgroup --system --gid 1001 nodejs &&     adduser --system --uid 1001 nextjs
+#16 CACHED
+
+#17 [runner 4/6] COPY --from=builder /app/public ./public
+#17 CACHED
+
+#18 [runner 5/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+#18 DONE 0.4s
+
+#19 [runner 6/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+#19 DONE 0.1s
+
+#20 exporting to image
+#20 exporting layers
+#20 exporting layers 0.6s done
+#20 writing image sha256:383e82e33597c0089eec97227a92bcee88e4ef0a2dac670f77bbdce293a12a8e done
+#20 naming to docker.io/library/1on1-app done
+#20 DONE 0.6s
+
+#21 resolving provenance for metadata file
+#21 DONE 0.0s
+ Image 1on1-app Built 
+ Container 1on1-db-1 Running 
+ Container 1on1-app-1 Recreate 
+ Container 1on1-app-1 Recreated 
+ Container 1on1-db-1 Waiting 
+ Container 1on1-db-1 Healthy 
+ Container 1on1-app-1 Starting 
+ Container 1on1-app-1 Started 
+[2026-03-07T17:22:19Z] UAT rebuild complete — https://1on1.surmont.co/
+[2026-03-07T17:23:49Z] Starting UAT rebuild...
+ Image 1on1-app Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 470B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 906B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 ...
+
+#4 [internal] load metadata for docker.io/library/node:22-alpine
+#4 DONE 0.5s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 DONE 0.5s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 102B done
+#5 DONE 0.0s
+
+#6 [runner 1/6] FROM docker.io/library/node:22-alpine@sha256:8094c002d08262dba12645a3b4a15cd6cd627d30bc782f53229a2ec13ee22a00
+#6 DONE 0.0s
+
+#7 [deps 1/4] FROM docker.io/oven/bun:1-alpine@sha256:32f1fcccb1523960b254c4f80973bee1a910d60be000a45c20c9129a1efcffee
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 534.85kB 0.0s done
+#8 DONE 0.0s
+
+#9 [deps 4/4] RUN bun install --frozen-lockfile
+#9 CACHED
+
+#10 [deps 2/4] WORKDIR /app
+#10 CACHED
+
+#11 [deps 3/4] COPY package.json bun.lock ./
+#11 CACHED
+
+#12 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#12 CACHED
+
+#13 [builder 4/5] COPY . .
+#13 DONE 0.1s
+
+#14 [builder 5/5] RUN bun run build
+#14 0.162 $ next build
+#14 2.607 ▲ Next.js 16.1.6 (Turbopack)
+#14 2.607 - Environments: .env
+#14 2.607 
+#14 2.651   Creating an optimized production build ...
+#14 28.25 ✓ Compiled successfully in 24.0s
+#14 28.25   Running TypeScript ...
+#14 50.82   Collecting page data using 3 workers ...
+#14 52.64   Generating static pages using 3 workers (0/44) ...
+#14 52.71   Generating static pages using 3 workers (11/44) 
+#14 52.82   Generating static pages using 3 workers (22/44) 
+#14 53.02   Generating static pages using 3 workers (33/44) 
+#14 53.13 ✓ Generating static pages using 3 workers (44/44) in 494.1ms
+#14 53.14   Finalizing page optimization ...
+#14 53.45 
+#14 53.46 Route (app)
+#14 53.46 ┌ ƒ /
+#14 53.46 ├ ƒ /_not-found
+#14 53.46 ├ ƒ /action-items
+#14 53.46 ├ ƒ /analytics
+#14 53.46 ├ ƒ /analytics/individual/[id]
+#14 53.46 ├ ƒ /analytics/team/[id]
+#14 53.46 ├ ƒ /api/action-items
+#14 53.46 ├ ƒ /api/action-items/[id]
+#14 53.46 ├ ƒ /api/admin/impersonate
+#14 53.46 ├ ƒ /api/analytics/export
+#14 53.46 ├ ƒ /api/analytics/individual/[id]
+#14 53.46 ├ ƒ /api/analytics/team/[id]
+#14 53.46 ├ ƒ /api/audit-log
+#14 53.46 ├ ƒ /api/auth/[...nextauth]
+#14 53.46 ├ ƒ /api/cron/notifications
+#14 53.46 ├ ƒ /api/history
+#14 53.46 ├ ƒ /api/invites
+#14 53.46 ├ ƒ /api/invites/accept
+#14 53.46 ├ ƒ /api/invites/resend
+#14 53.46 ├ ƒ /api/labels
+#14 53.46 ├ ƒ /api/labels/[id]
+#14 53.46 ├ ƒ /api/nudges
+#14 53.46 ├ ƒ /api/nudges/[id]/dismiss
+#14 53.46 ├ ƒ /api/search
+#14 53.46 ├ ƒ /api/series
+#14 53.46 ├ ƒ /api/series/[id]
+#14 53.46 ├ ƒ /api/series/[id]/start
+#14 53.46 ├ ƒ /api/sessions/[id]
+#14 53.46 ├ ƒ /api/sessions/[id]/action-items
+#14 53.46 ├ ƒ /api/sessions/[id]/ai-retry
+#14 53.46 ├ ƒ /api/sessions/[id]/ai-suggestions
+#14 53.46 ├ ƒ /api/sessions/[id]/ai-summary
+#14 53.46 ├ ƒ /api/sessions/[id]/answers
+#14 53.46 ├ ƒ /api/sessions/[id]/complete
+#14 53.46 ├ ƒ /api/sessions/[id]/notes
+#14 53.46 ├ ƒ /api/sessions/[id]/notes/private
+#14 53.46 ├ ƒ /api/sessions/[id]/talking-points
+#14 53.46 ├ ƒ /api/settings/company
+#14 53.46 ├ ƒ /api/teams
+#14 53.46 ├ ƒ /api/teams/[id]
+#14 53.46 ├ ƒ /api/teams/[id]/members
+#14 53.46 ├ ƒ /api/templates
+#14 53.46 ├ ƒ /api/templates/[id]
+#14 53.46 ├ ƒ /api/templates/[id]/default
+#14 53.46 ├ ƒ /api/templates/[id]/duplicate
+#14 53.46 ├ ƒ /api/templates/[id]/export
+#14 53.46 ├ ƒ /api/templates/[id]/publish
+#14 53.46 ├ ƒ /api/templates/[id]/questions
+#14 53.46 ├ ƒ /api/templates/[id]/questions/[questionId]
+#14 53.46 ├ ƒ /api/templates/[id]/questions/reorder
+#14 53.46 ├ ƒ /api/templates/ai-chat
+#14 53.46 ├ ƒ /api/templates/import
+#14 53.46 ├ ƒ /api/user/language
+#14 53.46 ├ ƒ /api/users
+#14 53.46 ├ ƒ /api/users/[id]
+#14 53.46 ├ ○ /apple-icon.png
+#14 53.46 ├ ƒ /forgot-password
+#14 53.46 ├ ƒ /history
+#14 53.46 ├ ○ /icon.svg
+#14 53.46 ├ ƒ /invite/[token]
+#14 53.46 ├ ƒ /login
+#14 53.46 ├ ƒ /overview
+#14 53.46 ├ ƒ /people
+#14 53.46 ├ ƒ /people/[id]
+#14 53.46 ├ ƒ /register
+#14 53.46 ├ ƒ /reset-password
+#14 53.46 ├ ƒ /sessions
+#14 53.46 ├ ƒ /sessions/[id]
+#14 53.46 ├ ƒ /sessions/[id]/summary
+#14 53.46 ├ ƒ /sessions/new
+#14 53.46 ├ ƒ /settings/audit-log
+#14 53.46 ├ ƒ /settings/company
+#14 53.46 ├ ƒ /teams
+#14 53.46 ├ ƒ /teams/[id]
+#14 53.46 ├ ƒ /templates
+#14 53.46 ├ ƒ /templates/[id]
+#14 53.46 ├ ƒ /templates/[id]/ai-editor
+#14 53.46 ├ ƒ /templates/ai-editor
+#14 53.46 ├ ƒ /templates/new
+#14 53.46 ├ ƒ /templates/schema
+#14 53.46 ├ ƒ /verify-email
+#14 53.46 └ ƒ /wizard/[sessionId]
+#14 53.46 
+#14 53.46 
+#14 53.46 ○  (Static)   prerendered as static content
+#14 53.46 ƒ  (Dynamic)  server-rendered on demand
+#14 53.46 
+#14 DONE 53.8s
+
+#15 [runner 2/6] WORKDIR /app
+#15 CACHED
+
+#16 [runner 3/6] RUN addgroup --system --gid 1001 nodejs &&     adduser --system --uid 1001 nextjs
+#16 CACHED
+
+#17 [runner 4/6] COPY --from=builder /app/public ./public
+#17 CACHED
+
+#18 [runner 5/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+#18 DONE 0.4s
+
+#19 [runner 6/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+#19 DONE 0.1s
+
+#20 exporting to image
+#20 exporting layers
+#20 exporting layers 0.6s done
+#20 writing image sha256:0c2b9202d426424796661ecaee4c242cb4d27dfdb2b2d7457e03a3f0ed9d3fd5 done
+#20 naming to docker.io/library/1on1-app done
+#20 DONE 0.6s
+
+#21 resolving provenance for metadata file
+#21 DONE 0.0s
+ Image 1on1-app Built 
+ Container 1on1-db-1 Running 
+ Container 1on1-app-1 Recreate 
+ Container 1on1-app-1 Recreated 
+ Container 1on1-db-1 Waiting 
+ Container 1on1-db-1 Healthy 
+ Container 1on1-app-1 Starting 
+ Container 1on1-app-1 Started 
+[2026-03-07T17:24:47Z] UAT rebuild complete — https://1on1.surmont.co/
+[2026-03-07T19:06:11Z] Starting UAT rebuild...
+ Image 1on1-app Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 470B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 906B done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 ...
+
+#4 [internal] load metadata for docker.io/library/node:22-alpine
+#4 DONE 0.9s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 DONE 1.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 102B done
+#5 DONE 0.1s
+
+#6 [runner 1/6] FROM docker.io/library/node:22-alpine@sha256:8094c002d08262dba12645a3b4a15cd6cd627d30bc782f53229a2ec13ee22a00
+#6 DONE 0.0s
+
+#7 [deps 1/4] FROM docker.io/oven/bun:1-alpine@sha256:32f1fcccb1523960b254c4f80973bee1a910d60be000a45c20c9129a1efcffee
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 564.09kB 0.0s done
+#8 DONE 0.1s
+
+#9 [deps 2/4] WORKDIR /app
+#9 CACHED
+
+#10 [deps 3/4] COPY package.json bun.lock ./
+#10 CACHED
+
+#11 [deps 4/4] RUN bun install --frozen-lockfile
+#11 CACHED
+
+#12 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#12 CACHED
+
+#13 [builder 4/5] COPY . .
+#13 DONE 0.4s
+
+#14 [builder 5/5] RUN bun run build
+#14 0.322 $ next build
+#14 2.737 ▲ Next.js 16.1.6 (Turbopack)
+#14 2.737 - Environments: .env
+#14 2.737 
+#14 2.777   Creating an optimized production build ...
+#14 26.98 ✓ Compiled successfully in 22.6s
+#14 26.98   Running TypeScript ...
+#14 48.75   Collecting page data using 3 workers ...
+#14 50.53   Generating static pages using 3 workers (0/44) ...
+#14 50.65   Generating static pages using 3 workers (11/44) 
+#14 50.76   Generating static pages using 3 workers (22/44) 
+#14 50.95   Generating static pages using 3 workers (33/44) 
+#14 51.06 ✓ Generating static pages using 3 workers (44/44) in 531.1ms
+#14 51.07   Finalizing page optimization ...
+#14 51.32 
+#14 51.32 Route (app)
+#14 51.32 ┌ ƒ /
+#14 51.32 ├ ƒ /_not-found
+#14 51.32 ├ ƒ /action-items
+#14 51.32 ├ ƒ /analytics
+#14 51.32 ├ ƒ /analytics/individual/[id]
+#14 51.32 ├ ƒ /analytics/team/[id]
+#14 51.32 ├ ƒ /api/action-items
+#14 51.32 ├ ƒ /api/action-items/[id]
+#14 51.32 ├ ƒ /api/admin/impersonate
+#14 51.32 ├ ƒ /api/analytics/export
+#14 51.32 ├ ƒ /api/analytics/individual/[id]
+#14 51.32 ├ ƒ /api/analytics/team/[id]
+#14 51.32 ├ ƒ /api/audit-log
+#14 51.32 ├ ƒ /api/auth/[...nextauth]
+#14 51.32 ├ ƒ /api/cron/notifications
+#14 51.32 ├ ƒ /api/history
+#14 51.32 ├ ƒ /api/invites
+#14 51.32 ├ ƒ /api/invites/accept
+#14 51.32 ├ ƒ /api/invites/resend
+#14 51.32 ├ ƒ /api/labels
+#14 51.32 ├ ƒ /api/labels/[id]
+#14 51.32 ├ ƒ /api/nudges
+#14 51.32 ├ ƒ /api/nudges/[id]/dismiss
+#14 51.32 ├ ƒ /api/search
+#14 51.32 ├ ƒ /api/series
+#14 51.32 ├ ƒ /api/series/[id]
+#14 51.32 ├ ƒ /api/series/[id]/start
+#14 51.32 ├ ƒ /api/sessions/[id]
+#14 51.32 ├ ƒ /api/sessions/[id]/action-items
+#14 51.32 ├ ƒ /api/sessions/[id]/ai-retry
+#14 51.32 ├ ƒ /api/sessions/[id]/ai-suggestions
+#14 51.32 ├ ƒ /api/sessions/[id]/ai-summary
+#14 51.32 ├ ƒ /api/sessions/[id]/answers
+#14 51.32 ├ ƒ /api/sessions/[id]/complete
+#14 51.32 ├ ƒ /api/sessions/[id]/notes
+#14 51.32 ├ ƒ /api/sessions/[id]/notes/private
+#14 51.32 ├ ƒ /api/sessions/[id]/talking-points
+#14 51.32 ├ ƒ /api/settings/company
+#14 51.32 ├ ƒ /api/teams
+#14 51.32 ├ ƒ /api/teams/[id]
+#14 51.32 ├ ƒ /api/teams/[id]/members
+#14 51.32 ├ ƒ /api/templates
+#14 51.32 ├ ƒ /api/templates/[id]
+#14 51.32 ├ ƒ /api/templates/[id]/default
+#14 51.32 ├ ƒ /api/templates/[id]/duplicate
+#14 51.32 ├ ƒ /api/templates/[id]/export
+#14 51.32 ├ ƒ /api/templates/[id]/publish
+#14 51.32 ├ ƒ /api/templates/[id]/questions
+#14 51.32 ├ ƒ /api/templates/[id]/questions/[questionId]
+#14 51.32 ├ ƒ /api/templates/[id]/questions/reorder
+#14 51.32 ├ ƒ /api/templates/ai-chat
+#14 51.32 ├ ƒ /api/templates/import
+#14 51.32 ├ ƒ /api/user/language
+#14 51.32 ├ ƒ /api/users
+#14 51.32 ├ ƒ /api/users/[id]
+#14 51.32 ├ ○ /apple-icon.png
+#14 51.32 ├ ƒ /forgot-password
+#14 51.32 ├ ƒ /history
+#14 51.32 ├ ○ /icon.svg
+#14 51.32 ├ ƒ /invite/[token]
+#14 51.32 ├ ƒ /login
+#14 51.32 ├ ƒ /overview
+#14 51.32 ├ ƒ /people
+#14 51.32 ├ ƒ /people/[id]
+#14 51.32 ├ ƒ /register
+#14 51.32 ├ ƒ /reset-password
+#14 51.32 ├ ƒ /sessions
+#14 51.32 ├ ƒ /sessions/[id]
+#14 51.32 ├ ƒ /sessions/[id]/summary
+#14 51.32 ├ ƒ /sessions/new
+#14 51.32 ├ ƒ /settings/audit-log
+#14 51.32 ├ ƒ /settings/company
+#14 51.32 ├ ƒ /teams
+#14 51.32 ├ ƒ /teams/[id]
+#14 51.32 ├ ƒ /templates
+#14 51.32 ├ ƒ /templates/[id]
+#14 51.32 ├ ƒ /templates/[id]/ai-editor
+#14 51.32 ├ ƒ /templates/ai-editor
+#14 51.32 ├ ƒ /templates/new
+#14 51.32 ├ ƒ /templates/schema
+#14 51.32 ├ ƒ /verify-email
+#14 51.32 └ ƒ /wizard/[sessionId]
+#14 51.32 
+#14 51.32 
+#14 51.32 ○  (Static)   prerendered as static content
+#14 51.32 ƒ  (Dynamic)  server-rendered on demand
+#14 51.32 
+#14 DONE 51.6s
+
+#15 [runner 2/6] WORKDIR /app
+#15 CACHED
+
+#16 [runner 3/6] RUN addgroup --system --gid 1001 nodejs &&     adduser --system --uid 1001 nextjs
+#16 CACHED
+
+#17 [runner 4/6] COPY --from=builder /app/public ./public
+#17 CACHED
+
+#18 [runner 5/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+#18 DONE 0.4s
+
+#19 [runner 6/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+#19 DONE 0.1s
+
+#20 exporting to image
+#20 exporting layers
+#20 exporting layers 0.6s done
+#20 writing image sha256:7653d3259b6963ab7e7f909e7b4f0404965ddfab48df871821e94eea2e9af774 done
+#20 naming to docker.io/library/1on1-app done
+#20 DONE 0.6s
+
+#21 resolving provenance for metadata file
+#21 DONE 0.0s
+ Image 1on1-app Built 
+ Container 1on1-db-1 Running 
+ Container 1on1-app-1 Recreate 
+ Container 1on1-app-1 Recreated 
+ Container 1on1-db-1 Waiting 
+ Container 1on1-db-1 Healthy 
+ Container 1on1-app-1 Starting 
+ Container 1on1-app-1 Started 
+[2026-03-07T19:07:08Z] UAT rebuild complete — https://1on1.surmont.co/
+[2026-03-07T19:26:48Z] Starting UAT rebuild...
+ Image 1on1-app Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 470B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 906B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 ...
+
+#4 [internal] load metadata for docker.io/library/node:22-alpine
+#4 DONE 0.8s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 DONE 1.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 102B done
+#5 DONE 0.0s
+
+#6 [deps 1/4] FROM docker.io/oven/bun:1-alpine@sha256:32f1fcccb1523960b254c4f80973bee1a910d60be000a45c20c9129a1efcffee
+#6 DONE 0.0s
+
+#7 [runner 1/6] FROM docker.io/library/node:22-alpine@sha256:8094c002d08262dba12645a3b4a15cd6cd627d30bc782f53229a2ec13ee22a00
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 645.16kB 0.0s done
+#8 DONE 0.0s
+
+#9 [deps 2/4] WORKDIR /app
+#9 CACHED
+
+#10 [deps 3/4] COPY package.json bun.lock ./
+#10 CACHED
+
+#11 [deps 4/4] RUN bun install --frozen-lockfile
+#11 CACHED
+
+#12 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#12 CACHED
+
+#13 [builder 4/5] COPY . .
+#13 DONE 0.1s
+
+#14 [builder 5/5] RUN bun run build
+#14 0.208 $ next build
+#14 2.689 ▲ Next.js 16.1.6 (Turbopack)
+#14 2.689 - Environments: .env
+#14 2.689 
+#14 2.734   Creating an optimized production build ...
+#14 25.25 ✓ Compiled successfully in 21.0s
+#14 25.25   Running TypeScript ...
+#14 46.54   Collecting page data using 3 workers ...
+#14 48.29   Generating static pages using 3 workers (0/44) ...
+#14 48.35   Generating static pages using 3 workers (11/44) 
+#14 48.52   Generating static pages using 3 workers (22/44) 
+#14 48.68   Generating static pages using 3 workers (33/44) 
+#14 48.79 ✓ Generating static pages using 3 workers (44/44) in 502.1ms
+#14 48.80   Finalizing page optimization ...
+#14 49.08 
+#14 49.09 Route (app)
+#14 49.09 ┌ ƒ /
+#14 49.09 ├ ƒ /_not-found
+#14 49.09 ├ ƒ /action-items
+#14 49.09 ├ ƒ /analytics
+#14 49.09 ├ ƒ /analytics/individual/[id]
+#14 49.09 ├ ƒ /analytics/team/[id]
+#14 49.09 ├ ƒ /api/action-items
+#14 49.09 ├ ƒ /api/action-items/[id]
+#14 49.09 ├ ƒ /api/admin/impersonate
+#14 49.09 ├ ƒ /api/analytics/export
+#14 49.09 ├ ƒ /api/analytics/individual/[id]
+#14 49.09 ├ ƒ /api/analytics/team/[id]
+#14 49.09 ├ ƒ /api/audit-log
+#14 49.09 ├ ƒ /api/auth/[...nextauth]
+#14 49.09 ├ ƒ /api/cron/notifications
+#14 49.09 ├ ƒ /api/history
+#14 49.09 ├ ƒ /api/invites
+#14 49.09 ├ ƒ /api/invites/accept
+#14 49.09 ├ ƒ /api/invites/resend
+#14 49.09 ├ ƒ /api/labels
+#14 49.09 ├ ƒ /api/labels/[id]
+#14 49.09 ├ ƒ /api/nudges
+#14 49.09 ├ ƒ /api/nudges/[id]/dismiss
+#14 49.09 ├ ƒ /api/search
+#14 49.09 ├ ƒ /api/series
+#14 49.09 ├ ƒ /api/series/[id]
+#14 49.09 ├ ƒ /api/series/[id]/start
+#14 49.09 ├ ƒ /api/sessions/[id]
+#14 49.09 ├ ƒ /api/sessions/[id]/action-items
+#14 49.09 ├ ƒ /api/sessions/[id]/ai-retry
+#14 49.09 ├ ƒ /api/sessions/[id]/ai-suggestions
+#14 49.09 ├ ƒ /api/sessions/[id]/ai-summary
+#14 49.09 ├ ƒ /api/sessions/[id]/answers
+#14 49.09 ├ ƒ /api/sessions/[id]/complete
+#14 49.09 ├ ƒ /api/sessions/[id]/notes
+#14 49.09 ├ ƒ /api/sessions/[id]/notes/private
+#14 49.09 ├ ƒ /api/sessions/[id]/talking-points
+#14 49.09 ├ ƒ /api/settings/company
+#14 49.09 ├ ƒ /api/teams
+#14 49.09 ├ ƒ /api/teams/[id]
+#14 49.09 ├ ƒ /api/teams/[id]/members
+#14 49.09 ├ ƒ /api/templates
+#14 49.09 ├ ƒ /api/templates/[id]
+#14 49.09 ├ ƒ /api/templates/[id]/ai-history
+#14 49.09 ├ ƒ /api/templates/[id]/default
+#14 49.09 ├ ƒ /api/templates/[id]/duplicate
+#14 49.09 ├ ƒ /api/templates/[id]/export
+#14 49.09 ├ ƒ /api/templates/[id]/publish
+#14 49.09 ├ ƒ /api/templates/[id]/questions
+#14 49.09 ├ ƒ /api/templates/[id]/questions/[questionId]
+#14 49.09 ├ ƒ /api/templates/[id]/questions/reorder
+#14 49.09 ├ ƒ /api/templates/ai-chat
+#14 49.09 ├ ƒ /api/templates/import
+#14 49.09 ├ ƒ /api/user/language
+#14 49.09 ├ ƒ /api/users
+#14 49.09 ├ ƒ /api/users/[id]
+#14 49.09 ├ ○ /apple-icon.png
+#14 49.09 ├ ƒ /forgot-password
+#14 49.09 ├ ƒ /history
+#14 49.09 ├ ○ /icon.svg
+#14 49.09 ├ ƒ /invite/[token]
+#14 49.09 ├ ƒ /login
+#14 49.09 ├ ƒ /overview
+#14 49.09 ├ ƒ /people
+#14 49.09 ├ ƒ /people/[id]
+#14 49.09 ├ ƒ /register
+#14 49.09 ├ ƒ /reset-password
+#14 49.09 ├ ƒ /sessions
+#14 49.09 ├ ƒ /sessions/[id]
+#14 49.09 ├ ƒ /sessions/[id]/summary
+#14 49.09 ├ ƒ /sessions/new
+#14 49.09 ├ ƒ /settings/audit-log
+#14 49.09 ├ ƒ /settings/company
+#14 49.09 ├ ƒ /teams
+#14 49.09 ├ ƒ /teams/[id]
+#14 49.09 ├ ƒ /templates
+#14 49.09 ├ ƒ /templates/[id]
+#14 49.09 ├ ƒ /templates/[id]/ai-editor
+#14 49.09 ├ ƒ /templates/ai-editor
+#14 49.09 ├ ƒ /templates/new
+#14 49.09 ├ ƒ /templates/schema
+#14 49.09 ├ ƒ /verify-email
+#14 49.09 └ ƒ /wizard/[sessionId]
+#14 49.09 
+#14 49.09 
+#14 49.09 ○  (Static)   prerendered as static content
+#14 49.09 ƒ  (Dynamic)  server-rendered on demand
+#14 49.09 
+#14 DONE 49.4s
+
+#15 [runner 2/6] WORKDIR /app
+#15 CACHED
+
+#16 [runner 3/6] RUN addgroup --system --gid 1001 nodejs &&     adduser --system --uid 1001 nextjs
+#16 CACHED
+
+#17 [runner 4/6] COPY --from=builder /app/public ./public
+#17 CACHED
+
+#18 [runner 5/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+#18 DONE 0.4s
+
+#19 [runner 6/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+#19 DONE 0.1s
+
+#20 exporting to image
+#20 exporting layers
+#20 exporting layers 0.6s done
+#20 writing image sha256:e8a7965fa925519d91888f270a125dbddfacd58bd8305362b5843d0c71a86729 done
+#20 naming to docker.io/library/1on1-app done
+#20 DONE 0.6s
+
+#21 resolving provenance for metadata file
+#21 DONE 0.0s
+ Image 1on1-app Built 
+ Container 1on1-db-1 Running 
+ Container 1on1-app-1 Recreate 
+ Container 1on1-app-1 Recreated 
+ Container 1on1-db-1 Waiting 
+ Container 1on1-db-1 Healthy 
+ Container 1on1-app-1 Starting 
+ Container 1on1-app-1 Started 
+[2026-03-07T19:27:43Z] UAT rebuild complete — https://1on1.surmont.co/
+[2026-03-07T19:35:35Z] Starting UAT rebuild...
+ Image 1on1-app Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 470B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 906B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-alpine
+#3 DONE 0.7s
+
+#4 [internal] load metadata for docker.io/library/node:22-alpine
+#4 DONE 0.7s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 102B done
+#5 DONE 0.0s
+
+#6 [runner 1/6] FROM docker.io/library/node:22-alpine@sha256:8094c002d08262dba12645a3b4a15cd6cd627d30bc782f53229a2ec13ee22a00
+#6 DONE 0.0s
+
+#7 [deps 1/4] FROM docker.io/oven/bun:1-alpine@sha256:32f1fcccb1523960b254c4f80973bee1a910d60be000a45c20c9129a1efcffee
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 561.60kB 0.0s done
+#8 DONE 0.0s
+
+#9 [deps 2/4] WORKDIR /app
+#9 CACHED
+
+#10 [deps 4/4] RUN bun install --frozen-lockfile
+#10 CACHED
+
+#11 [deps 3/4] COPY package.json bun.lock ./
+#11 CACHED
+
+#12 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#12 CACHED
+
+#13 [builder 4/5] COPY . .
+#13 DONE 0.1s
+
+#14 [builder 5/5] RUN bun run build
+#14 0.157 $ next build
+#14 2.545 ▲ Next.js 16.1.6 (Turbopack)
+#14 2.545 - Environments: .env
+#14 2.546 
+#14 2.595   Creating an optimized production build ...
+#14 26.63 ✓ Compiled successfully in 22.4s
+#14 26.63   Running TypeScript ...
+#14 47.77   Collecting page data using 3 workers ...
+#14 49.40   Generating static pages using 3 workers (0/44) ...
+#14 49.47   Generating static pages using 3 workers (11/44) 
+#14 49.61   Generating static pages using 3 workers (22/44) 
+#14 49.82   Generating static pages using 3 workers (33/44) 
+#14 49.92 ✓ Generating static pages using 3 workers (44/44) in 515.2ms
+#14 49.93   Finalizing page optimization ...
+#14 50.19 
+#14 50.19 Route (app)
+#14 50.19 ┌ ƒ /
+#14 50.19 ├ ƒ /_not-found
+#14 50.19 ├ ƒ /action-items
+#14 50.19 ├ ƒ /analytics
+#14 50.19 ├ ƒ /analytics/individual/[id]
+#14 50.19 ├ ƒ /analytics/team/[id]
+#14 50.19 ├ ƒ /api/action-items
+#14 50.19 ├ ƒ /api/action-items/[id]
+#14 50.19 ├ ƒ /api/admin/impersonate
+#14 50.19 ├ ƒ /api/analytics/export
+#14 50.19 ├ ƒ /api/analytics/individual/[id]
+#14 50.19 ├ ƒ /api/analytics/team/[id]
+#14 50.19 ├ ƒ /api/audit-log
+#14 50.19 ├ ƒ /api/auth/[...nextauth]
+#14 50.19 ├ ƒ /api/cron/notifications
+#14 50.19 ├ ƒ /api/history
+#14 50.19 ├ ƒ /api/invites
+#14 50.19 ├ ƒ /api/invites/accept
+#14 50.19 ├ ƒ /api/invites/resend
+#14 50.19 ├ ƒ /api/labels
+#14 50.19 ├ ƒ /api/labels/[id]
+#14 50.19 ├ ƒ /api/nudges
+#14 50.19 ├ ƒ /api/nudges/[id]/dismiss
+#14 50.19 ├ ƒ /api/search
+#14 50.19 ├ ƒ /api/series
+#14 50.19 ├ ƒ /api/series/[id]
+#14 50.19 ├ ƒ /api/series/[id]/start
+#14 50.19 ├ ƒ /api/sessions/[id]
+#14 50.19 ├ ƒ /api/sessions/[id]/action-items
+#14 50.19 ├ ƒ /api/sessions/[id]/ai-retry
+#14 50.19 ├ ƒ /api/sessions/[id]/ai-suggestions
+#14 50.19 ├ ƒ /api/sessions/[id]/ai-summary
+#14 50.19 ├ ƒ /api/sessions/[id]/answers
+#14 50.19 ├ ƒ /api/sessions/[id]/complete
+#14 50.19 ├ ƒ /api/sessions/[id]/notes
+#14 50.19 ├ ƒ /api/sessions/[id]/notes/private
+#14 50.19 ├ ƒ /api/sessions/[id]/talking-points
+#14 50.19 ├ ƒ /api/settings/company
+#14 50.19 ├ ƒ /api/teams
+#14 50.19 ├ ƒ /api/teams/[id]
+#14 50.19 ├ ƒ /api/teams/[id]/members
+#14 50.19 ├ ƒ /api/templates
+#14 50.19 ├ ƒ /api/templates/[id]
+#14 50.19 ├ ƒ /api/templates/[id]/ai-history
+#14 50.19 ├ ƒ /api/templates/[id]/default
+#14 50.19 ├ ƒ /api/templates/[id]/duplicate
+#14 50.19 ├ ƒ /api/templates/[id]/export
+#14 50.19 ├ ƒ /api/templates/[id]/publish
+#14 50.19 ├ ƒ /api/templates/[id]/questions
+#14 50.19 ├ ƒ /api/templates/[id]/questions/[questionId]
+#14 50.19 ├ ƒ /api/templates/[id]/questions/reorder
+#14 50.19 ├ ƒ /api/templates/ai-chat
+#14 50.19 ├ ƒ /api/templates/import
+#14 50.19 ├ ƒ /api/user/language
+#14 50.19 ├ ƒ /api/users
+#14 50.19 ├ ƒ /api/users/[id]
+#14 50.19 ├ ○ /apple-icon.png
+#14 50.19 ├ ƒ /forgot-password
+#14 50.19 ├ ƒ /history
+#14 50.19 ├ ○ /icon.svg
+#14 50.19 ├ ƒ /invite/[token]
+#14 50.19 ├ ƒ /login
+#14 50.19 ├ ƒ /overview
+#14 50.19 ├ ƒ /people
+#14 50.19 ├ ƒ /people/[id]
+#14 50.19 ├ ƒ /register
+#14 50.19 ├ ƒ /reset-password
+#14 50.19 ├ ƒ /sessions
+#14 50.19 ├ ƒ /sessions/[id]
+#14 50.19 ├ ƒ /sessions/[id]/summary
+#14 50.19 ├ ƒ /sessions/new
+#14 50.19 ├ ƒ /settings/audit-log
+#14 50.19 ├ ƒ /settings/company
+#14 50.19 ├ ƒ /teams
+#14 50.19 ├ ƒ /teams/[id]
+#14 50.19 ├ ƒ /templates
+#14 50.19 ├ ƒ /templates/[id]
+#14 50.19 ├ ƒ /templates/[id]/ai-editor
+#14 50.19 ├ ƒ /templates/ai-editor
+#14 50.19 ├ ƒ /templates/new
+#14 50.19 ├ ƒ /templates/schema
+#14 50.19 ├ ƒ /verify-email
+#14 50.19 └ ƒ /wizard/[sessionId]
+#14 50.19 
+#14 50.19 
+#14 50.19 ○  (Static)   prerendered as static content
+#14 50.19 ƒ  (Dynamic)  server-rendered on demand
+#14 50.19 
+#14 DONE 50.5s
+
+#15 [runner 2/6] WORKDIR /app
+#15 CACHED
+
+#16 [runner 3/6] RUN addgroup --system --gid 1001 nodejs &&     adduser --system --uid 1001 nextjs
+#16 CACHED
+
+#17 [runner 4/6] COPY --from=builder /app/public ./public
+#17 CACHED
+
+#18 [runner 5/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+#18 DONE 0.4s
+
+#19 [runner 6/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+#19 DONE 0.1s
+
+#20 exporting to image
+#20 exporting layers
+#20 exporting layers 0.6s done
+#20 writing image sha256:a589741c9df656cdaf56aee293a72d5057dacf2ad7e79ce82ba668fb80a7624f done
+#20 naming to docker.io/library/1on1-app done
+#20 DONE 0.6s
+
+#21 resolving provenance for metadata file
+#21 DONE 0.0s
+ Image 1on1-app Built 
+ Container 1on1-db-1 Running 
+ Container 1on1-app-1 Recreate 
+ Container 1on1-app-1 Recreated 
+ Container 1on1-db-1 Waiting 
+ Container 1on1-db-1 Healthy 
+ Container 1on1-app-1 Starting 
+ Container 1on1-app-1 Started 
+[2026-03-07T19:36:31Z] UAT rebuild complete — https://1on1.surmont.co/
