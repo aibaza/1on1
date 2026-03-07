@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `src/lib/ai/schemas/template-chat.ts` — `templateChatResponseSchema` Zod schema with required `chatMessage` (min 1 char) and nullable `templateJson` (full TemplateExport-shaped object); exports `ChatTurnResponse` TypeScript type; turns Wave 0 template-chat tests GREEN
 - `messages/en/spec.json` — added `spec.tabs.promptKit` and `spec.promptKit.*` keys (title, intro, copy, copied, sections.schema/methodology/weights/example) for DIY Prompt Kit tab
 - `messages/ro/spec.json` — Romanian translations of all `spec.promptKit.*` keys with correct diacritics; key parity with EN maintained
 - `messages/en/templates.json` — added `templates.aiEditor.*` keys covering page title, header actions, reset confirm dialog, preview panel, chat UI, save success toast, and entry point labels
