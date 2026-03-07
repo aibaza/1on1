@@ -39,7 +39,8 @@ export async function GET() {
           eq(actionItems.tenantId, session.user.tenantId),
           or(
             eq(actionItems.status, "open"),
-            eq(actionItems.status, "in_progress")
+            eq(actionItems.status, "in_progress"),
+            eq(actionItems.status, "completed")
           ),
         ];
 
@@ -72,6 +73,7 @@ export async function GET() {
             reportId: meetingSeries.reportId,
             reportFirstName: report.firstName,
             reportLastName: report.lastName,
+            managerId: meetingSeries.managerId,
           })
           .from(actionItems)
           .innerJoin(sessions, eq(actionItems.sessionId, sessions.id))
@@ -101,6 +103,7 @@ export async function GET() {
           reportId: item.reportId,
           reportFirstName: item.reportFirstName,
           reportLastName: item.reportLastName,
+          managerId: item.managerId,
         }));
       }
     );

@@ -1,0 +1,44 @@
+[2026-03-07T08:26:11Z] Checking commit: feat(hooks): add progress notification hooks (WhatsApp + UAT rebuild + wiki)
+[2026-03-07T08:26:16Z] Checking commit: feat(hooks): add progress notification hooks (WhatsApp + UAT rebuild + wiki)
+[2026-03-07T08:26:21Z] Checking commit: feat(hooks): add progress notification hooks (WhatsApp + UAT rebuild + wiki)
+[2026-03-07T08:31:15Z] Checking commit: test(16-01): add failing import-schema tests (RED)
+[2026-03-07T08:31:35Z] Checking commit: test(16-01): add canManageTemplates RBAC tests (GREEN)
+[2026-03-07T08:45:05Z] Checking commit: feat(16-02): implement templateImportSchema, formatImportErrors, derivePreviewStats
+[2026-03-07T08:46:08Z] Checking commit: feat(16-02): add import.* translation keys to EN and RO templates files
+[2026-03-07T08:49:23Z] Checking commit: feat(16-03): implement POST /api/templates/import route
+[2026-03-07T08:52:27Z] Checking commit: feat(16-04): create ImportDialog multi-step component
+[2026-03-07T08:53:56Z] Checking commit: feat(16-04): wire ImportDialog into template-list header
+[2026-03-07T08:56:30Z] Checking commit: docs(16-05): complete template-import verification plan
+[2026-03-07T08:56:30Z] Plan 16-05 complete — triggering rebuild + notify
+[2026-03-07T09:00:51Z] Checking commit: docs(phase-16): complete phase execution and verification
+[2026-03-07T09:00:51Z] Phase 16 complete — triggering full suite
+wiki: already up to date
+[2026-03-07T09:01:53Z] Checking commit: docs(state): phase 16 complete, advancing to phase 17
+[2026-03-07T15:41:34Z] Checking commit: docs(17): research phase - AI generator and DIY kit
+[2026-03-07T15:52:22Z] Checking commit: docs(wiki): add Phase 13-17 pages and update Phase-Log
+[2026-03-07T16:02:01Z] Checking commit: test(17-01): add failing test stub for templateChatResponseSchema
+[2026-03-07T16:02:19Z] Checking commit: feat(17-03): add spec.promptKit translation keys for DIY Prompt Kit tab
+[2026-03-07T16:02:44Z] Checking commit: test(17-01): add failing test stubs for template-editor prompt and service
+[2026-03-07T16:03:38Z] Checking commit: test(17-01): add Wave 0 RED test stubs for AI template editor contracts
+[2026-03-07T16:03:59Z] Checking commit: test(17-01): fix scoreWeight in DIY worked example fixture
+[2026-03-07T16:04:18Z] Checking commit: feat(17-03): add templates.aiEditor translation keys for AI editor pages
+[2026-03-07T16:04:51Z] Checking commit: feat(17-02): create templateChatResponseSchema and ChatTurnResponse type
+[2026-03-07T16:05:54Z] Checking commit: docs(17-03): complete i18n AI editor and DIY prompt kit translations plan
+[2026-03-07T16:05:54Z] Plan 17-03 complete — triggering rebuild + notify
+[2026-03-07T16:08:02Z] Checking commit: feat(17-02): implement AI contracts layer — prompt builder, model entry, service function
+[2026-03-07T16:09:27Z] Checking commit: docs(17-02): complete AI contracts layer plan — templateChatResponseSchema, system prompt, generateTemplateChatTurn
+[2026-03-07T16:09:27Z] Plan 17-02 complete — triggering rebuild + notify
+[2026-03-07T16:12:44Z] Checking commit: feat(17-04): implement POST /api/templates/ai-chat route
+[2026-03-07T16:16:31Z] Checking commit: feat(17-06): add DIY Prompt Kit 4th tab to schema docs page
+[2026-03-07T16:17:10Z] Checking commit: feat(17-06): wire Generate/Edit with AI entry point buttons
+[2026-03-07T16:17:48Z] Checking commit: feat(17-05): create AI editor components (shell, preview, chat, input)
+[2026-03-07T16:18:47Z] Checking commit: docs(17-06): complete DIY Prompt Kit + AI entry points plan
+[2026-03-07T16:18:47Z] Plan 17-06 complete — triggering rebuild + notify
+[2026-03-07T16:18:56Z] Checking commit: feat(17-05): create server pages for AI editor (new + existing template routes)
+[2026-03-07T16:25:56Z] Checking commit: docs(17-07): complete Phase 17 AI Generator & DIY Kit — v1.2 milestone verified
+[2026-03-07T16:25:56Z] Plan 17-07 complete — triggering rebuild + notify
+[2026-03-07T16:42:42Z] Checking commit: fix(ai-editor): store hidden greeting message so API history starts with user role
+[2026-03-07T16:48:26Z] Checking commit: feat(ai-editor): narrow chat panel, rich guidelines empty state, instant AI greeting
+[2026-03-07T16:50:52Z] Checking commit: fix(i18n): escape curly quotes in RO template guidelines JSON
+[2026-03-07T16:56:17Z] Checking commit: fix(ai-editor): use fixed inset-0 to escape dashboard layout overflow
+[2026-03-07T16:59:12Z] Checking commit: feat(ai-editor): embed precise language instruction in template editor system prompt

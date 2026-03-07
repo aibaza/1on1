@@ -55,7 +55,7 @@ function ScoreSparkline({ data, id }: { data: number[]; id: string }) {
   const gradientId = `sparkGrad-${id}`;
 
   return (
-    <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[30%] opacity-[0.08] dark:opacity-[0.25]">
+    <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[30%] opacity-[0.20] dark:opacity-[0.35]">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
           <defs>
