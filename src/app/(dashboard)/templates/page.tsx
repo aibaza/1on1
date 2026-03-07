@@ -98,6 +98,7 @@ export default async function TemplatesPage() {
       <TemplateList
         initialTemplates={templates}
         currentUserRole={session.user.role}
+        contentLanguage={session.user.contentLanguage ?? "en"}
       />
     </div>
   );

@@ -12,6 +12,7 @@ import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Plus, FileText, Hash, BookOpen } from "lucide-react";
 import { canManageTemplates } from "@/lib/auth/rbac";
 import { ExportButton } from "@/components/templates/export-button";
+import { ImportDialog } from "@/components/templates/import-dialog";
 import { createTemplateSchema } from "@/lib/validations/template";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,11 +58,13 @@ interface TemplateData {
 interface TemplateListProps {
   initialTemplates: TemplateData[];
   currentUserRole: string;
+  contentLanguage: string;
 }
 
 export function TemplateList({
   initialTemplates,
   currentUserRole,
+  contentLanguage,
 }: TemplateListProps) {
   const t = useTranslations("templates");
   const { showApiError } = useApiErrorToast();
@@ -132,10 +135,17 @@ export function TemplateList({
           </Button>
         </Link>
         {canCreate && (
-          <Button onClick={() => setCreateOpen(true)} size="sm">
-            <Plus className="mr-2 h-4 w-4" />
-            {t("createTemplate")}
-          </Button>
+          <div className="flex items-center gap-2">
+            <ImportDialog
+              currentUserRole={currentUserRole}
+              contentLanguage={contentLanguage}
+              onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ["templates"] })}
+            />
+            <Button onClick={() => setCreateOpen(true)} size="sm">
+              <Plus className="mr-2 h-4 w-4" />
+              {t("createTemplate")}
+            </Button>
+          </div>
         )}
       </div>
 
