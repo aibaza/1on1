@@ -6,12 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.5] - 2026-03-07
+
 ### Added
 - `src/lib/i18n/__tests__/translation-parity.test.ts` — Vitest test enforcing en/ro key parity for all 16 translation namespaces; CI fails if any key is added to en.json but not ro.json or vice versa
 - `messages/en/sessions.json` — added `wizard.loadError` and `wizard.exitWizard` keys for newly translated strings
 - `messages/ro/sessions.json` — added Romanian translations: `wizard.loadError` = "Sesiunea nu a putut fi încărcată", `wizard.exitWizard` = "Ieși din wizard"
 - `messages/en/analytics.json` — added `categoryAverages` and `teamHeatmap` keys
-- `messages/ro/analytics.json` — added Romanian translations: `categoryAverages` = "Medii pe Categorii", `teamHeatmap` = "Harta Echipei"
+- `messages/ro/analytics.json` — added Romanian translations: `categoryAverages` = "Medii pe categorii", `teamHeatmap` = "Harta echipei"
+- `createEmailTranslator` utility in `src/lib/email/translator.ts` — standalone email translator using `use-intl/core`, no Next.js request context required, falls back to `en` for unsupported locales
+- `messages/en/emails.json` — English email translation keys for all 6 email types (invite, verification, passwordReset, sessionSummary, preMeeting, agendaPrep)
+- `messages/ro/emails.json` — Romanian email translation keys mirroring en structure
 
 ### Fixed
 - `src/components/session/wizard-shell.tsx` — replaced hardcoded "Failed to load session" heading with `t("wizard.loadError")`; queryFn now throws generic HTTP status error instead of hardcoded English message
@@ -25,21 +30,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `messages/ro/teams.json` — fixed 24 diacritic errors (Creează, Adaugă, Șterge, ștearsă, Fără, Înapoi, asignează, găsit, etc.)
 - `messages/ro/people.json` — fixed 18 diacritic errors (Adaugă, Anulează, Selectează, Caută, găsit, Înregistrat, Înapoi, etc.)
 - `messages/ro/auth.json` — fixed 2 diacritic errors (nouă parolă — two occurrences in resetPassword section)
-- `messages/ro/settings.json` — no changes needed (existing content already correct)
-
-### Added
-- `createEmailTranslator` utility in `src/lib/email/translator.ts` — standalone email translator using `use-intl/core`, no Next.js request context required, falls back to `en` for unsupported locales
-- `messages/en/emails.json` — English email translation keys for all 6 email types (invite, verification, passwordReset, sessionSummary, preMeeting, agendaPrep)
-- `messages/ro/emails.json` — Romanian email translation keys mirroring en structure
-
-### Changed
 - `sendVerificationEmail` resolves `users.language`, calls `createEmailTranslator`, passes translated props and subject — no hardcoded English strings
 - `sendPasswordResetEmail` resolves `users.language`, calls `createEmailTranslator`, passes translated props and subject — no hardcoded English strings
 - `POST /api/invites` and `POST /api/invites/resend` resolve `tenants.contentLanguage`, call `createEmailTranslator`, pass translated props and subject to `InviteEmail`
 - `sendPostSessionSummaryEmails` resolves `tenants.contentLanguage`, builds per-recipient `labels` bags with translated strings for `SessionSummaryEmail`
 - `processPreMeeting` in sender.ts resolves `tenants.contentLanguage`, passes translated heading/greeting/body/button/footer/subject to `PreMeetingReminderEmail`
 - `processAgendaPrep` in sender.ts resolves `tenants.contentLanguage`, uses variant-specific translation keys for body and button label
-- `createEmailTranslator` messages typed as `Record<string, any>` to allow TypeScript to traverse nested message keys without resolving to `never`
 - Email templates (invite, verification, password-reset) accept translated string props (`heading`, `body`, `buttonLabel`, `footer`) — hardcoded English strings removed from JSX
 - `EmailLayout` default `footerText` changed from hardcoded English to empty string — callers always pass translated footer
 - `SessionSummaryEmail` accepts `labels` prop bag and extended `ActionItem` with `assignedToLabel`/`dueLabel` for pre-interpolated strings
