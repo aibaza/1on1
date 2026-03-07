@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: AI-Ready Templates
 status: planning
-stopped_at: Completed 15-02 (export API route, spec.json translations, schema docs page)
-last_updated: "2026-03-07T07:47:47.137Z"
+stopped_at: Completed 15-03 (ExportButton component, template list and editor wiring)
+last_updated: "2026-03-07T07:53:23.346Z"
 last_activity: 2026-03-07 -- Roadmap created for v1.2 (3 phases, 19 requirements, 100% coverage)
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 17
-  completed_plans: 15
+  completed_plans: 16
   percent: 0
 ---
 
@@ -51,6 +51,7 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 15-schema-spec-export P01 | 3 | 2 tasks | 3 files |
 | Phase 15-schema-spec-export P02 | 20 | 2 tasks | 7 files |
+| Phase 15-schema-spec-export P03 | 5 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,8 @@ v1.1 decisions archived below for reference:
 - [Phase 15-02]: bare Response (not NextResponse) for export route — consistent with analytics/export pattern, simpler for file downloads
 - [Phase 15-02]: getTranslations() without namespace + as any cast for spec namespace — TypeScript NamespaceKeys union exceeds complexity limit at 16+ namespaces
 - [Phase 15-02]: Romanian curly quotes replaced with angle quotes in spec.json — U+201D right double quote breaks JSON string parsing
+- [Phase 15-03]: ExportButton variant=icon placed in relative wrapper div alongside Link-wrapped Card to avoid nested interactive elements
+- [Phase 15-03]: Schema Docs link visible to all roles — documentation is universally useful regardless of role
 
 ### v1.2 Roadmap Decisions
 
@@ -117,6 +120,6 @@ None active.
 
 ## Session Continuity
 
-Last session: 2026-03-07T07:47:47.134Z
-Stopped at: Completed 15-02 (export API route, spec.json translations, schema docs page)
+Last session: 2026-03-07T07:53:23.342Z
+Stopped at: Completed 15-03 (ExportButton component, template list and editor wiring)
 Resume file: None

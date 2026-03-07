@@ -63,13 +63,13 @@ Requirements for AI-ready template milestone. Each maps to roadmap phases.
 
 ### Spec & Documentation
 
-- [ ] **SPEC-01**: A JSON schema document for templates is accessible in-app -- downloadable and copyable -- describing every field, type, and constraint (in English, as a technical standard)
-- [ ] **SPEC-02**: In-app methodology documentation (core 1:1 principles, what makes a good question, conversation flow) is rendered in the company's content language
-- [ ] **SPEC-03**: The spec documents the scoring/weight system -- how `scoreWeight` affects analytics, valid values, examples -- rendered in the company's content language
+- [x] **SPEC-01**: A JSON schema document for templates is accessible in-app -- downloadable and copyable -- describing every field, type, and constraint (in English, as a technical standard)
+- [x] **SPEC-02**: In-app methodology documentation (core 1:1 principles, what makes a good question, conversation flow) is rendered in the company's content language
+- [x] **SPEC-03**: The spec documents the scoring/weight system -- how `scoreWeight` affects analytics, valid values, examples -- rendered in the company's content language
 
 ### Export
 
-- [ ] **EXP-01**: Admin or manager can export a single template as a downloadable `.json` file from the template list or template builder
+- [x] **EXP-01**: Admin or manager can export a single template as a downloadable `.json` file from the template list or template builder
 - [x] **EXP-02**: Exported JSON includes a `schemaVersion` field (e.g., `1`) for compatibility tracking
 - [x] **EXP-03**: Exported JSON is tenant-neutral -- no internal tenant IDs or per-org UUIDs, fully portable across organizations
 - [x] **EXP-04**: Exported JSON includes a `language` field indicating the template content language
@@ -162,10 +162,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ROLN-04 | Phase 14 | Complete |
 | QUAL-01 | Phase 14 | Complete |
 | QUAL-02 | Phase 14 | Complete |
-| SPEC-01 | Phase 15 | Pending |
-| SPEC-02 | Phase 15 | Pending |
-| SPEC-03 | Phase 15 | Pending |
-| EXP-01 | Phase 15 | Pending |
+| SPEC-01 | Phase 15 | Complete |
+| SPEC-02 | Phase 15 | Complete |
+| SPEC-03 | Phase 15 | Complete |
+| EXP-01 | Phase 15 | Complete |
 | EXP-02 | Phase 15 | Complete |
 | EXP-03 | Phase 15 | Complete |
 | EXP-04 | Phase 15 | Complete |
