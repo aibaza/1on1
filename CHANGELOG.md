@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - `src/lib/templates/export-schema.ts` — `TemplateExport` interface, `SCHEMA_VERSION` constant, and `buildExportPayload()` function; converts Drizzle decimal scoreWeight to JS number, strips all UUIDs, remaps conditional references to sortOrder integers
 - `src/lib/templates/__tests__/export-schema.test.ts` — 7 Vitest unit tests covering EXP-02 through EXP-05 (schemaVersion, language, UUID-free output, scoreWeight type, answerConfig fallback, conditional portability)
+- `src/app/api/templates/[id]/export/route.ts` — `GET /api/templates/[id]/export` returns tenant-neutral JSON with `Content-Disposition: attachment`; auth-gated 401/403, RBAC via `canManageTemplates()`
 
 ## [1.1.5] - 2026-03-07
 
