@@ -9,7 +9,7 @@ import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
-import { Plus, FileText, Hash, BookOpen } from "lucide-react";
+import { Plus, FileText, Hash, BookOpen, Wand2 } from "lucide-react";
 import { canManageTemplates } from "@/lib/auth/rbac";
 import { ExportButton } from "@/components/templates/export-button";
 import { ImportDialog } from "@/components/templates/import-dialog";
@@ -136,6 +136,14 @@ export function TemplateList({
         </Link>
         {canCreate && (
           <div className="flex items-center gap-2">
+            {canManageTemplates(currentUserRole) && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/templates/ai-editor">
+                  <Wand2 className="mr-2 h-4 w-4" />
+                  {t("aiEditor.entryPoints.generateWithAI")}
+                </Link>
+              </Button>
+            )}
             <ImportDialog
               currentUserRole={currentUserRole}
               contentLanguage={contentLanguage}

@@ -40,6 +40,7 @@ import {
   Trash2,
   ChevronDown,
   ChevronRight,
+  Wand2,
 } from "lucide-react";
 import {
   createTemplateSchema,
@@ -562,6 +563,14 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
 
         {!isCreateMode && canEdit && (
           <div className="flex items-center gap-2">
+            {canManageTemplates(userRole) && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/templates/${template!.id}/ai-editor`}>
+                  <Wand2 className="mr-2 h-4 w-4" />
+                  {t("aiEditor.entryPoints.editWithAI")}
+                </Link>
+              </Button>
+            )}
             {canManageTemplates(userRole) && (
               <ExportButton templateId={template!.id} variant="full" />
             )}

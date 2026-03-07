@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `src/components/templates/template-list.tsx` — added "Generate with AI" button (Wand2) in template list header; visible to admin and manager only via `canManageTemplates`; navigates to `/templates/ai-editor`
+- `src/components/templates/template-editor.tsx` — added "Edit with AI" button (Wand2) in template editor header; visible to admin and manager only via `canManageTemplates`; navigates to `/templates/[id]/ai-editor`
 - `src/app/(dashboard)/templates/schema/page.tsx` — added 4th "Prompt Kit" tab with `PROMPT_KIT_EXAMPLE` constant (Engineering 1:1 worked example), `promptKitBlock` assembled server-side (section headers translated, JSON content always English), `PromptKitActions` copy button component
 - `src/app/(dashboard)/templates/schema/schema-actions.tsx` — added `PromptKitActions` export: clipboard copy button with 2-second toggle to "Copied!" label
 - `src/app/api/templates/ai-chat/route.ts` — `POST /api/templates/ai-chat` handler; RBAC-gated (admin/manager only), validates request body with Zod, resolves tenant content language from session, calls `generateTemplateChatTurn`, returns `{ chatMessage, templateJson }`; returns 401/403/400/500 on failure
