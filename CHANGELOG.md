@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- `src/components/people/people-table-columns.tsx` — add `meta: { className: "hidden md:table-cell" }` to email, teams, manager, status columns; add ColumnMeta module augmentation (MOB-04)
+- `src/components/people/people-table.tsx` — TableHead and TableCell read `meta?.className` from column definition for responsive column visibility (MOB-04)
+
 ### Changed
 - `src/components/series/series-list.tsx` — replaced inline `border-dashed` empty-state with `<EmptyState>` (DES-04)
 - `src/components/dashboard/recent-sessions.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)

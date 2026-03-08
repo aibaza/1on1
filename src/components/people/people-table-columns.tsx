@@ -2,6 +2,12 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import type { useTranslations } from "next-intl";
+
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TData, TValue> {
+    className?: string;
+  }
+}
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -93,6 +99,7 @@ export function createColumns({
     },
     {
       accessorKey: "email",
+      meta: { className: "hidden md:table-cell" },
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -135,6 +142,7 @@ export function createColumns({
     },
     {
       id: "teams",
+      meta: { className: "hidden md:table-cell" },
       accessorFn: (row) => row.teams.map((team) => team.name).join(", "),
       header: () => t("table.teams"),
       cell: ({ row }) => {
@@ -159,6 +167,7 @@ export function createColumns({
     },
     {
       id: "manager",
+      meta: { className: "hidden md:table-cell" },
       accessorFn: (row) => row.managerName ?? "",
       header: ({ column }) => (
         <Button
@@ -183,6 +192,7 @@ export function createColumns({
     },
     {
       accessorKey: "status",
+      meta: { className: "hidden md:table-cell" },
       header: ({ column }) => (
         <Button
           variant="ghost"
