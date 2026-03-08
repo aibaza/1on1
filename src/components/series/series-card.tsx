@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, Play, RotateCcw } from "lucide-react";
+import { CalendarDays, Play, RotateCcw, Star } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
@@ -250,11 +250,38 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
           <CardTitle className="text-base truncate">
             {series.report.firstName} {series.report.lastName}
           </CardTitle>
-          {score !== null && (
-            <Badge variant="secondary" className="text-xs tabular-nums">
-              {format.number(score, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-            </Badge>
-          )}
+          {(() => {
+            const fullStars = score !== null ? Math.floor(score) : 0;
+            const hasHalf = score !== null && score - fullStars >= 0.5;
+            return (
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }, (_, i) => {
+                  if (score === null) {
+                    return <Star key={i} className="h-3 w-3 text-muted-foreground/20" />;
+                  }
+                  if (i < fullStars) {
+                    return <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />;
+                  }
+                  if (i === fullStars && hasHalf) {
+                    return (
+                      <span key={i} className="relative inline-flex h-3 w-3">
+                        <Star className="absolute h-3 w-3 text-muted-foreground/20" />
+                        <span className="absolute inset-0 overflow-hidden" style={{ width: "50%" }}>
+                          <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                        </span>
+                      </span>
+                    );
+                  }
+                  return <Star key={i} className="h-3 w-3 text-muted-foreground/20" />;
+                })}
+                {score !== null && (
+                  <span className="ml-1 text-xs tabular-nums text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
+                    {format.number(score, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+                  </span>
+                )}
+              </div>
+            );
+          })()}
         </div>
         <Badge variant={statusVariant[series.status] ?? "outline"}>
           {series.status === "active"
