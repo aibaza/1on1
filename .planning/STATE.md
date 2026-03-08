@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: UI/UX Improvements
 status: planning
-stopped_at: Completed 19-02-PLAN.md (DES-04 EmptyState component + 10 call-site replacements)
-last_updated: "2026-03-08T07:56:25.194Z"
+stopped_at: "Completed 20-01-PLAN.md (3 RED tests: MOB-03 nudge touch target, MOB-04 people column meta, MOB-05 audit log target header)"
+last_updated: "2026-03-08T08:15:59.640Z"
 last_activity: 2026-03-08 — v1.3 roadmap created (6 phases, 31 requirements mapped)
 progress:
   total_phases: 6
   completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 10
+  completed_plans: 7
   percent: 61
 ---
 
@@ -54,6 +54,7 @@ Progress: [████████████████░░░░░░░
 | Phase 19-design-system P01 | 8 | 1 tasks | 6 files |
 | Phase 19-design-system P03 | 3 | 2 tasks | 4 files |
 | Phase 19-design-system P02 | 5 | 2 tasks | 11 files |
+| Phase 20-mobile-responsiveness P01 | 525553 | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,8 @@ Recent decisions affecting current work:
 - [Phase 19-design-system]: categoryStepTestHelpers exported const pattern enables className assertions without full component render (avoids next-intl provider setup)
 - [Phase 19-design-system]: DES-01 verified as already satisfied — auth buttons use default variant resolving to --primary, no code change needed
 - [Phase 19-design-system]: EmptyState action prop accepts undefined — conditional CTAs use canCreate ? <CTA /> : undefined pattern
+- [Phase 20-mobile-responsiveness]: jest-dom setupFiles added globally to vitest.config.ts to ensure consistent DOM matcher availability across all test files
+- [Phase 20-mobile-responsiveness]: AuditLogClient test requires one mock entry because table only renders when entries.length > 0
 
 ### Pending Todos
 
@@ -86,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-08T07:52:27.568Z
-Stopped at: Completed 19-02-PLAN.md (DES-04 EmptyState component + 10 call-site replacements)
+Last session: 2026-03-08T08:15:59.637Z
+Stopped at: Completed 20-01-PLAN.md (3 RED tests: MOB-03 nudge touch target, MOB-04 people column meta, MOB-05 audit log target header)
 Resume file: None
