@@ -6,6 +6,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-03-08
+
+### Added
+- `docs/wiki/Phase-18.md` — Phase 18 (Critical Bugs) documentation: goal, success criteria, what was built, key decisions, key files
+- `docs/wiki/Phase-19.md` — Phase 19 (Design System) documentation
+- `docs/wiki/Phase-20.md` — Phase 20 (Mobile Responsiveness) documentation
+- `docs/wiki/Phase-21.md` — Phase 21 (Content & Data Display) documentation
+
+### Changed
+- `CLAUDE.md` — updated project status, tech stack (Next.js 15→16, removed Inngest, added Tiptap/dnd-kit/i18n/AI/Vitest), switched all commands from `npm`/`npx` to `bun`/`bunx`, corrected async jobs description
+- `docs/data-model.md` — expanded ERD diagram with full entity relationships: OAuth adapter tables, `TEMPLATE_SECTION`, `TEMPLATE_LABEL_ASSIGNMENT`, `TEMPLATE_LABEL`, `AI_NUDGE`, `AUDIT_LOG`, `INVITE_TOKEN`
+- `docs/architecture.md` — added `star-rating.tsx` and `empty-state.tsx` to shared UI components, added `tiptap-render.ts` to lib/session, updated Testing row to include Testing Library and `happy-dom`
+- `docs/features.md` — added v1.3 UI/UX Improvements milestone section (design system, mobile responsiveness, content & data display, critical bug fixes); updated Feature Priority Matrix to mark v1.3 shipped and add v1.4 Playwright row
+- `docs/wiki/Phase-17.md` — marked Status Complete, Completed 2026-03-07; filled "What Was Built" and "Key Files" sections
+- `docs/wiki/Phase-Log.md` — updated total to 23 phases (added v1.3 phases 18–23), marked v1.2 released, added v1.3 milestone table and execution order diagram
+- `docs/wiki/_Sidebar.md` — added links for Phase-18 through Phase-23
+- `docs/wiki/Home.md` — corrected tech stack (Next.js 15→16, removed Inngest/Supabase, added AI/Testing rows, updated deployment)
+- `docs/wiki/Features-Roadmap.md`, `docs/wiki/Architecture.md`, `docs/wiki/Data-Model.md` — wiki mirrors updated to match source docs
+- `.planning/config.json` — disabled research agent (`research: false`)
+
+### Fixed
+- `src/lib/db/scripts/backfill-card-blurb.ts` — use tenant `contentLanguage` (joined from tenants table) instead of hardcoded `"Romanian"`; add `LANGUAGE_NAMES` code→name mapping for prompt clarity
+
 ## [1.3.0] - 2026-03-08
 
 ### Added

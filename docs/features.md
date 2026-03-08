@@ -1,6 +1,6 @@
 # Features Roadmap
 
-## MVP (v1) — Core Product
+## MVP (v1.0) — Core Product
 
 The minimum viable product that delivers the core value proposition: structured 1:1 sessions with quantifiable answers and historical tracking.
 
@@ -123,17 +123,105 @@ The landing page after login for managers:
 
 ---
 
+## v1.1 — Internationalization (Released 2026-03-06)
+
+Full i18n support baked into the product, not bolted on later.
+
+### 12. Cookie-Based Locale Switching
+
+- **Per-user language preference**: Stored in a cookie, persisted across sessions
+- **Dual language layers**: UI language is per-user; content language (questions, templates) is per-company
+- **Language switcher**: Available in the user menu on every page
+- **Supported locales**: English (`en`) and Romanian (`ro`) at launch
+
+### 13. Translation Infrastructure
+
+- **next-intl integration**: Server-side and client-side message loading via Next.js middleware
+- **Message files**: `messages/{en,ro}/` with namespaced JSON files (650+ keys)
+- **ICU plural forms**: Correct pluralization for counts (e.g., "1 session" vs "2 sessions")
+- **CI parity checker**: Vitest test ensures EN and RO key sets stay in sync (`translation-parity.test.ts`)
+- **Zod error map**: Validation errors translated to the active locale
+
+---
+
+## v1.2 — AI-Ready Templates (Released 2026-03-07)
+
+AI co-authoring woven into the template builder, plus portable template format for the ecosystem.
+
+### 14. JSON Schema Spec Page
+
+- **Portable template format**: Documented JSON schema for questionnaire templates
+- **Spec viewer**: In-app page at `/templates/spec` with full field reference
+- **Export-ready**: Defines the canonical format used by import/export
+
+### 15. Template Export
+
+- **One-click export**: Download any template as a portable JSON file
+- **Complete snapshot**: Includes sections, questions, answer configs, metadata
+- **Shareable format**: Compatible with the import flow and the DIY Prompt Kit
+
+### 16. Template Import
+
+- **Drag-and-drop import**: Upload a JSON file or paste JSON directly
+- **Conflict resolution**: Detect name conflicts and offer rename/replace/skip
+- **Validation**: Full Zod schema validation with user-friendly error messages
+- **Preview before import**: Show what will be created before committing
+
+### 17. AI Co-Authoring Editor
+
+- **Split-screen interface**: Chat panel (left) + live template preview (right)
+- **Streaming responses**: Anthropic Claude streams edits in real time via Vercel AI SDK
+- **Structured output**: AI edits map to typed template fields (sections, questions, configs)
+- **Version history**: Snapshot per AI turn — revert to any previous state
+- **Persistent chat**: Conversation history saved to the template record
+- **DIY Prompt Kit**: Documented prompt recipes for building templates outside the app
+
+---
+
+## v1.3 — UI/UX Improvements (Released 2026-03-08)
+
+A targeted audit and polish pass covering design consistency, mobile usability, content display, and critical bug fixes.
+
+### 18. Design System
+
+- **Badge semantics**: `in_progress` sessions use filled badge (default variant); `completed` sessions use outlined badge (light variant)
+- **Section header casing**: wizard section headers use sentence-case ("Notes", "Talking Points", "Action Items") — removed uppercase styling
+- **`EmptyState` component**: reusable component accepting `icon`, `title`, `description`, and optional `action` — deployed across 10 pages
+
+### 19. Mobile Responsiveness
+
+- **Template action bars**: overflow `DropdownMenu` replaces button row on viewports below 768px (template list and template editor)
+- **Touch targets**: AI nudge dismiss button raised to WCAG 2.5.5 minimum 44×44px
+- **Responsive table columns**: people list and audit log hide secondary columns below `md` breakpoint
+
+### 20. Content & Data Display
+
+- **Analytics aggregate stat cards**: "Sessions Completed", "Avg Score", "Action Item Rate" shown at the top of the analytics page, scoped by role
+- **Session score display**: numeric badge replaces hollow star row on series cards; `StarRating` component used in timeline and summary
+- **Collapsible sections**: Talking Points and Action Items in the session wizard wrapped in `Collapsible` with count badge
+- **Team heatmap threshold**: shows "Requires ≥3 contributors" message when fewer than 3 users have data
+- **Score label fix**: "out of 5.0" → "out of 5"
+
+### 21. Critical Bug Fixes
+
+- **`contentToHtml()` utility**: type-guards Tiptap JSON vs HTML strings — eliminates `[object Object]` on the recap screen
+- **AI editor mobile layout**: stacked Tabs ("Preview" / "Chat") on viewports below 1024px
+- **i18n `spec` namespace**: added missing namespace so `/templates/spec` renders translated text instead of raw keys
+- **Sparkline placeholder**: removed dashed-border placeholder div from the recap screen
+
+---
+
 ## v2 — Enhanced Experience
 
 Features that improve the daily workflow and expand the analytics.
 
-### 12. Calendar Integration
+### 18. Calendar Integration
 - **Google Calendar** sync (read/write)
 - **Outlook/O365** sync
 - Auto-create calendar events for scheduled sessions
 - Deep link to session wizard from calendar event
 
-### 13. Advanced Analytics Dashboard
+### 19. Advanced Analytics Dashboard
 - **Team analytics**: Aggregated scores across all reports (anonymized option)
 - **Heatmap**: Team × question category matrix with color-coded scores
 - **Meeting adherence chart**: % of scheduled sessions completed per month
@@ -142,7 +230,7 @@ Features that improve the daily workflow and expand the analytics.
 - **Comparison view**: Compare two employees' trends side by side
 - **Date range picker**: Filter all analytics by custom date ranges
 
-### 14. Template Library
+### 20. Template Library
 - **System templates**: Pre-built questionnaires for common scenarios:
   - Weekly check-in
   - Monthly deep-dive
@@ -152,28 +240,28 @@ Features that improve the daily workflow and expand the analytics.
   - Return from leave
 - **Clone & customize**: Start from a system template, modify for the company's needs
 
-### 15. Conditional Question Logic
+### 21. Conditional Question Logic
 - Show/hide questions based on previous answers
 - Example: If "How's your workload?" < 3, show "What can we do to help?"
 - Configured per question with operator (eq, neq, lt, gt, lte, gte) and value
 
-### 16. Action Item Carry-Over (Automatic)
+### 22. Action Item Carry-Over (Automatic)
 - Unfinished action items automatically appear as agenda items in the next session
 - Visual indicator showing which items were carried over and from when
 - Manager can dismiss or re-prioritize carried-over items
 
-### 17. Slack / Microsoft Teams Integration
+### 23. Slack / Microsoft Teams Integration
 - Session reminders as DMs
 - Quick action item creation from Slack
 - Session summary posted to a channel (optional)
 
-### 18. PDF Export & Reports
+### 24. PDF Export & Reports
 - Generate PDF reports for individual employees (covering a date range)
 - Include: session summaries, score trends, action item history
 - Designed for annual reviews and salary negotiation preparation
 - Company-branded with logo and colors
 
-### 19. SSO (Single Sign-On)
+### 25. SSO (Single Sign-On)
 - SAML 2.0 support
 - OIDC support
 - Integration with Okta, Azure AD, Google Workspace
@@ -185,57 +273,52 @@ Features that improve the daily workflow and expand the analytics.
 
 Features that create competitive advantage.
 
-### 20. AI-Powered Features
-- **Session summaries**: Auto-generate a concise summary from notes and answers
-- **Suggested talking points**: Based on previous sessions' answers and trends
-- **Sentiment analysis**: Detect sentiment trends in free-text answers over time
-- **Anomaly detection**: Alert when a score drops significantly
-
-### 21. eNPS Tracking
+### 26. eNPS Tracking
 - Built-in Employee Net Promoter Score surveys
 - Track eNPS per team, per manager, per quarter
 - Benchmark against company average
 
-### 22. 360 Feedback Integration
+### 27. 360 Feedback Integration
 - Collect anonymous peer feedback that surfaces in 1:1 context
 - Manager can reference peer feedback during sessions
 
-### 23. Goal / OKR Tracking
+### 28. Goal / OKR Tracking
 - Define goals per employee, track progress across sessions
 - Link action items to goals
 - Goal achievement visible in analytics
 
-### 24. Public API & Webhooks
+### 29. Public API & Webhooks
 - REST API for all core operations
 - Webhook events: session.completed, action_item.created, etc.
 - Enable custom integrations (HRIS sync, custom dashboards)
 
-### 25. Mobile Application
+### 30. Mobile Application
 - iOS and Android (React Native)
 - Quick session prep and review on the go
 - Push notifications for reminders
-
-### 26. Multi-language Support (i18n)
-- UI translations: English, Romanian, German, French, Spanish
-- Configurable per tenant and per user
 
 ---
 
 ## Feature Priority Matrix
 
-| Feature | Impact | Effort | Priority |
-|---------|--------|--------|----------|
-| Company onboarding + multi-tenancy | High | Medium | MVP |
-| User management + invites | High | Medium | MVP |
-| Team management | Medium | Low | MVP |
-| Template builder (6 types) | High | High | MVP |
-| Meeting series | High | Medium | MVP |
-| Session wizard + context panel | Very High | Very High | MVP |
-| Action items | High | Medium | MVP |
-| Manager dashboard | High | Medium | MVP |
-| Session history + search | Medium | Medium | MVP |
-| Basic analytics (line charts) | High | Medium | MVP |
-| Email notifications | Medium | Medium | MVP |
+| Feature | Impact | Effort | Status |
+|---------|--------|--------|--------|
+| Company onboarding + multi-tenancy | High | Medium | **Shipped v1.0** |
+| User management + invites | High | Medium | **Shipped v1.0** |
+| Team management | Medium | Low | **Shipped v1.0** |
+| Template builder (6 types) | High | High | **Shipped v1.0** |
+| Meeting series | High | Medium | **Shipped v1.0** |
+| Session wizard + context panel | Very High | Very High | **Shipped v1.0** |
+| Action items | High | Medium | **Shipped v1.0** |
+| Manager dashboard | High | Medium | **Shipped v1.0** |
+| Session history + search | Medium | Medium | **Shipped v1.0** |
+| Basic analytics (line charts) | High | Medium | **Shipped v1.0** |
+| Email notifications | Medium | Medium | **Shipped v1.0** |
+| i18n (EN + RO) | Medium | Medium | **Shipped v1.1** |
+| AI template co-authoring | High | High | **Shipped v1.2** |
+| Template export/import | Medium | Medium | **Shipped v1.2** |
+| UI/UX improvements (audit) | High | Medium | **Shipped v1.3** |
+| Playwright E2E test suite | High | High | v1.4 |
 | Calendar integration | Medium | Medium | v2 |
 | Advanced analytics + heatmap | High | High | v2 |
 | Template library (pre-built) | Medium | Low | v2 |
@@ -244,10 +327,8 @@ Features that create competitive advantage.
 | Slack/Teams integration | Medium | Medium | v2 |
 | PDF export | High | Medium | v2 |
 | SSO | Medium | Medium | v2 |
-| AI features | High | High | v3 |
 | eNPS tracking | Medium | Medium | v3 |
 | 360 feedback | Medium | High | v3 |
 | Goal/OKR tracking | Medium | High | v3 |
 | Public API + webhooks | Medium | Medium | v3 |
 | Mobile app | Medium | Very High | v3 |
-| i18n | Low | Medium | v3 |

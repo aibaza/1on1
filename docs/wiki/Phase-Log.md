@@ -4,9 +4,9 @@
 
 Implementation follows a phase-based roadmap managed via the [GSD workflow](https://github.com/cyanheads/claude-gsd). Each phase delivers a coherent, verifiable capability. Phases execute sequentially with some parallelization opportunities after Phase 5.
 
-**Total phases**: 17 (10 v1.0 + 4 v1.1 + 3 v1.2)
-**Completed**: 16/17
-**Current**: Milestone v1.2 in progress (Phase 17 remaining)
+**Total phases**: 23 (10 v1.0 + 4 v1.1 + 3 v1.2 + 6 v1.3)
+**Completed**: 21/23
+**Current**: Milestone v1.3 in progress (phases 22–23 remaining)
 
 ## Phase Summary
 
@@ -34,13 +34,24 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 | [[Phase-13]] | Email Translation | Email templates in correct content language, standalone translator for background jobs | Complete | Phase 11 |
 | [[Phase-14]] | Romanian & Quality | Complete RO translations, plural forms, diacritics, CI key parity | Complete | Phase 12, 13 |
 
-### Milestone v1.2 — AI-Ready Templates (In Progress)
+### Milestone v1.2 — AI-Ready Templates (Released 2026-03-07)
 
 | Phase | Name | Focus | Status | Dependencies |
 |-------|------|-------|--------|--------------|
 | [[Phase-15]] | Schema, Spec & Export | JSON schema spec with methodology and weight docs, portable JSON template export | Complete | Phase 14 |
 | [[Phase-16]] | Template Import | JSON upload with preview, language mismatch warning, conflict resolution, field-specific validation errors | Complete | Phase 15 |
-| [[Phase-17]] | AI Generator & DIY Kit | In-app AI chat editor for template generation, live preview, DIY prompt kit tab | In Progress | Phase 15 |
+| [[Phase-17]] | AI Generator & DIY Kit | In-app AI chat editor for template generation, live preview, DIY prompt kit tab | Complete | Phase 15 |
+
+### Milestone v1.3 — UI/UX Improvements (In Progress)
+
+| Phase | Name | Focus | Status | Dependencies |
+|-------|------|-------|--------|--------------|
+| [[Phase-18]] | Critical Bugs | Tiptap render fix, AI editor mobile, i18n spec.json, sparkline placeholder | Complete | Phase 17 |
+| [[Phase-19]] | Design System | Badge semantics, casing, EmptyState component | Complete | Phase 18 |
+| [[Phase-20]] | Mobile Responsiveness | Template action bars, touch targets, responsive table columns | Complete | Phase 19 |
+| [[Phase-21]] | Content & Data Display | Analytics stat cards, score badges, collapsible sections, heatmap threshold | Complete | Phase 19 |
+| [[Phase-22]] | Safety, Errors & Inputs | Danger zone, 404 pages, date picker consistency | Not Started | Phase 19 |
+| [[Phase-23]] | Low-Priority Polish | 9 small text/visual/layout tweaks | Not Started | Phase 22 |
 
 ## Execution Order
 
@@ -83,6 +94,20 @@ Phase 14 (v1.1 complete)
 ```
 
 Phases 16 and 17 both depend only on Phase 15 and can execute in parallel.
+
+### v1.3 Phases
+
+```
+Phase 17 (v1.2 complete)
+  └── Phase 18 (Critical Bugs)
+        └── Phase 19 (Design System)
+              ├── Phase 20 (Mobile Responsiveness)   ← parallel
+              └── Phase 21 (Content & Data Display)
+                    └── Phase 22 (Safety, Errors & Inputs)
+                          └── Phase 23 (Low-Priority Polish)
+```
+
+Phases 20 and 21 both depend only on Phase 19 and can execute in parallel.
 
 ## Conventions
 

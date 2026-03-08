@@ -13,7 +13,7 @@ A SaaS platform that helps organizations run effective, data-driven 1:1 meetings
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 15 (App Router) + TypeScript (strict) |
+| Framework | Next.js 16 (App Router) + TypeScript (strict) |
 | UI | shadcn/ui + Tailwind CSS 4 |
 | ORM | Drizzle ORM + PostgreSQL 16 |
 | Auth | Auth.js v5 (NextAuth) |
@@ -21,9 +21,10 @@ A SaaS platform that helps organizations run effective, data-driven 1:1 meetings
 | Forms | React Hook Form |
 | Charts | Recharts |
 | Email | Nodemailer + React Email |
-| Background Jobs | Inngest |
+| AI | Vercel AI SDK + Anthropic Claude |
 | Client State | TanStack Query |
-| Deployment | Vercel + Neon/Supabase |
+| Testing | Vitest + Testing Library |
+| Deployment | Vercel + Neon |
 
 ## Wiki Pages
 
@@ -36,7 +37,7 @@ A SaaS platform that helps organizations run effective, data-driven 1:1 meetings
 | [[Questionnaires]] | Question types, answer formats, template system |
 | [[Analytics]] | Metrics, KPIs, charting strategy, data aggregation |
 | [[Security]] | Authentication, authorization, multi-tenancy, GDPR |
-| [[Phase-Log]] | Implementation progress — phase-based roadmap (2/10 complete) |
+| [[Phase-Log]] | Implementation progress — phase-based roadmap |
 
 ## Repository
 
@@ -50,4 +51,4 @@ A SaaS platform that helps organizations run effective, data-driven 1:1 meetings
 - Multi-tenant via `tenant_id` + PostgreSQL Row-Level Security
 - Server Components for data fetching, Client Components for interactivity
 - All mutations go through API routes (`src/app/api/`)
-- Background jobs via Inngest for reminders, analytics computation
+- Background jobs handled inline or via queued DB notifications (no separate job queue)

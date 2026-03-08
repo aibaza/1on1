@@ -1,9 +1,9 @@
 # Phase 17: AI Generator & DIY Kit
 
-**Status**: In Progress
+**Status**: Complete
 **Milestone**: v1.2 AI-Ready Templates
 **Depends on**: Phase 15
-**Completed**: —
+**Completed**: 2026-03-07
 
 ## Goal
 
@@ -18,7 +18,11 @@ Users can generate a complete, ready-to-use template draft through an in-app AI 
 
 ## What Was Built
 
-*In progress — will be updated on completion.*
+- **Split-screen AI editor** at `/templates/ai-editor` (new template) and `/templates/[id]/ai-editor` (edit existing): left panel shows live template preview; right panel hosts the AI chat interface.
+- **Streaming chat interface**: each conversation turn calls `generateText + Output.object` with `{ templateJson: nullable, chatMessage: string }`. Only `chatMessage` is shown to the user; the JSON is parsed silently and applied to the preview.
+- **Per-turn template snapshots**: every AI turn that produces a valid `templateJson` is saved as a snapshot — users can revert to any previous state.
+- **DIY kit tab**: 4th tab on `/templates/spec` page; single copyable block containing JSON schema (EN) + methodology principles + weight documentation + worked example in the company's content language.
+- **`withLanguageInstruction()` pattern**: system prompt scopes JSON field names to English while question text, section names, and `chatMessage` are generated in the content language.
 
 ## Key Decisions
 
@@ -33,4 +37,8 @@ Users can generate a complete, ready-to-use template draft through an in-app AI 
 
 ## Key Files
 
-*To be filled in on completion.*
+- `src/app/(dashboard)/templates/ai-editor/` (new route — create template)
+- `src/app/(dashboard)/templates/[id]/ai-editor/` (new route — edit existing)
+- `src/components/templates/ai-editor/` (AI editor shell, chat panel, preview panel)
+- `src/app/api/templates/generate/route.ts` (AI generation endpoint)
+- `src/components/templates/diy-kit-tab.tsx` (DIY prompt kit tab)

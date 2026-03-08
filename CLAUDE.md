@@ -6,39 +6,43 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Structured one-on-one meeting management SaaS for companies. License: AGPL v3.
 
-**Status**: Active development — Phase 2 complete (Auth & Organization), Phase 3 next. Full design docs in `docs/`, implementation tracked in `docs/wiki/Phase-Log.md`.
+**Status**: Active development — v1.2 complete (AI-Ready Templates), v1.3 next (Playwright Testing). Full design docs in `docs/`, implementation tracked in `docs/wiki/Phase-Log.md`.
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router) + TypeScript (strict mode)
+- **Framework**: Next.js 16 (App Router) + TypeScript (strict mode)
 - **UI**: shadcn/ui + Tailwind CSS 4
 - **ORM**: Drizzle ORM + PostgreSQL 16
 - **Auth**: Auth.js v5 (NextAuth)
 - **Validation**: Zod (shared client/server schemas)
 - **Forms**: React Hook Form
 - **Charts**: Recharts
-- **Email**: Nodemailer + React Email
-- **Jobs**: Inngest (event-driven background functions)
+- **Rich Text**: Tiptap
+- **Drag-and-Drop**: dnd-kit
+- **i18n**: next-intl (cookie-based, EN + RO)
+- **AI**: Vercel AI SDK + Anthropic Claude
+- **Email**: Nodemailer + React Email (transactional); Resend (alternative provider)
 - **State**: TanStack Query (React Query)
-- **Deployment**: Vercel + Neon/Supabase (managed PostgreSQL)
+- **Testing**: Vitest (unit/integration)
+- **Deployment**: Vercel + Neon (managed PostgreSQL)
 
 ## Common Commands
 
-Once the project is scaffolded (Next.js + Drizzle):
-
 ```bash
 # Development
-npm run dev                          # Start Next.js dev server
-npm run build                        # Production build
-npm run lint                         # ESLint
-npm run typecheck                    # tsc --noEmit
+bun run dev                          # Start Next.js dev server (port 4300)
+bun run build                        # Production build
+bun run lint                         # ESLint
+bun run typecheck                    # tsc --noEmit
+bun run test                         # Vitest unit tests
+bun run test:watch                   # Vitest in watch mode
 
 # Database (Drizzle)
 docker compose up -d                 # Start local PostgreSQL
-npx drizzle-kit generate             # Generate migration from schema changes
-npx drizzle-kit migrate              # Apply migrations
-npx drizzle-kit studio               # Open Drizzle Studio (DB browser)
-npx tsx src/lib/db/seed.ts           # Seed development data
+bunx drizzle-kit generate            # Generate migration from schema changes
+bunx drizzle-kit migrate             # Apply migrations
+bunx drizzle-kit studio              # Open Drizzle Studio (DB browser)
+bun run db:seed                      # Seed development data
 
 # Wiki sync
 ./scripts/push-wiki.sh               # Push docs/wiki/ changes to GitHub Wiki
@@ -47,7 +51,7 @@ npx tsx src/lib/db/seed.ts           # Seed development data
 
 ## Architecture
 
-Monolith-first: single Next.js app with API routes, Server Components, and Inngest background jobs. No microservices.
+Monolith-first: single Next.js app with API routes, Server Components, and background email jobs. No microservices.
 
 ### Multi-tenancy
 
@@ -58,7 +62,7 @@ Every DB table with tenant data includes `tenant_id`. PostgreSQL Row-Level Secur
 - **Reads**: Server Components fetch data directly via Drizzle (no API calls for initial page loads)
 - **Writes**: All mutations go through API routes (`src/app/api/`) for validation, authorization, and audit logging
 - **Interactive UI**: Client Components use TanStack Query to fetch/mutate through API routes
-- **Async work**: Inngest functions handle reminders, analytics computation, action item carry-over
+- **Async work**: Email sending handled inline or via queued DB notifications
 
 ### Key data model relationships
 
@@ -70,7 +74,7 @@ Every DB table with tenant data includes `tenant_id`. PostgreSQL Row-Level Secur
 - `ANALYTICS_SNAPSHOT` stores pre-computed metrics per user/team/period for fast dashboard rendering
 - `PRIVATE_NOTE` content is encrypted at the application level (AES-256-GCM, per-tenant keys)
 
-Full schema: `docs/data-model.md`. Planned Drizzle schema files: `src/lib/db/schema/`. Complete planned project structure (all directories and files): `docs/architecture.md`.
+Full schema: `docs/data-model.md`. Schema files: `src/lib/db/schema/` (16 files covering 25 tables). Complete project structure: `docs/architecture.md`.
 
 ## Conventions
 
@@ -95,13 +99,13 @@ Resource-level checks go beyond role: verify the user is actually the manager or
 Full project documentation is in `docs/`:
 - `architecture.md` — Tech stack, project structure, deployment, environment variables
 - `data-model.md` — Complete database schema with all tables, indexes, and RLS policies
-- `features.md` — Feature roadmap (MVP / v2 / v3)
+- `features.md` — Feature roadmap (v1.0 / v1.1 / v1.2 / v2 / v3)
 - `ux-flows.md` — UX patterns, wireframes, screen flows
 - `questionnaires.md` — Question types, answer formats, template system
 - `analytics.md` — Metrics, KPIs, charting strategy
 - `security.md` — Auth, authorization, multi-tenancy, GDPR, audit logging
 
-Phase plans: `docs/wiki/Phase-01.md` through `Phase-10.md`. Phase dependency graph and parallelizable phases: `docs/wiki/Phase-Log.md` (phases 6, 7, 9 can run in parallel after Phase 5).
+Phase plans: `docs/wiki/Phase-01.md` through `Phase-17.md`. Phase dependency graph: `docs/wiki/Phase-Log.md`.
 
 ## Changelog
 

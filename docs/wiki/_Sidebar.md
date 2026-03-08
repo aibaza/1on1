@@ -23,3 +23,14 @@
 - [[Phase-10]] — Integration & Polish
 - [[Phase-11]] — i18n Foundation
 - [[Phase-12]] — UI Translation
+- [[Phase-13]] — Email Translation
+- [[Phase-14]] — Romanian & Quality
+- [[Phase-15]] — Schema, Spec & Export
+- [[Phase-16]] — Template Import
+- [[Phase-17]] — AI Generator & DIY Kit
+- [[Phase-18]] — Critical Bugs
+- [[Phase-19]] — Design System
+- [[Phase-20]] — Mobile Responsiveness
+- [[Phase-21]] — Content & Data Display
+- [[Phase-22]] — Safety, Errors & Inputs
+- [[Phase-23]] — Low-Priority Polish

@@ -4,13 +4,22 @@
  * Does NOT re-run the full pipeline and does NOT send emails.
  */
 import { adminDb } from "../index";
-import { sessions } from "../schema";
-import { sql, isNull, eq } from "drizzle-orm";
+import { sessions, tenants } from "../schema";
+import { sql, eq } from "drizzle-orm";
 import { generateText } from "ai";
 import { models } from "@/lib/ai/models";
 import type { AISummary } from "@/lib/ai/schemas/summary";
 
-async function generateBlurb(summary: AISummary, language = "Romanian"): Promise<string> {
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English",
+  ro: "Romanian",
+  de: "German",
+  fr: "French",
+  es: "Spanish",
+  pt: "Portuguese",
+};
+
+async function generateBlurb(summary: AISummary, language = "English"): Promise<string> {
   const highlights = summary.discussionHighlights
     .map((h) => `[${h.category}] ${h.summary}`)
     .join("\n");
@@ -28,8 +37,13 @@ async function generateBlurb(summary: AISummary, language = "Romanian"): Promise
 async function run() {
   // Find completed sessions with ai_summary but missing cardBlurb
   const rows = await adminDb
-    .select({ id: sessions.id, aiSummary: sessions.aiSummary })
+    .select({
+      id: sessions.id,
+      aiSummary: sessions.aiSummary,
+      contentLanguage: tenants.contentLanguage,
+    })
     .from(sessions)
+    .innerJoin(tenants, eq(sessions.tenantId, tenants.id))
     .where(
       sql`${sessions.aiSummary} IS NOT NULL AND ${sessions.aiSummary}->>'cardBlurb' IS NULL AND ${sessions.status} = 'completed'`
     );
@@ -43,10 +57,10 @@ async function run() {
 
   for (const row of rows) {
     const summary = row.aiSummary as AISummary;
-    const language = summary.overallSentiment ? "Romanian" : "English"; // heuristic; adjust if needed
-    console.log(`  Generating blurb for session ${row.id}...`);
+    const languageName = LANGUAGE_NAMES[row.contentLanguage] ?? row.contentLanguage;
+    console.log(`  Generating blurb for session ${row.id} (language: ${languageName})...`);
     try {
-      const blurb = await generateBlurb(summary, "Romanian");
+      const blurb = await generateBlurb(summary, languageName);
       const updated = { ...summary, cardBlurb: blurb };
       await adminDb
         .update(sessions)
