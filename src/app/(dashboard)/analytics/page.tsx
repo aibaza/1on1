@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { eq, and, sql } from "drizzle-orm";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { users, meetingSeries, sessions, teams, teamMembers } from "@/lib/db/schema";
+import { users, meetingSeries, sessions, actionItems, teams, teamMembers } from "@/lib/db/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -39,7 +39,7 @@ export default async function AnalyticsPage() {
     redirect(`/analytics/individual/${user.id}`);
   }
 
-  const { reports, teamsList } = await withTenantContext(
+  const { reports, teamsList, aggregates } = await withTenantContext(
     user.tenantId,
     user.id,
     async (tx) => {
@@ -146,7 +146,56 @@ export default async function AnalyticsPage() {
         .groupBy(teams.id, teams.name)
         .orderBy(teams.name);
 
-      return { reports: reportsList, teamsList: teamRows as TeamSummary[] };
+      // Aggregate company-wide metrics (scoped to what the user can see)
+      const seriesConditionForAgg =
+        user.role === "manager"
+          ? eq(meetingSeries.managerId, user.id)
+          : undefined;
+
+      // Completed sessions count (and avg score)
+      const sessionAggRows = await tx
+        .select({
+          completedCount: sql<number>`COUNT(CASE WHEN ${sessions.status} = 'completed' THEN 1 END)::int`,
+          avgScore: sql<string | null>`AVG(CASE WHEN ${sessions.status} = 'completed' AND ${sessions.sessionScore} IS NOT NULL THEN ${sessions.sessionScore}::numeric END)`,
+        })
+        .from(sessions)
+        .innerJoin(meetingSeries, eq(sessions.seriesId, meetingSeries.id))
+        .where(
+          and(
+            eq(sessions.tenantId, user.tenantId),
+            seriesConditionForAgg,
+          ),
+        );
+
+      const sessionsCompletedCount = sessionAggRows[0]?.completedCount ?? 0;
+      const avgScoreRaw = sessionAggRows[0]?.avgScore ?? null;
+      const avgScore = avgScoreRaw !== null ? parseFloat(avgScoreRaw) : null;
+
+      // Action item completion rate
+      const actionItemAggRows = await tx
+        .select({
+          total: sql<number>`COUNT(*)::int`,
+          completed: sql<number>`COUNT(CASE WHEN ${actionItems.status} = 'completed' THEN 1 END)::int`,
+        })
+        .from(actionItems)
+        .innerJoin(sessions, eq(actionItems.sessionId, sessions.id))
+        .innerJoin(meetingSeries, eq(sessions.seriesId, meetingSeries.id))
+        .where(
+          and(
+            eq(actionItems.tenantId, user.tenantId),
+            seriesConditionForAgg,
+          ),
+        );
+
+      const aiTotal = actionItemAggRows[0]?.total ?? 0;
+      const aiCompleted = actionItemAggRows[0]?.completed ?? 0;
+      const actionItemRate = aiTotal > 0 ? Math.round((aiCompleted / aiTotal) * 100) : null;
+
+      return {
+        reports: reportsList,
+        teamsList: teamRows as TeamSummary[],
+        aggregates: { sessionsCompletedCount, avgScore, actionItemRate },
+      };
     },
   );
 
@@ -157,6 +206,48 @@ export default async function AnalyticsPage() {
         <p className="text-sm text-muted-foreground">
           {t("description")}
         </p>
+      </div>
+
+      {/* Aggregate stats */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        {/* Sessions Completed */}
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-xs text-muted-foreground">{t("aggregate.sessionsCompleted")}</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums">
+              {aggregates.sessionsCompletedCount > 0
+                ? aggregates.sessionsCompletedCount
+                : t("aggregate.noData")}
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Avg Score */}
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-xs text-muted-foreground">{t("aggregate.avgScore")}</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums">
+              {aggregates.avgScore !== null
+                ? format.number(aggregates.avgScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 })
+                : t("aggregate.noData")}
+            </p>
+            {aggregates.avgScore !== null && (
+              <p className="text-xs text-muted-foreground">out of 5</p>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Action Item Rate */}
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-xs text-muted-foreground">{t("aggregate.actionItemRate")}</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums">
+              {aggregates.actionItemRate !== null
+                ? `${aggregates.actionItemRate}%`
+                : t("aggregate.noData")}
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Team analytics section */}

@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `src/app/(dashboard)/analytics/page.tsx` — aggregate stat cards (Sessions Completed, Avg Score, Action Item Rate) above team/individual directories; scoped by role (admin=all, manager=direct reports only); shows "—" when no data (CON-01); i18n keys added to en/ro analytics.json
 - `src/components/analytics/team-heatmap.tsx` — contributor threshold guard: shows "Requires ≥3 contributors" message when 1-2 unique users have heatmap data (CON-05); i18n keys added to en/ro analytics.json
 - `messages/en/sessions.json`, `messages/ro/sessions.json` — fix session summary score label from "out of 5.0" to "out of 5" (SCORE-01)
 - `src/components/templates/template-editor.tsx` — dual-layout header: desktop full button row (`hidden md:flex`) and mobile overflow `DropdownMenu` (`flex md:hidden`) with controlled `AlertDialog` for archive action (MOB-02)

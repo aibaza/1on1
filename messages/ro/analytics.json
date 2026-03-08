@@ -68,6 +68,12 @@
       "categories": "Exportă categorii",
       "velocity": "Exportă viteza",
       "adherence": "Exportă aderența"
+    },
+    "aggregate": {
+      "sessionsCompleted": "Sesiuni Finalizate",
+      "avgScore": "Scor Mediu",
+      "actionItemRate": "Rată Sarcini",
+      "noData": "—"
     }
   }
 }

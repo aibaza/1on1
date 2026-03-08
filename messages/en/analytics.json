@@ -69,6 +69,12 @@
       "categories": "Export categories",
       "velocity": "Export velocity",
       "adherence": "Export adherence"
+    },
+    "aggregate": {
+      "sessionsCompleted": "Sessions Completed",
+      "avgScore": "Avg Score",
+      "actionItemRate": "Action Item Rate",
+      "noData": "—"
     }
   }
 }
