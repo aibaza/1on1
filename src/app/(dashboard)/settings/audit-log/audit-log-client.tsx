@@ -233,7 +233,7 @@ export function AuditLogClient() {
                 <TableHead>{t("auditLog.timestamp")}</TableHead>
                 <TableHead>{t("auditLog.actor")}</TableHead>
                 <TableHead>{t("auditLog.action")}</TableHead>
-                <TableHead>{t("auditLog.target")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("auditLog.target")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -279,7 +279,7 @@ export function AuditLogClient() {
                             {entry.actorName}
                           </span>
                           {entry.actorEmail && (
-                            <span className="text-xs text-muted-foreground">
+                            <span className="hidden md:block text-xs text-muted-foreground">
                               {entry.actorEmail}
                             </span>
                           )}
@@ -290,7 +290,7 @@ export function AuditLogClient() {
                           {formatActionLabel(entry.action)}
                         </span>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
                         {entry.resourceType}
                         {entry.resourceId
                           ? `: ${entry.resourceId.slice(0, 8)}...`
