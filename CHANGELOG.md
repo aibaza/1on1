@@ -6,61 +6,42 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-03-08
+
 ### Added
-- `src/app/(dashboard)/analytics/page.tsx` — aggregate stat cards (Sessions Completed, Avg Score, Action Item Rate) above team/individual directories; scoped by role (admin=all, manager=direct reports only); shows "—" when no data (CON-01); i18n keys added to en/ro analytics.json
-- `src/components/analytics/team-heatmap.tsx` — contributor threshold guard: shows "Requires ≥3 contributors" message when 1-2 unique users have heatmap data (CON-05); i18n keys added to en/ro analytics.json
-- `messages/en/sessions.json`, `messages/ro/sessions.json` — fix session summary score label from "out of 5.0" to "out of 5" (SCORE-01)
+- `src/components/ui/star-rating.tsx` — reusable `StarRating` component (sm/md/lg sizes); filled amber stars for scored sessions, grayed hollow stars when no score; used throughout the app wherever session ratings are displayed
+- `src/app/(dashboard)/analytics/page.tsx` — aggregate stat cards (Sessions Completed, Avg Score, Action Item Rate) above team/individual directories; scoped by role (admin=all, manager=direct reports only); shows "—" when no data (CON-01)
+- `src/components/analytics/team-heatmap.tsx` — contributor threshold guard: shows "Requires ≥3 contributors" message when 1-2 unique users have heatmap data (CON-05)
 - `src/components/templates/template-editor.tsx` — dual-layout header: desktop full button row (`hidden md:flex`) and mobile overflow `DropdownMenu` (`flex md:hidden`) with controlled `AlertDialog` for archive action (MOB-02)
 - `src/components/people/people-table-columns.tsx` — add `meta: { className: "hidden md:table-cell" }` to email, teams, manager, status columns; add ColumnMeta module augmentation (MOB-04)
-- `src/components/templates/template-list.tsx` — mobile overflow menu (`DropdownMenu` with `MoreHorizontal` trigger) collapses secondary actions on screens below md; desktop full button row preserved with `hidden md:flex` / `flex md:hidden` dual-layout (MOB-01)
-- `src/components/templates/import-dialog.tsx` — optional `open`/`onOpenChange` controlled props; parent can open dialog from external trigger (e.g. mobile overflow menu)
-
-### Fixed
-- `src/components/dashboard/nudge-card.tsx` — dismiss button touch target raised to 44×44px (`size-11`) on mobile; always visible (`opacity-100`); desktop reverts to 28px hover-only (`md:size-7 md:opacity-0 md:group-hover:opacity-100`) (MOB-03)
-- `src/components/people/people-table.tsx` — TableHead and TableCell read `meta?.className` from column definition for responsive column visibility (MOB-04)
-- `src/app/(dashboard)/settings/audit-log/audit-log-client.tsx` — Target column (TableHead + TableCell) hidden on mobile with `hidden md:table-cell`; actor email sub-line hidden on mobile with `hidden md:block` (MOB-05)
+- `src/components/templates/template-list.tsx` — mobile overflow menu (`DropdownMenu` with `MoreHorizontal` trigger) collapses secondary actions on screens below md (MOB-01)
+- `src/components/templates/import-dialog.tsx` — optional `open`/`onOpenChange` controlled props for external trigger support
+- `src/components/ui/empty-state.tsx` — shared `EmptyState` component replacing inline empty-state patterns across 10 call sites (DES-04)
+- `src/lib/session/tiptap-render.ts` — `contentToHtml()` helper that type-guards Tiptap JSON vs HTML string (BUG-01)
+- Test infrastructure: `@testing-library/react`, `@testing-library/jest-dom`, `happy-dom`; `src/test-setup.ts`; `vitest.config.ts` setupFiles
 
 ### Changed
-- `src/components/session/category-step.tsx` — Talking Points and Action Items sections now wrapped in `Collapsible`; header shows count `Badge` (variant=secondary) when count > 0; chevron rotates to indicate collapse state; both sections expanded by default (CON-04)
-- `src/components/series/series-card.tsx` — replaced hollow-star rating row with conditional numeric score Badge; no stars render for any case; Badge (variant=secondary) shows numeric score (e.g. "4.2") only for completed sessions with a score (CON-02, CON-03)
-- `src/components/series/series-list.tsx` — replaced inline `border-dashed` empty-state with `<EmptyState>` (DES-04)
-- `src/components/dashboard/recent-sessions.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
-- `src/components/dashboard/upcoming-series-cards.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
-- `src/components/dashboard/upcoming-sessions.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
-- `src/components/templates/template-list.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
-- `src/components/action-items/action-items-page.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
-- `src/app/(dashboard)/teams/teams-grid.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
-- `src/app/(dashboard)/settings/audit-log/audit-log-client.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
-- `src/components/series/session-timeline.tsx` — replaced bare `<p>` empty state with `<EmptyState>` (DES-04)
-- `src/components/history/history-page.tsx` — replaced inline `border-dashed` empty-state with `<EmptyState>` (DES-04)
+- `src/components/series/series-card.tsx` — grayed hollow stars always visible; filled amber stars + hover numeric for completed sessions with a score (CON-02, CON-03)
+- `src/components/series/session-timeline.tsx` — star rating (sm) replaces numeric score span; always visible including hollow when no score
+- `src/components/dashboard/recent-sessions.tsx` — star rating (sm) replaces colored numeric badge on session list rows
+- `src/components/session/session-summary-view.tsx` — dedicated score card removed; stars (md) and numeric moved into header right-aligned; title now includes other person's name in bold + team name in parentheses; status badge translated via i18n
+- `src/components/session/summary-screen.tsx` — dedicated score card replaced with stars (lg) + numeric label
+- `src/components/session/recap-screen.tsx` — star rating (sm) replaces score badge on previous session
+- `src/components/session/category-step.tsx` — Talking Points and Action Items sections wrapped in `Collapsible` with count badge and chevron (CON-04)
+- `src/app/(dashboard)/sessions/[id]/summary/page.tsx` — fetches first team for manager and report via `teamMembers` join; passes `managerTeam`/`reportTeam` to `SessionSummaryView`
 
 ### Fixed
-- `src/components/series/session-timeline.tsx` — fix badge variant semantics (DES-02): `in_progress` → `"default"` (active/high-weight), `completed` → `"outline"` (receded/done); export `statusVariant` for unit tests
-- `src/components/session/category-step.tsx` — remove `uppercase` and `tracking-wide` from `SectionLabel` className (DES-03)
-- `src/components/session/summary-screen.tsx` — remove `uppercase` and `tracking-wider` from all 3 section header `<p>` elements (DES-03)
-- `src/components/session/session-summary-view.tsx` — remove `uppercase` and `tracking-wider` from all 4 section header `<p>` elements (DES-03; includes private-notes header with flex layout)
-- DES-01 verified: no hardcoded color overrides on auth page buttons; all auth `<Button>` elements resolve to `--primary` via default variant
-
-### Added
-- `src/components/dashboard/__tests__/nudge-card-touch-target.test.tsx` — failing tests (RED/Wave 0) for MOB-03: dismiss button touch target; asserts size-11 class absent pre-fix
-- `src/components/people/__tests__/people-table-columns-mobile.test.tsx` — failing tests (RED/Wave 0) for MOB-04: secondary columns (email, teams, manager, status) lack hidden md:table-cell meta pre-fix; primary columns (name, actions) pass
-- `src/app/(dashboard)/settings/audit-log/__tests__/audit-log-columns-mobile.test.tsx` — failing tests (RED/Wave 0) for MOB-05: Target column header lacks hidden class pre-fix; timestamp/action headers pass
-- `src/test-setup.ts` — global Vitest setup: imports @testing-library/jest-dom matchers (toHaveClass, etc.) for all test files
-- `vitest.config.ts` — add setupFiles pointing to src/test-setup.ts for jest-dom matcher availability
-- `src/components/ui/empty-state.tsx` — shared EmptyState component (DES-04): typed props (icon, heading, description, action, className), renders centered dashed-border container; replaces inline empty-state patterns across 10 call sites
-- `src/components/ui/__tests__/empty-state.test.tsx` — failing tests (RED/Wave 0) for DES-04 EmptyState component: heading, description, icon, action slot, and no-crash with optional props absent
-- `src/components/session/__tests__/section-label.test.tsx` — failing tests (RED/Wave 0) for DES-03 SectionLabel: asserts className does not contain 'uppercase' or 'tracking-wide'
-- `src/components/series/__tests__/session-timeline-badge.test.tsx` — failing tests (RED/Wave 0) for DES-02 badge variant semantics: in_progress→'default', completed→'outline', scheduled→'outline', cancelled→'destructive'
-- `@testing-library/react`, `@testing-library/jest-dom` dev dependencies — React Testing Library for component-level unit tests
-- `src/lib/session/__tests__/tiptap-render.test.ts` — failing unit tests (RED) for `contentToHtml()` helper; covers HTML string passthrough, Tiptap JSON object rendering, null/undefined → empty string, and malformed object safety (5 test cases)
-- `src/lib/session/tiptap-render.ts` — `contentToHtml()` helper that type-guards Tiptap JSON vs HTML string; uses `generateHTML` from `@tiptap/core` with StarterKit + Link extensions; returns `""` for null/undefined/malformed input
-- `happy-dom` dev dependency — DOM environment for Vitest to support `@tiptap/core` `generateHTML()` in unit tests
-
-### Fixed
-- `src/lib/session/__tests__/tiptap-render.test.ts` — added `@vitest-environment happy-dom` annotation so `generateHTML` (which requires DOM APIs) works correctly in the test environment (BUG-01)
-- `src/components/session/recap-screen.tsx` — replaced raw `__html: content` with `__html: contentToHtml(content)` to fix [object Object] display for Tiptap JSON notes (BUG-01); removed dashed-border sparkline placeholder div (BUG-04)
-- `src/i18n/request.ts` — added missing `spec.json` namespace to i18n loader so templates schema page renders translated strings instead of raw `spec.*` keys (BUG-03)
-- `src/components/templates/ai-editor/ai-editor-shell.tsx` — added responsive mobile tab layout (Preview/Chat tabs) for viewports below 1024px; desktop drag-resize layout preserved via `hidden lg:flex` / `lg:hidden` (BUG-02)
+- `src/components/session/ai-summary-section.tsx` — sentiment badge (`positive/neutral/mixed/concerning`) and follow-up priority badge (`low/medium/high`) now translated via i18n instead of rendering raw English enum values
+- `src/components/session/session-summary-view.tsx` — status badge uses `sessions.timeline` i18n keys instead of `status.replace("_", " ")`
+- `messages/en/sessions.json`, `messages/ro/sessions.json` — score label `"out of 5.0"` → `"out of 5"`; added sentiment and priority translation keys (SCORE-01)
+- `src/components/dashboard/nudge-card.tsx` — dismiss button touch target raised to 44×44px on mobile (MOB-03)
+- `src/components/people/people-table.tsx` — reads `meta?.className` for responsive column visibility (MOB-04)
+- `src/app/(dashboard)/settings/audit-log/audit-log-client.tsx` — Target column and actor email hidden on mobile (MOB-05)
+- `src/components/series/session-timeline.tsx` — badge variant semantics: `in_progress` → `"default"`, `completed` → `"outline"` (DES-02)
+- `src/components/session/category-step.tsx`, `summary-screen.tsx`, `session-summary-view.tsx` — removed `uppercase`/`tracking-wide` from section headers (DES-03)
+- `src/components/session/recap-screen.tsx` — fixed `[object Object]` display for Tiptap JSON notes; uses `contentToHtml()` (BUG-01)
+- `src/i18n/request.ts` — added missing `spec.json` namespace (BUG-03)
+- `src/components/templates/ai-editor/ai-editor-shell.tsx` — responsive mobile tab layout for viewports below 1024px (BUG-02)
 
 ## [1.2.1] - 2026-03-07
 
