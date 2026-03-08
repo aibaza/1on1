@@ -19,9 +19,9 @@
 ### Design System (DES)
 
 - [ ] **DES-01**: All primary CTA buttons use a single consistent color across auth pages and app pages — choose monochrome (recommended) or orange and apply globally
-- [ ] **DES-02**: Badge visual weight matches semantic importance — "in progress" uses filled/high-weight badge; "completed" uses outlined/low-weight badge
-- [ ] **DES-03**: Section headers inside wizard use consistent sentence-case casing — "Notes", "Talking Points", "Action Items" (not uppercase "NOTES", "TALKING POINTS")
-- [ ] **DES-04**: Reusable empty-state component created — accepts icon, heading, description, optional CTA button; used on pages currently showing blank whitespace
+- [x] **DES-02**: Badge visual weight matches semantic importance — "in progress" uses filled/high-weight badge; "completed" uses outlined/low-weight badge
+- [x] **DES-03**: Section headers inside wizard use consistent sentence-case casing — "Notes", "Talking Points", "Action Items" (not uppercase "NOTES", "TALKING POINTS")
+- [x] **DES-04**: Reusable empty-state component created — accepts icon, heading, description, optional CTA button; used on pages currently showing blank whitespace
 
 ### Mobile Responsiveness (MOB)
 
@@ -92,9 +92,9 @@
 | BUG-03 | Phase 18 | Complete |
 | BUG-04 | Phase 18 | Complete |
 | DES-01 | Phase 19 | Pending |
-| DES-02 | Phase 19 | Pending |
-| DES-03 | Phase 19 | Pending |
-| DES-04 | Phase 19 | Pending |
+| DES-02 | Phase 19 | Complete |
+| DES-03 | Phase 19 | Complete |
+| DES-04 | Phase 19 | Complete |
 | MOB-01 | Phase 20 | Pending |
 | MOB-02 | Phase 20 | Pending |
 | MOB-03 | Phase 20 | Pending |
