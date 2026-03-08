@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { ScoreSparkline } from "@/components/session/score-sparkline";
 import { ClipboardList, Loader2, Search, X } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 
 // --- Types ---
 
@@ -443,32 +444,22 @@ export function HistoryPage({
       {!isShowingSearch && (
         <>
           {groupedSessions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
-              <ClipboardList className="mb-4 size-12 text-muted-foreground/30" />
-              <h3 className="text-lg font-medium">
-                {hasActiveFilters ? t("noFilterResults") : t("noSessions")}
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {hasActiveFilters
-                  ? t("noFilterResultsDesc")
-                  : t("noSessionsDesc")}
-              </p>
-              {hasActiveFilters && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-4"
-                  onClick={clearFilters}
-                >
-                  {t("clearFilters")}
-                </Button>
-              )}
-              {!hasActiveFilters && (
-                <Button variant="outline" size="sm" className="mt-4" asChild>
-                  <Link href="/sessions">{t("goToSessions")}</Link>
-                </Button>
-              )}
-            </div>
+            <EmptyState
+              icon={ClipboardList}
+              heading={hasActiveFilters ? t("noFilterResults") : t("noSessions")}
+              description={hasActiveFilters ? t("noFilterResultsDesc") : t("noSessionsDesc")}
+              action={
+                hasActiveFilters ? (
+                  <Button variant="outline" size="sm" onClick={clearFilters}>
+                    {t("clearFilters")}
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/sessions">{t("goToSessions")}</Link>
+                  </Button>
+                )
+              }
+            />
           ) : (
             <div className="space-y-6">
               {groupedSessions.map((group) => (

@@ -10,6 +10,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Plus, FileText, Hash, BookOpen, Wand2 } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 import { canManageTemplates } from "@/lib/auth/rbac";
 import { ExportButton } from "@/components/templates/export-button";
 import { ImportDialog } from "@/components/templates/import-dialog";
@@ -158,21 +159,19 @@ export function TemplateList({
       </div>
 
       {templates.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12">
-          <FileText className="h-10 w-10 text-muted-foreground/50" />
-          <h3 className="mt-4 text-lg font-semibold">{t("empty")}</h3>
-          <p className="mt-1 text-sm text-muted-foreground">{t("emptyDesc")}</p>
-          {canCreate && (
-            <Button
-              className="mt-4"
-              size="sm"
-              onClick={() => setCreateOpen(true)}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              {t("createTemplate")}
-            </Button>
-          )}
-        </div>
+        <EmptyState
+          icon={FileText}
+          heading={t("empty")}
+          description={t("emptyDesc")}
+          action={
+            canCreate ? (
+              <Button size="sm" onClick={() => setCreateOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                {t("createTemplate")}
+              </Button>
+            ) : undefined
+          }
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {templates.map((template) => (

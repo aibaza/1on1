@@ -7,6 +7,7 @@ import { Plus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TeamCard } from "@/components/people/team-card";
 import { TeamCreateDialog } from "@/components/people/team-create-dialog";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface TeamData {
   id: string;
@@ -56,21 +57,19 @@ export function TeamsGrid({
       )}
 
       {teamsList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12">
-          <Users className="h-10 w-10 text-muted-foreground/50" />
-          <h3 className="mt-4 text-lg font-semibold">{t("empty")}</h3>
-          <p className="mt-1 text-sm text-muted-foreground">{t("emptyDesc")}</p>
-          {canCreate && (
-            <Button
-              className="mt-4"
-              size="sm"
-              onClick={() => setCreateOpen(true)}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              {t("createTeam")}
-            </Button>
-          )}
-        </div>
+        <EmptyState
+          icon={Users}
+          heading={t("empty")}
+          description={t("emptyDesc")}
+          action={
+            canCreate ? (
+              <Button size="sm" onClick={() => setCreateOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                {t("createTeam")}
+              </Button>
+            ) : undefined
+          }
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {teamsList.map((team) => (

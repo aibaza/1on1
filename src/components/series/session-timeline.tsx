@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import { useTranslations, useFormatter } from "next-intl";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface SessionEntry {
   id: string;
@@ -46,11 +47,7 @@ export function SessionTimeline({ sessions }: SessionTimelineProps) {
   const format = useFormatter();
 
   if (sessions.length === 0) {
-    return (
-      <p className="py-8 text-center text-sm text-muted-foreground">
-        {t("noSessions")}
-      </p>
-    );
+    return <EmptyState heading={t("noSessions")} className="py-0" />;
   }
 
   return (

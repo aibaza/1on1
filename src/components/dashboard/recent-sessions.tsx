@@ -6,6 +6,7 @@ import { Clock, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { RecentSession } from "@/lib/queries/dashboard";
 import { useTranslations, useFormatter } from "next-intl";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface RecentSessionsProps {
   sessions: RecentSession[];
@@ -23,13 +24,11 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
 
   if (sessions.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed p-8 text-center">
-        <FileText className="mx-auto mb-3 size-8 text-muted-foreground/50" />
-        <p className="text-sm font-medium">{t("noSessions")}</p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {t("noSessionsDesc")}
-        </p>
-      </div>
+      <EmptyState
+        icon={FileText}
+        heading={t("noSessions")}
+        description={t("noSessionsDesc")}
+      />
     );
   }
 

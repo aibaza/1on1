@@ -12,6 +12,7 @@ import {
   Pencil,
   User,
 } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -267,14 +268,16 @@ export function ActionItemsPage({ initialItems, currentUserId }: ActionItemsPage
 
   if (!hasAnyItems) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <ListChecks className="size-12 text-muted-foreground/30 mb-4" />
-        <h2 className="text-lg font-medium mb-1">{t("empty")}</h2>
-        <p className="text-sm text-muted-foreground mb-4">{t("emptyDesc")}</p>
-        <Button asChild variant="outline">
-          <Link href="/sessions">{t("goToSessions")}</Link>
-        </Button>
-      </div>
+      <EmptyState
+        icon={ListChecks}
+        heading={t("empty")}
+        description={t("emptyDesc")}
+        action={
+          <Button asChild variant="outline">
+            <Link href="/sessions">{t("goToSessions")}</Link>
+          </Button>
+        }
+      />
     );
   }
 

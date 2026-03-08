@@ -4,6 +4,7 @@ import { Fragment, useState } from "react";
 import { useTranslations, useFormatter } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, ChevronRight, Search } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -222,11 +223,7 @@ export function AuditLogClient() {
           {t("auditLog.loading")}
         </div>
       ) : entries.length === 0 ? (
-        <div className="rounded-lg border border-dashed py-12 text-center">
-          <p className="text-sm text-muted-foreground">
-            {t("auditLog.empty")}
-          </p>
-        </div>
+        <EmptyState heading={t("auditLog.empty")} />
       ) : (
         <div className="rounded-md border">
           <Table>

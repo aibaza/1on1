@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- `src/components/series/series-list.tsx` — replaced inline `border-dashed` empty-state with `<EmptyState>` (DES-04)
+- `src/components/dashboard/recent-sessions.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
+- `src/components/dashboard/upcoming-series-cards.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
+- `src/components/dashboard/upcoming-sessions.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
+- `src/components/templates/template-list.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
+- `src/components/action-items/action-items-page.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
+- `src/app/(dashboard)/teams/teams-grid.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
+- `src/app/(dashboard)/settings/audit-log/audit-log-client.tsx` — replaced inline empty-state with `<EmptyState>` (DES-04)
+- `src/components/series/session-timeline.tsx` — replaced bare `<p>` empty state with `<EmptyState>` (DES-04)
+- `src/components/history/history-page.tsx` — replaced inline `border-dashed` empty-state with `<EmptyState>` (DES-04)
+
 ### Fixed
 - `src/components/series/session-timeline.tsx` — fix badge variant semantics (DES-02): `in_progress` → `"default"` (active/high-weight), `completed` → `"outline"` (receded/done); export `statusVariant` for unit tests
 - `src/components/session/category-step.tsx` — remove `uppercase` and `tracking-wide` from `SectionLabel` className (DES-03)

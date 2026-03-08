@@ -6,6 +6,7 @@ import { SeriesCard } from "./series-card";
 import { Button } from "@/components/ui/button";
 import { Plus, CalendarDays } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface Series {
   id: string;
@@ -51,19 +52,19 @@ export function SeriesList({ initialSeries, currentUserId }: SeriesListProps) {
 
   if (series.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-        <CalendarDays className="mb-4 h-12 w-12 text-muted-foreground/50" />
-        <h3 className="mb-1 text-lg font-medium">{t("series.empty")}</h3>
-        <p className="mb-4 text-sm text-muted-foreground">
-          {t("series.emptyDesc")}
-        </p>
-        <Button asChild>
-          <Link href="/sessions/new">
-            <Plus className="mr-2 h-4 w-4" />
-            {t("series.create")}
-          </Link>
-        </Button>
-      </div>
+      <EmptyState
+        icon={CalendarDays}
+        heading={t("series.empty")}
+        description={t("series.emptyDesc")}
+        action={
+          <Button asChild>
+            <Link href="/sessions/new">
+              <Plus className="mr-2 h-4 w-4" />
+              {t("series.create")}
+            </Link>
+          </Button>
+        }
+      />
     );
   }
 
