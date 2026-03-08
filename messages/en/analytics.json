@@ -39,6 +39,7 @@
       "noVelocityData": "No action item velocity data available for this period.",
       "noAdherenceData": "No meeting adherence data available for this period.",
       "noHeatmapData": "No heatmap data available for this period.",
+      "heatmapThreshold": "Requires ≥3 contributors to display heatmap",
       "minSessionsComparison": "At least 2 completed sessions needed for comparison.",
       "noComparisonData": "No scorable category data found for these sessions.",
       "avgDays": "Avg: {value} days",

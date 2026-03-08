@@ -38,6 +38,7 @@
       "noVelocityData": "Nu există date de viteză a acțiunilor pentru această perioadă.",
       "noAdherenceData": "Nu există date de aderență la întâlniri pentru această perioadă.",
       "noHeatmapData": "Nu există date pentru harta termică în această perioadă.",
+      "heatmapThreshold": "Necesită ≥3 contribuitori pentru a afișa harta",
       "minSessionsComparison": "Sunt necesare cel puțin 2 sesiuni finalizate pentru comparație.",
       "noComparisonData": "Nu s-au găsit date de categorie punctabilă pentru aceste sesiuni.",
       "avgDays": "Medie: {value} zile",

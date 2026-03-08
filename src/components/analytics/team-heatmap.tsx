@@ -119,6 +119,15 @@ export function TeamHeatmap({ data, categories }: TeamHeatmapProps) {
     );
   }
 
+  // Threshold guard: require ≥3 contributors for meaningful heatmap
+  if (rows.length > 0 && rows.length < 3) {
+    return (
+      <div className="flex h-[200px] items-center justify-center text-center text-sm text-muted-foreground">
+        <p>{t("heatmapThreshold")}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="overflow-x-auto">
       <div className="relative inline-block">
