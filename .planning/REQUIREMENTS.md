@@ -37,7 +37,7 @@
 - [x] **CON-02**: Session list cards with no completed sessions hide the star rating row
 - [x] **CON-03**: Session list cards with sessions show numeric score badge (not hollow stars)
 - [x] **CON-04**: Talking Points and Action Items sections in wizard show item count badge and expand/collapse chevron
-- [ ] **CON-05**: Team heatmap shows a threshold message ("requires ≥3 contributors") when fewer than 3 contributors have session data
+- [x] **CON-05**: Team heatmap shows a threshold message ("requires ≥3 contributors") when fewer than 3 contributors have session data
 
 ### Destructive Action Safety (SAFE)
 
@@ -53,7 +53,7 @@
 
 ### Score Display (SCORE)
 
-- [ ] **SCORE-01**: Session summary score label displays the correct maximum (e.g., "out of 10" if 10-point scale) — review score aggregation logic to confirm or fix the scale
+- [x] **SCORE-01**: Session summary score label displays the correct maximum (e.g., "out of 10" if 10-point scale) — review score aggregation logic to confirm or fix the scale
 
 ### Low-Priority Polish (POL)
 
@@ -104,8 +104,8 @@
 | CON-02 | Phase 21 | Complete |
 | CON-03 | Phase 21 | Complete |
 | CON-04 | Phase 21 | Complete |
-| CON-05 | Phase 21 | Pending |
-| SCORE-01 | Phase 21 | Pending |
+| CON-05 | Phase 21 | Complete |
+| SCORE-01 | Phase 21 | Complete |
 | SAFE-01 | Phase 22 | Pending |
 | ERR-01 | Phase 22 | Pending |
 | INP-01 | Phase 22 | Pending |

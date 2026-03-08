@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: UI/UX Improvements
 status: planning
-stopped_at: Completed 21-02-PLAN.md (CON-04 collapsible CategoryStep sections with count badges)
-last_updated: "2026-03-08T09:04:39.917Z"
+stopped_at: Completed 21-03-PLAN.md (CON-05 heatmap threshold guard + SCORE-01 score label fix)
+last_updated: "2026-03-08T09:07:27.031Z"
 last_activity: 2026-03-08 — v1.3 roadmap created (6 phases, 31 requirements mapped)
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 14
-  completed_plans: 12
+  completed_plans: 13
   percent: 61
 ---
 
@@ -60,6 +60,7 @@ Progress: [████████████████░░░░░░░
 | Phase 20-mobile-responsiveness P04 | 8 | 1 tasks | 2 files |
 | Phase 21-content-data-display P01 | 5 | 1 tasks | 2 files |
 | Phase 21-content-data-display P02 | 5 | 1 tasks | 2 files |
+| Phase 21-content-data-display P03 | 5 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,8 @@ Recent decisions affecting current work:
 - [Phase 20-mobile-responsiveness]: Template editor mobile overflow: ExportButton omitted from mobile dropdown (renders own dialog); available from template list card
 - [Phase 21-content-data-display]: Score shown as numeric Badge not stars on series cards — CON-02/CON-03 satisfied
 - [Phase 21-content-data-display]: Count Badge omitted when count = 0 in CategoryStep sections — cleaner UI for empty Talking Points/Action Items
+- [Phase 21-content-data-display]: Team heatmap threshold guard: rows.length > 0 && rows.length < 3 separates low-contributor case from zero-data case (CON-05)
+- [Phase 21-content-data-display]: Session summary outOf label: purely an i18n string fix from '5.0' to '5' — score scale verified as 1-5 via computeSessionScore (SCORE-01)
 
 ### Pending Todos
 
@@ -100,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-08T09:04:39.914Z
-Stopped at: Completed 21-02-PLAN.md (CON-04 collapsible CategoryStep sections with count badges)
+Last session: 2026-03-08T09:07:27.028Z
+Stopped at: Completed 21-03-PLAN.md (CON-05 heatmap threshold guard + SCORE-01 score label fix)
 Resume file: None

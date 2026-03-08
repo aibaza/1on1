@@ -177,6 +177,6 @@ Plans:
 | 18. Critical Bugs | v1.3 | 3/3 | Complete | 2026-03-08 |
 | 19. Design System | v1.3 | 3/3 | Complete | 2026-03-08 |
 | 20. Mobile Responsiveness | v1.3 | 4/4 | Complete | 2026-03-08 |
-| 21. Content & Data Display | 2/4 | In Progress|  | — |
+| 21. Content & Data Display | 3/4 | In Progress|  | — |
 | 22. Safety, Errors & Inputs | v1.3 | 0/? | Not started | — |
 | 23. Low-Priority Polish | v1.3 | 0/? | Not started | — |
