@@ -199,7 +199,14 @@
       "sentimentAnalysis": "Analiza sentimentului",
       "patterns": "Tipare",
       "coachingSuggestions": "Sugestii de coaching",
-      "followUpPriority": "Prioritate urmărire:"
+      "followUpPriority": "Prioritate urmărire:",
+      "sentimentPositive": "Pozitiv",
+      "sentimentNeutral": "Neutru",
+      "sentimentMixed": "Mixt",
+      "sentimentConcerning": "Îngrijorător",
+      "priorityLow": "Scăzută",
+      "priorityMedium": "Medie",
+      "priorityHigh": "Ridicată"
     },
     "summary": {
       "backToSeries": "Înapoi la serie",

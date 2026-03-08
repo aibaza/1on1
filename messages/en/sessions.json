@@ -199,7 +199,14 @@
       "sentimentAnalysis": "Sentiment Analysis",
       "patterns": "Patterns",
       "coachingSuggestions": "Coaching Suggestions",
-      "followUpPriority": "Follow-Up Priority:"
+      "followUpPriority": "Follow-Up Priority:",
+      "sentimentPositive": "Positive",
+      "sentimentNeutral": "Neutral",
+      "sentimentMixed": "Mixed",
+      "sentimentConcerning": "Concerning",
+      "priorityLow": "Low",
+      "priorityMedium": "Medium",
+      "priorityHigh": "High"
     },
     "summary": {
       "backToSeries": "Back to series",

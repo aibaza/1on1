@@ -221,7 +221,7 @@ export function AISummarySection({
           <Badge
             className={`text-xs ${SENTIMENT_COLORS[summary.overallSentiment] ?? ""}`}
           >
-            {summary.overallSentiment}
+            {{ positive: t("sentimentPositive"), neutral: t("sentimentNeutral"), mixed: t("sentimentMixed"), concerning: t("sentimentConcerning") }[summary.overallSentiment] ?? summary.overallSentiment}
           </Badge>
         </div>
 
@@ -343,7 +343,7 @@ export function AISummarySection({
             <Badge
               className={`text-xs ${PRIORITY_COLORS[addendum.followUpPriority] ?? ""}`}
             >
-              {addendum.followUpPriority}
+              {{ low: t("priorityLow"), medium: t("priorityMedium"), high: t("priorityHigh") }[addendum.followUpPriority] ?? addendum.followUpPriority}
             </Badge>
           </div>
         </div>

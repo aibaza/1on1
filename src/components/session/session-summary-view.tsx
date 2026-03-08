@@ -303,7 +303,7 @@ export function SessionSummaryView({
             }
             className="text-xs"
           >
-            {status.replace("_", " ")}
+            {{ completed: t("timeline.statusCompleted"), in_progress: t("timeline.statusInProgress"), scheduled: t("timeline.statusScheduled"), cancelled: t("timeline.statusCancelled"), missed: t("timeline.statusMissed") }[status] ?? status.replace("_", " ")}
           </Badge>
         </div>
       </div>
