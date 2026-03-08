@@ -171,7 +171,7 @@ Plans:
 | 17. AI Generator & DIY Kit | v1.2 | 7/7 | Complete | 2026-03-07 |
 | 18. Critical Bugs | 3/3 | Complete    | 2026-03-08 | — |
 | 19. Design System | 3/3 | Complete    | 2026-03-08 | — |
-| 20. Mobile Responsiveness | 4/4 | Complete   | 2026-03-08 | — |
+| 20. Mobile Responsiveness | 4/4 | Complete    | 2026-03-08 | — |
 | 21. Content & Data Display | v1.3 | 0/? | Not started | — |
 | 22. Safety, Errors & Inputs | v1.3 | 0/? | Not started | — |
 | 23. Low-Priority Polish | v1.3 | 0/? | Not started | — |
