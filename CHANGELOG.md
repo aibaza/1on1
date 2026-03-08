@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - `src/lib/session/__tests__/tiptap-render.test.ts` — failing unit tests (RED) for `contentToHtml()` helper; covers HTML string passthrough, Tiptap JSON object rendering, null/undefined → empty string, and malformed object safety (5 test cases)
+- `src/lib/session/tiptap-render.ts` — `contentToHtml()` helper that type-guards Tiptap JSON vs HTML string; uses `generateHTML` from `@tiptap/core` with StarterKit + Link extensions; returns `""` for null/undefined/malformed input
+- `happy-dom` dev dependency — DOM environment for Vitest to support `@tiptap/core` `generateHTML()` in unit tests
+
+### Fixed
+- `src/lib/session/__tests__/tiptap-render.test.ts` — added `@vitest-environment happy-dom` annotation so `generateHTML` (which requires DOM APIs) works correctly in the test environment (BUG-01)
 
 ## [1.2.1] - 2026-03-07
 
