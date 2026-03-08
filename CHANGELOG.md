@@ -26,6 +26,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - DES-01 verified: no hardcoded color overrides on auth page buttons; all auth `<Button>` elements resolve to `--primary` via default variant
 
 ### Added
+- `src/components/dashboard/__tests__/nudge-card-touch-target.test.tsx` — failing tests (RED/Wave 0) for MOB-03: dismiss button touch target; asserts size-11 class absent pre-fix
+- `src/components/people/__tests__/people-table-columns-mobile.test.tsx` — failing tests (RED/Wave 0) for MOB-04: secondary columns (email, teams, manager, status) lack hidden md:table-cell meta pre-fix; primary columns (name, actions) pass
+- `src/app/(dashboard)/settings/audit-log/__tests__/audit-log-columns-mobile.test.tsx` — failing tests (RED/Wave 0) for MOB-05: Target column header lacks hidden class pre-fix; timestamp/action headers pass
+- `src/test-setup.ts` — global Vitest setup: imports @testing-library/jest-dom matchers (toHaveClass, etc.) for all test files
+- `vitest.config.ts` — add setupFiles pointing to src/test-setup.ts for jest-dom matcher availability
 - `src/components/ui/empty-state.tsx` — shared EmptyState component (DES-04): typed props (icon, heading, description, action, className), renders centered dashed-border container; replaces inline empty-state patterns across 10 call sites
 - `src/components/ui/__tests__/empty-state.test.tsx` — failing tests (RED/Wave 0) for DES-04 EmptyState component: heading, description, icon, action slot, and no-crash with optional props absent
 - `src/components/session/__tests__/section-label.test.tsx` — failing tests (RED/Wave 0) for DES-03 SectionLabel: asserts className does not contain 'uppercase' or 'tracking-wide'

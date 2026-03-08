@@ -6,6 +6,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     pool: 'forks',
+    setupFiles: ['./src/test-setup.ts'],
     server: {
       deps: {
         // zod v4 exports `z` via `import * as z` re-export which Vite SSR
