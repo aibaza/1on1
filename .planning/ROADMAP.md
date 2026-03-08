@@ -88,7 +88,11 @@ Plans:
   2. "In progress" badges are visually heavier (filled) than "completed" badges (outlined), matching semantic importance
   3. Wizard section headers use sentence-case: "Notes", "Talking Points", "Action Items" — no ALL-CAPS headers
   4. Pages that previously showed blank whitespace now show an empty-state component with icon, heading, description, and optional CTA
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 19-01-PLAN.md — Wave 0: Write failing test scaffolds for DES-02, DES-03, DES-04
+- [ ] 19-02-PLAN.md — Build EmptyState component and replace all inline empty-state patterns (DES-04)
+- [ ] 19-03-PLAN.md — Fix badge variant semantics, remove uppercase section headers, audit button colors (DES-01, DES-02, DES-03)
 
 ### Phase 20: Mobile Responsiveness
 **Goal**: Users can operate all app surfaces on mobile — action bars fit within viewport, touch targets meet minimum size, and list pages are readable on small screens
