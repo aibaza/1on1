@@ -103,7 +103,12 @@ Plans:
   2. AI nudge dismiss button is at least 44×44px and tappable on mobile without precision
   3. People list is readable on mobile — shows at minimum Name and Role columns, or renders as cards
   4. Audit log table is readable on mobile — renders as card rows or shows only priority columns
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 20-01-PLAN.md — Wave 0: Write failing unit tests for MOB-03, MOB-04, MOB-05
+- [ ] 20-02-PLAN.md — Fix nudge touch target (MOB-03) + template list overflow menu (MOB-01) (Wave 1)
+- [ ] 20-03-PLAN.md — People table mobile columns (MOB-04) + audit log mobile columns (MOB-05) (Wave 1)
+- [ ] 20-04-PLAN.md — Template editor overflow menu (MOB-02) (Wave 2)
 
 ### Phase 21: Content & Data Display
 **Goal**: Users see accurate, appropriately dense data — analytics show company-wide aggregate metrics, session cards show scores not stars, the wizard shows section counts, and the team heatmap communicates data requirements
@@ -166,7 +171,7 @@ Plans:
 | 17. AI Generator & DIY Kit | v1.2 | 7/7 | Complete | 2026-03-07 |
 | 18. Critical Bugs | 3/3 | Complete    | 2026-03-08 | — |
 | 19. Design System | 3/3 | Complete    | 2026-03-08 | — |
-| 20. Mobile Responsiveness | v1.3 | 0/? | Not started | — |
+| 20. Mobile Responsiveness | v1.3 | 0/4 | Not started | — |
 | 21. Content & Data Display | v1.3 | 0/? | Not started | — |
 | 22. Safety, Errors & Inputs | v1.3 | 0/? | Not started | — |
 | 23. Low-Priority Polish | v1.3 | 0/? | Not started | — |
