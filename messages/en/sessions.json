@@ -208,6 +208,8 @@
       "outOf": "out of 5",
       "noScore": "No score",
       "noScoreDesc": "No numeric answers to compute a score",
+      "roleManager": "Manager",
+      "roleReport": "Report",
       "notes": "Notes",
       "noNotes": "No notes",
       "talkingPoints": "Talking Points",

@@ -258,9 +258,25 @@ export function SessionSummaryView({
           <ArrowLeft className="h-3.5 w-3.5" />
           {t("summary.backToSeries")}
         </Link>
-        <h1 className="text-2xl font-semibold">
-          {t("summary.sessionNumber", { number: sessionNumber })}
-        </h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-2xl font-semibold">
+            {t("summary.sessionNumber", { number: sessionNumber })}{" "}
+            <span className="font-bold">
+              {isManager ? reportName : managerName}
+            </span>{" "}
+            <span className="font-normal text-muted-foreground text-lg">
+              ({isManager ? t("summary.roleReport") : t("summary.roleManager")})
+            </span>
+          </h1>
+          <div className="shrink-0 text-right">
+            <StarRating score={sessionScore} size="md" className="justify-end" />
+            {sessionScore !== null && (
+              <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">
+                {format.number(sessionScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 })} {t("summary.outOf")}
+              </p>
+            )}
+          </div>
+        </div>
         <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
           <span>
             {format.dateTime(new Date(scheduledAt), {
@@ -284,20 +300,6 @@ export function SessionSummaryView({
             {status.replace("_", " ")}
           </Badge>
         </div>
-      </div>
-
-      {/* Score card */}
-      <div className="mb-8 rounded-lg border p-6 text-center bg-muted/30">
-        <div className="flex justify-center">
-          <StarRating score={sessionScore} size="lg" />
-        </div>
-        {sessionScore !== null ? (
-          <p className="mt-2 text-sm tabular-nums text-muted-foreground">
-            {format.number(sessionScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 })} {t("summary.outOf")}
-          </p>
-        ) : (
-          <p className="mt-2 text-sm text-muted-foreground">{t("summary.noScore")}</p>
-        )}
       </div>
 
       {/* AI Summary */}

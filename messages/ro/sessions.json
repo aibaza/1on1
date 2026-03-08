@@ -208,6 +208,8 @@
       "outOf": "din 5",
       "noScore": "Fără scor",
       "noScoreDesc": "Nu există răspunsuri numerice pentru a calcula un scor",
+      "roleManager": "Manager",
+      "roleReport": "Subordonat",
       "notes": "Note",
       "noNotes": "Fără note",
       "talkingPoints": "Puncte de discuție",

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import { useTranslations, useFormatter } from "next-intl";
 import { EmptyState } from "@/components/ui/empty-state";
+import { StarRating } from "@/components/ui/star-rating";
 
 interface SessionEntry {
   id: string;
@@ -100,11 +101,10 @@ export function SessionTimeline({ sessions }: SessionTimelineProps) {
               </div>
 
               <div className="flex items-center gap-2">
-                {s.sessionScore && (
-                  <span className="text-sm font-medium tabular-nums">
-                    {format.number(parseFloat(s.sessionScore), { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-                  </span>
-                )}
+                <StarRating
+                  score={s.sessionScore ? parseFloat(s.sessionScore) : null}
+                  size="sm"
+                />
                 {isInProgress && (
                   <Button
                     variant="outline"
