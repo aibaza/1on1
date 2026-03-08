@@ -73,7 +73,11 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
   2. AI template editor is usable on screens narrower than 1024px — panels stack vertically or toggle between tabs
   3. Templates schema page renders translated UI text in both English and Romanian — no raw `spec.*` keys visible
   4. Recap screen contains no dashed-border sparkline placeholder div from development
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 18-01-PLAN.md — TDD: Write failing unit tests for contentToHtml helper (Wave 0)
+- [ ] 18-02-PLAN.md — Implement contentToHtml, fix recap notes rendering, remove sparkline div (Wave 1)
+- [ ] 18-03-PLAN.md — Add spec.json to i18n loader + AI editor mobile responsive layout (Wave 1)
 
 ### Phase 19: Design System
 **Goal**: Users experience a visually consistent interface — a single primary action color, badge weights that signal importance, consistent section header casing, and empty states instead of blank whitespace
@@ -156,7 +160,7 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 | 15. Schema, Spec & Export | v1.2 | 4/4 | Complete | 2026-03-07 |
 | 16. Template Import | v1.2 | 5/5 | Complete | 2026-03-07 |
 | 17. AI Generator & DIY Kit | v1.2 | 7/7 | Complete | 2026-03-07 |
-| 18. Critical Bugs | v1.3 | 0/? | Not started | — |
+| 18. Critical Bugs | v1.3 | 0/3 | In Progress | — |
 | 19. Design System | v1.3 | 0/? | Not started | — |
 | 20. Mobile Responsiveness | v1.3 | 0/? | Not started | — |
 | 21. Content & Data Display | v1.3 | 0/? | Not started | — |
