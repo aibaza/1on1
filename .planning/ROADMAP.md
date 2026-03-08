@@ -121,7 +121,12 @@ Plans:
   4. Wizard "Talking Points" and "Action Items" sections display an item count badge and a working expand/collapse chevron
   5. Team heatmap shows a threshold message ("requires ≥3 contributors") when fewer than 3 contributors have session data
   6. Session summary score label displays the correct maximum scale (e.g., "7.5 out of 10")
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 21-01-PLAN.md — Replace star row with numeric score badge on session list cards (CON-02, CON-03) (Wave 1)
+- [ ] 21-02-PLAN.md — Add count badges and expand/collapse to Talking Points and Action Items in wizard (CON-04) (Wave 1)
+- [ ] 21-03-PLAN.md — Team heatmap threshold message + session summary score label fix (CON-05, SCORE-01) (Wave 1)
+- [ ] 21-04-PLAN.md — Analytics overview aggregate stats section (CON-01) (Wave 1)
 
 ### Phase 22: Safety, Errors & Inputs
 **Goal**: Users are protected from accidental data loss, see helpful context-aware error pages instead of bare Next.js defaults, and use consistent date picker controls
@@ -169,9 +174,9 @@ Plans:
 | 15. Schema, Spec & Export | v1.2 | 4/4 | Complete | 2026-03-07 |
 | 16. Template Import | v1.2 | 5/5 | Complete | 2026-03-07 |
 | 17. AI Generator & DIY Kit | v1.2 | 7/7 | Complete | 2026-03-07 |
-| 18. Critical Bugs | 3/3 | Complete    | 2026-03-08 | — |
-| 19. Design System | 3/3 | Complete    | 2026-03-08 | — |
-| 20. Mobile Responsiveness | 4/4 | Complete    | 2026-03-08 | — |
-| 21. Content & Data Display | v1.3 | 0/? | Not started | — |
+| 18. Critical Bugs | v1.3 | 3/3 | Complete | 2026-03-08 |
+| 19. Design System | v1.3 | 3/3 | Complete | 2026-03-08 |
+| 20. Mobile Responsiveness | v1.3 | 4/4 | Complete | 2026-03-08 |
+| 21. Content & Data Display | v1.3 | 0/4 | Not started | — |
 | 22. Safety, Errors & Inputs | v1.3 | 0/? | Not started | — |
 | 23. Low-Priority Polish | v1.3 | 0/? | Not started | — |
