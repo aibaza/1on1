@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { FileText, ListChecks, MessageSquare } from "lucide-react";
+import { ChevronDown, FileText, ListChecks, MessageSquare } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { QuestionWidget, type AnswerValue } from "./question-widget";
@@ -50,14 +55,21 @@ interface CategoryStepProps {
 function SectionLabel({
   icon: Icon,
   label,
+  count,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
+  count?: number;
 }) {
   return (
     <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
       <Icon className="size-3.5" />
       {label}
+      {count !== undefined && count > 0 && (
+        <Badge variant="secondary" className="h-4 px-1.5 text-[10px] tabular-nums">
+          {count}
+        </Badge>
+      )}
     </div>
   );
 }
@@ -86,6 +98,8 @@ export function CategoryStep({
 }: CategoryStepProps) {
   const t = useTranslations("sessions.wizard");
   const containerRef = useRef<HTMLDivElement>(null);
+  const [talkingPointsOpen, setTalkingPointsOpen] = useState(true);
+  const [actionItemsOpen, setActionItemsOpen] = useState(true);
 
   // Smooth scroll to top when step transitions
   useEffect(() => {
@@ -162,30 +176,52 @@ export function CategoryStep({
         </div>
 
         {/* Talking Points */}
-        <div className="space-y-3">
-          <SectionLabel icon={MessageSquare} label={t("talkingPoints")} />
-          <TalkingPointList
-            sessionId={sessionId}
-            category={categoryName}
-            initialPoints={talkingPoints}
-            readOnly={disabled}
-            onSavingChange={onSavingChange}
-            sessionNumberMap={sessionNumberMap}
-          />
-        </div>
+        <Collapsible open={talkingPointsOpen} onOpenChange={setTalkingPointsOpen}>
+          <CollapsibleTrigger className="flex w-full items-center justify-between rounded-sm px-0 py-0 hover:opacity-70 transition-opacity">
+            <SectionLabel
+              icon={MessageSquare}
+              label={t("talkingPoints")}
+              count={talkingPoints.length}
+            />
+            <ChevronDown
+              className={`size-3.5 text-muted-foreground transition-transform duration-200 ${talkingPointsOpen ? "" : "-rotate-90"}`}
+            />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pt-2">
+            <TalkingPointList
+              sessionId={sessionId}
+              category={categoryName}
+              initialPoints={talkingPoints}
+              readOnly={disabled}
+              onSavingChange={onSavingChange}
+              sessionNumberMap={sessionNumberMap}
+            />
+          </CollapsibleContent>
+        </Collapsible>
 
         {/* Action Items */}
-        <div className="space-y-3">
-          <SectionLabel icon={ListChecks} label={t("actionItems")} />
-          <ActionItemInline
-            sessionId={sessionId}
-            category={categoryName}
-            seriesParticipants={seriesParticipants}
-            initialItems={actionItems}
-            readOnly={disabled}
-            onSavingChange={onSavingChange}
-          />
-        </div>
+        <Collapsible open={actionItemsOpen} onOpenChange={setActionItemsOpen}>
+          <CollapsibleTrigger className="flex w-full items-center justify-between rounded-sm px-0 py-0 hover:opacity-70 transition-opacity">
+            <SectionLabel
+              icon={ListChecks}
+              label={t("actionItems")}
+              count={actionItems.length}
+            />
+            <ChevronDown
+              className={`size-3.5 text-muted-foreground transition-transform duration-200 ${actionItemsOpen ? "" : "-rotate-90"}`}
+            />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pt-2">
+            <ActionItemInline
+              sessionId={sessionId}
+              category={categoryName}
+              seriesParticipants={seriesParticipants}
+              initialItems={actionItems}
+              readOnly={disabled}
+              onSavingChange={onSavingChange}
+            />
+          </CollapsibleContent>
+        </Collapsible>
       </div>
     </div>
   );
