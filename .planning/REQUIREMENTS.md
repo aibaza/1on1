@@ -33,7 +33,7 @@
 
 ### Content Density & Empty States (CON)
 
-- [ ] **CON-01**: Analytics overview page shows aggregate company-wide metrics (score trend, sessions completed, action item rate) above the Teams/Individuals directory
+- [x] **CON-01**: Analytics overview page shows aggregate company-wide metrics (score trend, sessions completed, action item rate) above the Teams/Individuals directory
 - [x] **CON-02**: Session list cards with no completed sessions hide the star rating row
 - [x] **CON-03**: Session list cards with sessions show numeric score badge (not hollow stars)
 - [x] **CON-04**: Talking Points and Action Items sections in wizard show item count badge and expand/collapse chevron
@@ -100,7 +100,7 @@
 | MOB-03 | Phase 20 | Complete |
 | MOB-04 | Phase 20 | Complete |
 | MOB-05 | Phase 20 | Complete |
-| CON-01 | Phase 21 | Pending |
+| CON-01 | Phase 21 | Complete |
 | CON-02 | Phase 21 | Complete |
 | CON-03 | Phase 21 | Complete |
 | CON-04 | Phase 21 | Complete |
