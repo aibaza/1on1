@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-03-09
+
+### Fixed
+- `src/lib/ai/schemas/addendum.ts` — removed `.min(1).max(100)` from `assessmentScore` integer field; Anthropic structured output rejects JSON Schema `minimum`/`maximum` on integer types, causing every AI summary retry to fail silently
+
 ## [1.3.1] - 2026-03-08
 
 ### Added
