@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Fixed
+- Circular manager assignment error now shows the full management loop chain (e.g. "Aurel Filip → Cora P → Ciprian Dobrea → Aurel Filip") instead of a generic message
+
+### Fixed
 - AI summary/suggestions polling now auto-detects sessions stuck in "generating" status (e.g. after server restart) and resets them to "failed" after 5 minutes, preventing infinite polling loops
 - Series creation page now invalidates the `["series"]` query cache before navigating back, so the new series appears immediately on the sessions page without requiring a manual refresh
 - Partial unique index on `meeting_series` now correctly allows creating a new series when a previous series for the same manager-report pair is archived

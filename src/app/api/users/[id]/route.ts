@@ -238,7 +238,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
           if (data.managerId) {
             // Verify the proposed manager exists in this tenant
             const [proposedManager] = await tx
-              .select({ id: users.id })
+              .select({ id: users.id, firstName: users.firstName, lastName: users.lastName })
               .from(users)
               .where(
                 and(
@@ -251,26 +251,39 @@ export async function PATCH(request: Request, { params }: RouteContext) {
               return { error: "Manager not found", status: 404 };
             }
 
-            // Walk up the chain from the proposed manager to see if we find the target user
+            // Also fetch the target user's name for the error message
+            const [targetUserFull] = await tx
+              .select({ firstName: users.firstName, lastName: users.lastName })
+              .from(users)
+              .where(eq(users.id, id));
+
+            // Walk up the chain from the proposed manager to see if we find the target user.
+            // Build the chain as we go so we can show it in the error message.
             let currentId: string | null = data.managerId;
             let depth = 0;
             const maxDepth = 10;
+            const chain: string[] = [];
 
             while (currentId && depth < maxDepth) {
-              const [ancestor] = await tx
-                .select({ managerId: users.managerId })
+              const [node] = await tx
+                .select({ managerId: users.managerId, firstName: users.firstName, lastName: users.lastName })
                 .from(users)
                 .where(eq(users.id, currentId));
 
-              if (!ancestor) break;
-              if (ancestor.managerId === id) {
+              if (!node) break;
+              chain.push(`${node.firstName} ${node.lastName}`);
+
+              if (node.managerId === id) {
+                const targetName = targetUserFull
+                  ? `${targetUserFull.firstName} ${targetUserFull.lastName}`
+                  : "this user";
+                const loopChain = [targetName, ...chain, targetName].join(" → ");
                 return {
-                  error:
-                    "Circular manager assignment detected. This would create a management loop.",
+                  error: `Circular management loop: ${loopChain}`,
                   status: 400,
                 };
               }
-              currentId = ancestor.managerId;
+              currentId = node.managerId;
               depth++;
             }
           }
