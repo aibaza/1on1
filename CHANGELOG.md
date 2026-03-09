@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.3] - 2026-03-09
+
+### Changed
+- `src/lib/ai/models.ts` — downgraded `managerAddendum` and `actionSuggestions` from Sonnet 4.5 to Haiku 4.5; both are short structured-output tasks that don't require Sonnet quality (~70% cost reduction per session)
+
 ## [1.3.2] - 2026-03-09
 
 ### Fixed

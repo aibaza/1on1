@@ -13,10 +13,14 @@ import { anthropic } from "@ai-sdk/anthropic";
  * Switching models is a single-line change here.
  */
 export const models = {
+  /** Session summary — visible to both parties, needs nuance. */
   summary: anthropic("claude-sonnet-4-5"),
-  managerAddendum: anthropic("claude-sonnet-4-5"),
+  /** Manager addendum — short structured output, Haiku is sufficient. */
+  managerAddendum: anthropic("claude-haiku-4-5"),
+  /** Nudges — simple, short output. */
   nudges: anthropic("claude-haiku-4-5"),
-  actionSuggestions: anthropic("claude-sonnet-4-5"),
+  /** Action suggestions — input is already-generated summary, simple list task. */
+  actionSuggestions: anthropic("claude-haiku-4-5"),
   /** Template AI editor — latest Sonnet for best domain reasoning quality. */
   templateEditor: anthropic("claude-sonnet-4-6"),
 } as const;
