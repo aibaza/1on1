@@ -1,668 +1,611 @@
-# Architecture Patterns: i18n for 1on1
+# Architecture Research
 
-**Domain:** Internationalization (English + Romanian) for existing Next.js 15 App Router SaaS
-**Researched:** 2026-03-05
+**Domain:** Session corrections & accountability for 1:1 meeting SaaS
+**Researched:** 2026-03-10
+**Confidence:** HIGH — based on direct codebase inspection, not assumptions
 
-## Recommended Architecture
+---
 
-### Two-Language-Layer Model
+## The Four Architecture Questions
 
-The system has two distinct language contexts that flow independently:
+### Q1: Separate `session_answer_history` table vs soft-update with version column?
 
-1. **UI Language** (per-user preference) -- drives all interface strings: buttons, labels, navigation, form placeholders, error messages, validation messages
-2. **Content Language** (per-company setting, already exists as `tenant.settings.preferredLanguage`) -- drives AI-generated content (summaries, nudges, action suggestions) and email templates
+**Recommendation: Separate `session_answer_history` table.**
 
-These are independent because a Romanian-speaking admin of a multinational company might set their personal UI to Romanian while the company's AI output and emails go in English.
+**Rationale:**
 
-```
-                    +-------------------+
-                    |   Root Layout     |
-                    |  (reads locale    |
-                    |   from cookie     |
-                    |   or session)     |
-                    +--------+----------+
-                             |
-                    +--------v----------+
-                    | NextIntlClient    |
-                    | Provider          |
-                    | (locale + msgs)   |
-                    +--------+----------+
-                             |
-              +--------------+--------------+
-              |                             |
-    +---------v---------+       +-----------v---------+
-    | Server Components |       | Client Components   |
-    | getTranslations() |       | useTranslations()   |
-    | (async, no hook)  |       | (hook, via context) |
-    +-------------------+       +---------------------+
+The existing `session_answer` table has a `UNIQUE(session_id, question_id)` index (see `src/lib/db/schema/answers.ts:39`). The current auto-save pattern uses `onConflictDoUpdate` against that index — answers are intentionally mutable during `in_progress` sessions. That design is correct for live sessions.
 
-    Content Language flows separately:
-    +-----------------+     +------------------+     +------------------+
-    | AI Pipeline     |     | Email Service    |     | Inngest Jobs     |
-    | reads tenant    |     | reads tenant     |     | reads tenant     |
-    | .preferredLang  |     | .preferredLang   |     | .preferredLang   |
-    +-----------------+     +------------------+     +------------------+
-```
+For corrections on *completed* sessions, the semantics are different: you must preserve what was originally submitted, who changed it, when, and why. A version column on `session_answer` would muddy this boundary — you would need to query `WHERE version = 1` to get the original, which is fragile and adds cognitive overhead to every analytics query that currently does `SELECT avg(answer_numeric) FROM session_answer`.
 
-### Component Boundaries
+A dedicated `session_answer_history` table is the right move because:
 
-| Component | Responsibility | Communicates With |
-|-----------|---------------|-------------------|
-| `src/i18n/request.ts` | Resolve current UI locale per-request (cookie -> 'en' fallback) | Root layout, all Server Components |
-| `NextIntlClientProvider` (in root layout) | Pass locale + messages to Client Components via React context | All Client Components |
-| `messages/{locale}.json` | Static UI translation strings organized by namespace | next-intl loader in i18n/request.ts |
-| `users.language` (new DB column) | Persist user's UI language preference | Auth session (JWT), middleware |
-| `tenant.settings.preferredLanguage` (existing) | Company content language for AI + emails | AI pipeline, email service, Inngest jobs |
-| `NEXT_LOCALE` cookie | Bridge between authenticated user preference and SSR locale resolution | Middleware, i18n/request.ts |
-| Middleware (`middleware.ts`) | Set locale cookie from JWT on auth requests; detect browser locale pre-auth | i18n/request.ts |
+1. **Analytics queries stay clean.** `session_answer` always holds the current (authoritative) value. Analytics pipelines, score computations, and session summaries need zero changes.
+2. **Audit trail is unambiguous.** History rows are append-only. Each row records the complete before-state, actor, reason, and timestamp. No `WHERE version = MAX(version)` logic anywhere.
+3. **RLS extends naturally.** Add `tenant_id` to history table and the existing RLS pattern applies directly.
+4. **The correction reason lives next to the data it explains.** You do not need to cross-reference `audit_log` to find out why answer X was changed — it is on the history row itself.
 
-### Data Flow: UI Language
+The `audit_log` table still records the event (`session_answer.corrected`) for centralized compliance querying. The history table is for data-level reconstruction ("show me what this answer was before").
 
-```
-1. User logs in
-2. Auth.js jwt callback reads user.language from DB, stores in JWT token
-3. Middleware runs on every request:
-   - If authenticated: reads locale from JWT, sets NEXT_LOCALE cookie
-   - If unauthenticated: reads Accept-Language header, sets cookie
-4. i18n/request.ts reads cookie to determine locale
-5. Root layout gets locale + messages, wraps children in NextIntlClientProvider
-6. Server Components: await getTranslations('namespace')
-7. Client Components: useTranslations('namespace')
-```
+**Verdict against version column:** A version integer requires bumping it on each correction, adds a migration that touches a hot table, and still requires joining to a separate "diff" store if you want before/after values. Not worth it.
 
-### Data Flow: Content Language (already built)
+---
 
-```
-1. Admin sets preferredLanguage in Company Settings (already exists in UI)
-2. pipeline.ts line 59 reads tenant.settings.preferredLanguage
-3. service.ts withLanguageInstruction() appends language to AI system prompts
-4. Email templates: NEW -- read tenant language, select translated template strings
-```
+### Q2: AI reason validation — synchronous during form submission, or separate validation endpoint?
 
-## Library Choice: next-intl (without i18n routing)
+**Recommendation: Separate validation endpoint, called before form submission.**
 
-**Use next-intl because:**
-- Purpose-built for Next.js App Router with Server Components + Client Components
-- Supports "without i18n routing" mode -- locale from cookie/DB, no URL prefixes
-- ~2KB client bundle
-- Identical API surface for Server (`getTranslations`) and Client (`useTranslations`)
-- Built-in ICU message format for plurals, dates, numbers
-- Active maintenance, wide adoption in Next.js ecosystem
+**Rationale:**
 
-**Without i18n routing mode** is the correct choice because:
-- The requirement explicitly states "No locale in URLs -- purely setting-driven"
-- Locale is determined by user preference (DB) or browser detection, not URL path
-- No `[locale]` segment needed in the app directory structure -- zero restructuring of existing 290 source files
-- No middleware URL rewriting needed
+The existing AI pipeline pattern (`src/lib/ai/pipeline.ts`) is fire-and-forget. The session `complete` route returns immediately and AI runs in the background. However, corrections are different: the user *must* get feedback on their reason before the correction is committed. You cannot fire-and-forget something the form is waiting on.
 
-**Confidence: HIGH** (verified via official next-intl documentation at next-intl.dev)
+Two options for synchronous validation:
+- Option A: Validate inline inside `POST /api/sessions/[id]/corrections` before writing to DB
+- Option B: Separate `POST /api/sessions/[id]/corrections/validate-reason` endpoint, called on blur or on submit-attempt before the real submission
 
-## Integration Points with Existing Code
+**Option B is better** because:
 
-### 1. Root Layout (`src/app/layout.tsx`)
+1. **UX feedback without side effects.** The user sees validation feedback ("reason too vague — please be more specific") while still on the form, before the correction is persisted. The mutation endpoint stays clean.
+2. **Retryable without risk.** The validate endpoint is idempotent — calling it twice has no side effects. The corrections endpoint is not idempotent (it writes to DB, fires email, writes audit log). Keeping these separate avoids partial-state problems if the user's connection drops mid-submit.
+3. **Follows existing patterns.** The template AI editor (`src/app/api/templates/[id]/ai/route.ts`) is a separate endpoint called by the client. The AI call is isolated from the mutation.
+4. **Latency is manageable.** Reason validation is a single short `generateText` call with a boolean+feedback output schema. Claude Haiku returns in ~800ms. The form can show a spinner during validation before allowing final submit.
 
-**Current state:** Static `<html lang="en">`. Wraps children in `ThemeProvider`.
+The validate endpoint returns `{ valid: boolean, feedback: string | null }`. The correction submit endpoint also validates the reason server-side (defense in depth) but can use a much faster heuristic (length check) since the AI pre-validation already ran.
 
-**Required changes:**
-- Import `NextIntlClientProvider` and `getLocale`, `getMessages` from next-intl
-- Set `<html lang={locale}>` dynamically
-- Wrap children: `<NextIntlClientProvider messages={messages}>`
+**AI model choice:** Use the cheapest/fastest model (haiku) with a structured output schema. The validation prompt: "Is this correction reason specific, honest, and written in {language}? Reason: {reason}. Answer with valid: true/false and feedback if false." Output via `generateObject` with a small Zod schema.
+
+---
+
+### Q3: Correction email — how does it integrate with the existing React Email + Nodemailer + i18n stack?
+
+**Recommendation: New `session-correction.tsx` React Email template, new `sendCorrectionNotificationEmails()` function, new translation keys in `messages/{locale}/emails.json`.**
+
+**Pattern to follow:** `src/lib/notifications/summary-email.ts` is the exact model. It:
+1. Fetches session + series + users + tenant language from `adminDb` (bypasses RLS — correct for background work)
+2. Calls `createEmailTranslator(locale)` to get a `t()` function
+3. Renders the React Email template with pre-interpolated label strings
+4. Sends via `getTransport().sendMail()`
+5. Inserts a record into `notifications` table for audit
+
+**New template props needed for correction email:**
 
 ```typescript
-// src/app/layout.tsx (after)
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
-
-export default async function RootLayout({ children }: Props) {
-  const locale = await getLocale();
-  const messages = await getMessages();
-
-  return (
-    <html lang={locale} suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider>
-          <NextIntlClientProvider messages={messages}>
-            {children}
-          </NextIntlClientProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+interface SessionCorrectionEmailProps {
+  recipientName: string;
+  managerName: string;
+  reportName: string;
+  sessionNumber: number;
+  questionText: string;
+  originalAnswer: string;       // human-readable, formatted by caller
+  correctedAnswer: string;      // human-readable, formatted by caller
+  correctionReason: string;
+  correctedAt: string;          // formatted date
+  viewSessionUrl: string;
+  labels: SessionCorrectionLabels;
 }
 ```
 
-### 2. i18n Request Config (`src/i18n/request.ts`) -- NEW FILE
-
-Core locale resolution logic. next-intl calls this once per request.
-
-```typescript
-// src/i18n/request.ts
-import { getRequestConfig } from 'next-intl/server';
-import { cookies } from 'next/headers';
-
-export const SUPPORTED_LOCALES = ['en', 'ro'] as const;
-export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
-export const DEFAULT_LOCALE: SupportedLocale = 'en';
-export const LOCALE_COOKIE = 'NEXT_LOCALE';
-
-export default getRequestConfig(async () => {
-  const cookieStore = await cookies();
-  const cookieLocale = cookieStore.get(LOCALE_COOKIE)?.value;
-
-  const locale = SUPPORTED_LOCALES.includes(cookieLocale as SupportedLocale)
-    ? (cookieLocale as SupportedLocale)
-    : DEFAULT_LOCALE;
-
-  return {
-    locale,
-    messages: (await import(`../../messages/${locale}.json`)).default,
-  };
-});
-```
-
-### 3. Next.js Config (`next.config.ts`)
-
-Add the next-intl plugin wrapper:
-
-```typescript
-import type { NextConfig } from "next";
-import createNextIntlPlugin from 'next-intl/plugin';
-
-const withNextIntl = createNextIntlPlugin();
-
-const nextConfig: NextConfig = {
-  output: "standalone",
-};
-
-export default withNextIntl(nextConfig);
-```
-
-### 4. Middleware (`middleware.ts`) -- NEW FILE
-
-The app currently has NO middleware file. Auth protection happens in the dashboard layout via `auth()`. The new middleware handles locale cookie setting, wrapping Auth.js's `auth()` handler.
-
-```typescript
-// middleware.ts
-import { auth } from '@/lib/auth/config';
-import { NextResponse } from 'next/server';
-
-const LOCALE_COOKIE = 'NEXT_LOCALE';
-const SUPPORTED_LOCALES = ['en', 'ro'];
-const DEFAULT_LOCALE = 'en';
-
-export default auth((req) => {
-  const response = NextResponse.next();
-  const existingLocale = req.cookies.get(LOCALE_COOKIE)?.value;
-
-  // If user is authenticated, use their stored language preference from JWT
-  if (req.auth?.user) {
-    const userLocale = (req.auth.user as any).language;
-    if (userLocale && SUPPORTED_LOCALES.includes(userLocale) && userLocale !== existingLocale) {
-      response.cookies.set(LOCALE_COOKIE, userLocale, {
-        path: '/',
-        maxAge: 365 * 24 * 60 * 60,
-        sameSite: 'lax',
-      });
-    }
-    return response;
-  }
-
-  // If no cookie set (unauthenticated), detect from Accept-Language header
-  if (!existingLocale) {
-    const acceptLang = req.headers.get('accept-language') || '';
-    const detected = acceptLang
-      .split(',')
-      .map(part => part.split(';')[0].trim().split('-')[0])
-      .find(lang => SUPPORTED_LOCALES.includes(lang));
-
-    response.cookies.set(LOCALE_COOKIE, detected || DEFAULT_LOCALE, {
-      path: '/',
-      maxAge: 365 * 24 * 60 * 60,
-      sameSite: 'lax',
-    });
-  }
-
-  return response;
-});
-
-export const config = {
-  matcher: ['/((?!api|_next|.*\\..*).*)'],
-};
-```
-
-**Key decision:** Middleware uses Auth.js v5's `auth()` wrapper, which gives access to the JWT-decoded session without a DB call. The `language` field added to the JWT makes this zero-cost.
-
-### 5. Database Schema Change
-
-**Users table** -- add `language` column:
-
-```typescript
-// src/lib/db/schema/users.ts -- add column
-language: varchar("language", { length: 10 }).notNull().default("en"),
-```
-
-Migration: `ALTER TABLE "user" ADD COLUMN "language" VARCHAR(10) NOT NULL DEFAULT 'en';`
-
-This is a non-breaking additive change. All existing users default to English.
-
-### 6. Auth Session (JWT) Changes
-
-**`src/lib/auth/config.ts`** -- add `language` to JWT token:
-
-```typescript
-// In jwt callback:
-async jwt({ token, user, trigger }) {
-  if (user) {
-    token.language = user.language;
-    // ... existing fields (tenantId, role, userId, emailVerified)
-  }
-
-  // Handle session update (when user changes language in settings)
-  if (trigger === 'update') {
-    const dbUser = await adminDb.query.users.findFirst({
-      where: (u, { eq }) => eq(u.id, token.userId),
-      columns: { language: true },
-    });
-    if (dbUser) token.language = dbUser.language;
-  }
-
-  return token;
-},
-
-// In session callback:
-session({ session, token }) {
-  session.user.language = token.language;
-  // ... existing fields
-  return session;
-},
-```
-
-**TypeScript types** -- extend Auth.js types:
-
-```typescript
-// src/types/next-auth.d.ts
-declare module "next-auth" {
-  interface User {
-    language?: string;
-  }
-}
-declare module "next-auth/jwt" {
-  interface JWT {
-    language?: string;
-  }
-}
-```
-
-### 7. Translation File Organization
-
-```
-messages/
-  en.json          # English (default, complete)
-  ro.json          # Romanian
-```
-
-**Namespace structure inside each JSON:**
+**i18n keys to add to `messages/en/emails.json` and `messages/ro/emails.json`:**
 
 ```json
-{
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "confirm": "Confirm",
-    "back": "Back",
-    "next": "Next",
-    "search": "Search...",
-    "noResults": "No results found"
-  },
-  "nav": {
-    "overview": "Overview",
-    "people": "People",
-    "teams": "Teams",
-    "sessions": "Sessions",
-    "templates": "Templates",
-    "analytics": "Analytics",
-    "settings": "Settings",
-    "actionItems": "Action Items"
-  },
-  "auth": {
-    "login": { "title": "Sign in", "email": "Email", "password": "Password", ... },
-    "register": { ... },
-    "invite": { ... },
-    "forgotPassword": { ... }
-  },
-  "dashboard": { ... },
-  "session": {
-    "wizard": { ... },
-    "summary": { ... },
-    "status": { "scheduled": "Scheduled", "inProgress": "In Progress", ... }
-  },
-  "people": { ... },
-  "templates": { ... },
-  "settings": {
-    "company": { ... },
-    "account": { ... }
-  },
-  "analytics": { ... },
-  "series": { ... },
-  "validation": {
-    "required": "This field is required",
-    "emailInvalid": "Invalid email address",
-    "tooShort": "Must be at least {min} characters",
-    "tooLong": "Must be at most {max} characters"
-  }
+"sessionCorrection": {
+  "subject": "Session #{sessionNumber} answer corrected",
+  "heading": "Session Answer Corrected",
+  "greeting": "Hi {recipientName},",
+  "body": "{managerName} corrected an answer in Session #{sessionNumber} with {reportName}.",
+  "question": "Question",
+  "originalAnswer": "Original Answer",
+  "correctedAnswer": "Corrected Answer",
+  "reason": "Reason for Correction",
+  "correctedAt": "Corrected on {date}",
+  "button": "View Session",
+  "footer": "This email was sent by 1on1"
 }
 ```
 
-**Rationale for single file per locale (not per-component):**
-- next-intl loads one messages object per request
-- At ~800-1200 keys, each JSON is ~15-25KB -- well within the "pass all messages to client" threshold
-- Simpler to search, audit, and maintain than per-component splitting
-- Namespaces provide logical grouping without file fragmentation
+**Recipients:** Report + all tenant admins. Not just the report. Admins are accountability watchers — this is explicit in the v1.4 requirements. Fetch admins via `WHERE tenant_id = ? AND role = 'admin'` using `adminDb`.
 
-### 8. AI Pipeline Integration (NO changes needed)
+**Notification type enum:** The `notificationTypeEnum` in `src/lib/db/schema/enums.ts` needs a new value `'session_correction'`. This requires a Drizzle migration to alter the enum in PostgreSQL.
 
-The AI pipeline already handles content language correctly:
-- `pipeline.ts` line 59: reads `tenant.settings.preferredLanguage`
-- `service.ts` lines 42-48: `withLanguageInstruction()` appends language instruction to system prompts
-- `prompts/base.ts`: instructs "Write in the same language as the session data"
+---
 
-The AI pipeline uses **content language** (company setting), not **UI language** (user setting). These are intentionally decoupled. No changes required.
+### Q4: Where in RBAC does correction permission sit — manager-only, or admin too?
 
-### 9. Email Template Translation
+**Recommendation: Manager who owns the series, OR tenant admin. Not all managers.**
 
-Email templates currently have hardcoded English strings (e.g., "Upcoming 1:1 Meeting", "Hi {recipientName}", "You have been invited", "Key Takeaways", "Action Items").
+**Rationale:**
 
-**Recommended approach: Standalone translation function (not next-intl)**
+Current RBAC logic (see `src/lib/auth/rbac.ts`):
+- `isAdmin(role)` — tenant-wide admin access
+- `isSeriesParticipant(userId, series)` — is this user the manager or report on this series?
 
-Email templates render server-side via `@react-email/render` and are called from Inngest jobs and notification services -- outside the Next.js request lifecycle. They cannot use `useTranslations()` or `getTranslations()`.
+The existing `complete` route checks `session.user.id !== series.managerId` — only the specific manager can complete. Corrections should follow the same resource-level model but extended to admins.
+
+**Correct check for corrections:**
 
 ```typescript
-// src/lib/email/i18n.ts
-import en from '../../../messages/en.json';
-import ro from '../../../messages/ro.json';
+const canCorrect =
+  isAdmin(session.user.role) ||
+  session.user.id === series.managerId;
+```
 
-const emailMessages: Record<string, Record<string, unknown>> = { en, ro };
+**Why not report?** Reports cannot correct their own answers after the session is complete — that would undermine the accountability purpose. Corrections are a manager/admin action.
 
-export function getEmailTranslation(locale: string, key: string): string {
-  const messages = emailMessages[locale] || emailMessages.en;
-  const value = key.split('.').reduce((obj: any, k) => obj?.[k], messages);
-  return typeof value === 'string' ? value : key;
-}
+**Why admin too?** Admins have company-wide access per the RBAC model. If a manager leaves the company, an admin must be able to correct erroneous data. Also, the email notification going to admins implies they have oversight authority — giving them correction power is consistent with that.
 
-export function createEmailTranslator(locale: string) {
-  return (key: string) => getEmailTranslation(locale, key);
+**Why not all managers?** Only the manager on the specific series has context to judge whether a correction is appropriate. A different manager correcting someone else's session data would be a security concern.
+
+**New RBAC helper to add in `src/lib/auth/rbac.ts`:**
+
+```typescript
+export function canCorrectSession(
+  userId: string,
+  userRole: string,
+  series: { managerId: string }
+): boolean {
+  return isAdmin(userRole) || userId === series.managerId;
 }
 ```
 
-**Email templates receive translated labels as props:**
+---
 
+## System Overview
+
+```
++---------------------------------------------------------------+
+|                      Client (Browser)                         |
+|  +-----------------------------------------------------------+|
+|  |  SessionCorrectionDialog (Client Component)               ||
+|  |  - Answer diff display (before/after)                    ||
+|  |  - Reason textarea with AI validation feedback           ||
+|  |  - TanStack Query mutations                              ||
+|  +-----------------------------+-----------------------------+|
++--------------------------------+------------------------------+
+                                 |
+          POST /api/sessions/[id]/corrections/validate-reason
+          POST /api/sessions/[id]/corrections
+                                 |
+                                 v
++---------------------------------------------------------------+
+|                      API Layer (Next.js)                      |
+|                                                               |
+|  POST /validate-reason                                        |
+|    -> auth check -> AI validation (Claude Haiku)              |
+|    -> returns { valid, feedback }                             |
+|                                                               |
+|  POST /corrections                                            |
+|    -> auth + RBAC (canCorrectSession)                         |
+|    -> withTenantContext transaction:                           |
+|       1. Fetch session (must be completed)                    |
+|       2. Fetch series (get managerId for RBAC check)          |
+|       3. Read current answer -> snapshot into history         |
+|       4. Update session_answer with new values                |
+|       5. Recompute session_score on session row               |
+|       6. Write audit_log (session_answer.corrected)           |
+|    -> fire-and-forget: sendCorrectionNotificationEmails()     |
+|    -> return corrected answer                                 |
++---------------------------------------------------------------+
+                                 |
+                                 v
++---------------------------------------------------------------+
+|                      Data Layer                               |
+|                                                               |
+|  session_answer         -- updated in-place (current values)  |
+|  session_answer_history -- new row (before-state snapshot)    |
+|  session.session_score  -- recomputed after correction        |
+|  audit_log              -- immutable event record             |
+|  notification           -- email record for report + admins   |
++---------------------------------------------------------------+
+```
+
+---
+
+## New Schema — Explicit Definitions
+
+### `session_answer_history` (new table)
+
+This is an append-only audit table. Rows are never updated or deleted.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | UUID | PK, defaultRandom() | |
+| `tenant_id` | UUID | FK tenant, NOT NULL | For RLS |
+| `session_answer_id` | UUID | FK session_answer, NOT NULL | Which answer was corrected |
+| `session_id` | UUID | FK session, NOT NULL | Denormalized for query convenience |
+| `question_id` | UUID | FK template_question, NOT NULL | Denormalized |
+| `corrected_by_id` | UUID | FK user, NOT NULL | Actor who made the correction |
+| `original_answer_text` | TEXT | nullable | Previous text value |
+| `original_answer_numeric` | DECIMAL(6,2) | nullable | Previous numeric value |
+| `original_answer_json` | JSONB | nullable | Previous json value |
+| `original_skipped` | BOOLEAN | NOT NULL | Previous skipped state |
+| `new_answer_text` | TEXT | nullable | New text value |
+| `new_answer_numeric` | DECIMAL(6,2) | nullable | New numeric value |
+| `new_answer_json` | JSONB | nullable | New json value |
+| `new_skipped` | BOOLEAN | NOT NULL | New skipped state |
+| `correction_reason` | TEXT | NOT NULL | Mandatory explanation |
+| `ai_reason_valid` | BOOLEAN | nullable | Result of AI validation (null if check skipped) |
+| `corrected_at` | TIMESTAMPTZ | NOT NULL, defaultNow() | |
+
+**Indexes:**
+- `INDEX(session_id)` — load all corrections for a session display
+- `INDEX(tenant_id, corrected_by_id)` — admin view of corrections by actor
+- `INDEX(session_answer_id)` — history for a specific answer
+
+**RLS policy:** Same pattern as all other tenant tables — `tenant_id = current_setting('app.current_tenant_id')::uuid`.
+
+### Modified: `notificationTypeEnum` (enum value addition)
+
+Add `'session_correction'` to the existing `notification_type` PostgreSQL enum. This requires:
+1. Adding to `src/lib/db/schema/enums.ts` notificationTypeEnum array
+2. Drizzle migration: `ALTER TYPE notification_type ADD VALUE 'session_correction'`
+
+PostgreSQL `ADD VALUE` on an enum does not require a table rewrite. It is safe to run on production with zero downtime.
+
+### No changes to `session_answer`
+
+The existing schema is sufficient. Corrections update the three value columns plus `skipped` plus `answered_at` (set to correction timestamp). The `respondent_id` stays as the original respondent — it records *who answered*, not *who corrected*.
+
+### No changes to `session`, `audit_log`, `notification`
+
+These tables need no schema changes. `session_score` on `session` is recomputed after correction using the existing `computeSessionScore()` utility.
+
+---
+
+## New Files — Explicit List
+
+### Schema file
+
+**`src/lib/db/schema/corrections.ts`** (new)
+- Defines `sessionAnswerHistory` table
+- Exports `sessionAnswerHistoryRelations`
+
+### API routes
+
+**`src/app/api/sessions/[id]/corrections/route.ts`** (new)
+- `POST` — submit a correction (requires validated reason)
+- Body: `{ questionId, newAnswerText?, newAnswerNumeric?, newAnswerJson?, skipped?, correctionReason }`
+- Reads current answer -> writes history row -> updates answer -> recomputes score -> audit log -> fire-and-forget email
+
+**`src/app/api/sessions/[id]/corrections/validate-reason/route.ts`** (new)
+- `POST` — validate correction reason via AI
+- Body: `{ questionId, reason, originalAnswer, newAnswer }`
+- Returns: `{ valid: boolean, feedback: string | null }`
+- Uses `generateObject` with a small Zod schema
+
+### AI schema
+
+**`src/lib/ai/schemas/correction-reason.ts`** (new)
+- `correctionReasonValidationSchema` — `z.object({ valid: z.boolean(), feedback: z.string().nullable() })`
+
+### AI service function
+
+Add `validateCorrectionReason()` to **`src/lib/ai/service.ts`** (modify existing)
+- Parameters: `reason: string, questionText: string, originalAnswer: string, newAnswer: string, language?: string`
+- Returns: `{ valid: boolean, feedback: string | null }`
+
+### RBAC helper
+
+Add `canCorrectSession()` to **`src/lib/auth/rbac.ts`** (modify existing)
+
+### Email template
+
+**`src/lib/email/templates/session-correction.tsx`** (new)
+- React Email component following `session-summary.tsx` pattern
+- Props: before/after answer diff + reason + metadata + translated labels
+- Single template used for both report and admin recipients (same content)
+
+### Notification function
+
+**`src/lib/notifications/correction-email.ts`** (new)
+- `sendCorrectionNotificationEmails()` following `summary-email.ts` pattern
+- Fetches report + all tenant admins
+- Renders and sends `SessionCorrectionEmail` for each recipient
+- Inserts `notification` rows with type `session_correction`
+
+### Zod validation schema
+
+Add to **`src/lib/validations/session.ts`** (modify existing)
+- `correctionSubmitSchema` — validates correction body including reason min-length
+- `correctionValidateReasonSchema` — validates the validate-reason endpoint body
+
+### i18n keys
+
+Modify **`messages/en/emails.json`** and **`messages/ro/emails.json`** (modify existing)
+- Add `emails.sessionCorrection` namespace with keys listed in Q3 above
+
+### UI component
+
+**`src/components/session/correction-dialog.tsx`** (new — Client Component)
+- Dialog triggered from session history view on a completed session's answer
+- Shows question text, current answer, new answer input (matching original answer type widget)
+- Reason textarea with AI validation feedback
+- Two-phase submit: validate reason -> on valid, submit correction
+- TanStack Query mutations for both endpoints
+
+---
+
+## Data Flow
+
+### Correction Submit Flow
+
+```
+Manager clicks "Edit" on completed session answer
+    |
+    v
+CorrectionDialog opens (pre-populated with current answer)
+    |
+    v
+Manager enters new answer + correction reason
+    |
+    v
+[Blur / "Check reason"] -> POST /corrections/validate-reason
+    |
+    v (AI returns { valid: true/false, feedback })
+Manager sees validation feedback inline
+    |
+    v
+Manager clicks "Save Correction" (enabled only when reason valid)
+    |
+    v
+POST /api/sessions/[id]/corrections
+    +-- withTenantContext transaction:
+    |   +-- Load session (assert status = 'completed')
+    |   +-- Load series (get managerId for RBAC check)
+    |   +-- canCorrectSession check
+    |   +-- Load current session_answer row
+    |   +-- INSERT session_answer_history (before-state snapshot)
+    |   +-- UPDATE session_answer (new values + answeredAt = now)
+    |   +-- Recompute + UPDATE session.session_score
+    |   +-- logAuditEvent('session_answer.corrected', metadata={questionId, reason})
+    +-- fire-and-forget: sendCorrectionNotificationEmails()
+    |
+    v
+Client invalidates TanStack Query cache for session
+Dialog closes, answer shows updated value + "corrected" badge
+```
+
+### Email Send Flow
+
+```
+sendCorrectionNotificationEmails({ sessionId, correctionHistoryId, tenantId })
+    |
+    v
+Fetch: session, series, question text, history row (before/after),
+       manager, report, admins, tenant locale
+    |
+    v
+createEmailTranslator(locale)  ->  t()
+    |
+    v
+For each recipient (report + all admins):
+    render SessionCorrectionEmail({ ...props, labels })
+    transport.sendMail(...)
+    adminDb.insert(notifications, { type: 'session_correction', ... })
+```
+
+---
+
+## Architectural Patterns
+
+### Pattern 1: History Table as Append-Only Snapshot
+
+**What:** Before updating a record, write its current state to a history table. The live table always holds the current value. The history table is append-only — never updated, never deleted.
+
+**When to use:** Any mutation where the previous value has legal, compliance, or accountability significance. Corrections qualify because they affect recorded session data after the session is closed.
+
+**Trade-offs:** Slightly more storage. History table queries need explicit filtering. In exchange: analytics queries are never complicated by versioning logic, and the audit trail is physically separate from the live data.
+
+**Example in this codebase:**
 ```typescript
-// In notification service (e.g., summary-email.ts):
-const tenantLang = (tenantSettings.preferredLanguage as string) || 'en';
-const t = createEmailTranslator(tenantLang);
+// Inside withTenantContext transaction:
 
-SessionSummaryEmail({
-  ...existingProps,
-  labels: {
-    title: t('email.summary.title'),
-    greeting: t('email.summary.greeting'),
-    keyTakeaways: t('email.summary.keyTakeaways'),
-    actionItems: t('email.summary.actionItems'),
-    viewSession: t('email.summary.viewSession'),
-  },
+// 1. Read current answer
+const [current] = await tx.select().from(sessionAnswers)
+  .where(and(
+    eq(sessionAnswers.sessionId, sessionId),
+    eq(sessionAnswers.questionId, data.questionId)
+  ))
+  .limit(1);
+
+// 2. Write history (before-state)
+await tx.insert(sessionAnswerHistory).values({
+  tenantId: session.user.tenantId,
+  sessionAnswerId: current.id,
+  sessionId,
+  questionId: data.questionId,
+  correctedById: session.user.id,
+  originalAnswerText: current.answerText,
+  originalAnswerNumeric: current.answerNumeric,
+  originalAnswerJson: current.answerJson,
+  originalSkipped: current.skipped,
+  newAnswerText: data.newAnswerText ?? null,
+  newAnswerNumeric: data.newAnswerNumeric != null ? String(data.newAnswerNumeric) : null,
+  newAnswerJson: data.newAnswerJson ?? null,
+  newSkipped: data.skipped ?? false,
+  correctionReason: data.correctionReason,
 });
+
+// 3. Update live record
+await tx.update(sessionAnswers)
+  .set({ ... })
+  .where(eq(sessionAnswers.id, current.id));
 ```
 
-This uses the **company's content language** (not the individual user's UI language), because emails are company communications.
+### Pattern 2: Separate AI Validation Endpoint
 
-### 10. Zod Validation Messages
+**What:** Expose AI validation as a distinct endpoint from the mutation endpoint. The client calls validate first, gets feedback, then submits the confirmed mutation.
 
-Current Zod schemas in `src/lib/validations/` produce English error messages. Two options:
+**When to use:** When the user needs real-time feedback from AI before committing a write operation that has side effects (email, audit log, DB write).
 
-**Recommended approach: Translate at the form display layer**
+**Trade-offs:** Two HTTP round trips instead of one. The mutation endpoint must still validate server-side for defense in depth. In exchange: the UX is clean (feedback before commit), and the mutation endpoint stays simple.
 
-Keep Zod schemas language-agnostic. In form components, map Zod error codes to translated strings:
-
+**Example:**
 ```typescript
-// In a form component:
-const t = useTranslations('validation');
-
-// After Zod validation fails:
-const translatedErrors = zodErrors.map(err => ({
-  ...err,
-  message: t(err.code, { ...err.params }), // e.g., t('too_small', { minimum: 3 })
-}));
-```
-
-This avoids coupling Zod schemas to the i18n system and keeps validation schemas reusable server-side where there is no i18n context.
-
-### 11. Date and Number Formatting
-
-next-intl includes `useFormatter()` / `getFormatter()` with ICU-based date/number formatting. Replace the manual formatting in `src/lib/utils/formatting.ts`:
-
-```typescript
-// Server Component
-const format = await getFormatter();
-format.dateTime(date, { dateStyle: 'long' });
-format.number(score, { maximumFractionDigits: 1 });
-
-// Client Component
-const format = useFormatter();
-format.relativeTime(date); // "2 hours ago"
-```
-
-## Patterns to Follow
-
-### Pattern 1: Server Component Translation
-
-**What:** Use `getTranslations()` in async Server Components for zero client-side cost.
-**When:** Any Server Component that renders text (page headers, metadata, static labels).
-
-```typescript
-// src/app/(dashboard)/overview/page.tsx
-import { getTranslations } from 'next-intl/server';
-
-export default async function OverviewPage() {
-  const t = await getTranslations('dashboard');
-  return <h1>{t('title')}</h1>;
+// POST /api/sessions/[id]/corrections/validate-reason
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  const { reason, questionText, originalAnswer, newAnswer } = await request.json();
+  const language = await getTenantLanguage(session.user.tenantId);
+  const result = await validateCorrectionReason(reason, questionText, originalAnswer, newAnswer, language);
+  return NextResponse.json(result); // { valid: boolean, feedback: string | null }
 }
 ```
 
-### Pattern 2: Client Component Translation
+### Pattern 3: Fire-and-Forget Non-Blocking Side Effects
 
-**What:** Use `useTranslations()` hook in Client Components.
-**When:** Interactive components with text (forms, dialogs, wizards -- all 106 "use client" files).
+**What:** After a mutation commits to DB, trigger email/analytics as non-awaited promises with `.catch(console.error)`.
 
-```typescript
-// src/components/session/wizard-shell.tsx
-'use client';
-import { useTranslations } from 'next-intl';
+**When to use:** Side effects that must not block the HTTP response. Session completion already uses this for AI pipeline and notification scheduling (see `src/app/api/sessions/[id]/complete/route.ts:219`).
 
-export function WizardShell() {
-  const t = useTranslations('session.wizard');
-  return <Button>{t('next')}</Button>;
-}
-```
-
-### Pattern 3: Language Switcher Flow
-
-**What:** User changes their UI language in account settings.
-**When:** Account settings page (needs to be created).
-
-```
-1. User selects new language in account settings dropdown
-2. Client calls PATCH /api/settings/account with { language: 'ro' }
-3. API updates users.language in DB
-4. Client calls update() from next-auth's useSession() to refresh JWT
-5. Middleware on next request detects new language in JWT, updates NEXT_LOCALE cookie
-6. i18n/request.ts picks up new cookie value
-7. Page reloads with new locale (full page reload for clean state)
-```
-
-### Pattern 4: ICU Message Format for Dynamic Content
-
-**What:** Use ICU message syntax for plurals, interpolation, and select.
-**When:** Messages that contain variables or plural forms.
-
-```json
-{
-  "sessions": {
-    "count": "You have {count, plural, =0 {no upcoming sessions} one {# upcoming session} other {# upcoming sessions}}",
-    "completedBy": "Completed by {name} on {date, date, medium}"
-  }
-}
-```
+**Trade-offs:** Email failure is silent from the user's perspective. DB mutation already committed — if email fails, you must retry manually or accept the missed notification. Acceptable for notifications; unacceptable for primary data.
 
 ```typescript
-const t = useTranslations('sessions');
-t('count', { count: 3 }); // "You have 3 upcoming sessions"
+// After transaction commits:
+sendCorrectionNotificationEmails({
+  sessionId,
+  correctionHistoryId: historyRow.id,
+  tenantId: session.user.tenantId,
+}).catch((err) => console.error("Correction notification failed:", err));
 ```
 
-## Anti-Patterns to Avoid
+---
 
-### Anti-Pattern 1: Locale in URL Segments
+## Recommended Build Order
 
-**What:** Using `[locale]` in the app directory structure with URL-based routing.
-**Why bad:** Would require restructuring all 290 source files into a `[locale]/` segment, breaking all existing routes and bookmarks. The requirement explicitly says "no locale in URLs."
-**Instead:** Use next-intl's "without i18n routing" mode with cookie-based locale resolution.
+Dependencies flow DB -> validation -> API -> AI -> email -> UI. Build in this sequence to avoid blocked work.
 
-### Anti-Pattern 2: Dynamic Translation Keys
+| Step | What | Why This Order |
+|------|------|----------------|
+| 1 | `src/lib/db/schema/corrections.ts` | All API routes depend on this table |
+| 2 | Drizzle migration (generate + apply) | Schema must exist before any API can use it |
+| 3 | `notificationTypeEnum` update + migration | Email sender depends on this enum value |
+| 4 | `src/lib/validations/session.ts` additions | API routes import these before doing anything |
+| 5 | `canCorrectSession()` in `rbac.ts` | Corrections route imports this |
+| 6 | `src/lib/ai/schemas/correction-reason.ts` | AI service function depends on this |
+| 7 | `validateCorrectionReason()` in `service.ts` | Validate-reason route depends on this |
+| 8 | i18n key additions (`messages/*/emails.json`) | Email template depends on these keys |
+| 9 | `src/lib/email/templates/session-correction.tsx` | Notification sender depends on this |
+| 10 | `src/lib/notifications/correction-email.ts` | Corrections route calls this fire-and-forget |
+| 11 | `src/app/api/sessions/[id]/corrections/validate-reason/route.ts` | UI depends on this endpoint |
+| 12 | `src/app/api/sessions/[id]/corrections/route.ts` | UI depends on this endpoint |
+| 13 | `src/components/session/correction-dialog.tsx` | Needs both API endpoints to exist |
+| 14 | Wire dialog into session history/summary view | Component must exist before placement |
 
-**What:** `t(\`status.${status}\`)` where `status` comes from runtime data.
-**Why bad:** Translation tooling cannot statically extract these keys. Missing translations silently render raw keys. TypeScript cannot type-check key existence.
-**Instead:** Use explicit mappings: `const labels: Record<Status, string> = { active: t('status.active'), paused: t('status.paused') };`
+---
 
-### Anti-Pattern 3: Translating User-Generated Content
+## Integration Points — Summary
 
-**What:** Trying to translate session answers, talking points, action item titles, or private notes.
-**Why bad:** These are user-generated content in whatever language the user typed. The AI pipeline already handles mixed-language content via its "Write in the same language as the session data" instruction.
-**Instead:** Only translate UI chrome (labels, buttons, headings, placeholders). User content stays as-is.
+### Modified files
 
-### Anti-Pattern 4: Using next-intl Inside Email Templates
+| File | Change |
+|------|--------|
+| `src/lib/db/schema/enums.ts` | Add `'session_correction'` to `notificationTypeEnum` |
+| `src/lib/db/schema/index.ts` | Re-export `sessionAnswerHistory` from corrections.ts |
+| `src/lib/auth/rbac.ts` | Add `canCorrectSession()` helper |
+| `src/lib/ai/service.ts` | Add `validateCorrectionReason()` function |
+| `src/lib/validations/session.ts` | Add `correctionSubmitSchema`, `correctionValidateReasonSchema` |
+| `messages/en/emails.json` | Add `emails.sessionCorrection` namespace |
+| `messages/ro/emails.json` | Add `emails.sessionCorrection` namespace |
 
-**What:** Trying to use `getTranslations()` or `useTranslations()` in React Email components.
-**Why bad:** Email templates render outside the Next.js request lifecycle (called from Inngest jobs, notification services). next-intl requires the Next.js request context.
-**Instead:** Use the standalone `createEmailTranslator()` function that directly imports message files.
-
-### Anti-Pattern 5: Separate Translation Files per Component
-
-**What:** Co-locating `wizard-shell.en.json` next to each component.
-**Why bad:** next-intl loads one messages object per locale per request. Splitting requires custom merging logic and loses the ability to search all translations in one place.
-**Instead:** Single `messages/{locale}.json` per language with flat namespace keys.
-
-## Build/Bundle Considerations
-
-### Client-Side Impact
-
-- **next-intl runtime:** ~2KB gzipped -- negligible
-- **Translation messages:** ~15-25KB per locale JSON. Only the active locale loads. Passed to `NextIntlClientProvider` in full -- acceptable for this scale (under 50KB). Subsetting adds complexity without meaningful benefit.
-- **No new client-side dependencies** beyond next-intl itself
-
-### Dynamic Rendering
-
-next-intl APIs cause routes to opt into dynamic rendering (because they read cookies via `cookies()`). This is a non-issue because every dashboard page already reads the auth session dynamically. Auth pages (login, register) will become dynamic, but they are lightweight and benefit from dynamic rendering anyway (Accept-Language header detection).
-
-### Build Time
-
-No impact. Messages are loaded at runtime from JSON files, not compiled into the build.
-
-## Scalability Considerations
-
-| Concern | At 2 languages (now) | At 5 languages | At 15+ languages |
-|---------|---------------------|----------------|-------------------|
-| Message file size | ~20KB/locale, trivial | ~20KB/locale, trivial | Consider namespace splitting per page |
-| Bundle impact | Negligible | Negligible | May want per-page message subsets |
-| Translation management | Manual JSON editing | Consider Crowdin/Phrase TMS | Mandatory TMS integration |
-| Missing translations | Manual review | Add CI lint for missing keys | Automated completeness CI checks |
-| RTL support | N/A (en, ro both LTR) | May need RTL (Arabic) | Requires `dir` attribute + layout changes |
-
-## New Files to Create
+### New files
 
 | File | Purpose |
 |------|---------|
-| `src/i18n/request.ts` | next-intl request config (locale resolution from cookie) |
-| `messages/en.json` | English translation strings (~800-1200 keys) |
-| `messages/ro.json` | Romanian translation strings |
-| `src/lib/email/i18n.ts` | Email-specific translation loader (works outside Next.js request) |
-| `middleware.ts` | Locale cookie management + browser language detection |
-| Account settings page (`src/app/(dashboard)/settings/account/`) | User language preference UI |
-| `PATCH /api/settings/account` route | API for updating user language |
+| `src/lib/db/schema/corrections.ts` | `session_answer_history` table + relations |
+| `src/lib/ai/schemas/correction-reason.ts` | Zod schema for AI validation output |
+| `src/lib/email/templates/session-correction.tsx` | React Email template |
+| `src/lib/notifications/correction-email.ts` | Email send function |
+| `src/app/api/sessions/[id]/corrections/route.ts` | Correction submit endpoint |
+| `src/app/api/sessions/[id]/corrections/validate-reason/route.ts` | AI reason validation endpoint |
+| `src/components/session/correction-dialog.tsx` | UI dialog (Client Component) |
+| `drizzle/migrations/XXXX_add_correction_history.sql` | Generated migration |
 
-## Existing Files to Modify
+### Zero-change items (confirmed)
 
-| File | Change | Scope |
-|------|--------|-------|
-| `next.config.ts` | Add `createNextIntlPlugin` wrapper | 3 lines |
-| `src/app/layout.tsx` | Add `NextIntlClientProvider`, dynamic `lang` attr | ~10 lines |
-| `src/lib/db/schema/users.ts` | Add `language` column | 1 line |
-| `src/lib/auth/config.ts` | Add `language` to JWT/session callbacks | ~10 lines |
-| `src/types/next-auth.d.ts` | Extend User/JWT types with `language` | ~6 lines |
-| 106 Client Components | Replace hardcoded strings with `useTranslations()` | Bulk work |
-| ~30 Server Component pages | Replace hardcoded strings with `getTranslations()` | Moderate work |
-| 7 email templates | Accept `labels` prop with translated strings | ~5-10 lines each |
-| `src/lib/notifications/summary-email.ts` | Read tenant language, create translator, pass labels | ~15 lines |
-| Other notification senders | Same pattern as summary-email | ~10 lines each |
-| `src/lib/utils/formatting.ts` | Optional: replace with next-intl formatters | Low priority |
-| `package.json` | Add `next-intl` dependency | 1 line |
+| Item | Why no change needed |
+|------|---------------------|
+| `session_answer` table schema | Value columns are sufficient; no new columns needed |
+| `session` table schema | `session_score` is already nullable decimal; recomputed in place |
+| `audit_log` table | `metadata` JSONB accepts arbitrary context; no schema change |
+| `notification` table | Column types are sufficient; only enum value addition needed |
+| `withTenantContext` / RLS | History table gets same tenant_id pattern; no infra changes |
+| `computeSessionScore()` utility | Already stateless; called with a fresh answer list |
+| AI pipeline / `runAIPipelineDirect` | Corrections do not trigger re-summarization |
 
-## Suggested Build Order (Dependency-Aware)
+---
 
-**Phase 1: Foundation** (no UI changes, unblocks everything)
-- Install next-intl, update `next.config.ts`
-- Create `src/i18n/request.ts`
-- Create `messages/en.json` with initial namespaces (common, nav)
-- Create `messages/ro.json` (copy of en.json initially)
-- DB migration: add `users.language` column
-- Update Auth.js JWT/session callbacks to include `language`
-- Create `middleware.ts` for locale cookie
+## Anti-Patterns to Avoid
 
-**Phase 2: Root Layout Integration** (unblocks all component work)
-- Update `src/app/layout.tsx` with NextIntlClientProvider
-- Verify end-to-end: Server + Client translation loading works
+### Anti-Pattern 1: Reusing the PUT /answers Endpoint for Corrections
 
-**Phase 3: String Extraction -- Shared Components** (highest reuse, validates pattern)
-- Navigation: top-nav, sidebar, user-menu
-- Common namespace: buttons, labels, status badges
-- Auth pages: login, register, invite, forgot-password
+**What people do:** Allow `PUT /api/sessions/[id]/answers` to accept corrections to completed sessions by removing the `status !== 'in_progress'` guard.
 
-**Phase 4: String Extraction -- Feature Components** (bulk of work, parallelizable)
-- Dashboard components
-- Session wizard components (largest group: ~20 components)
-- People management components
-- Template editor components
-- Analytics components
-- Settings pages
-- Series components
-- Action items page
-- History page
+**Why it is wrong:** The existing endpoint does an upsert with `onConflictDoUpdate` — it overwrites silently with no history, no reason, no audit. It also has no RBAC check for manager-only access to completed sessions.
 
-**Phase 5: Language Switcher UI**
-- Account settings page (new)
-- PATCH /api/settings/account route
-- JWT refresh flow via useSession().update()
+**Do this instead:** New endpoint at `POST /api/sessions/[id]/corrections`. Different semantics, different RBAC, different side effects, different history model.
 
-**Phase 6: Email Translation**
-- Create `src/lib/email/i18n.ts`
-- Update 7 email templates to accept labels prop
-- Update notification services to pass tenant language
+### Anti-Pattern 2: Storing Correction Reason Only in audit_log Metadata
 
-**Phase 7: Polish**
-- Zod validation message translation
-- Date/number formatting with next-intl
-- Complete Romanian translations (translate all keys from Phase 3-4)
-- CI lint script for missing translation keys between en.json and ro.json
+**What people do:** Put the correction reason in `audit_log.metadata` JSONB and skip the history table.
+
+**Why it is wrong:** The `audit_log` is an event record for compliance — it records *that* something happened. The `session_answer_history` table is a data record for reconstruction — it records *what* the data was before. These are different use cases. If you want to display a correction timeline in the UI ("this answer was X, corrected to Y, reason: Z"), querying `audit_log.metadata` requires deserializing JSONB and is fragile to metadata shape changes.
+
+**Do this instead:** History table for data reconstruction. `audit_log` for compliance events. Both.
+
+### Anti-Pattern 3: Blocking HTTP Response on AI Validation During Submit
+
+**What people do:** Add AI reason validation inside the corrections POST handler, blocking the response until AI returns.
+
+**Why it is wrong:** If the AI API is slow or unavailable, the user's correction is blocked. The mutation should not depend on a third-party API call. AI validation is UX-layer feedback, not a data-layer guard.
+
+**Do this instead:** Validate via the separate `/validate-reason` endpoint *before* submit. The correction endpoint does a lightweight server-side sanity check (min-length, non-empty) but does not call the AI.
+
+### Anti-Pattern 4: Sending Correction Emails to All Managers
+
+**What people do:** Notify all managers in the tenant, not just the series participants.
+
+**Why it is wrong:** Corrections are sensitive — a manager's data error being visible to unrelated managers is a privacy concern and creates noise.
+
+**Do this instead:** Notify report (the other party in the session) + all tenant admins (who have legitimate oversight). The correcting manager does not need a copy (they made the correction).
+
+### Anti-Pattern 5: Recomputing Analytics Snapshots After Every Correction
+
+**What people do:** Trigger `computeSessionSnapshot()` after each correction to refresh analytics.
+
+**Why it is wrong:** `computeSessionSnapshot()` (used in the AI pipeline) is designed for post-session computation. Running it on corrections would overwrite analytics snapshots outside the normal cadence, potentially confusing trending data. The corrections milestone does not specify analytics refresh as a requirement.
+
+**Do this instead:** Update `session.session_score` to reflect the corrected answer values (this is visible in the session view). Leave `analytics_snapshot` rows as-is for this milestone. If analytics refresh on correction is needed, that belongs in a future milestone with explicit requirements.
+
+---
+
+## Scaling Considerations
+
+This feature has negligible scaling impact at expected v1.4 volumes:
+
+| Scale | Architecture Note |
+|-------|------------------|
+| Current (early SaaS, under 1k users) | Single serverless function per correction is fine; no queue needed |
+| 10k+ users | Correction emails could be queued via the existing `notification` table + a pending-jobs poller if synchronous send latency becomes an issue |
+| 100k+ users | History table grows linearly with corrections, not with sessions; index on `session_id` is the first query optimization if correction timeline queries slow down |
+
+---
 
 ## Sources
 
-- [next-intl: App Router without i18n routing](https://next-intl.dev/docs/getting-started/app-router/without-i18n-routing) -- HIGH confidence
-- [next-intl: Server & Client Components](https://next-intl.dev/docs/environments/server-client-components) -- HIGH confidence
-- [next-intl: Routing configuration](https://next-intl.dev/docs/routing/configuration) -- HIGH confidence
-- [Next.js: Internationalization guide](https://nextjs.org/docs/pages/guides/internationalization) -- HIGH confidence
-- Existing codebase analysis: `src/lib/ai/service.ts`, `src/lib/ai/pipeline.ts`, `src/app/layout.tsx`, `src/lib/auth/config.ts`, `src/lib/db/schema/users.ts`, `src/lib/email/templates/*.tsx` -- direct inspection
+- Direct inspection: `src/lib/db/schema/answers.ts` — confirms `UNIQUE(session_id, question_id)` constraint and `onConflictDoUpdate` auto-save pattern
+- Direct inspection: `src/app/api/sessions/[id]/answers/route.ts` — confirms `in_progress` status guard and upsert semantics
+- Direct inspection: `src/app/api/sessions/[id]/complete/route.ts` — confirms fire-and-forget AI + notification pattern (lines 219-241)
+- Direct inspection: `src/lib/ai/pipeline.ts` — confirms `generateText`/`generateObject` usage and language parameter pattern
+- Direct inspection: `src/lib/ai/service.ts` — confirms `generateText` + `Output.object` pattern for structured AI output
+- Direct inspection: `src/lib/notifications/summary-email.ts` — confirms email send pattern (adminDb, createEmailTranslator, render, sendMail, insert notification)
+- Direct inspection: `src/lib/auth/rbac.ts` — confirms RBAC helper pattern, role hierarchy, `isAdmin()` function
+- Direct inspection: `src/lib/audit/log.ts` — confirms `logAuditEvent` interface and transaction-bound pattern
+- Direct inspection: `src/lib/db/schema/enums.ts` — confirms enum structure and existing notification types
+- Direct inspection: `src/lib/db/schema/sessions.ts` — confirms `session_score` column type (decimal) and `aiStatus` field
+- Direct inspection: `messages/en/emails.json` — confirms i18n key structure for email templates
+- Direct inspection: `.planning/PROJECT.md` — confirms v1.4 correction requirements (mandatory reason, AI validation, email notification, audit trail)
+- Confidence: HIGH — all findings based on direct codebase inspection
 
 ---
-*Architecture research for: i18n integration in 1on1 SaaS*
-*Researched: 2026-03-05*
+*Architecture research for: session corrections & accountability (v1.4)*
+*Researched: 2026-03-10*

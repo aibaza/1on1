@@ -1,361 +1,242 @@
-# Stack Research: i18n for 1on1
+# Stack Research
 
-**Domain:** Internationalization (i18n) for existing Next.js App Router SaaS
-**Researched:** 2026-03-05
-**Confidence:** HIGH
-
-## Context
-
-The 1on1 app needs two language layers:
-1. **UI language** -- per-user preference (default: browser locale), stored in user profile. Two locales: `en` and `ro`.
-2. **Content language** -- per-company admin setting, controls AI-generated content and system templates.
-
-The app runs Next.js 16.1.6, React 19.2, TypeScript 5, Zod 4.3, and has no middleware.ts yet. No `[locale]` segment exists in the URL structure. The app uses route groups `(auth)`, `(dashboard)`, and `(session-wizard)`. Package manager is Bun.
+**Domain:** Session correction / versioning / AI validation / multi-recipient email — additive to existing 1on1 SaaS (v1.4)
+**Researched:** 2026-03-10
+**Confidence:** HIGH (all conclusions drawn from live codebase reads, not training assumptions)
 
 ---
 
-## Recommended Stack
+## Verdict: No New Libraries Required
 
-### Core Technologies
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| next-intl | ^4.8 | UI string translations, date/number formatting, Server Component i18n | Purpose-built for Next.js App Router. Native RSC support via `getTranslations()` -- zero client JS for server-rendered strings. ~2KB client bundle. 931K+ weekly npm downloads, 3.7K+ GitHub stars. Wraps native `Intl.DateTimeFormat` / `Intl.NumberFormat` -- no extra date library needed. ICU message format handles Romanian's 3 plural forms correctly. Strict TypeScript types for translation keys via `AppConfig` interface. ESM-only in v4 (matches project). [Confidence: HIGH -- verified via official docs and npm] |
-
-### Supporting Libraries
-
-None needed. next-intl covers translations, date formatting, number formatting, and relative time -- all built on the browser's native `Intl` API. No date-fns, no dayjs, no separate formatting library required.
-
-### Development Tools
-
-| Tool | Purpose | Notes |
-|------|---------|-------|
-| TypeScript `AppConfig` interface | Type-safe translation keys | Catches missing/wrong keys at build time. Defined once in `src/types/next-intl.d.ts`. next-intl v4 moved from global types to module-scoped `AppConfig`. |
-| ICU Message Syntax | Plurals, interpolation, select | Built into next-intl. Handles English (2 plural forms) and Romanian (3 plural forms: one, few, other) correctly via `Intl.PluralRules`. |
+Every capability needed for v1.4 is already present in the installed dependency set. This milestone is entirely about adding new schema tables, new AI service functions, new email templates, and new API routes — using the stack that already ships and works in production.
 
 ---
 
-## Architecture Decision: No Locale in URLs
+## What Each Capability Needs
 
-**Use next-intl's "without i18n routing" setup.** This is the most important decision.
+### 1. Session Answer History / Versioning
 
-### Why no URL-based locale routing
+**Requirement:** Store before/after snapshots when a manager edits a completed session answer.
 
-1. **This is a B2B SaaS app behind auth** -- not a public content site. SEO for localized pages is irrelevant.
-2. **Language is a user preference**, not a content variant. Two users at the same company may use different UI languages at the same URL.
-3. **The app already has route groups** `(auth)`, `(dashboard)`, `(session-wizard)` -- adding a `[locale]` segment would require restructuring every route.
-4. **No middleware.ts exists yet** -- the "without i18n routing" setup needs no middleware at all.
-5. **Pre-login screens** (login, register, invite) use browser locale detection via `Accept-Language` header or `navigator.language` -- no URL prefix needed.
+**Decision: Add a dedicated `session_answer_correction` table. Do NOT mutate `session_answer` in place.**
 
-### How it works
+Rationale:
+- `session_answer` has a `uniqueIndex` on `(session_id, question_id)` (confirmed in `src/lib/db/schema/answers.ts`). An in-place update destroys the original value with no recovery path.
+- The audit requirement ("stored with timestamp, actor, reason, and original values") demands an immutable ledger, not a single mutable row.
+- A dedicated table provides a clean query path — "show all corrections for session X" — without scanning the generic `audit_log` with string-matched action filters.
+- Drizzle ORM handles this trivially: `pgTable` declaration + `drizzle-kit generate` + `drizzle-kit migrate`. No new ORM, no extension, no separate versioning library.
 
-```
-messages/
-  en.json    # English (default)
-  ro.json    # Romanian
+**Schema shape (informational — not a new library decision):**
 
-src/
-  i18n/
-    request.ts    # Resolves locale per-request
-  app/
-    layout.tsx    # Wraps children with NextIntlClientProvider
-```
-
-- `src/i18n/request.ts` resolves the locale from: (1) authenticated user's DB preference, (2) cookie for unauthenticated pages, (3) `Accept-Language` header fallback.
-- No `[locale]` URL segment. No middleware rewrites. No route restructuring.
-- `NextIntlClientProvider` wraps the root layout to enable Client Components.
-- Server Components use `const t = await getTranslations('namespace')`.
-- Client Components use `const t = useTranslations('namespace')`.
-
-### Locale resolution flow
+Column mirroring (`original_*` / `new_*`) matches the typed-column pattern already used by `session_answer` (`answer_text`, `answer_numeric`, `answer_json`). This keeps analytics queries sane and avoids JSONB diff blobs.
 
 ```
-Authenticated user:
-  Session -> user.ui_language (from DB) -> 'en' | 'ro'
-
-Unauthenticated visitor (login, register, invite):
-  Cookie 'NEXT_LOCALE' -> Accept-Language header -> 'en' (default)
+session_answer_correction
+  id                        uuid PK
+  tenant_id                 uuid FK → tenant (RLS guard)
+  session_id                uuid FK → session
+  question_id               uuid FK → template_question
+  corrected_by_id           uuid FK → user
+  original_answer_text      text
+  original_answer_numeric   decimal(6,2)
+  original_answer_json      jsonb
+  original_skipped          boolean
+  new_answer_text           text
+  new_answer_numeric        decimal(6,2)
+  new_answer_json           jsonb
+  new_skipped               boolean
+  reason                    text NOT NULL
+  ai_validation_status      varchar(20)  -- 'approved' | 'flagged' | 'skipped'
+  ai_validation_note        text
+  corrected_at              timestamptz NOT NULL DEFAULT now()
 ```
 
----
+**Does Drizzle handle this?** Yes. `drizzle-orm ^0.38.4` (installed) supports all required column types. `drizzle-kit ^0.30.4` (installed) generates the migration. No upgrade needed.
 
-## Translation File Format
+### 2. AI-Based Reason Validation
 
-**JSON files in `/messages/` directory:**
+**Requirement:** Before saving a correction, validate the manager's free-text reason for quality, relevance, and company-language compliance.
 
-```json
-{
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "loading": "Loading..."
-  },
-  "dashboard": {
-    "title": "Overview",
-    "upcomingSessions": "Upcoming Sessions",
-    "noSessions": "No upcoming sessions"
-  },
-  "session": {
-    "wizard": {
-      "nextStep": "Next",
-      "previousStep": "Back",
-      "complete": "Complete Session"
-    }
-  },
-  "settings": {
-    "language": "Language",
-    "languageDescription": "Choose your preferred language for the interface"
-  }
-}
-```
+**Decision: Add a `validateCorrectionReason` function in `src/lib/ai/service.ts` using `generateObject` from the existing Vercel AI SDK (`ai ^6.0.111`).**
 
-**Why JSON over other formats:**
-- next-intl's native format (no conversion step, no build tooling)
-- Easy to diff in code review
-- TypeScript can infer key types from it via `AppConfig`
-- Simple enough for the founder to maintain Romanian translations directly
-- Two languages, one maintainer -- no translation management system needed
+Rationale:
+- The existing service already uses `generateObject` (via `generateTemplateChatTurn`) and `generateText` with `Output.object` (via `generateSummary`, `generateManagerAddendum`) — confirmed in `src/lib/ai/service.ts`. The correction validation is the same pattern.
+- The existing `withLanguageInstruction` utility (also in `service.ts`) already handles Romanian / English enforcement for AI output. The same function applies here.
+- `generateObject` returns a typed Zod-validated object in one call — no streaming needed for a binary validation check.
+- **Model tier:** Use `claude-haiku-4-5` (already mapped in `src/lib/ai/models.ts` for `managerAddendum` and `actionSuggestions`). Reason validation is a short classification task — is the reason substantive and in the right language? Haiku keeps cost low and latency under 1 second. Sonnet is unnecessary.
 
----
-
-## Date/Number Formatting Strategy
-
-**Use next-intl's built-in `useFormatter()` (client) / `getFormatter()` (server)** -- they wrap the native `Intl` APIs with locale awareness.
+**New Zod schema** (`src/lib/ai/schemas/correction-validation.ts`):
 
 ```typescript
-// Server Component
-const format = await getFormatter();
-
-format.dateTime(session.scheduledAt, { dateStyle: 'medium', timeStyle: 'short' });
-// en: "Mar 5, 2026, 2:30 PM"
-// ro: "5 mar. 2026, 14:30"
-
-format.relativeTime(session.scheduledAt);
-// en: "in 2 hours"
-// ro: "peste 2 ore"
-
-format.number(0.85, { style: 'percent' });
-// en: "85%"
-// ro: "85 %"
+z.object({
+  valid: z.boolean(),
+  feedback: z.string().describe("One sentence: why valid, or what is missing/wrong"),
+  languageCompliant: z.boolean(),
+})
 ```
 
-**No date-fns or dayjs needed for formatting.** The existing `src/lib/utils/scheduling.ts` should be refactored to use next-intl formatters for any user-facing date strings. Date arithmetic (add days, calculate diff) can stay as plain Date math or use `Temporal` -- that is not an i18n concern.
+The API route calls `validateCorrectionReason(reason, tenantLanguage)` before writing to the DB. If `valid: false`, return HTTP 422 with `feedback` so the UI can display it inline. The manager revises and resubmits — no DB write occurs until validation passes.
 
-### Global format presets
+**Does the AI SDK support this?** Yes. `ai ^6.0.111` + `@ai-sdk/anthropic ^3.0.54` (both installed) support `generateObject`. The pattern is identical to `generateTemplateChatTurn` already in production.
 
-Define reusable formats in `src/i18n/request.ts`:
+### 3. Correction Email Notifications
 
-```typescript
-return {
-  locale,
-  messages,
-  formats: {
-    dateTime: {
-      short: { dateStyle: 'short', timeStyle: 'short' },
-      medium: { dateStyle: 'medium', timeStyle: 'short' },
-      dateOnly: { dateStyle: 'long' },
-    },
-    number: {
-      percent: { style: 'percent', maximumFractionDigits: 0 },
-    }
-  }
-};
-```
+**Requirement:** Notify report + all tenant admins when a session answer is corrected, showing before/after context.
+
+**Decision: Add a new React Email template `correction-notification.tsx` in `src/lib/email/templates/` and a new notification sender function in `src/lib/notifications/`.**
+
+Rationale:
+- `@react-email/components ^1.0.8` and `@react-email/render ^2.0.4` are already installed. New templates are TSX files — no install step.
+- The existing `sendPostSessionSummaryEmails` in `src/lib/notifications/summary-email.ts` provides the exact pattern: fetch context, loop recipients, render per-recipient HTML, call `getTransport().sendMail()`. The correction notification follows this pattern unchanged.
+- The notification is **event-driven**, not cron-scheduled — fires directly from the correction API route after successful DB write and AI validation. Same "fire and forget" (non-fatal try/catch) pattern used in `runAIPipelineDirect` in `src/lib/ai/pipeline.ts`.
+- **Multi-recipient loop:** The existing `summary-email.ts` already sends to two recipients by calling `sendMail` twice with different rendered HTML. For admins, query `users` where `role = 'admin'` and `tenant_id = tenantId`, then loop. No broadcast library needed.
+- **i18n:** Use the existing `createEmailTranslator(locale)` from `src/lib/email/translator.ts` with new keys added to `messages/en/emails.json` and `messages/ro/emails.json`. Pattern is established.
+- **Notification enum:** `notificationTypeEnum` in `src/lib/db/schema/enums.ts` needs `'session_correction'` added. This is a one-line schema change + migration, not a new dependency.
+
+### 4. Audit Trail Storage
+
+**Requirement:** Store correction with timestamp, actor, reason, and original values.
+
+**Decision: Use `session_answer_correction` table as the primary immutable record, plus call the existing `logAuditEvent` utility inside the same transaction.**
+
+Rationale:
+- `session_answer_correction` IS the correction audit trail. It is immutable by design — no UPDATE/DELETE is exposed through any API route.
+- `logAuditEvent` in `src/lib/audit/log.ts` adds a second, cross-resource searchable entry to `audit_log` with `action: 'session_answer_corrected'` and metadata `{ questionId, sessionId, correctionId }`. This enables the existing admin audit log UI to surface corrections without joining the corrections table.
+- Both writes happen inside a single `withTenantContext` transaction — if either fails, neither is committed. Identical to the pattern in `runAIPipelineDirect`.
 
 ---
 
-## Email Template Translations
+## Core Technologies (Unchanged — All Already Installed)
 
-React Email templates already exist in `src/lib/email/templates/`. Strategy:
+| Technology | Version in use | Role in v1.4 |
+|------------|---------------|--------------|
+| Drizzle ORM | ^0.38.4 | New `session_answer_correction` table schema |
+| drizzle-kit | ^0.30.4 | `generate` + `migrate` for new table and enum value |
+| PostgreSQL 16 | managed via Neon | Stores correction rows; RLS enforced via `tenant_id` |
+| Vercel AI SDK (`ai`) | ^6.0.111 | `generateObject` for reason validation |
+| `@ai-sdk/anthropic` | ^3.0.54 | Provides `claude-haiku-4-5` for validation task |
+| Zod | ^4.3.6 | Schema for AI validation response object |
+| `@react-email/components` | ^1.0.8 | New correction notification template |
+| `@react-email/render` | ^2.0.4 | Async render to HTML for Nodemailer |
+| Nodemailer | ^8.0.1 | SMTP delivery to multiple recipients |
+| `use-intl` (via next-intl ^4.8.3) | ^4.8.3 | `createEmailTranslator` for EN/RO email strings |
+| Auth.js v5 / next-auth | ^5.0.0-beta.30 | Session auth — correction API route authorization |
 
-1. **Load translation messages directly** in the email rendering function (emails are server-side only).
-2. Use `createTranslator()` from `next-intl` to create a translator outside of React context.
-3. Email language follows the **recipient's UI language preference** (not the sender's).
+## Supporting Libraries (Unchanged — All Already Installed)
 
-```typescript
-import { createTranslator } from 'next-intl';
-
-async function sendInviteEmail(recipientLocale: 'en' | 'ro', data: InviteData) {
-  const messages = (await import(`../../../messages/${recipientLocale}.json`)).default;
-  const t = createTranslator({ locale: recipientLocale, messages, namespace: 'emails.invite' });
-
-  const subject = t('subject', { companyName: data.companyName });
-  const html = renderEmail(<InviteEmail t={t} data={data} />);
-  // ... send via nodemailer
-}
-```
-
-Email translation keys live in the same `messages/en.json` and `messages/ro.json` files under an `emails` namespace. No separate translation system for emails.
-
----
-
-## AI Content Language
-
-The Vercel AI SDK (`ai` package, already installed) generates content. The **company-level `content_language`** setting determines:
-
-- AI prompt language instructions (e.g., "Respond in Romanian" in system prompt)
-- System template default text
-- Pre-built questionnaire template translations
-
-This is **not an i18n library concern** -- it is a prompt engineering and DB seed data concern. The i18n stack handles UI strings; AI language is a separate configuration passed to the AI SDK. The `content_language` column on the `tenants` table controls this.
+| Library | Version | Purpose in v1.4 | Notes |
+|---------|---------|-----------------|-------|
+| TanStack Query | ^5.90.21 | Client-side `useMutation` for correction submit | With optimistic update pattern |
+| React Hook Form | ^7.71.2 | Correction reason textarea with inline AI feedback | With Zod resolver |
+| shadcn/ui (radix-ui) | ^1.4.3 | Dialog + Textarea + inline error for correction UI | No new components needed |
+| sonner | ^2.0.7 | Toast on correction success / failure | Already used throughout |
 
 ---
 
 ## Installation
 
+No new packages required. After schema changes:
+
 ```bash
-bun add next-intl
-```
-
-One dependency. That is it.
-
----
-
-## Integration Points with Existing Code
-
-| Existing Code | Change Needed |
-|---------------|---------------|
-| `next.config.ts` | Wrap with `createNextIntlPlugin()` -- the plugin connects `src/i18n/request.ts` |
-| `src/app/layout.tsx` | Add `NextIntlClientProvider`, set `<html lang={locale}>` dynamically |
-| `src/app/(auth)/layout.tsx` | Locale from cookie / `Accept-Language` for unauthenticated users |
-| `src/app/(dashboard)/layout.tsx` | Locale from authenticated user's DB preference |
-| All hardcoded UI strings | Extract to `messages/en.json` + `messages/ro.json` |
-| `src/lib/email/send.ts` | Accept locale param, load correct translations via `createTranslator()` |
-| `src/lib/db/schema/users.ts` | Add `ui_language` column (pgEnum: 'en' / 'ro', default 'en') |
-| `src/lib/db/schema/tenants.ts` | Add `content_language` column (pgEnum: 'en' / 'ro', default 'en') |
-| `src/lib/utils/scheduling.ts` | Refactor date display to use next-intl formatters |
-| Settings pages | Add language picker in account settings (UI language) + company settings (content language) |
-| `src/components/ui/*` | No changes -- shadcn/ui components are label-agnostic; labels come from consuming components |
-
-### next.config.ts change
-
-```typescript
-import type { NextConfig } from "next";
-import createNextIntlPlugin from 'next-intl/plugin';
-
-const withNextIntl = createNextIntlPlugin();
-
-const nextConfig: NextConfig = {
-  output: "standalone",
-};
-
-export default withNextIntl(nextConfig);
-```
-
-### Root layout change
-
-```typescript
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
-
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = await getLocale();
-  const messages = await getMessages();
-
-  return (
-    <html lang={locale} suppressHydrationWarning>
-      <body>
-        <NextIntlClientProvider messages={messages}>
-          <ThemeProvider>{children}</ThemeProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
-}
-```
-
-### Type-safe translation keys (src/types/next-intl.d.ts)
-
-```typescript
-import en from '../../messages/en.json';
-
-declare module 'next-intl' {
-  interface AppConfig {
-    Messages: typeof en;
-  }
-}
+bunx drizzle-kit generate
+bunx drizzle-kit migrate
 ```
 
 ---
 
 ## Alternatives Considered
 
-| Recommended | Alternative | Why Not |
-|-------------|-------------|---------|
-| next-intl | react-i18next | Not designed for App Router. Requires wrapper hacks for Server Components. ~8KB bundle vs ~2KB. next-i18next (the Next.js wrapper) is explicitly incompatible with App Router. |
-| next-intl | react-intl (FormatJS) | Heavier (~12KB). Less Next.js-specific. No built-in App Router integration. More boilerplate for RSC. |
-| next-intl | Paraglide.js | Newer, compile-time approach. Interesting but smaller ecosystem, less battle-tested with Next.js 16. Reasonable for greenfield but adds risk to existing app. |
-| next-intl formatters | date-fns / dayjs | next-intl already wraps `Intl.DateTimeFormat`. Adding date-fns would be redundant for locale-aware formatting. Only consider if you need date arithmetic -- but that is not an i18n concern. |
-| JSON translations | YAML / PO / XLIFF | JSON is next-intl's native format. No build step. TypeScript type inference works out of the box. YAML adds a parser dependency. PO/XLIFF are for professional translation workflows with agencies -- overkill for 2 languages maintained by the founder. |
-| "Without i18n routing" | URL-based `[locale]` routing | Would require restructuring every route with a `[locale]` segment. Adds URL complexity for zero SEO benefit (app is behind auth). Makes the app harder to maintain for no user-facing gain. |
-| Cookie + DB preference | `localePrefix: 'never'` | `localePrefix: 'never'` requires the full routing setup + middleware just to suppress prefixes. "Without i18n routing" is simpler -- no middleware, no routing config, same result. |
+| Capability | Our Choice | Alternative | Why Not |
+|------------|-----------|-------------|---------|
+| Versioning | Dedicated `session_answer_correction` table | Mutate `session_answer` + JSONB diff in `audit_log.metadata` | Loses typed column structure, makes querying corrections expensive, harder to display clean before/after diffs, breaks the uniqueIndex constraint intent |
+| Versioning | Dedicated table | PostgreSQL temporal tables / `pgaudit` extension | Requires Neon extension support verification; adds infra complexity; overkill for a single correction event per answer |
+| Versioning | Dedicated table | Append-only inserts into `session_answer` with a `is_current` flag | Breaks the existing `uniqueIndex` on `(session_id, question_id)` — requires dropping or replacing that constraint and updating all read queries |
+| AI validation | `generateObject` (Vercel AI SDK) | Direct Anthropic REST API | SDK already abstracts retry, streaming, schema validation — no reason to bypass it |
+| AI model | `claude-haiku-4-5` | `claude-sonnet-4-5` | Validation is binary classification + one sentence of feedback — Haiku is sufficient and keeps p95 latency under 1 second |
+| Email multi-recipient | Loop `sendMail` per recipient | `to: [email1, email2, ...]` single call | Correction emails are role-differentiated — report and admins may receive different content variants. Separate renders per recipient are required. |
+| Notification type | Extend existing `notificationTypeEnum` | Separate table for correction notifications | Existing table already tracks email sends for audit; extending with `session_correction` keeps the admin audit query surface uniform |
 
 ---
 
-## What NOT to Use
+## What NOT to Add
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| next-i18next | Explicitly incompatible with App Router. Pages Router only. | next-intl |
-| i18next directly | Low-level, no Next.js integration, requires manual RSC wiring | next-intl (which has ICU format built in) |
-| date-fns / dayjs for display formatting | Redundant -- next-intl wraps native `Intl` API for locale-aware formatting. Adds bundle weight for nothing. | next-intl `useFormatter()` / `getFormatter()` |
-| Locale URL segments (`/en/`, `/ro/`) | B2B SaaS behind auth. No SEO need. Restructures all routes for zero benefit. | Cookie + DB preference via "without i18n routing" |
-| Professional TMS (Crowdin, Phrase, Lokalise) | Two languages, one maintainer. Translation management systems add complexity for zero benefit at this scale. Revisit if you add 5+ languages. | JSON files in repo, reviewed in PRs |
-| `navigator.language` directly | Inconsistent across SSR/client. next-intl handles negotiation properly via `getRequestConfig`. | next-intl locale resolution in `request.ts` |
-| Separate i18n system for emails | Adds a second translation source of truth. Drift guaranteed. | `createTranslator()` from next-intl with the same message files |
-| next-intl middleware | Not needed for the "without i18n routing" setup. Would add unnecessary complexity. | Direct locale resolution in `src/i18n/request.ts` |
+| `pgaudit` PostgreSQL extension | Neon managed PostgreSQL — extension availability unverified; application-level audit is sufficient | `session_answer_correction` table + `logAuditEvent` |
+| Temporal tables / history table extension | No Neon support evidence; overkill for a single correction event type | Explicit correction table with `original_*` columns |
+| Standalone versioning library (e.g. `drizzle-history`) | No production-grade package exists for this; no ecosystem adoption | Drizzle `pgTable` with explicit columns |
+| Bull / BullMQ / queue for correction email | Corrections are low-frequency events; synchronous non-fatal send is acceptable; Inngest was already removed from this project for this reason | Direct async call from API route (fire-and-forget, non-fatal try/catch) |
+| Resend SDK for correction emails | Project decision (documented in PROJECT.md Key Decisions) is Nodemailer for provider flexibility | `getTransport().sendMail()` from `src/lib/email/send.ts` |
+| DOMPurify / sanitize-html for correction reason | Reason is plain text stored in DB, never rendered as raw HTML in the email (React Email renders safe JSX). Adding sanitization here without fixing the 9 existing XSS sites (tracked in `.planning/codebase/CONCERNS.md` as CRITICAL) is security theater. | Fix XSS at display layer when addressing CONCERNS.md |
+| New i18n library for email translations | `createEmailTranslator` from `src/lib/email/translator.ts` already provides this; a second translation system creates drift | Add new keys to existing `messages/en/emails.json` and `messages/ro/emails.json` |
 
 ---
 
-## Romanian-Specific Considerations
+## Integration Points Summary
 
-### Plural forms
+### API Route Pattern
 
-Romanian has **3 plural forms** (not 2 like English). ICU message format handles this:
+`POST /api/sessions/[id]/corrections`
 
-```json
-{
-  "sessions": "{count, plural, one {# sesiune} few {# sesiuni} other {# de sesiuni}}"
-}
-```
+1. Verify auth: session must belong to authenticated manager's series
+2. Call `validateCorrectionReason(reason, tenantLanguage)` → `{ valid, feedback, languageCompliant }`
+3. If `valid: false` → return 422 with `feedback` (no DB write)
+4. `withTenantContext` transaction:
+   - Insert into `session_answer_correction` (original values + new values + reason + ai_validation_status)
+   - Update `session_answer` row with new answer values
+   - `logAuditEvent(tx, { action: 'session_answer_corrected', ... })`
+5. After transaction commits: fire-and-forget `sendCorrectionNotificationEmails(...)` (non-fatal, same pattern as `sendPostSessionSummaryEmails`)
 
-The `few` category covers 0 and numbers 2-19, plus numbers ending in 02-19 (e.g., 102, 219). next-intl delegates plural rule selection to the `Intl.PluralRules` API, which has correct Romanian rules built into every modern browser and Node.js.
+### New Files to Create
 
-### Date format
+| File | What It Is |
+|------|-----------|
+| `src/lib/db/schema/corrections.ts` | Drizzle table definition for `session_answer_correction` |
+| `src/lib/ai/schemas/correction-validation.ts` | Zod schema for AI validation response |
+| `src/lib/email/templates/correction-notification.tsx` | React Email template for correction notice |
+| `src/lib/notifications/correction-email.ts` | Sender function (report + admins loop) |
+| `src/app/api/sessions/[id]/corrections/route.ts` | POST API route |
 
-Romanian uses `dd.MM.yyyy` (day-first with dots) and 24-hour time. The `Intl.DateTimeFormat` API handles this natively when locale is set to `ro` -- no manual format strings needed.
+### Files to Modify
 
-### Font considerations
-
-Romanian uses diacritics: a-breve, i-circumflex, s-comma-below, t-comma-below. The Geist font (already in use) supports these characters. No font changes needed.
+| File | Change |
+|------|--------|
+| `src/lib/db/schema/enums.ts` | Add `'session_correction'` to `notificationTypeEnum` |
+| `src/lib/db/schema/index.ts` | Export `corrections` schema |
+| `src/lib/ai/service.ts` | Add `validateCorrectionReason` function |
+| `src/lib/ai/models.ts` | Add `correctionValidator: anthropic('claude-haiku-4-5')` entry |
+| `messages/en/emails.json` | Add correction notification email keys |
+| `messages/ro/emails.json` | Add Romanian translations for correction notification keys |
 
 ---
 
-## Version Compatibility
+## Version Compatibility Notes
 
-| Package | Compatible With | Notes |
-|---------|-----------------|-------|
-| next-intl@4.x | Next.js 14+ (incl. 16.x) | ESM-only distribution (except plugin for CJS next.config). Matches project ESM setup. |
-| next-intl@4.x | TypeScript 5+ | Required. Project already on TypeScript 5. |
-| next-intl@4.x | React 18+ / 19 | Full RSC support. Project on React 19.2 -- fully compatible. |
-| next-intl@4.x | Turbopack | Supported via the `createNextIntlPlugin()` wrapper. |
-| next-intl@4.x | Bun | Standard npm package, no native bindings. Works with Bun. |
+| Package | Constraint | Notes |
+|---------|-----------|-------|
+| `ai ^6.0.111` | Requires `@ai-sdk/anthropic ^3.0.x` | Both installed and working together in production |
+| `drizzle-orm ^0.38.4` | Requires `drizzle-kit ^0.30.x` for codegen | Both installed |
+| `@react-email/render ^2.0.4` | `render()` is async (breaking change from v1) | Already using `await render(...)` in `summary-email.ts` — new template follows same pattern |
+| `zod ^4.3.6` | Zod v4 has syntax changes from v3 (`z.string().min(1)` → same; `z.object` → same; no `.parse` behavior change) | Already on v4 throughout — use v4 syntax in new schema |
 
 ---
 
 ## Sources
 
-- [next-intl: App Router without i18n routing](https://next-intl.dev/docs/getting-started/app-router/without-i18n-routing) -- setup steps verified, HIGH confidence
-- [next-intl 4.0 release blog](https://next-intl.dev/blog/next-intl-4-0) -- breaking changes, AppConfig migration, version requirements, HIGH confidence
-- [next-intl npm (v4.8.3)](https://www.npmjs.com/package/next-intl) -- latest version confirmed, HIGH confidence
-- [next-intl date/time formatting](https://next-intl.dev/docs/usage/dates-times) -- Intl.DateTimeFormat wrapper confirmed, HIGH confidence
-- [next-intl number formatting](https://next-intl.dev/docs/usage/numbers) -- Intl.NumberFormat wrapper confirmed, HIGH confidence
-- [next-intl routing configuration](https://next-intl.dev/docs/routing/configuration) -- localePrefix options verified, HIGH confidence
-- [Next.js i18n guide](https://nextjs.org/docs/app/guides/internationalization) -- official Next.js i18n guidance, HIGH confidence
-- [MDN Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat) -- browser API reference, HIGH confidence
-- [Smashing Magazine: Intl API guide](https://www.smashingmagazine.com/2025/08/power-intl-api-guide-browser-native-internationalization/) -- Intl vs libraries comparison, MEDIUM confidence
+- `src/lib/db/schema/answers.ts` — confirmed `session_answer` uniqueIndex constraint and typed column pattern
+- `src/lib/db/schema/audit-log.ts` — confirmed existing audit trail structure and JSONB metadata field
+- `src/lib/db/schema/enums.ts` — confirmed `notificationTypeEnum` values and extension path
+- `src/lib/db/schema/notifications.ts` — confirmed notification table structure for correction audit inserts
+- `src/lib/ai/service.ts` — confirmed `generateObject` and `Output.object({ schema })` patterns both in use
+- `src/lib/ai/models.ts` — confirmed model tier assignments and Haiku usage for short tasks
+- `src/lib/ai/pipeline.ts` — confirmed fire-and-forget email pattern and `withTenantContext` transaction usage
+- `src/lib/notifications/summary-email.ts` — confirmed multi-recipient loop and per-recipient HTML render
+- `src/lib/email/translator.ts` — confirmed `createEmailTranslator` i18n pattern
+- `src/lib/audit/log.ts` — confirmed `logAuditEvent` interface and transaction requirement
+- `package.json` — confirmed all dependency versions currently installed
+- All findings: HIGH confidence — based on live codebase, not training data
 
 ---
-*Stack research for: i18n in 1on1 (Next.js App Router SaaS, English + Romanian)*
-*Researched: 2026-03-05*
+
+*Stack research for: v1.4 Session Corrections & Accountability — 1on1 SaaS*
+*Researched: 2026-03-10*
