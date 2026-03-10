@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- TDD RED: failing schema shape tests for `sessionAnswerHistory` table and `notificationTypeEnum` enum extension (phase 24-01)
+
 ### Fixed
 - Circular manager assignment error now shows the full management loop chain (e.g. "Aurel Filip → Cora P → Ciprian Dobrea → Aurel Filip") instead of a generic message
 
