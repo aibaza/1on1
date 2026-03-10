@@ -57,3 +57,19 @@ export function isSeriesParticipant(
 export function isAdmin(role: string): boolean {
   return role === "admin";
 }
+
+/**
+ * Check if user can correct answers on a session belonging to this series.
+ *
+ * Admin can correct any session in the tenant.
+ * Manager can only correct sessions on their own series (userId === series.managerId).
+ * Members cannot correct answers.
+ */
+export function canCorrectSession(
+  userId: string,
+  userRole: string,
+  series: { managerId: string }
+): boolean {
+  if (isAdmin(userRole)) return true;
+  return userRole === "manager" && userId === series.managerId;
+}

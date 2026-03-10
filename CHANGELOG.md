@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `src/lib/validations/correction.ts`: `correctionInputSchema` and `validateReasonSchema` Zod exports with UUID + length validation (phase 25-02)
+- `canCorrectSession` RBAC helper in `src/lib/auth/rbac.ts` — admin bypass + own-series manager check (phase 25-02)
 - TDD RED: failing tests for `correctionInputSchema` and `validateReasonSchema` Zod validation in `src/lib/validations/__tests__/correction.test.ts` (phase 25-01)
 - TDD RED: failing tests for `reasonValidationResultSchema` AI result schema shape in `src/lib/ai/schemas/__tests__/correction.test.ts` (phase 25-01)
 - TDD RED: `canCorrectSession` RBAC tests added to `src/lib/auth/__tests__/rbac.test.ts` — 4 tests fail (function does not exist yet), existing 5 tests remain passing (phase 25-01)
