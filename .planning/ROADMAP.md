@@ -171,7 +171,10 @@ Plans:
   2. The table has `tenant_id` on every row and an active Row-Level Security policy — no cross-tenant reads are possible, including via `adminDb`
   3. `notificationTypeEnum` includes `session_correction` — the enum is extended in the same migration without recreating it
   4. Drizzle schema is exported from `index.ts` and `bunx drizzle-kit migrate` runs cleanly against the local database
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 24-01-PLAN.md — TDD: Write failing tests + implement sessionAnswerHistory schema + extend notificationTypeEnum (Wave 1)
+- [ ] 24-02-PLAN.md — Hand-written migration SQL, journal registration, apply migration + full phase gate (Wave 2)
 
 ### Phase 25: Core API & Business Logic
 **Goal**: The full correction transaction is implemented and tested — a manager can submit a correction that atomically snapshots the original, updates the answer, recomputes the session score, writes the audit log, and separately validates reasons through an AI endpoint
@@ -234,7 +237,7 @@ Plans:
 | 21. Content & Data Display | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 22. Safety, Errors & Inputs | v1.3 | 0/? | Not started | — |
 | 23. Low-Priority Polish | v1.3 | 0/? | Not started | — |
-| 24. Schema Foundation | v1.4 | 0/? | Not started | — |
+| 24. Schema Foundation | v1.4 | 0/2 | Not started | — |
 | 25. Core API & Business Logic | v1.4 | 0/? | Not started | — |
 | 26. Email Notification & i18n | v1.4 | 0/? | Not started | — |
 | 27. UI Integration | v1.4 | 0/? | Not started | — |
