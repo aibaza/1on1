@@ -113,7 +113,7 @@ Phase plans: `docs/wiki/Phase-01.md` through `Phase-17.md`. Phase dependency gra
 
 ## Phase Progress Tracking
 
-Implementation progress is tracked live on the [GitHub Wiki](https://github.com/dobrician/1on1/wiki/Phase-Log).
+Implementation progress is tracked live on the [GitHub Wiki](https://github.com/aibaza/1on1/wiki/Phase-Log).
 
 **When completing phase work, you MUST update the wiki:**
 

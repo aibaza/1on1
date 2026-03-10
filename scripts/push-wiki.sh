@@ -9,7 +9,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WIKI_DIR="$REPO_ROOT/docs/wiki"
 TMP_DIR="$(mktemp -d)"
-WIKI_URL="${WIKI_GIT_URL:-https://github.com/dobrician/1on1.wiki.git}"
+WIKI_URL="${WIKI_GIT_URL:-https://github.com/aibaza/1on1.wiki.git}"
 
 cleanup() { rm -rf "$TMP_DIR"; }
 trap cleanup EXIT

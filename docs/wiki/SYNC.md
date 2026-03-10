@@ -16,7 +16,7 @@ The `sync-wiki` workflow (`.github/workflows/sync-wiki.yml`) runs automatically 
 
 GitHub requires the first wiki page to be created via the web UI before the wiki git repo exists. This is a one-time step:
 
-1. Go to https://github.com/dobrician/1on1/wiki
+1. Go to https://github.com/aibaza/1on1/wiki
 2. Click **Create the first page**
 3. Click **Save page**
 4. Trigger the `sync-wiki` workflow from the Actions tab (or run `./scripts/sync-wiki.sh`)

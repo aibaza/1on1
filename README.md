@@ -13,7 +13,7 @@ A SaaS application that helps organizations run effective, data-driven 1:1 meeti
 
 ## Documentation
 
-Full project documentation is available on the [GitHub Wiki](https://github.com/dobrician/1on1/wiki).
+Full project documentation is available on the [GitHub Wiki](https://github.com/aibaza/1on1/wiki).
 
 | Document | Description |
 |----------|-------------|

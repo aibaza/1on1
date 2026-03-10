@@ -41,7 +41,7 @@ A SaaS platform that helps organizations run effective, data-driven 1:1 meetings
 
 ## Repository
 
-- **Source**: [github.com/dobrician/1on1](https://github.com/dobrician/1on1)
+- **Source**: [github.com/aibaza/1on1](https://github.com/aibaza/1on1)
 - **License**: AGPL v3
 - **Wiki source**: Versioned in `docs/wiki/` — synced to GitHub Wiki
 

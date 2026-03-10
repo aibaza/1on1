@@ -10,12 +10,12 @@ set -euo pipefail
 #
 # Usage:
 #   ./scripts/sync-wiki.sh           # sync using default HTTPS URL
-#   WIKI_GIT_URL=git@github.com:dobrician/1on1.wiki.git ./scripts/sync-wiki.sh  # SSH
+#   WIKI_GIT_URL=git@github.com:aibaza/1on1.wiki.git ./scripts/sync-wiki.sh  # SSH
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WIKI_DIR="$REPO_ROOT/docs/wiki"
 TMP_DIR="$(mktemp -d)"
-WIKI_URL="${WIKI_GIT_URL:-https://github.com/dobrician/1on1.wiki.git}"
+WIKI_URL="${WIKI_GIT_URL:-https://github.com/aibaza/1on1.wiki.git}"
 
 cleanup() { rm -rf "$TMP_DIR"; }
 trap cleanup EXIT
@@ -27,7 +27,7 @@ if ! git ls-remote "$WIKI_URL" &>/dev/null; then
   echo "ERROR: Wiki repo not found at $WIKI_URL"
   echo ""
   echo "The GitHub Wiki must be initialized first:"
-  echo "  1. Go to https://github.com/dobrician/1on1/wiki"
+  echo "  1. Go to https://github.com/aibaza/1on1/wiki"
   echo "  2. Click 'Create the first page'"
   echo "  3. Click 'Save page'"
   echo "  4. Run this script again"
