@@ -186,7 +186,11 @@ Plans:
   3. `POST /api/sessions/[id]/corrections/validate-reason` returns AI feedback (pass/fail + one sentence) without performing any database write — AI availability does not block the mutation endpoint
   4. A manager can only correct sessions from their own series; an admin can correct any session in the tenant — any other actor receives a 403 response
   5. Submitting a reason shorter than 20 characters or longer than 500 characters is rejected by Zod validation before any AI or database call is made
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 25-01-PLAN.md — TDD Wave 1: Write failing tests for Zod schemas, canCorrectSession RBAC, AI result schema, scoring
+- [ ] 25-02-PLAN.md — Wave 2: Implement Zod schemas, canCorrectSession, AI schemas/model/service — make tests GREEN
+- [ ] 25-03-PLAN.md — Wave 3: Implement correction mutation route and validate-reason AI route
 
 ### Phase 26: Email Notification & i18n
 **Goal**: All involved parties receive one notification email per correction event — report and admins are informed with a session link, emails render correctly in English and Romanian, and multiple rapid corrections to the same session produce a single email rather than a flood
@@ -238,6 +242,6 @@ Plans:
 | 22. Safety, Errors & Inputs | v1.3 | 0/? | Not started | — |
 | 23. Low-Priority Polish | v1.3 | 0/? | Not started | — |
 | 24. Schema Foundation | 2/2 | Complete    | 2026-03-10 | — |
-| 25. Core API & Business Logic | v1.4 | 0/? | Not started | — |
+| 25. Core API & Business Logic | v1.4 | 0/3 | Not started | — |
 | 26. Email Notification & i18n | v1.4 | 0/? | Not started | — |
 | 27. UI Integration | v1.4 | 0/? | Not started | — |
