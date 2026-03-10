@@ -1,4 +1,5 @@
 import { generateText, generateObject, Output } from "ai";
+import { reasonValidationResultSchema, type ReasonValidationResult } from "./schemas/correction";
 import type { ModelMessage } from "ai";
 import { models } from "./models";
 import { summarySchema, type AISummary } from "./schemas/summary";
@@ -247,4 +248,34 @@ export async function generateTemplateChatTurn(
   } catch (e) {
     throw new Error("AI generation failed: " + String(e));
   }
+}
+
+/**
+ * Validate a correction reason for quality, relevance, and professional language.
+ *
+ * Called ONLY from the /validate-reason endpoint — NEVER inside a DB transaction.
+ * AI availability must not block the correction mutation endpoint.
+ *
+ * On error: throws. Caller (validate-reason route) catches and returns degraded { pass: true, feedback: null }.
+ */
+export async function validateCorrectionReason(
+  reason: string,
+  language?: string
+): Promise<ReasonValidationResult> {
+  const systemPrompt = withLanguageInstruction(
+    "You are a correction reason validator for a 1:1 meeting tool. " +
+    "Evaluate whether the provided correction reason is specific, professional, and clearly explains " +
+    "why an answer needs to be corrected. A good reason identifies what was wrong and why the new answer is more accurate. " +
+    "A poor reason is vague (e.g., 'I made a mistake'), unrelated to the answer, or too brief.",
+    language
+  );
+
+  const { object } = await generateObject({
+    model: models.correctionValidator,
+    schema: reasonValidationResultSchema,
+    system: systemPrompt,
+    prompt: `Correction reason: "${reason}"`,
+  });
+
+  return object;
 }

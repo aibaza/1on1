@@ -21,4 +21,6 @@ export const models = {
   actionSuggestions: anthropic("claude-haiku-4-5"),
   /** Template AI editor — latest Sonnet for best domain reasoning quality. */
   templateEditor: anthropic("claude-sonnet-4-6"),
+  /** Correction reason validator — short structured output, Haiku is sufficient. */
+  correctionValidator: anthropic("claude-haiku-4-5"),
 } as const;

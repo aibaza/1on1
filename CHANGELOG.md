@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `src/lib/ai/schemas/correction.ts`: `reasonValidationResultSchema` Zod schema + `ReasonValidationResult` type for AI output validation (phase 25-02)
+- `src/lib/ai/models.ts`: `correctionValidator` model entry pointing to `claude-haiku-4-5` (phase 25-02)
+- `src/lib/ai/service.ts`: `validateCorrectionReason` async function — calls `generateObject` with `reasonValidationResultSchema`; caller handles degraded response on error (phase 25-02)
 - `src/lib/validations/correction.ts`: `correctionInputSchema` and `validateReasonSchema` Zod exports with UUID + length validation (phase 25-02)
 - `canCorrectSession` RBAC helper in `src/lib/auth/rbac.ts` — admin bypass + own-series manager check (phase 25-02)
 - TDD RED: failing tests for `correctionInputSchema` and `validateReasonSchema` Zod validation in `src/lib/validations/__tests__/correction.test.ts` (phase 25-01)
