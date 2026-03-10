@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Session Corrections & Accountability
-status: planning
+status: roadmap_created
 stopped_at: ""
 last_updated: "2026-03-10T00:00:00.000Z"
-last_activity: 2026-03-10 — Milestone v1.4 started
+last_activity: 2026-03-10 — Roadmap created for v1.4 (4 phases, 13 requirements mapped)
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -21,79 +21,48 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-10)
 
 **Core value:** The AI context layer that makes every meeting smarter than the last
-**Current focus:** Defining requirements — v1.4 Session Corrections & Accountability
+**Current focus:** v1.4 Session Corrections & Accountability — Phase 24 ready to plan
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 24 of 27 (Schema Foundation) — not started
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-10 — Milestone v1.4 started
+Status: Ready to plan Phase 24
+Last activity: 2026-03-10 — Roadmap created for v1.4 (phases 24-27, 13 requirements)
 
-Progress: [████████████████░░░░░░░░░░] 61% (phases 1-17 complete, 18-23 pending)
+Progress: [████████████████░░░░░░░░░░] 62% (phases 1-21 complete, 22-27 pending)
 
 ## Performance Metrics
 
-**Velocity (v1.2 reference):**
-- Total plans completed: 69 (v1.0: 40 + v1.1: 13 + v1.2: 16)
-- Average duration: ~6-8 min per plan (v1.1/v1.2 reference)
-- Total execution time: ~7h (v1.2)
+**Velocity (v1.3 reference):**
+- Total plans completed: 85 (v1.0: 40 + v1.1: 13 + v1.2: 16 + v1.3: 16 to date)
+- Average duration: ~6-8 min per plan
+- Total execution time: ~7h (v1.2), similar expected for v1.3/v1.4
 
-**By Phase (v1.2):**
+**By Phase (recent):**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 15-schema-spec-export | 4/4 | ~2h | ~30min |
-| 16-template-import | 5/5 | ~2.5h | ~30min |
-| 17-ai-generator-diy-kit | 7/7 | ~2.5h | ~21min |
+| Phase | Plans | Status |
+|-------|-------|--------|
+| 18-critical-bugs | 3/3 | Complete |
+| 19-design-system | 3/3 | Complete |
+| 20-mobile-responsiveness | 4/4 | Complete |
+| 21-content-data-display | 4/4 | Complete |
+| 22-safety-errors-inputs | 0/? | Not started |
+| 23-low-priority-polish | 0/? | Not started |
 
 *Updated after each plan completion*
-| Phase 18-critical-bugs P01 | 3 | 1 tasks | 2 files |
-| Phase 18-critical-bugs P02 | 4 | 2 tasks | 4 files |
-| Phase 18-critical-bugs P03 | 3 | 2 tasks | 2 files |
-| Phase 19-design-system P01 | 8 | 1 tasks | 6 files |
-| Phase 19-design-system P03 | 3 | 2 tasks | 4 files |
-| Phase 19-design-system P02 | 5 | 2 tasks | 11 files |
-| Phase 20-mobile-responsiveness P01 | 525553 | 3 tasks | 6 files |
-| Phase 20-mobile-responsiveness P03 | 3 | 2 tasks | 3 files |
-| Phase 20-mobile-responsiveness P02 | 10 | 3 tasks | 4 files |
-| Phase 20-mobile-responsiveness P04 | 8 | 1 tasks | 2 files |
-| Phase 21-content-data-display P01 | 5 | 1 tasks | 2 files |
-| Phase 21-content-data-display P02 | 5 | 1 tasks | 2 files |
-| Phase 21-content-data-display P03 | 5 | 2 tasks | 5 files |
-| Phase 21-content-data-display P04 | 5 | 1 tasks | 4 files |
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions archived to PROJECT.md Key Decisions table and STATE.md history below.
 Recent decisions affecting current work:
 
-- [v1.3 roadmap]: v1.3 is UI/UX Improvements (not Playwright Testing) — Playwright deferred to v1.4
-- [v1.3 roadmap]: Phase 22 (Safety/Errors/Inputs) depends on Phase 19 (Design System) — DES-04 empty-state component consumed by ERR-01 (404 page)
-- [v1.3 roadmap]: POL-02 (seed data fix "1:1 Structurat" → "1:1 Structured") affects seeded data only, not schema or migrations
-- [Phase 18-critical-bugs]: contentToHtml Test 2 asserts result contains text 'Hello' rather than exact HTML — avoids fragility from Tiptap extension config differences
-- [Phase 18-critical-bugs]: contentToHtml uses generateHTML from @tiptap/core; happy-dom installed for Vitest DOM environment; extensions [StarterKit, Link] match notes-editor.tsx exactly
-- [Phase 18-critical-bugs]: aiEditor.chat.title key missing — used hardcoded 'Chat' string as fallback per plan instructions
-- [Phase 19-design-system]: Install @testing-library/react in Wave 0 (not Wave 1) to prevent blocking infra gap
-- [Phase 19-design-system]: SectionLabel test uses categoryStepTestHelpers.getSectionLabelClassName() exported helper — Wave 1 must add this export
-- [Phase 19-design-system]: statusVariant Wave 0 test imports named export — Wave 1 adds export keyword to const and fixes in_progress→default, completed→outline
-- [Phase 19-design-system]: Badge variant semantic rule: default=active/attention, outline=receded/complete (in_progress=default, completed=outline in session-timeline)
-- [Phase 19-design-system]: categoryStepTestHelpers exported const pattern enables className assertions without full component render (avoids next-intl provider setup)
-- [Phase 19-design-system]: DES-01 verified as already satisfied — auth buttons use default variant resolving to --primary, no code change needed
-- [Phase 19-design-system]: EmptyState action prop accepts undefined — conditional CTAs use canCreate ? <CTA /> : undefined pattern
-- [Phase 20-mobile-responsiveness]: jest-dom setupFiles added globally to vitest.config.ts to ensure consistent DOM matcher availability across all test files
-- [Phase 20-mobile-responsiveness]: AuditLogClient test requires one mock entry because table only renders when entries.length > 0
-- [Phase 20-mobile-responsiveness]: Secondary people columns (email, teams, manager, status) hidden on mobile via TanStack Table meta.className pattern; audit log Target column hidden on mobile with direct className
-- [Phase 20-mobile-responsiveness]: ImportDialog controlled props are optional; uncontrolled desktop trigger unchanged; mobile overflow uses onSelect+state to avoid portal conflicts
-- [Phase 20-mobile-responsiveness]: AlertDialogTrigger NOT nested inside DropdownMenuItem — controlled archiveDialogOpen state pattern used instead to avoid Radix focus-trap conflict
-- [Phase 20-mobile-responsiveness]: Template editor mobile overflow: ExportButton omitted from mobile dropdown (renders own dialog); available from template list card
-- [Phase 21-content-data-display]: Score shown as numeric Badge not stars on series cards — CON-02/CON-03 satisfied
-- [Phase 21-content-data-display]: Count Badge omitted when count = 0 in CategoryStep sections — cleaner UI for empty Talking Points/Action Items
-- [Phase 21-content-data-display]: Team heatmap threshold guard: rows.length > 0 && rows.length < 3 separates low-contributor case from zero-data case (CON-05)
-- [Phase 21-content-data-display]: Session summary outOf label: purely an i18n string fix from '5.0' to '5' — score scale verified as 1-5 via computeSessionScore (SCORE-01)
-- [Phase 21-content-data-display]: Analytics overview aggregate stats: empty-state uses '—' per-card (fine-grained null checks); role-scoped via seriesConditionForAgg=undefined for admin
+- [v1.4 roadmap]: Phases 24-27 — schema first, then API, then email, then UI; strict dependency chain
+- [v1.4 roadmap]: AI validation runs via separate `/validate-reason` endpoint — AI outages do not block the mutation
+- [v1.4 roadmap]: Email uses link-only format (no inline answer content) — privacy-safe per research finding
+- [v1.4 roadmap]: 5-minute session-level email deduplication — one email per session window, not per answer
+- [v1.3 roadmap]: Phase 22 depends on Phase 19 — ERR-01 (404 page) uses DES-04 empty-state component
 
 ### Pending Todos
 
@@ -101,10 +70,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 22 depends on Phase 19 completing first — ERR-01 (404 page) should use DES-04 empty-state component; plan Phase 22 after Phase 19 is verified
+- v1.3 phases 22-23 must complete before v1.4 phases 24-27 begin (Phase 24 depends on Phase 23)
+- Phase 25 AI prompt design: review current `generateObject` patterns in `src/lib/ai/service.ts` before coding (15-min review flagged by research)
 
 ## Session Continuity
 
-Last session: 2026-03-08T09:11:38.577Z
-Stopped at: Completed 21-04-PLAN.md (CON-01 analytics aggregate stat cards)
+Last session: 2026-03-10
+Stopped at: Roadmap created for v1.4 — phases 24-27 defined, requirements mapped
 Resume file: None

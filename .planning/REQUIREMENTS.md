@@ -66,25 +66,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CORR-01 | — | Pending |
-| CORR-02 | — | Pending |
-| CORR-03 | — | Pending |
-| WFLOW-01 | — | Pending |
-| WFLOW-02 | — | Pending |
-| WFLOW-03 | — | Pending |
-| WFLOW-04 | — | Pending |
-| WFLOW-05 | — | Pending |
-| NOTIF-01 | — | Pending |
-| NOTIF-02 | — | Pending |
-| NOTIF-03 | — | Pending |
-| NOTIF-04 | — | Pending |
-| ANLT-01 | — | Pending |
+| CORR-01 | Phase 27 | Pending |
+| CORR-02 | Phase 24 | Pending |
+| CORR-03 | Phase 27 | Pending |
+| WFLOW-01 | Phase 25 | Pending |
+| WFLOW-02 | Phase 25 | Pending |
+| WFLOW-03 | Phase 25 | Pending |
+| WFLOW-04 | Phase 27 | Pending |
+| WFLOW-05 | Phase 27 | Pending |
+| NOTIF-01 | Phase 26 | Pending |
+| NOTIF-02 | Phase 26 | Pending |
+| NOTIF-03 | Phase 25 | Pending |
+| NOTIF-04 | Phase 26 | Pending |
+| ANLT-01 | Phase 25 | Pending |
 
 **Coverage:**
 - v1.4 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-10*
-*Last updated: 2026-03-10 after initial definition*
+*Last updated: 2026-03-10 — traceability filled after roadmap creation*

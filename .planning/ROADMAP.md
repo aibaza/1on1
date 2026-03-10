@@ -6,7 +6,7 @@
 - ✅ **v1.1 Internationalization** — Phases 11-14 (shipped 2026-03-07)
 - ✅ **v1.2 AI-Ready Templates** — Phases 15-17 (shipped 2026-03-07)
 - 🚧 **v1.3 UI/UX Improvements** — Phases 18-23 (in progress)
-- 📋 **v1.4 Playwright Testing Suite** — Phases 24+ (planned)
+- 📋 **v1.4 Session Corrections & Accountability** — Phases 24-27 (planned)
 
 ## Phases
 
@@ -61,6 +61,15 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 - [x] **Phase 21: Content & Data Display** — Analytics aggregate metrics, score display, session card data density (completed 2026-03-08)
 - [ ] **Phase 22: Safety, Errors & Inputs** — Danger zones, 404 pages, date picker consistency
 - [ ] **Phase 23: Low-Priority Polish** — 9 small text, visual, and layout tweaks
+
+### 📋 v1.4 Session Corrections & Accountability (Planned)
+
+**Milestone Goal:** Allow managers to correct answers in past sessions with a mandatory AI-validated explanation, producing a full append-only audit trail and email notification to all involved parties — bringing EHR-grade amendment accountability to 1:1 meeting records.
+
+- [ ] **Phase 24: Schema Foundation** — Append-only history table with RLS, notificationTypeEnum extension, migration
+- [ ] **Phase 25: Core API & Business Logic** — RBAC helper, AI validation service, both API routes, in-transaction audit log, score recompute
+- [ ] **Phase 26: Email Notification & i18n** — Correction email template in EN+RO, session-level deduplication sender
+- [ ] **Phase 27: UI Integration** — Correction dialog, Amended badge, correction history panel wired into session detail
 
 ## Phase Details
 
@@ -153,6 +162,51 @@ Plans:
   8. Mobile history page search input placeholder is short enough to display without truncation
 **Plans**: TBD
 
+### Phase 24: Schema Foundation
+**Goal**: The database is structurally ready for corrections — original answer values can never be lost, cross-tenant exposure is impossible, and the notification system recognizes correction events
+**Depends on**: Phase 23
+**Requirements**: CORR-02
+**Success Criteria** (what must be TRUE):
+  1. A `session_answer_history` table exists with typed snapshot columns (`answer_text`, `answer_numeric`, `answer_json`) that mirror `session_answers` — original values are captured, not overwritten
+  2. The table has `tenant_id` on every row and an active Row-Level Security policy — no cross-tenant reads are possible, including via `adminDb`
+  3. `notificationTypeEnum` includes `session_correction` — the enum is extended in the same migration without recreating it
+  4. Drizzle schema is exported from `index.ts` and `bunx drizzle-kit migrate` runs cleanly against the local database
+**Plans**: TBD
+
+### Phase 25: Core API & Business Logic
+**Goal**: The full correction transaction is implemented and tested — a manager can submit a correction that atomically snapshots the original, updates the answer, recomputes the session score, writes the audit log, and separately validates reasons through an AI endpoint
+**Depends on**: Phase 24
+**Requirements**: ANLT-01, WFLOW-01, WFLOW-02, WFLOW-03, NOTIF-03
+**Success Criteria** (what must be TRUE):
+  1. `POST /api/sessions/[id]/corrections` accepts a valid correction, writes the history snapshot, updates the answer, and writes a `session.answer_corrected` audit log entry all within a single database transaction — no partial state is possible
+  2. When a numeric answer is corrected, `session.session_score` is recomputed within that same transaction before the response is returned
+  3. `POST /api/sessions/[id]/corrections/validate-reason` returns AI feedback (pass/fail + one sentence) without performing any database write — AI availability does not block the mutation endpoint
+  4. A manager can only correct sessions from their own series; an admin can correct any session in the tenant — any other actor receives a 403 response
+  5. Submitting a reason shorter than 20 characters or longer than 500 characters is rejected by Zod validation before any AI or database call is made
+**Plans**: TBD
+
+### Phase 26: Email Notification & i18n
+**Goal**: All involved parties receive one notification email per correction event — report and admins are informed with a session link, emails render correctly in English and Romanian, and multiple rapid corrections to the same session produce a single email rather than a flood
+**Depends on**: Phase 25
+**Requirements**: NOTIF-01, NOTIF-02, NOTIF-04
+**Success Criteria** (what must be TRUE):
+  1. When a session answer is corrected, the report (employee) receives an email containing a direct link to the session — no inline answer content appears in the email body
+  2. All active tenant admins receive the same correction notification email — admins added after the correction do not receive retroactive emails
+  3. The correction email renders correctly in both English and Romanian using `createEmailTranslator` — no raw translation keys appear in either language
+  4. Five corrections to the same session within a 5-minute window produce exactly one email per recipient, not five — the deduplication window resets on each new correction within the window
+**Plans**: TBD
+
+### Phase 27: UI Integration
+**Goal**: Users can initiate, review, and track corrections entirely within the session detail page — inline before/after form, AI feedback on the reason field, Amended badges on modified answers, and a correction history panel accessible without navigation
+**Depends on**: Phase 26
+**Requirements**: CORR-01, CORR-03, WFLOW-04, WFLOW-05
+**Success Criteria** (what must be TRUE):
+  1. Every corrected answer row on the session detail page shows an "Amended" badge — a user viewing the session can immediately identify which answers have been modified
+  2. A manager (or admin) clicking the edit icon on an answer row sees the original and new answer values side by side inline on the same page — no separate page navigation occurs
+  3. The correction reason field shows AI feedback (pass/fail + one-sentence note) after the manager stops typing, without leaving the session detail page
+  4. A correction history panel at the bottom of the session detail page lists all amendments with timestamp, actor name, and reason — the panel is collapsed when no corrections exist and expanded by default when corrections are present
+**Plans**: TBD
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -177,6 +231,10 @@ Plans:
 | 18. Critical Bugs | v1.3 | 3/3 | Complete | 2026-03-08 |
 | 19. Design System | v1.3 | 3/3 | Complete | 2026-03-08 |
 | 20. Mobile Responsiveness | v1.3 | 4/4 | Complete | 2026-03-08 |
-| 21. Content & Data Display | 4/4 | Complete    | 2026-03-08 | — |
+| 21. Content & Data Display | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 22. Safety, Errors & Inputs | v1.3 | 0/? | Not started | — |
 | 23. Low-Priority Polish | v1.3 | 0/? | Not started | — |
+| 24. Schema Foundation | v1.4 | 0/? | Not started | — |
+| 25. Core API & Business Logic | v1.4 | 0/? | Not started | — |
+| 26. Email Notification & i18n | v1.4 | 0/? | Not started | — |
+| 27. UI Integration | v1.4 | 0/? | Not started | — |
