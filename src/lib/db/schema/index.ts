@@ -7,6 +7,7 @@ export * from "./templates";
 export * from "./series";
 export * from "./sessions";
 export * from "./answers";
+export * from "./answer-history";
 export * from "./notes";
 export * from "./action-items";
 export * from "./notifications";

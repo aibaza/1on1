@@ -82,6 +82,7 @@ export const notificationTypeEnum = pgEnum("notification_type", [
   "session_summary",
   "missed_meeting",
   "system",
+  "session_correction",
 ]);
 
 export const notificationChannelEnum = pgEnum("notification_channel", [

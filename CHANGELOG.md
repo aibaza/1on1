@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - TDD RED: failing schema shape tests for `sessionAnswerHistory` table and `notificationTypeEnum` enum extension (phase 24-01)
+- `src/lib/db/schema/answer-history.ts`: `sessionAnswerHistory` Drizzle table with 11 typed columns + 3 indexes + `sessionAnswerHistoryRelations` (4 FK relations)
+- `src/lib/db/schema/enums.ts`: `notificationTypeEnum` extended with `session_correction` value
+- `src/lib/db/schema/index.ts`: barrel export for `./answer-history` module
 
 ### Fixed
 - Circular manager assignment error now shows the full management loop chain (e.g. "Aurel Filip → Cora P → Ciprian Dobrea → Aurel Filip") instead of a generic message
