@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- `src/lib/db/seed.ts`: fix all 45 ANSWER_* UUID constants to use RFC4122-compliant variant bits (`8000` instead of `6000`); add DELETE of old 6000-variant rows so re-seeding is idempotent (phase 28-06)
+
 ### Added
 - `.github/workflows/e2e.yml`: GitHub Actions CI job — Playwright E2E on push/PR to main; installs Chromium, seeds DB, runs test:e2e with setup+chromium projects, uploads report artifact on failure (phase 28-05)
 - `package.json`: add `test:e2e` script — single-command Playwright E2E suite entry point via `PLAYWRIGHT_BROWSERS_PATH=~/.cache/ms-playwright node node_modules/.bin/playwright test` (phase 28-05)
