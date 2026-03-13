@@ -20,12 +20,15 @@ import {
   ArrowLeft,
   Lock,
   Star,
+  Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { AISummarySection } from "./ai-summary-section";
 import { AISuggestionsSection } from "./ai-suggestions-section";
 import { AmendedBadge } from "./amended-badge";
 import { CorrectionHistoryPanel, type CorrectionEntry } from "./correction-history-panel";
+import { AnswerCorrectionForm } from "./answer-correction-form";
 import type { AISummary } from "@/lib/ai/schemas/summary";
 import type { AIManagerAddendum } from "@/lib/ai/schemas/addendum";
 
@@ -253,6 +256,7 @@ export function SessionSummaryView({
       return initial;
     }
   );
+  const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
 
   const toggleCategory = (name: string) => {
     setOpenCategories((prev) => ({ ...prev, [name]: !prev[name] }));
@@ -362,6 +366,7 @@ export function SessionSummaryView({
                     const isAmended = answer?.id
                       ? (correctionsByAnswerId[answer.id]?.length ?? 0) > 0
                       : false;
+                    const isEditing = editingAnswerId === answer?.id;
 
                     return (
                       <div
@@ -372,11 +377,40 @@ export function SessionSummaryView({
                           <p className="text-sm font-medium">
                             {question.questionText}
                           </p>
-                          <AmendedBadge isAmended={isAmended} />
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <AmendedBadge isAmended={isAmended} />
+                            {isManager && status === "completed" && answer?.id && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={() =>
+                                  setEditingAnswerId(
+                                    isEditing ? null : (answer?.id ?? null)
+                                  )
+                                }
+                                title={t("corrections.correctionFormTitle")}
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                         <div className="mt-1 text-sm text-muted-foreground">
                           {renderAnswerDisplay(question.answerType, answer, t)}
                         </div>
+                        {isEditing && answer?.id && (
+                          <AnswerCorrectionForm
+                            answerId={answer.id}
+                            sessionId={sessionId}
+                            questionAnswerType={question.answerType}
+                            originalAnswer={answer}
+                            onSuccess={() => {
+                              setEditingAnswerId(null);
+                            }}
+                            onCancel={() => setEditingAnswerId(null)}
+                          />
+                        )}
                       </div>
                     );
                   })}

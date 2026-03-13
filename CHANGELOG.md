@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `src/components/session/session-summary-view.tsx`: edit icon (Pencil) per answer row for managers on completed sessions; single `editingAnswerId` state ensures only one correction form open at a time; `AnswerCorrectionForm` renders inline on row click (phase 27-03)
 - `src/components/session/answer-correction-form.tsx`: `AnswerCorrectionForm` — inline correction form with debounced AI reason validation, original answer display, and advisory-only AI feedback (phase 27-03)
 - `src/components/session/session-summary-view.tsx`: export `SummaryAnswer` type and `renderAnswerDisplay` function for reuse in `AnswerCorrectionForm` (phase 27-03)
 
