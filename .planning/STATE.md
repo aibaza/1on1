@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: UI/UX Improvements
 status: planning
-stopped_at: "Completed 27-ui-integration plan 04 — Phase 27 quality gate: 163 tests green, build succeeds"
-last_updated: "2026-03-13T08:01:24.285Z"
+stopped_at: Completed 28-playwright-e2e-test-suite plan 01 — multi-role auth setup fixed, fixtures.ts created, pg fallback for local dev
+last_updated: "2026-03-13T09:40:00.405Z"
 last_activity: 2026-03-10 — Roadmap created for v1.4 (phases 24-27, 13 requirements)
 progress:
-  total_phases: 10
+  total_phases: 11
   completed_phases: 8
-  total_plans: 26
-  completed_plans: 26
+  total_plans: 30
+  completed_plans: 27
   percent: 62
 ---
 
@@ -63,6 +63,7 @@ Progress: [████████████████░░░░░░░
 | Phase 27-ui-integration P02 | 3min | 2 tasks | 6 files |
 | Phase 27-ui-integration P03 | 525567min | 2 tasks | 4 files |
 | Phase 27-ui-integration P04 | 10 | 2 tasks | 2 files |
+| Phase 28-playwright-e2e-test-suite P01 | 25 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,9 @@ Recent decisions affecting current work:
 - [Phase 27-ui-integration]: renderAnswerDisplay and SummaryAnswer exported from session-summary-view.tsx — shared display logic reused in AnswerCorrectionForm without duplication
 - [Phase 27-ui-integration]: Vitest exclude array: ['e2e/**', 'node_modules/**'] — without include/exclude, Vitest picks up Playwright specs; separate configs for separate runners
 - [Phase 27-ui-integration]: Chainable adminDb mock in vi.mock factory returns select().from().where().limit() resolving to [] by default — sendCorrectionEmails tests inherit working dedup mock without explicit setup
+- [Phase 28-playwright-e2e-test-suite]: @neondatabase/serverless Pool uses WebSocket incompatible with local PostgreSQL — detect via URL pattern (.neon.tech) and fall back to standard pg Pool for local dev
+- [Phase 28-playwright-e2e-test-suite]: Playwright fixtures approach preferred over project storageState for multi-role tests — fresh context per test enables role-switching within same spec
+- [Phase 28-playwright-e2e-test-suite]: chromium project remains admin default; chromium-manager and chromium-member projects added for role-targeted test runs
 
 ### Pending Todos
 
@@ -113,6 +117,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T08:01:24.281Z
-Stopped at: Completed 27-ui-integration plan 04 — Phase 27 quality gate: 163 tests green, build succeeds
+Last session: 2026-03-13T09:40:00.400Z
+Stopped at: Completed 28-playwright-e2e-test-suite plan 01 — multi-role auth setup fixed, fixtures.ts created, pg fallback for local dev
 Resume file: None
