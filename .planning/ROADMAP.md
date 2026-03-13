@@ -76,7 +76,7 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 
 **Milestone Goal:** Establish a maintainable, comprehensive Playwright E2E test suite covering all critical user flows — auth, sessions, wizard, templates, people, RBAC, and the session corrections feature — with a dedicated debug spec to capture and diagnose the session summary page crash.
 
-- [ ] **Phase 28: Playwright E2E Test Suite** — Fix auth setup, build full flow coverage, add debug spec for [object ErrorEvent] crash
+- [x] **Phase 28: Playwright E2E Test Suite** — Fix auth setup, build full flow coverage, add debug spec for [object ErrorEvent] crash (completed 2026-03-13)
 
 ## Phase Details
 
@@ -278,4 +278,4 @@ Plans:
 | 25. Core API & Business Logic | 3/3 | Complete    | 2026-03-10 | — |
 | 26. Email Notification & i18n | 3/3 | Complete    | 2026-03-13 | — |
 | 27. UI Integration | 4/4 | Complete   | 2026-03-13 | — |
-| 28. Playwright E2E Test Suite | 3/4 | In Progress|  | — |
+| 28. Playwright E2E Test Suite | 4/4 | Complete   | 2026-03-13 | — |
