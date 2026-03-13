@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- `messages/ro/analytics.json`: add missing `analytics.chart.sessionHistory` key — translation parity with EN (phase 26-03)
+- `src/components/layout/user-menu.tsx`: suppress `react-hooks/immutability` lint error on `document.cookie` assignment — intentional browser API usage (phase 26-03)
+- `src/lib/templates/__tests__/import-schema.test.ts`: suppress `@typescript-eslint/no-explicit-any` lint errors on ZodError test fixtures — intentional partial mock objects (phase 26-03)
+
 ### Added
 - `src/app/api/sessions/[id]/corrections/route.ts`: fire-and-forget `sendCorrectionEmails` hook wired after `withTenantContext` — resolves report/manager/admin context via adminDb then calls correction email sender (phase 26-03)
 - `src/lib/notifications/correction-email.ts`: `sendCorrectionEmails` and `wasRecentlySent` — correction email sender with 5-minute dedup, tenant locale, report+admin fan-out, inactive admin exclusion, report-also-admin dedup (phase 26-02)

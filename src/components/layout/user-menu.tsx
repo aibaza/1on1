@@ -42,6 +42,7 @@ export function UserMenu() {
     if (lang === currentLang) return;
 
     // 1. Set cookie client-side immediately so it's available on reload
+    // eslint-disable-next-line react-hooks/immutability
     document.cookie = `NEXT_LOCALE=${lang};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
 
     // 2. Save to DB + set NEXT_LOCALE cookie via API

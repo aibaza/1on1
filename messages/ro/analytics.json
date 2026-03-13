@@ -25,6 +25,7 @@
       "actionItemVelocity": "Viteza acțiuni",
       "meetingAdherence": "Aderența întâlniri",
       "sessionComparison": "Comparație sesiuni",
+      "sessionHistory": "Istoricul sesiunilor",
       "anonymizedNote": "Mediile anonimizate necesită cel puțin 2 contributori pe categorie pentru protecția confidențialității.",
       "noData": "Nu există sesiuni finalizate cu răspunsuri punctate în această perioadă.",
       "limitedData": "Date limitate ({count} contributor(i))",

@@ -194,6 +194,7 @@ describe('formatImportErrors', () => {
         received: 'number',
         path: ['sections', 0, 'questions', 2, 'answerType'],
         message: 'Expected string, received number',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
     ]);
     const errors = formatImportErrors(zodError);
@@ -212,6 +213,7 @@ describe('formatImportErrors', () => {
         inclusive: true,
         path: ['name'],
         message: 'String must contain at least 1 character(s)',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
     ]);
     const errors = formatImportErrors(zodError);
