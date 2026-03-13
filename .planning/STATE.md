@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: UI/UX Improvements
 status: planning
-stopped_at: Completed 26-email-notification-i18n plan 03 — correction email pipeline end-to-end operational
-last_updated: "2026-03-13T07:01:35.077Z"
+stopped_at: Completed 27-ui-integration plan 01 — TDD RED test files for AmendedBadge, CorrectionHistoryPanel, AnswerCorrectionForm
+last_updated: "2026-03-13T07:40:17.532Z"
 last_activity: 2026-03-10 — Roadmap created for v1.4 (phases 24-27, 13 requirements)
 progress:
   total_phases: 10
   completed_phases: 7
-  total_plans: 22
-  completed_plans: 22
+  total_plans: 26
+  completed_plans: 23
   percent: 62
 ---
 
@@ -59,6 +59,7 @@ Progress: [████████████████░░░░░░░
 | Phase 26-email-notification-i18n P01 | 3 | 2 tasks | 5 files |
 | Phase 26-email-notification-i18n P02 | 3 | 1 tasks | 2 files |
 | Phase 26-email-notification-i18n P03 | 12min | 2 tasks | 4 files |
+| Phase 27-ui-integration P01 | 10 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,8 @@ Recent decisions affecting current work:
 - [Phase 26-email-notification-i18n]: IIFE pattern used for fire-and-forget in corrections route — allows multiple awaits for DB context resolution before calling sendCorrectionEmails
 - [Phase 26-email-notification-i18n]: reportId, managerId, sessionNumber returned from withTenantContext result — zero extra DB calls added to hot path
 - [Phase 26-email-notification-i18n]: adminDb used for post-commit email context resolution — operates outside RLS, appropriate for internal notification infrastructure
+- [Phase 27-ui-integration]: // @vitest-environment happy-dom required for correction UI test files — global vitest env is node, React rendering needs DOM
+- [Phase 27-ui-integration]: Submit-not-disabled test explicitly encodes AI-advisory-only requirement — Wave 2 must never block submission on AI validation result
 
 ### Pending Todos
 
@@ -101,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T06:58:01.982Z
-Stopped at: Completed 26-email-notification-i18n plan 03 — correction email pipeline end-to-end operational
+Last session: 2026-03-13T07:40:17.528Z
+Stopped at: Completed 27-ui-integration plan 01 — TDD RED test files for AmendedBadge, CorrectionHistoryPanel, AnswerCorrectionForm
 Resume file: None

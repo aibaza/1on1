@@ -9,17 +9,17 @@
 
 ### Correction Data & Storage (CORR)
 
-- [ ] **CORR-01**: User can view which answers in a completed session have been corrected via an "Amended" badge on each modified answer row
+- [x] **CORR-01**: User can view which answers in a completed session have been corrected via an "Amended" badge on each modified answer row
 - [x] **CORR-02**: System preserves the original answer value (text/numeric/json) in an append-only history table — original value is never overwritten or destroyed
-- [ ] **CORR-03**: Manager (and admins) can view a correction history panel on a session detail page showing all amendments with timestamps, actor, and reason
+- [x] **CORR-03**: Manager (and admins) can view a correction history panel on a session detail page showing all amendments with timestamps, actor, and reason
 
 ### Correction Workflow (WFLOW)
 
 - [x] **WFLOW-01**: Manager can initiate a correction for any answer in a completed session they conducted; admins can correct any session in the tenant
 - [x] **WFLOW-02**: Manager must provide an explicit correction reason (20–500 characters) before submitting — empty or too-short reasons are rejected
 - [x] **WFLOW-03**: AI validates the correction reason for quality, relevance, and company language compliance before the correction can be submitted
-- [ ] **WFLOW-04**: Manager sees inline AI feedback on the reason field (pass/fail + one-sentence note) without navigating away from the session
-- [ ] **WFLOW-05**: Correction form shows the original and new answer values side by side inline on the session detail page — no separate page navigation required
+- [x] **WFLOW-04**: Manager sees inline AI feedback on the reason field (pass/fail + one-sentence note) without navigating away from the session
+- [x] **WFLOW-05**: Correction form shows the original and new answer values side by side inline on the session detail page — no separate page navigation required
 
 ### Notification & Accountability (NOTIF)
 
@@ -66,14 +66,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CORR-01 | Phase 27 | Pending |
+| CORR-01 | Phase 27 | Complete |
 | CORR-02 | Phase 24 | Complete |
-| CORR-03 | Phase 27 | Pending |
+| CORR-03 | Phase 27 | Complete |
 | WFLOW-01 | Phase 25 | Complete |
 | WFLOW-02 | Phase 25 | Complete |
 | WFLOW-03 | Phase 25 | Complete |
-| WFLOW-04 | Phase 27 | Pending |
-| WFLOW-05 | Phase 27 | Pending |
+| WFLOW-04 | Phase 27 | Complete |
+| WFLOW-05 | Phase 27 | Complete |
 | NOTIF-01 | Phase 26 | Complete |
 | NOTIF-02 | Phase 26 | Complete |
 | NOTIF-03 | Phase 25 | Complete |
