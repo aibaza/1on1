@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - `e2e/corrections.spec.ts`: RBAC corrections E2E spec — manager sees edit icon on completed sessions, member does not; inline form opens/closes; AI feedback appears with submit always enabled; Amended badge and correction history panel coverage (phase 28-03)
+- `e2e/debug-session-summary.spec.ts`: enhanced debug spec targeting dev server (port 4301) via adminPage fixture; captures console errors, page errors, network failures, WebSocket events; writes structured JSON report to e2e/reports/session-summary-debug-dev.json with hypothesis flags (phase 28-03)
+- `e2e/reports/session-summary-debug-dev.json`: structured debug report from session summary page — HTTP 200, no crashes, no page errors (phase 28-03)
 - `e2e/auth.spec.ts`: login tests for admin, manager, member roles; invalid credentials stays on /login; logout via user menu redirects to /login with protected route check (phase 28-02)
 - `e2e/dashboard.spec.ts`: /overview load tests for admin (upcoming/recent sessions headings), manager, and member roles (phase 28-02)
 - `e2e/sessions.spec.ts`: sessions list, wizard start/complete, session summary crash capture with debug report, and session detail page load tests (phase 28-02)
