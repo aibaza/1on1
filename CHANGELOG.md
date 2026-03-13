@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - `src/lib/db/seed.ts`: fix all 45 ANSWER_* UUID constants to use RFC4122-compliant variant bits (`8000` instead of `6000`); add DELETE of old 6000-variant rows so re-seeding is idempotent (phase 28-06)
+- `e2e/corrections.spec.ts`: remove `test.skip` conditional from Amended badge test — seed UUID fix enables the correction API call to succeed so the test now runs end-to-end (phase 28-06)
+- `e2e/debug-session-summary.spec.ts`: add DIAGNOSIS CONCLUSION doc block documenting the confirmed root cause ([object ErrorEvent] UAT crash = Neon WebSocket vs local pg Pool) and the Plan 01 fix (phase 28-06)
 
 ### Added
 - `.github/workflows/e2e.yml`: GitHub Actions CI job — Playwright E2E on push/PR to main; installs Chromium, seeds DB, runs test:e2e with setup+chromium projects, uploads report artifact on failure (phase 28-05)

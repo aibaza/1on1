@@ -90,9 +90,6 @@ test.describe("AI validation feedback", () => {
 test.describe("Amended badge and correction history panel", () => {
   test.setTimeout(60_000);
 
-  // Track whether setup successfully created a correction
-  let setupComplete = false;
-
   test.beforeAll(async ({ browser }) => {
     // Use admin context to create a correction via API
     const ctx = await browser.newContext({
@@ -131,7 +128,6 @@ test.describe("Amended badge and correction history panel", () => {
           }
         );
         const correctionBody = await correctionResp.json().catch(() => null);
-        setupComplete = correctionResp.ok();
         console.log(`Setup correction POST: ${correctionResp.status()}, answerId: ${answerId}, body: ${JSON.stringify(correctionBody)}`);
       } else {
         console.log("Setup: could not extract answerId from session API response");
@@ -144,15 +140,6 @@ test.describe("Amended badge and correction history panel", () => {
   });
 
   test("Amended badge visible on corrected answer row", async ({ adminPage }) => {
-    // KNOWN LIMITATION: seed data uses non-RFC4122 UUIDs (variant bits 6xxx instead of [89ab]xxx).
-    // Zod z.string().uuid() in correctionInputSchema rejects these IDs with "answerId must be a valid UUID".
-    // As a result, corrections cannot be created via the API for seed sessions.
-    // This test is skipped until either: (a) seed data is fixed to use proper UUIDs, or
-    // (b) correctionInputSchema relaxes uuid() to accept any UUID-shaped string.
-    //
-    // The contract being tested: when a correction exists, <AmendedBadge> renders "Amended" text
-    // on the answer row. This is verified by unit tests in answer-correction-form.test.tsx.
-    test.skip(!setupComplete, "Seed answer IDs fail Zod UUID validation — cannot create test correction via API. Fix seed data UUIDs or relax correctionInputSchema.");
     await adminPage.goto(SESSION_SUMMARY_URL);
     await adminPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
     // AmendedBadge renders: <Badge>Amended</Badge> (hardcoded EN string per Phase 27 decision)
