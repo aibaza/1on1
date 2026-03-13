@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("People Page", () => {
   test.beforeEach(async ({ page }) => {
@@ -64,10 +64,10 @@ test.describe("People Page", () => {
     await expect(page.getByText("dave@acme.example.com")).toBeVisible();
   });
 
-  test("admin sees Invite people button", async ({ page }) => {
-    // Logged in as Alice (admin) via auth setup
+  test("admin sees Invite button", async ({ page }) => {
+    // Logged in as Alice (admin) via auth setup — button label is "Invite"
     await expect(
-      page.getByRole("button", { name: /Invite people/i })
+      page.getByRole("button", { name: /^invite$/i })
     ).toBeVisible();
   });
 
@@ -181,5 +181,61 @@ test.describe("People Page", () => {
 
     // The table should be sorted - we verify that the table still renders
     await expect(page.locator("table tbody tr").first()).toBeVisible();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// RBAC tests: multi-role fixture-based tests for People management
+// ---------------------------------------------------------------------------
+
+test.describe("People Management RBAC", () => {
+  test.setTimeout(30_000);
+
+  test("admin sees people list with all seeded users", async ({ adminPage }) => {
+    await adminPage.goto("/people");
+    await expect(adminPage.getByRole("heading", { name: /people/i })).toBeVisible({ timeout: 10_000 });
+    await expect(adminPage.locator("table")).toBeVisible({ timeout: 10_000 });
+    // Seeded users visible
+    await expect(adminPage.getByText("alice@acme.example.com")).toBeVisible({ timeout: 10_000 });
+    await expect(adminPage.getByText("bob@acme.example.com")).toBeVisible({ timeout: 5_000 });
+    await expect(adminPage.getByText("dave@acme.example.com")).toBeVisible({ timeout: 5_000 });
+  });
+
+  test("admin sees Invite button", async ({ adminPage }) => {
+    await adminPage.goto("/people");
+    await expect(adminPage.locator("table")).toBeVisible({ timeout: 10_000 });
+    // Button label is "Invite" (dialog title is "Invite people")
+    await expect(adminPage.getByRole("button", { name: /^invite$/i })).toBeVisible();
+  });
+
+  test("admin can see role dropdown for users (admin has role change ability)", async ({ adminPage }) => {
+    await adminPage.goto("/people");
+    await expect(adminPage.locator("table")).toBeVisible({ timeout: 10_000 });
+    // Admin should see combobox/select triggers in the role column for other users
+    const bobRow = adminPage.locator("tr").filter({ hasText: "bob@acme.example.com" });
+    await expect(bobRow).toBeVisible({ timeout: 10_000 });
+    // Admin can change roles — look for combobox or select trigger in the row
+    const roleSelector = bobRow.locator("[role='combobox'], select").first();
+    await expect(roleSelector).toBeVisible({ timeout: 5_000 });
+  });
+
+  test("manager does NOT see Invite button", async ({ managerPage }) => {
+    await managerPage.goto("/people");
+    await expect(managerPage.locator("table")).toBeVisible({ timeout: 10_000 });
+    await expect(managerPage.getByRole("button", { name: /^invite$/i })).not.toBeVisible();
+  });
+
+  test("member does NOT see Invite button", async ({ memberPage }) => {
+    await memberPage.goto("/people");
+    await expect(memberPage.locator("table")).toBeVisible({ timeout: 10_000 });
+    await expect(memberPage.getByRole("button", { name: /^invite$/i })).not.toBeVisible();
+  });
+
+  test("manager sees role badges (not dropdowns) in people table", async ({ managerPage }) => {
+    await managerPage.goto("/people");
+    await expect(managerPage.locator("table")).toBeVisible({ timeout: 10_000 });
+    // For managers: role column shows text/Badge, not Select trigger
+    const bobRow = managerPage.locator("tr").filter({ hasText: "bob@acme.example.com" });
+    await expect(bobRow.locator("[role='combobox']")).not.toBeVisible();
   });
 });
