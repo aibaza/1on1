@@ -7,6 +7,7 @@
 - ✅ **v1.2 AI-Ready Templates** — Phases 15-17 (shipped 2026-03-07)
 - 🚧 **v1.3 UI/UX Improvements** — Phases 18-23 (in progress)
 - 📋 **v1.4 Session Corrections & Accountability** — Phases 24-27 (planned)
+- 📋 **v1.5 Playwright E2E Test Suite** — Phase 28 (planned)
 
 ## Phases
 
@@ -70,6 +71,12 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 - [x] **Phase 25: Core API & Business Logic** — RBAC helper, AI validation service, both API routes, in-transaction audit log, score recompute (completed 2026-03-10)
 - [x] **Phase 26: Email Notification & i18n** — Correction email template in EN+RO, session-level deduplication sender (completed 2026-03-13)
 - [x] **Phase 27: UI Integration** — Correction dialog, Amended badge, correction history panel wired into session detail (completed 2026-03-13)
+
+### 📋 v1.5 Playwright E2E Test Suite (Planned)
+
+**Milestone Goal:** Establish a maintainable, comprehensive Playwright E2E test suite covering all critical user flows — auth, sessions, wizard, templates, people, RBAC, and the session corrections feature — with a dedicated debug spec to capture and diagnose the session summary page crash.
+
+- [ ] **Phase 28: Playwright E2E Test Suite** — Fix auth setup, build full flow coverage, add debug spec for [object ErrorEvent] crash
 
 ## Phase Details
 
@@ -223,6 +230,23 @@ Plans:
 - [ ] 27-03-PLAN.md — Build AnswerCorrectionForm with debounced AI feedback + wire edit icons into SessionSummaryView (Wave 3)
 - [ ] 27-04-PLAN.md — Full quality gate + human verification checkpoint (Wave 4)
 
+### Phase 28: Playwright E2E Test Suite
+**Goal**: The application has a comprehensive, maintainable Playwright E2E test suite — auth setup works against the dev server, all critical user flows are covered with semantic selectors, RBAC boundaries are asserted, and a debug spec captures the full browser error for the session summary page crash
+**Depends on**: Phase 27
+**Requirements**: E2E-01, E2E-02, E2E-03, E2E-04, E2E-05
+**Success Criteria** (what must be TRUE):
+  1. Auth setup (`e2e/auth.setup.ts`) completes successfully against the dev server on port 4301 — no CallbackRouteError — and saved state is reused by all test specs
+  2. The full test suite covers: login/logout, dashboard load, sessions list, start-session wizard (complete flow), session summary page, templates CRUD, people management — each flow passes with zero flaky selectors
+  3. RBAC is asserted: a manager can open and submit the correction form; a member does not see the edit icon or correction controls
+  4. Correction UI flow is covered: Amended badge visible on corrected answers, inline form opens/closes, AI validation feedback appears after typing a reason
+  5. The debug spec navigates to the session summary page, captures all console errors, page errors, and network failures, and writes a structured report — the [object ErrorEvent] crash is reproduced and diagnosed
+**Plans**: 4 plans
+Plans:
+- [ ] 28-01-PLAN.md — Fix auth setup CallbackRouteError + scaffold test project structure (Wave 1)
+- [ ] 28-02-PLAN.md — Core flow specs: login/logout, dashboard, sessions list, wizard (Wave 2)
+- [ ] 28-03-PLAN.md — RBAC + corrections flow specs + debug spec for session summary crash (Wave 2)
+- [ ] 28-04-PLAN.md — Templates CRUD + people management specs + CI config (Wave 3)
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -254,3 +278,4 @@ Plans:
 | 25. Core API & Business Logic | 3/3 | Complete    | 2026-03-10 | — |
 | 26. Email Notification & i18n | 3/3 | Complete    | 2026-03-13 | — |
 | 27. UI Integration | 4/4 | Complete   | 2026-03-13 | — |
+| 28. Playwright E2E Test Suite | v1.5 | 0/4 | Not started | — |
