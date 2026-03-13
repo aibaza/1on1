@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `e2e/fixtures.ts`: Playwright fixture extensions — `adminPage`, `managerPage`, `memberPage` pre-authenticated page contexts via storageState (phase 28-01)
+- `playwright.config.ts`: add `chromium-manager` and `chromium-member` projects with per-role storageState (phase 28-01)
 - `e2e/auth.setup.ts`: multi-role auth setup — saves storageState for admin (alice), manager (bob), and member (dave) roles (phase 28-01)
 - `e2e/.auth/.gitkeep`: ensure auth state directory is tracked in git (phase 28-01)
 
