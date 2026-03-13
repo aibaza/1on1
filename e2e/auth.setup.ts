@@ -1,17 +1,50 @@
-import { test as setup, expect } from "@playwright/test";
+import { test as setup, type Page } from "@playwright/test";
+import * as fs from "fs";
 
-const ADMIN_FILE = "e2e/.auth/admin.json";
+const AUTH_DIR = "e2e/.auth";
 
-setup("authenticate as admin", async ({ page }) => {
+// Ensure the auth directory exists before writing state files
+if (!fs.existsSync(AUTH_DIR)) {
+  fs.mkdirSync(AUTH_DIR, { recursive: true });
+}
+
+async function loginAndSave(
+  page: Page,
+  email: string,
+  password: string,
+  file: string,
+) {
   await page.goto("/login");
-  await page.getByLabel(/email/i).fill("alice@acme.example.com");
-  await page.getByLabel(/password/i).fill("password123");
+  await page.getByLabel(/email/i).fill(email);
+  await page.getByLabel(/password/i).fill(password);
   await page.getByRole("button", { name: /sign in/i }).click();
+  await page.waitForURL(/\/(overview|dashboard)/i, { timeout: 20_000 });
+  await page.context().storageState({ path: file });
+}
 
-  // Wait for redirect to dashboard
-  await expect(page).toHaveURL(/\/(dashboard|overview)?$/i, {
-    timeout: 15_000,
-  });
+setup("authenticate as admin (alice)", async ({ page }) => {
+  await loginAndSave(
+    page,
+    "alice@acme.example.com",
+    "password123",
+    `${AUTH_DIR}/admin.json`,
+  );
+});
 
-  await page.context().storageState({ path: ADMIN_FILE });
+setup("authenticate as manager (bob)", async ({ page }) => {
+  await loginAndSave(
+    page,
+    "bob@acme.example.com",
+    "password123",
+    `${AUTH_DIR}/manager.json`,
+  );
+});
+
+setup("authenticate as member (dave)", async ({ page }) => {
+  await loginAndSave(
+    page,
+    "dave@acme.example.com",
+    "password123",
+    `${AUTH_DIR}/member.json`,
+  );
 });
