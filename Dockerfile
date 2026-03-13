@@ -10,6 +10,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+# Dummy DATABASE_URL so Next.js build-time static analysis doesn't crash on
+# module-level db initialization (actual DB is only needed at runtime).
+ENV DATABASE_URL=postgresql://build:build@localhost:5432/build
 RUN bun run build
 
 # Stage 3: Production runner (Node.js -- Next.js standalone output is a Node.js server)
