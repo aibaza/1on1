@@ -13,7 +13,8 @@
     "db:seed": "bun run src/lib/db/seed.ts",
     "db:studio": "drizzle-kit studio",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "PLAYWRIGHT_BROWSERS_PATH=~/.cache/ms-playwright node node_modules/.bin/playwright test"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.54",

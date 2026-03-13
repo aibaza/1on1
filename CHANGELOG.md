@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `package.json`: add `test:e2e` script — single-command Playwright E2E suite entry point via `PLAYWRIGHT_BROWSERS_PATH=~/.cache/ms-playwright node node_modules/.bin/playwright test` (phase 28-05)
 - `e2e/corrections.spec.ts`: RBAC corrections E2E spec — manager sees edit icon on completed sessions, member does not; inline form opens/closes; AI feedback appears with submit always enabled; Amended badge and correction history panel coverage (phase 28-03)
 - `e2e/debug-session-summary.spec.ts`: enhanced debug spec targeting dev server (port 4301) via adminPage fixture; captures console errors, page errors, network failures, WebSocket events; writes structured JSON report to e2e/reports/session-summary-debug-dev.json with hypothesis flags (phase 28-03)
 - `e2e/reports/session-summary-debug-dev.json`: structured debug report from session summary page — HTTP 200, no crashes, no page errors (phase 28-03)
