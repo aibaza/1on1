@@ -69,7 +69,7 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 - [x] **Phase 24: Schema Foundation** — Append-only history table with RLS, notificationTypeEnum extension, migration (completed 2026-03-10)
 - [x] **Phase 25: Core API & Business Logic** — RBAC helper, AI validation service, both API routes, in-transaction audit log, score recompute (completed 2026-03-10)
 - [x] **Phase 26: Email Notification & i18n** — Correction email template in EN+RO, session-level deduplication sender (completed 2026-03-13)
-- [ ] **Phase 27: UI Integration** — Correction dialog, Amended badge, correction history panel wired into session detail
+- [x] **Phase 27: UI Integration** — Correction dialog, Amended badge, correction history panel wired into session detail (completed 2026-03-13)
 
 ## Phase Details
 
@@ -253,4 +253,4 @@ Plans:
 | 24. Schema Foundation | 2/2 | Complete    | 2026-03-10 | — |
 | 25. Core API & Business Logic | 3/3 | Complete    | 2026-03-10 | — |
 | 26. Email Notification & i18n | 3/3 | Complete    | 2026-03-13 | — |
-| 27. UI Integration | 3/4 | In Progress|  | — |
+| 27. UI Integration | 4/4 | Complete   | 2026-03-13 | — |

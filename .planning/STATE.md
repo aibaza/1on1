@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: UI/UX Improvements
 status: planning
-stopped_at: Completed 27-ui-integration plan 03 — AnswerCorrectionForm and edit icon wiring in SessionSummaryView
-last_updated: "2026-03-13T07:56:08.121Z"
+stopped_at: "Completed 27-ui-integration plan 04 — Phase 27 quality gate: 163 tests green, build succeeds"
+last_updated: "2026-03-13T08:01:24.285Z"
 last_activity: 2026-03-10 — Roadmap created for v1.4 (phases 24-27, 13 requirements)
 progress:
   total_phases: 10
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 26
-  completed_plans: 25
+  completed_plans: 26
   percent: 62
 ---
 
@@ -62,6 +62,7 @@ Progress: [████████████████░░░░░░░
 | Phase 27-ui-integration P01 | 10 | 3 tasks | 4 files |
 | Phase 27-ui-integration P02 | 3min | 2 tasks | 6 files |
 | Phase 27-ui-integration P03 | 525567min | 2 tasks | 4 files |
+| Phase 27-ui-integration P04 | 10 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,8 @@ Recent decisions affecting current work:
 - [Phase 27-ui-integration]: correctionsByAnswerId keyed by session_answers.id — allows O(1) lookup per answer row for AmendedBadge display
 - [Phase 27-ui-integration]: Submit button gated only by isPending — test spec explicitly encodes AI-advisory-only requirement; reason length omitted to match test contract
 - [Phase 27-ui-integration]: renderAnswerDisplay and SummaryAnswer exported from session-summary-view.tsx — shared display logic reused in AnswerCorrectionForm without duplication
+- [Phase 27-ui-integration]: Vitest exclude array: ['e2e/**', 'node_modules/**'] — without include/exclude, Vitest picks up Playwright specs; separate configs for separate runners
+- [Phase 27-ui-integration]: Chainable adminDb mock in vi.mock factory returns select().from().where().limit() resolving to [] by default — sendCorrectionEmails tests inherit working dedup mock without explicit setup
 
 ### Pending Todos
 
@@ -110,6 +113,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T07:56:08.118Z
-Stopped at: Completed 27-ui-integration plan 03 — AnswerCorrectionForm and edit icon wiring in SessionSummaryView
+Last session: 2026-03-13T08:01:24.281Z
+Stopped at: Completed 27-ui-integration plan 04 — Phase 27 quality gate: 163 tests green, build succeeds
 Resume file: None
