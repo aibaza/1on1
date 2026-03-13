@@ -8,9 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-import { renderAnswerDisplay } from "./session-summary-view";
+import { renderAnswerDisplay, type SummaryAnswer } from "./answer-utils";
 import { cn } from "@/lib/utils";
-import type { SummaryAnswer } from "./session-summary-view";
 
 // Allow originalAnswer without requiring id (id only needed for submissions)
 type OriginalAnswerInput = Omit<SummaryAnswer, "id"> & { id?: string };
