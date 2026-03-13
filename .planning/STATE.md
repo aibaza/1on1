@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: UI/UX Improvements
 status: planning
-stopped_at: Completed 28-playwright-e2e-test-suite plan 01 — multi-role auth setup fixed, fixtures.ts created, pg fallback for local dev
-last_updated: "2026-03-13T09:40:00.405Z"
+stopped_at: Completed 28-playwright-e2e-test-suite plan 02 — auth, dashboard, sessions specs all green (17 tests); session summary HTTP 200 confirmed
+last_updated: "2026-03-13T09:59:16.834Z"
 last_activity: 2026-03-10 — Roadmap created for v1.4 (phases 24-27, 13 requirements)
 progress:
   total_phases: 11
   completed_phases: 8
   total_plans: 30
-  completed_plans: 27
+  completed_plans: 28
   percent: 62
 ---
 
@@ -64,6 +64,7 @@ Progress: [████████████████░░░░░░░
 | Phase 27-ui-integration P03 | 525567min | 2 tasks | 4 files |
 | Phase 27-ui-integration P04 | 10 | 2 tasks | 2 files |
 | Phase 28-playwright-e2e-test-suite P01 | 25 | 2 tasks | 7 files |
+| Phase 28-playwright-e2e-test-suite P02 | 16 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,11 @@ Recent decisions affecting current work:
 - [Phase 28-playwright-e2e-test-suite]: @neondatabase/serverless Pool uses WebSocket incompatible with local PostgreSQL — detect via URL pattern (.neon.tech) and fall back to standard pg Pool for local dev
 - [Phase 28-playwright-e2e-test-suite]: Playwright fixtures approach preferred over project storageState for multi-role tests — fresh context per test enables role-switching within same spec
 - [Phase 28-playwright-e2e-test-suite]: chromium project remains admin default; chromium-manager and chromium-member projects added for role-targeted test runs
+- [Phase 28-playwright-e2e-test-suite]: User menu trigger identified by initials (AJ) — no aria-label on avatar button; getByRole('button', { name: /^AJ$/ }) is the correct selector
+- [Phase 28-playwright-e2e-test-suite]: Sign out is a Radix UI menuitem (role='menuitem'), not a button — getByRole('menuitem', { name: /sign out/ }) + waitFor required for logout flow
+- [Phase 28-playwright-e2e-test-suite]: Admin role sees series as informational links — no Start/Resume buttons; only owning manager sees action buttons on series cards
+- [Phase 28-playwright-e2e-test-suite]: Wizard spinner (.animate-spin) detection via waitForFunction required before asserting content — React Query async load pattern
+- [Phase 28-playwright-e2e-test-suite]: Session summary page is clean locally: HTTP 200, no crashes; duplicate React keys for Wellbeing/Performance noted in debug report (non-crashing)
 
 ### Pending Todos
 
@@ -117,6 +123,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T09:40:00.400Z
-Stopped at: Completed 28-playwright-e2e-test-suite plan 01 — multi-role auth setup fixed, fixtures.ts created, pg fallback for local dev
+Last session: 2026-03-13T09:59:16.831Z
+Stopped at: Completed 28-playwright-e2e-test-suite plan 02 — auth, dashboard, sessions specs all green (17 tests); session summary HTTP 200 confirmed
 Resume file: None
