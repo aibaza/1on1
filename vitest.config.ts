@@ -6,6 +6,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     pool: 'forks',
+    exclude: ['e2e/**', 'node_modules/**'],
     setupFiles: ['./src/test-setup.ts'],
     server: {
       deps: {

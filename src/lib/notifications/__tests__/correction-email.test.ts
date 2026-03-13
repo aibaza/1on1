@@ -2,17 +2,34 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createEmailTranslator } from "@/lib/email/translator";
 
 // Mock adminDb — correction-email.ts uses adminDb for dedup query and user lookups
-vi.mock("@/lib/db", () => ({
-  adminDb: {
-    select: vi.fn(),
-    insert: vi.fn(),
-    query: {
-      users: {
-        findFirst: vi.fn(),
+// select must be a chainable builder that resolves to [] by default (no recent send)
+vi.mock("@/lib/db", () => {
+  const makeChainableSelect = (result: unknown[] = []) =>
+    vi.fn().mockReturnValue({
+      from: vi.fn().mockReturnValue({
+        where: vi.fn().mockReturnValue({
+          limit: vi.fn().mockResolvedValue(result),
+        }),
+      }),
+    });
+
+  const makeChainableInsert = () =>
+    vi.fn().mockReturnValue({
+      values: vi.fn().mockResolvedValue(undefined),
+    });
+
+  return {
+    adminDb: {
+      select: makeChainableSelect(),
+      insert: makeChainableInsert(),
+      query: {
+        users: {
+          findFirst: vi.fn(),
+        },
       },
     },
-  },
-}));
+  };
+});
 
 // Mock email transport — correction-email.ts calls getTransport().sendMail(...)
 vi.mock("@/lib/email/send", () => ({
