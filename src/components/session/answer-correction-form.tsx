@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import { renderAnswerDisplay, type SummaryAnswer } from "./answer-utils";
+import { QuestionWidget, type AnswerValue } from "./question-widget";
 import { cn } from "@/lib/utils";
 
 // Allow originalAnswer without requiring id (id only needed for submissions)
@@ -18,6 +19,7 @@ interface AnswerCorrectionFormProps {
   answerId: string; // session_answers.id (NOT questionId)
   sessionId: string;
   questionAnswerType: string;
+  answerConfig?: unknown;
   originalAnswer: OriginalAnswerInput | undefined;
   onSuccess: () => void;
   onCancel: () => void;
@@ -27,6 +29,7 @@ export function AnswerCorrectionForm({
   answerId,
   sessionId,
   questionAnswerType,
+  answerConfig,
   originalAnswer,
   onSuccess,
   onCancel,
@@ -34,9 +37,15 @@ export function AnswerCorrectionForm({
   const t = useTranslations("sessions");
   const router = useRouter();
 
-  // New answer state — text field for text type; numeric for rating types
-  const [newAnswerText, setNewAnswerText] = useState<string>("");
-  const [newAnswerNumeric, setNewAnswerNumeric] = useState<number | null>(null);
+  // Unified answer state — initialized from current answer value
+  const [answerValue, setAnswerValue] = useState<AnswerValue | null>(() => {
+    if (!originalAnswer) return null;
+    const val: AnswerValue = {};
+    if (originalAnswer.answerText != null) val.answerText = originalAnswer.answerText;
+    if (originalAnswer.answerNumeric != null) val.answerNumeric = originalAnswer.answerNumeric;
+    if (originalAnswer.answerJson != null) val.answerJson = originalAnswer.answerJson;
+    return Object.keys(val).length > 0 ? val : null;
+  });
   const [reason, setReason] = useState("");
 
   const debouncedReason = useDebounce(reason, 800);
@@ -66,16 +75,10 @@ export function AnswerCorrectionForm({
       const body: Record<string, unknown> = {
         answerId,
         reason,
+        newAnswerText: answerValue?.answerText ?? null,
+        newAnswerNumeric: answerValue?.answerNumeric ?? null,
+        newAnswerJson: answerValue?.answerJson ?? null,
       };
-      if (questionAnswerType === "text") {
-        body.newAnswerText = newAnswerText || null;
-      } else if (
-        ["rating_1_5", "rating_1_10", "yes_no", "mood"].includes(
-          questionAnswerType
-        )
-      ) {
-        body.newAnswerNumeric = newAnswerNumeric;
-      }
       const res = await fetch(`/api/sessions/${sessionId}/corrections`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -115,57 +118,17 @@ export function AnswerCorrectionForm({
         </div>
       </div>
 
-      {/* New answer input — text type */}
-      {questionAnswerType === "text" && (
-        <div>
-          <p className="text-xs font-medium text-muted-foreground mb-1">
-            {t("corrections.newAnswerLabel")}
-          </p>
-          <Textarea
-            value={newAnswerText}
-            onChange={(e) => setNewAnswerText(e.target.value)}
-            rows={3}
-            className="text-sm"
-          />
-        </div>
-      )}
-
-      {/* New answer input — numeric types (rating_1_5, rating_1_10, yes_no, mood) */}
-      {["rating_1_5", "rating_1_10", "yes_no", "mood"].includes(
-        questionAnswerType
-      ) && (
-        <div>
-          <p className="text-xs font-medium text-muted-foreground mb-1">
-            {t("corrections.newAnswerLabel")}
-          </p>
-          <input
-            type="number"
-            value={newAnswerNumeric ?? ""}
-            onChange={(e) =>
-              setNewAnswerNumeric(
-                e.target.value ? Number(e.target.value) : null
-              )
-            }
-            min={
-              questionAnswerType === "rating_1_5"
-                ? 1
-                : questionAnswerType === "yes_no"
-                  ? 0
-                  : 1
-            }
-            max={
-              questionAnswerType === "rating_1_5"
-                ? 5
-                : questionAnswerType === "rating_1_10"
-                  ? 10
-                  : questionAnswerType === "mood"
-                    ? 5
-                    : 1
-            }
-            className="w-24 rounded border px-2 py-1 text-sm"
-          />
-        </div>
-      )}
+      {/* New answer input — using proper widget */}
+      <div>
+        <p className="text-xs font-medium text-muted-foreground mb-1">
+          {t("corrections.newAnswerLabel")}
+        </p>
+        <QuestionWidget
+          question={{ id: answerId, answerType: questionAnswerType, answerConfig }}
+          value={answerValue}
+          onChange={setAnswerValue}
+        />
+      </div>
 
       {/* Reason field */}
       <div>

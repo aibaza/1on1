@@ -311,7 +311,9 @@
       "aiPassLabel": "Motiv aprobat",
       "aiFailLabel": "Motivul necesită îmbunătățiri",
       "submitButton": "Trimite corecția",
-      "cancelButton": "Anulează"
+      "cancelButton": "Anulează",
+      "editSection": "Editează secțiunea",
+      "editSectionTitle": "Editează secțiunea: {section}"
     }
   }
 }

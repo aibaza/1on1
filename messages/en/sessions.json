@@ -311,7 +311,9 @@
       "aiPassLabel": "Reason approved",
       "aiFailLabel": "Reason needs improvement",
       "submitButton": "Submit Correction",
-      "cancelButton": "Cancel"
+      "cancelButton": "Cancel",
+      "editSection": "Edit section",
+      "editSectionTitle": "Edit section: {section}"
     }
   }
 }

@@ -139,9 +139,13 @@ export default async function SessionSummaryPage({
                 sectionId: templateQuestions.sectionId,
                 questionText: templateQuestions.questionText,
                 answerType: templateQuestions.answerType,
+                answerConfig: templateQuestions.answerConfig,
                 isRequired: templateQuestions.isRequired,
                 helpText: templateQuestions.helpText,
                 sortOrder: templateQuestions.sortOrder,
+                conditionalOnQuestionId: templateQuestions.conditionalOnQuestionId,
+                conditionalOperator: templateQuestions.conditionalOperator,
+                conditionalValue: templateQuestions.conditionalValue,
               })
               .from(templateQuestions)
               .where(
@@ -213,9 +217,13 @@ export default async function SessionSummaryPage({
             originalSkipped: sessionAnswerHistory.originalSkipped,
             correctionReason: sessionAnswerHistory.correctionReason,
             createdAt: sessionAnswerHistory.createdAt,
+            questionText: templateQuestions.questionText,
+            answerType: templateQuestions.answerType,
           })
           .from(sessionAnswerHistory)
           .innerJoin(users, eq(users.id, sessionAnswerHistory.correctedById))
+          .innerJoin(sessionAnswers, eq(sessionAnswers.id, sessionAnswerHistory.sessionAnswerId))
+          .innerJoin(templateQuestions, eq(templateQuestions.id, sessionAnswers.questionId))
           .where(eq(sessionAnswerHistory.sessionId, sessionId))
           .orderBy(desc(sessionAnswerHistory.createdAt)),
       ]);
@@ -266,27 +274,56 @@ export default async function SessionSummaryPage({
         category: string | null;
       }>;
 
-      // Build correction maps
-      const correctionsByAnswerId: Record<string, Array<{
-        id: string;
-        sessionAnswerId: string;
-        correctedById: string;
-        correctorFirstName: string;
-        correctorLastName: string;
-        originalAnswerText: string | null;
-        originalAnswerNumeric: number | null;
-        originalAnswerJson: unknown;
-        originalSkipped: boolean;
-        correctionReason: string;
-        createdAt: string;
-      }>> = {};
-      const allCorrections = historyRows.map((row) => ({
-        ...row,
-        createdAt: row.createdAt.toISOString(),
-        originalAnswerNumeric: row.originalAnswerNumeric
-          ? Number(row.originalAnswerNumeric)
-          : null,
-      }));
+      // Build answer-by-id map for computing "after" values in history
+      const answerById = new Map(answers.map((a) => [a.id, a]));
+
+      // Group history rows by answerId (already ordered newest-first)
+      const historyByAnswerId: Record<string, typeof historyRows> = {};
+      for (const row of historyRows) {
+        if (!historyByAnswerId[row.sessionAnswerId]) {
+          historyByAnswerId[row.sessionAnswerId] = [];
+        }
+        historyByAnswerId[row.sessionAnswerId].push(row);
+      }
+
+      // Build allCorrections with "after" values computed per-entry
+      const allCorrections = historyRows.map((row) => {
+        const siblings = historyByAnswerId[row.sessionAnswerId];
+        const idx = siblings.indexOf(row);
+        // idx===0 means most recent: "after" = current answer from answerById
+        // idx>0 means older: "after" = the previous (newer) entry's original values
+        let afterAnswerText: string | null;
+        let afterAnswerNumeric: number | null;
+        let afterAnswerJson: unknown;
+        let afterSkipped: boolean;
+        if (idx === 0) {
+          const cur = answerById.get(row.sessionAnswerId);
+          afterAnswerText = cur?.answerText ?? null;
+          afterAnswerNumeric = cur?.answerNumeric != null ? Number(cur.answerNumeric) : null;
+          afterAnswerJson = cur?.answerJson ?? null;
+          afterSkipped = cur?.skipped ?? false;
+        } else {
+          const newer = siblings[idx - 1];
+          afterAnswerText = newer.originalAnswerText;
+          afterAnswerNumeric = newer.originalAnswerNumeric != null ? Number(newer.originalAnswerNumeric) : null;
+          afterAnswerJson = newer.originalAnswerJson;
+          afterSkipped = newer.originalSkipped;
+        }
+        return {
+          ...row,
+          createdAt: row.createdAt.toISOString(),
+          originalAnswerNumeric: row.originalAnswerNumeric != null
+            ? Number(row.originalAnswerNumeric)
+            : null,
+          afterAnswerText,
+          afterAnswerNumeric,
+          afterAnswerJson,
+          afterSkipped,
+        };
+      });
+
+      // Build correctionsByAnswerId for per-answer amended badges
+      const correctionsByAnswerId: Record<string, typeof allCorrections> = {};
       for (const row of allCorrections) {
         if (!correctionsByAnswerId[row.sessionAnswerId]) {
           correctionsByAnswerId[row.sessionAnswerId] = [];
@@ -319,8 +356,12 @@ export default async function SessionSummaryPage({
             id: q.id,
             questionText: q.questionText,
             answerType: q.answerType,
+            answerConfig: q.answerConfig,
             isRequired: q.isRequired,
             helpText: q.helpText,
+            conditionalOnQuestionId: q.conditionalOnQuestionId,
+            conditionalOperator: q.conditionalOperator,
+            conditionalValue: q.conditionalValue,
           }));
 
         // Collect answers as a plain object (Maps cannot be serialized to client)
@@ -391,6 +432,7 @@ export default async function SessionSummaryPage({
         status: sessionRecord.status,
         categories: categoriesData,
         isManager,
+        isAdmin: isAdmin(session.user.role),
         seriesId: series.id,
         aiStatus: sessionRecord.aiStatus,
         aiSummary: sessionRecord.aiSummary ?? null,
@@ -443,6 +485,7 @@ export default async function SessionSummaryPage({
       reportTeam={data.reportTeam}
       correctionsByAnswerId={data.correctionsByAnswerId}
       allCorrections={data.allCorrections}
+      isAdmin={data.isAdmin}
     />
   );
 }

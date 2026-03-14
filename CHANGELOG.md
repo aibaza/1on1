@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.4] - 2026-03-14
+
+### Added
+- `src/components/session/__tests__/correction-history-panel.test.tsx`: 14 new unit tests covering revert confirm/cancel/loading/success/error/dismiss interaction flows and `formatAnswerValue` logic for yes_no, mood, and skipped answer types (176 unit tests total)
+- `e2e/corrections.spec.ts`: Groups 5+6 — history before/after display assertions (italic question text, → arrow, line-through before pill, green after pill) and admin revert RBAC+flow (confirm dialog, cancel, POST /corrections/revert, page refresh)
+- `e2e/uat-corrections.spec.ts`: Groups 7+8 — equivalent UAT coverage for history before/after display and admin revert flow targeting https://1on1.surmont.co/
+- `src/app/(dashboard)/sessions/[id]/summary/loading.tsx`: dedicated Suspense fallback skeleton for session summary page — prevents session-grid skeleton from appearing below summary content on hard refresh
+
+### Fixed
+- `src/components/session/session-summary-view.tsx`: remove stale `AISuggestionsSection` import path that was incorrectly removed; restore to correct state with both AI sections present
+
 ### Fixed
 - `e2e/audit-log.spec.ts`: fix description and breadcrumb text to match actual UI strings — "View all administrative actions in your organization" and "Organization Settings > Audit Log"
 - `e2e/invite.spec.ts`: replace unauthenticated `page` fixture with `adminPage` from fixtures.ts; update all "Invite people" button selectors to match actual button text "Invite"

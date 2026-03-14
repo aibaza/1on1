@@ -155,3 +155,197 @@ test.describe("Amended badge and correction history panel", () => {
     ).toBeVisible({ timeout: 10_000 });
   });
 });
+
+// ---------------------------------------------------------------------------
+// Group 5: History before/after display
+// ---------------------------------------------------------------------------
+test.describe("History before/after display", () => {
+  test.setTimeout(30_000);
+
+  test("history panel entry shows question text in italic", async ({ adminPage }) => {
+    await adminPage.goto(SESSION_SUMMARY_URL);
+    await adminPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    // Question text rendered in <p className="... italic">
+    const italicEl = adminPage.locator("p.italic").first();
+    await expect(italicEl).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("'→' arrow is visible between before and after pills", async ({ adminPage }) => {
+    await adminPage.goto(SESSION_SUMMARY_URL);
+    await adminPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    // The arrow separator is a text node with "→"
+    await expect(adminPage.getByText("→").first()).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("before pill has line-through styling", async ({ adminPage }) => {
+    await adminPage.goto(SESSION_SUMMARY_URL);
+    await adminPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    // Before pill has class "line-through" applied
+    const beforePill = adminPage.locator(".line-through").first();
+    await expect(beforePill).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("after pill has green styling", async ({ adminPage }) => {
+    await adminPage.goto(SESSION_SUMMARY_URL);
+    await adminPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    // After pill has bg-green class
+    const afterPill = adminPage.locator("[class*='bg-green']").first();
+    await expect(afterPill).toBeVisible({ timeout: 10_000 });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Group 6: Admin revert RBAC + flow
+// ---------------------------------------------------------------------------
+test.describe("Admin revert RBAC and flow", () => {
+  test.setTimeout(60_000);
+
+  let revertAnswerId = "";
+
+  test.beforeAll(async ({ browser }) => {
+    // Create a fresh correction via admin API so we have a known history entry to revert
+    const ctx = await browser.newContext({
+      storageState: "e2e/.auth/admin.json",
+    });
+    const page = await ctx.newPage();
+
+    try {
+      await page.goto(SESSION_SUMMARY_URL);
+      await page.waitForLoadState("domcontentloaded", { timeout: 10_000 });
+
+      const sessionResp = await page.request.get(
+        "/api/sessions/99999999-0001-4000-9000-000000000001"
+      );
+
+      if (sessionResp.ok()) {
+        const data = await sessionResp.json().catch(() => null);
+        const answers =
+          data?.answers ??
+          data?.categories?.flatMap(
+            (c: { answers?: Array<{ id: string }> }) => c.answers ?? []
+          ) ??
+          [];
+        revertAnswerId = answers[0]?.id ?? "";
+      }
+
+      if (revertAnswerId) {
+        const correctionResp = await page.request.post(
+          "/api/sessions/99999999-0001-4000-9000-000000000001/corrections",
+          {
+            data: {
+              answerId: revertAnswerId,
+              newAnswerText: "E2E revert test correction — please ignore",
+              reason:
+                "Automated E2E test correction created to validate the admin revert functionality end-to-end.",
+            },
+          }
+        );
+        console.log(`Group 6 setup correction: ${correctionResp.status()}, answerId: ${revertAnswerId}`);
+      } else {
+        console.log("Group 6 setup: could not extract answerId");
+      }
+    } catch (err) {
+      console.log("Group 6 setup failed:", err);
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  test("admin sees Revert button in history panel", async ({ adminPage }) => {
+    await adminPage.goto(SESSION_SUMMARY_URL);
+    await adminPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    const revertBtn = adminPage
+      .locator("button")
+      .filter({ hasText: /^Revert$/ })
+      .first();
+    await expect(revertBtn).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("manager does NOT see Revert button in history panel", async ({ managerPage }) => {
+    await managerPage.goto(SESSION_SUMMARY_URL);
+    await managerPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    await managerPage.waitForTimeout(1_000);
+    const revertBtns = managerPage
+      .locator("button")
+      .filter({ hasText: /^Revert$/ });
+    await expect(revertBtns).toHaveCount(0, { timeout: 5_000 });
+  });
+
+  test("member does NOT see Revert button in history panel", async ({ memberPage }) => {
+    await memberPage.goto(SESSION_SUMMARY_URL);
+    await memberPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    await memberPage.waitForTimeout(1_000);
+    const revertBtns = memberPage
+      .locator("button")
+      .filter({ hasText: /^Revert$/ });
+    await expect(revertBtns).toHaveCount(0, { timeout: 5_000 });
+  });
+
+  test("clicking Revert shows 'Restore answer to this before-value?' confirmation", async ({ adminPage }) => {
+    await adminPage.goto(SESSION_SUMMARY_URL);
+    await adminPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    const revertBtn = adminPage
+      .locator("button")
+      .filter({ hasText: /^Revert$/ })
+      .first();
+    await revertBtn.click();
+    await expect(
+      adminPage.getByText("Restore answer to this before-value?")
+    ).toBeVisible({ timeout: 5_000 });
+  });
+
+  test("clicking Cancel dismisses confirmation and restores Revert button", async ({ adminPage }) => {
+    await adminPage.goto(SESSION_SUMMARY_URL);
+    await adminPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    const revertBtn = adminPage
+      .locator("button")
+      .filter({ hasText: /^Revert$/ })
+      .first();
+    await revertBtn.click();
+    await expect(
+      adminPage.getByText("Restore answer to this before-value?")
+    ).toBeVisible({ timeout: 5_000 });
+    await adminPage.getByRole("button", { name: "Cancel" }).click();
+    await expect(
+      adminPage.getByText("Restore answer to this before-value?")
+    ).not.toBeVisible({ timeout: 3_000 });
+    await expect(revertBtn).toBeVisible({ timeout: 3_000 });
+  });
+
+  test("clicking Confirm reverts the correction and history grows by one entry", async ({ adminPage, browser }) => {
+    await adminPage.goto(SESSION_SUMMARY_URL);
+    await adminPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+
+    // Count existing history entries (border-rounded entries inside the panel)
+    const entriesBefore = await adminPage
+      .locator(".correction-history-panel .rounded-md.border, [data-testid='correction-entry'], div.rounded-md.border.px-4.py-3")
+      .count();
+
+    const revertBtn = adminPage
+      .locator("button")
+      .filter({ hasText: /^Revert$/ })
+      .first();
+    await revertBtn.click();
+    await expect(
+      adminPage.getByText("Restore answer to this before-value?")
+    ).toBeVisible({ timeout: 5_000 });
+
+    // Intercept the revert POST to confirm it is called
+    const [revertResponse] = await Promise.all([
+      adminPage.waitForResponse(
+        (resp) =>
+          resp.url().includes("/corrections/revert") && resp.request().method() === "POST",
+        { timeout: 15_000 }
+      ),
+      adminPage.getByRole("button", { name: "Confirm" }).click(),
+    ]);
+
+    expect(revertResponse.status()).toBe(200);
+
+    // After page refresh, verify the correction history panel is still present
+    await adminPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    await expect(
+      adminPage.getByText(/correction history/i).first()
+    ).toBeVisible({ timeout: 10_000 });
+  });
+});

@@ -27,7 +27,7 @@ import { AISummarySection } from "./ai-summary-section";
 import { AISuggestionsSection } from "./ai-suggestions-section";
 import { AmendedBadge } from "./amended-badge";
 import { CorrectionHistoryPanel, type CorrectionEntry } from "./correction-history-panel";
-import { AnswerCorrectionForm } from "./answer-correction-form";
+import { SectionCorrectionDialog } from "./section-correction-dialog";
 import { type SummaryAnswer, renderAnswerDisplay } from "./answer-utils";
 import type { AISummary } from "@/lib/ai/schemas/summary";
 import type { AIManagerAddendum } from "@/lib/ai/schemas/addendum";
@@ -36,8 +36,12 @@ interface SummaryQuestion {
   id: string;
   questionText: string;
   answerType: string;
+  answerConfig: unknown;
   isRequired: boolean;
   helpText: string | null;
+  conditionalOnQuestionId: string | null;
+  conditionalOperator: string | null;
+  conditionalValue: string | null;
 }
 
 interface SummaryTalkingPoint {
@@ -93,6 +97,7 @@ interface SessionSummaryViewProps {
   reportTeam: string | null;
   correctionsByAnswerId: Record<string, CorrectionEntry[]>;
   allCorrections: CorrectionEntry[];
+  isAdmin: boolean;
 }
 
 // --- Helpers ---
@@ -150,6 +155,7 @@ export function SessionSummaryView({
   reportTeam,
   correctionsByAnswerId,
   allCorrections,
+  isAdmin,
 }: SessionSummaryViewProps) {
   const t = useTranslations("sessions");
   const format = useFormatter();
@@ -162,7 +168,7 @@ export function SessionSummaryView({
       return initial;
     }
   );
-  const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
+  const [editingCategoryName, setEditingCategoryName] = useState<string | null>(null);
 
   const toggleCategory = (name: string) => {
     setOpenCategories((prev) => ({ ...prev, [name]: !prev[name] }));
@@ -256,11 +262,27 @@ export function SessionSummaryView({
             <Collapsible open={isOpen} onOpenChange={() => toggleCategory(category.name)}>
               <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-1 py-2 hover:bg-muted/50 transition-colors">
                 <h2 className="text-lg font-semibold">{category.name}</h2>
-                {isOpen ? (
-                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                )}
+                <div className="flex items-center gap-2">
+                  {isManager && status === "completed" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1.5 text-xs"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingCategoryName(category.name);
+                      }}
+                    >
+                      <Pencil className="h-3 w-3" />
+                      {t("corrections.editSection")}
+                    </Button>
+                  )}
+                  {isOpen ? (
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </div>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <Separator className="my-3" />
@@ -272,7 +294,6 @@ export function SessionSummaryView({
                     const isAmended = answer?.id
                       ? (correctionsByAnswerId[answer.id]?.length ?? 0) > 0
                       : false;
-                    const isEditing = editingAnswerId === answer?.id;
 
                     return (
                       <div
@@ -283,40 +304,11 @@ export function SessionSummaryView({
                           <p className="text-sm font-medium">
                             {question.questionText}
                           </p>
-                          <div className="flex items-center gap-1.5 shrink-0">
-                            <AmendedBadge isAmended={isAmended} />
-                            {isManager && status === "completed" && answer?.id && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6"
-                                onClick={() =>
-                                  setEditingAnswerId(
-                                    isEditing ? null : (answer?.id ?? null)
-                                  )
-                                }
-                                title={t("corrections.correctionFormTitle")}
-                              >
-                                <Pencil className="h-3.5 w-3.5" />
-                              </Button>
-                            )}
-                          </div>
+                          <AmendedBadge isAmended={isAmended} />
                         </div>
                         <div className="mt-1 text-sm text-muted-foreground">
                           {renderAnswerDisplay(question.answerType, answer, t)}
                         </div>
-                        {isEditing && answer?.id && (
-                          <AnswerCorrectionForm
-                            answerId={answer.id}
-                            sessionId={sessionId}
-                            questionAnswerType={question.answerType}
-                            originalAnswer={answer}
-                            onSuccess={() => {
-                              setEditingAnswerId(null);
-                            }}
-                            onCancel={() => setEditingAnswerId(null)}
-                          />
-                        )}
                       </div>
                     );
                   })}
@@ -454,11 +446,30 @@ export function SessionSummaryView({
         );
       })}
 
+      {/* Section correction dialog */}
+      {editingCategoryName && (() => {
+        const cat = categories.find((c) => c.name === editingCategoryName);
+        if (!cat) return null;
+        return (
+          <SectionCorrectionDialog
+            open={true}
+            onOpenChange={(open) => { if (!open) setEditingCategoryName(null); }}
+            sessionId={sessionId}
+            categoryName={editingCategoryName}
+            questions={cat.questions}
+            currentAnswers={cat.answers}
+            onSuccess={() => setEditingCategoryName(null)}
+          />
+        );
+      })()}
+
       {/* Correction History Panel */}
       {status === "completed" && (
         <CorrectionHistoryPanel
           corrections={allCorrections}
           isManager={isManager}
+          isAdmin={isAdmin}
+          sessionId={sessionId}
         />
       )}
 

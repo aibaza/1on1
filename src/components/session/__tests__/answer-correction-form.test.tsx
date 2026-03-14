@@ -3,6 +3,11 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { AnswerCorrectionForm } from "@/components/session/answer-correction-form";
 
+// Mock QuestionWidget — unit tests don't need to test widget internals
+vi.mock("@/components/session/question-widget", () => ({
+  QuestionWidget: () => <div data-testid="question-widget" />,
+}));
+
 // Mock TanStack Query
 vi.mock("@tanstack/react-query", () => ({
   useQuery: vi.fn().mockReturnValue({ data: undefined, isFetching: false }),
