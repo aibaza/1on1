@@ -35,7 +35,8 @@ services:
       SMTP_PASSWORD: "${SMTP_PASSWORD}"
       EMAIL_FROM: "${EMAIL_FROM}"
       NODE_ENV: production
-      NEXT_PUBLIC_APP_URL: https://1on1.surmont.co
+      NEXT_PUBLIC_APP_URL: "${NEXT_PUBLIC_APP_URL:-https://1on1.surmont.co}"
+      AUTH_URL: "${AUTH_URL:-https://1on1.surmont.co}"
       ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
       INNGEST_DEV: "http://host.docker.internal:8288"
     healthcheck:
