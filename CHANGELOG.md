@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `src/components/ui/calendar.tsx`: shadcn Calendar component (react-day-picker v9, new-york style)
 - `src/components/ui/__tests__/date-picker.test.tsx`: TDD RED — failing tests for DatePicker string↔Date conversion contract (INP-01)
 - `src/components/teams/__tests__/team-detail-danger-zone.test.tsx`: TDD RED — failing tests for Danger Zone AlertDialog UI contract (SAFE-01)
+- `src/components/ui/date-picker.tsx`: shared DatePicker component (Calendar + Popover composition, string↔Date boundary, INP-01)
 
 ## [1.3.5] - 2026-03-15
 
