@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: UI/UX Improvements
 status: planning
-stopped_at: Completed 28-playwright-e2e-test-suite plan 06 — seed UUID fix + Amended badge test enabled + debug spec diagnosis conclusion
-last_updated: "2026-03-13T16:30:37.659Z"
+stopped_at: Completed 22-safety-errors-inputs plan 04 — ERR-01 session not-found page + i18n keys EN/RO
+last_updated: "2026-03-15T18:46:19.883Z"
 last_activity: 2026-03-10 — Roadmap created for v1.4 (phases 24-27, 13 requirements)
 progress:
   total_phases: 11
   completed_phases: 9
-  total_plans: 32
-  completed_plans: 32
+  total_plans: 36
+  completed_plans: 33
   percent: 62
 ---
 
@@ -69,6 +69,7 @@ Progress: [████████████████░░░░░░░
 | Phase 28-playwright-e2e-test-suite P04 | 25 | 2 tasks | 3 files |
 | Phase 28-playwright-e2e-test-suite P05 | 1 | 2 tasks | 3 files |
 | Phase 28-playwright-e2e-test-suite P06 | 15 | 2 tasks | 3 files |
+| Phase 22-safety-errors-inputs P04 | 5 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -123,6 +124,7 @@ Recent decisions affecting current work:
 - [Phase 28-playwright-e2e-test-suite]: GitHub Actions E2E workflow uses bun run test:e2e -- --project=setup --project=chromium for explicit project ordering; PLAYWRIGHT_BROWSERS_PATH set to /home/runner/.cache/ms-playwright in CI
 - [Phase 28-playwright-e2e-test-suite]: Seed UUID fix: DELETE old 6000-variant rows in seedAnswers() before insert — onConflictDoUpdate(id) cannot match old PKs when UUID constants change; required for idempotent re-seeding
 - [Phase 28-playwright-e2e-test-suite]: Amended badge E2E test skip removed — seed UUID 8000-variant fix enables correction POST to return 200; setupComplete variable also removed (used only for skip)
+- [Phase 22-safety-errors-inputs]: not-found.tsx placed at sessions/[id]/summary/ to scope 404 interception to summary segment only
 
 ### Pending Todos
 
@@ -135,6 +137,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T11:36:41.074Z
-Stopped at: Completed 28-playwright-e2e-test-suite plan 06 — seed UUID fix + Amended badge test enabled + debug spec diagnosis conclusion
+Last session: 2026-03-15T18:46:19.879Z
+Stopped at: Completed 22-safety-errors-inputs plan 04 — ERR-01 session not-found page + i18n keys EN/RO
 Resume file: None
