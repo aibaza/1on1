@@ -5,9 +5,10 @@
 - ✅ **v1.0 MVP** — Phases 1-10 (shipped 2026-03-05)
 - ✅ **v1.1 Internationalization** — Phases 11-14 (shipped 2026-03-07)
 - ✅ **v1.2 AI-Ready Templates** — Phases 15-17 (shipped 2026-03-07)
-- 🚧 **v1.3 UI/UX Improvements** — Phases 18-23 (in progress)
+- 🚧 **v1.3 UI/UX Improvements** — Phases 18-22 (in progress)
 - 📋 **v1.4 Session Corrections & Accountability** — Phases 24-27 (planned)
 - 📋 **v1.5 Playwright E2E Test Suite** — Phase 28 (planned)
+- 📋 **v1.6 Low-Priority Polish** — Phase 23 (planned)
 
 ## Phases
 
@@ -61,7 +62,6 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 - [x] **Phase 20: Mobile Responsiveness** — Fix action bars, touch targets, and table layouts on mobile (completed 2026-03-08)
 - [x] **Phase 21: Content & Data Display** — Analytics aggregate metrics, score display, session card data density (completed 2026-03-08)
 - [ ] **Phase 22: Safety, Errors & Inputs** — Danger zones, 404 pages, date picker consistency
-- [ ] **Phase 23: Low-Priority Polish** — 9 small text, visual, and layout tweaks
 
 ### 📋 v1.4 Session Corrections & Accountability (Planned)
 
@@ -71,6 +71,12 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 - [x] **Phase 25: Core API & Business Logic** — RBAC helper, AI validation service, both API routes, in-transaction audit log, score recompute (completed 2026-03-10)
 - [x] **Phase 26: Email Notification & i18n** — Correction email template in EN+RO, session-level deduplication sender (completed 2026-03-13)
 - [x] **Phase 27: UI Integration** — Correction dialog, Amended badge, correction history panel wired into session detail (completed 2026-03-13)
+
+### 📋 v1.6 Low-Priority Polish (Planned)
+
+**Milestone Goal:** Apply 9 small text, visual, and layout tweaks for a professionally finished product — correct placeholder text, accurate copy, properly styled dividers, centered auth pages, hidden redundant badges, and mobile-optimised layout details.
+
+- [ ] **Phase 23: Low-Priority Polish** — 9 small visual and copy tweaks across registration, audit log, auth pages, people list, action items, team cards, session cards, and mobile history
 
 ### 📋 v1.5 Playwright E2E Test Suite (Planned)
 
@@ -152,7 +158,12 @@ Plans:
   1. "Delete Team" button appears in a visually distinct "Danger Zone" section at the bottom of the team detail page, styled with outlined red — visually separated from non-destructive actions
   2. Navigating to a session URL that does not exist shows a contextual 404 page with a "Back to Sessions" link, not the bare Next.js error page
   3. Date filter inputs on History and Audit Log pages use the shadcn DatePicker component — no native `<input type="date">` elements remain
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 22-01-PLAN.md — Wave 0: Install react-day-picker/date-fns, add calendar.tsx, write failing tests for SAFE-01 and INP-01
+- [ ] 22-02-PLAN.md — SAFE-01: Danger Zone section with AlertDialog in team-detail-client (Wave 2)
+- [ ] 22-03-PLAN.md — INP-01: DatePicker component + replace native date inputs in history and audit log (Wave 2)
+- [ ] 22-04-PLAN.md — ERR-01: Session summary not-found.tsx with i18n (Wave 1)
 
 ### Phase 23: Low-Priority Polish
 **Goal**: Users see a professionally finished product — correct placeholder text, accurate copy, properly styled dividers, centered auth pages, hidden redundant badges, and mobile-optimized layout details
@@ -274,8 +285,8 @@ Plans:
 | 19. Design System | v1.3 | 3/3 | Complete | 2026-03-08 |
 | 20. Mobile Responsiveness | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 21. Content & Data Display | v1.3 | 4/4 | Complete | 2026-03-08 |
-| 22. Safety, Errors & Inputs | v1.3 | 0/? | Not started | — |
-| 23. Low-Priority Polish | v1.3 | 0/? | Not started | — |
+| 22. Safety, Errors & Inputs | v1.3 | 0/4 | Not started | — |
+| 23. Low-Priority Polish | v1.6 | 0/? | Not started | — |
 | 24. Schema Foundation | 2/2 | Complete    | 2026-03-10 | — |
 | 25. Core API & Business Logic | 3/3 | Complete    | 2026-03-10 | — |
 | 26. Email Notification & i18n | 3/3 | Complete    | 2026-03-13 | — |
