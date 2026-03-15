@@ -285,7 +285,7 @@ Plans:
 | 19. Design System | v1.3 | 3/3 | Complete | 2026-03-08 |
 | 20. Mobile Responsiveness | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 21. Content & Data Display | v1.3 | 4/4 | Complete | 2026-03-08 |
-| 22. Safety, Errors & Inputs | 2/4 | In Progress|  | — |
+| 22. Safety, Errors & Inputs | 3/4 | In Progress|  | — |
 | 23. Low-Priority Polish | v1.6 | 0/? | Not started | — |
 | 24. Schema Foundation | 2/2 | Complete    | 2026-03-10 | — |
 | 25. Core API & Business Logic | 3/3 | Complete    | 2026-03-10 | — |
