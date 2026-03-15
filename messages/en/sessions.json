@@ -295,6 +295,11 @@
       "monthAgo": "1 month ago",
       "monthsAgo": "{count} months ago"
     },
+    "notFound": {
+      "title": "Session not found",
+      "description": "This session does not exist or you do not have access.",
+      "backToSessions": "Back to Sessions"
+    },
     "corrections": {
       "amendedBadge": "Amended",
       "historyTitle": "Correction History",

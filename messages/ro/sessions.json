@@ -295,6 +295,11 @@
       "monthAgo": "acum 1 lună",
       "monthsAgo": "acum {count} luni"
     },
+    "notFound": {
+      "title": "Sesiunea nu a fost găsită",
+      "description": "Această sesiune nu există sau nu ai acces la ea.",
+      "backToSessions": "Înapoi la sesiuni"
+    },
     "corrections": {
       "amendedBadge": "Modificat",
       "historyTitle": "Istoric corecții",
