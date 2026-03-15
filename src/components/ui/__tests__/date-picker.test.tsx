@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+// @ts-expect-error — date-picker.tsx does not exist yet (TDD RED, plan 22-02 creates it)
 import { DatePicker } from "@/components/ui/date-picker";
 
 // DatePicker behavioral contract (INP-01):
