@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: UI/UX Improvements
 status: planning
-stopped_at: Completed 22-safety-errors-inputs plan 02 — Danger Zone AlertDialog for team delete (SAFE-01)
-last_updated: "2026-03-15T18:57:15.763Z"
+stopped_at: Completed 22-safety-errors-inputs plan 03 — DatePicker component + native date input replacement (INP-01)
+last_updated: "2026-03-15T18:58:08.926Z"
 last_activity: 2026-03-10 — Roadmap created for v1.4 (phases 24-27, 13 requirements)
 progress:
   total_phases: 11
-  completed_phases: 9
+  completed_phases: 10
   total_plans: 36
-  completed_plans: 35
+  completed_plans: 36
   percent: 62
 ---
 
@@ -72,6 +72,7 @@ Progress: [████████████████░░░░░░░
 | Phase 22-safety-errors-inputs P04 | 5 | 2 tasks | 3 files |
 | Phase 22-safety-errors-inputs P01 | 10 | 3 tasks | 6 files |
 | Phase 22-safety-errors-inputs P02 | 3 | 2 tasks | 3 files |
+| Phase 22-safety-errors-inputs P03 | 4 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -131,6 +132,8 @@ Recent decisions affecting current work:
 - [Phase 22-01]: calendar.tsx written manually (shadcn CLI not available via bunx) — uses react-day-picker v9 DayPicker API with new-york style class names
 - [Phase 22-safety-errors-inputs]: AlertDialog open state controlled via useState(deleteDialogOpen) for programmatic control and proper animation
 - [Phase 22-safety-errors-inputs]: Delete trigger uses variant=outline + border-destructive text-destructive classes — visual danger without confusing with primary action
+- [Phase 22-safety-errors-inputs]: DatePicker string boundary: accepts YYYY-MM-DD string, never leaks Date objects to consumers — history and audit-log state contracts unchanged
+- [Phase 22-safety-errors-inputs]: @ts-expect-error directive in date-picker.test.tsx removed once date-picker.tsx exists — TDD RED placeholder no longer needed
 
 ### Pending Todos
 
@@ -143,6 +146,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T18:57:15.759Z
-Stopped at: Completed 22-safety-errors-inputs plan 02 — Danger Zone AlertDialog for team delete (SAFE-01)
+Last session: 2026-03-15T18:58:08.920Z
+Stopped at: Completed 22-safety-errors-inputs plan 03 — DatePicker component + native date input replacement (INP-01)
 Resume file: None
