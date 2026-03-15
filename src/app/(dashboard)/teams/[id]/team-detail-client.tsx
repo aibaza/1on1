@@ -30,6 +30,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MemberPicker } from "@/components/people/member-picker";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface TeamMember {
   userId: string;
@@ -72,6 +83,7 @@ export function TeamDetailClient({
   const isAdmin = currentUserRole === "admin";
 
   const [memberPickerOpen, setMemberPickerOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [editingDescription, setEditingDescription] = useState(false);
   const [nameValue, setNameValue] = useState(initialTeam.name);
@@ -340,22 +352,45 @@ export function TeamDetailClient({
             {t("addMembers")}
           </Button>
         )}
-        {isAdmin && (
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => {
-              if (confirm(t("deleteConfirm"))) {
-                deleteTeamMutation.mutate();
-              }
-            }}
-            disabled={deleteTeamMutation.isPending}
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            {deleteTeamMutation.isPending ? t("deleting") : t("deleteTeam")}
-          </Button>
-        )}
       </div>
+
+      {/* Danger Zone */}
+      {isAdmin && (
+        <div className="mt-8 pt-8 border-t border-destructive/20 space-y-3">
+          <div>
+            <h3 className="text-sm font-medium text-destructive">{t("dangerZone")}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("dangerZoneDesc")}</p>
+          </div>
+          <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-destructive text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                {t("deleteTeam")}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
+                <AlertDialogDescription>{t("deleteConfirm")}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-destructive hover:bg-destructive/90"
+                  onClick={() => deleteTeamMutation.mutate()}
+                  disabled={deleteTeamMutation.isPending}
+                >
+                  {deleteTeamMutation.isPending ? t("deleting") : t("deleteTeam")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      )}
 
       {/* Members table */}
       <div>

@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `src/app/(dashboard)/teams/[id]/team-detail-client.tsx`: Danger Zone section with AlertDialog — replaces window.confirm(), delete button uses outlined destructive styling (SAFE-01)
 - `messages/en/teams.json` + `messages/ro/teams.json`: added `dangerZone`, `dangerZoneDesc`, `deleteConfirmTitle`, `cancel` i18n keys for Danger Zone section (SAFE-01)
 - `react-day-picker@9.14.0` and `date-fns@4.1.0` installed as dependencies for shadcn Calendar/DatePicker
 - `src/components/ui/calendar.tsx`: shadcn Calendar component (react-day-picker v9, new-york style)
