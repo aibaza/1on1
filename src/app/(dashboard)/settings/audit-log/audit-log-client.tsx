@@ -7,6 +7,7 @@ import { ChevronDown, ChevronRight, Search } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Select,
   SelectContent,
@@ -193,26 +194,16 @@ export function AuditLogClient() {
         </Select>
 
         <div className="flex items-center gap-2">
-          <Input
-            type="date"
+          <DatePicker
             value={fromDate}
-            onChange={(e) => {
-              setFromDate(e.target.value);
-              setPage(1);
-            }}
+            onChange={(val) => { setFromDate(val); setPage(1); }}
             className="w-[150px]"
-            placeholder="From"
           />
           <span className="text-muted-foreground text-sm">{t("auditLog.to")}</span>
-          <Input
-            type="date"
+          <DatePicker
             value={toDate}
-            onChange={(e) => {
-              setToDate(e.target.value);
-              setPage(1);
-            }}
+            onChange={(val) => { setToDate(val); setPage(1); }}
             className="w-[150px]"
-            placeholder="To"
           />
         </div>
       </div>

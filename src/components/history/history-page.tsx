@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Select,
   SelectContent,
@@ -320,13 +321,11 @@ export function HistoryPage({
           <label className="text-xs font-medium text-muted-foreground">
             {t("from")}
           </label>
-          <Input
-            type="date"
-            className="w-full sm:w-[160px]"
+          <DatePicker
             value={fromDate}
-            onChange={(e) =>
-              applyFilters(statusFilter, e.target.value, toDate, seriesFilter)
-            }
+            onChange={(val) => applyFilters(statusFilter, val, toDate, seriesFilter)}
+            placeholder={t("from")}
+            className="w-full sm:w-[160px]"
           />
         </div>
 
@@ -334,13 +333,11 @@ export function HistoryPage({
           <label className="text-xs font-medium text-muted-foreground">
             {t("to")}
           </label>
-          <Input
-            type="date"
-            className="w-full sm:w-[160px]"
+          <DatePicker
             value={toDate}
-            onChange={(e) =>
-              applyFilters(statusFilter, fromDate, e.target.value, seriesFilter)
-            }
+            onChange={(val) => applyFilters(statusFilter, fromDate, val, seriesFilter)}
+            placeholder={t("to")}
+            className="w-full sm:w-[160px]"
           />
         </div>
 

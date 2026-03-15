@@ -15,6 +15,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `src/components/teams/__tests__/team-detail-danger-zone.test.tsx`: TDD RED — failing tests for Danger Zone AlertDialog UI contract (SAFE-01)
 - `src/components/ui/date-picker.tsx`: shared DatePicker component (Calendar + Popover composition, string↔Date boundary, INP-01)
 
+### Changed
+- `src/components/history/history-page.tsx`: replace native `<input type="date">` with DatePicker for "from" and "to" date filters (INP-01)
+- `src/app/(dashboard)/settings/audit-log/audit-log-client.tsx`: replace native `<input type="date">` with DatePicker for date range filters (INP-01)
+- `src/components/ui/__tests__/date-picker.test.tsx`: remove now-resolved `@ts-expect-error` directive (date-picker.tsx exists)
+
 ## [1.3.5] - 2026-03-15
 
 ### Added
