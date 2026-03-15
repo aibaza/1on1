@@ -65,3 +65,4 @@ next-env.d.ts
 
 # misc
 *.pem
+.env.sentry-build-plugin

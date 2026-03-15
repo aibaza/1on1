@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.5] - 2026-03-15
+
+### Added
+- Sentry SDK (`@sentry/nextjs@10.43.0`) — Error Monitoring, Tracing, Session Replay, and AI Monitoring (Vercel AI SDK + Anthropic)
+- `instrumentation-client.ts`: browser Sentry init with Session Replay integration
+- `sentry.server.config.ts`: Node.js server Sentry init with Vercel AI SDK integration (`force: true` for Vercel production)
+- `sentry.edge.config.ts`: Edge runtime Sentry init
+- `instrumentation.ts`: server-side registration hook with `onRequestError = Sentry.captureRequestError`
+- `src/app/global-error.tsx`: App Router root error boundary
+- `next.config.ts`: wrapped with `withSentryConfig()` — source map upload, ad-blocker tunnel via `/monitoring`
+- Environment-based configuration: single `NEXT_PUBLIC_SENTRY_DSN` + `NEXT_PUBLIC_SENTRY_ENVIRONMENT` for all runtimes; UAT Docker hardcoded to `staging`, Vercel to `production`, local/tests to `development`
+
 ## [1.3.4] - 2026-03-14
 
 ### Added

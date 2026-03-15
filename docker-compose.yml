@@ -38,6 +38,8 @@ services:
       NEXT_PUBLIC_APP_URL: "${NEXT_PUBLIC_APP_URL:-https://1on1.surmont.co}"
       AUTH_URL: "${AUTH_URL:-https://1on1.surmont.co}"
       ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+      NEXT_PUBLIC_SENTRY_DSN: "${NEXT_PUBLIC_SENTRY_DSN}"
+      NEXT_PUBLIC_SENTRY_ENVIRONMENT: "staging"
       INNGEST_DEV: "http://host.docker.internal:8288"
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3000 || exit 1"]
