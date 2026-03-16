@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Fixed
+- `POST /api/sessions/[id]/complete`: wrap AI pipeline in `waitUntil()` so Vercel keeps the function alive after HTTP response — fire-and-forget was killed before AI could run
+- `POST /api/sessions/[id]/ai-retry`: same `waitUntil()` fix; also accept `pending` status so stuck sessions can be retried
+
+### Fixed
 - `POST /api/invites/resend`: create invite token on the fly for seeded/imported users who have no existing token — previously returned 400 for all such users
 
 ## [1.3.6] - 2026-03-16

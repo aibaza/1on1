@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { waitUntil } from "@vercel/functions";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { logAuditEvent } from "@/lib/audit/log";
@@ -215,15 +216,18 @@ export async function POST(
     }
 
     // Fire-and-forget: run AI pipeline directly
-    // Do NOT await -- session completion must never be blocked by AI
-    runAIPipelineDirect({
-      sessionId: result.sessionId,
-      seriesId: result.seriesId,
-      tenantId: session.user.tenantId,
-      managerId: result.managerId,
-      reportId: result.reportId,
-    }).catch((err) =>
-      console.error("Failed to run AI pipeline:", err)
+    // waitUntil keeps the Vercel function alive until the pipeline completes
+    // without blocking the HTTP response
+    waitUntil(
+      runAIPipelineDirect({
+        sessionId: result.sessionId,
+        seriesId: result.seriesId,
+        tenantId: session.user.tenantId,
+        managerId: result.managerId,
+        reportId: result.reportId,
+      }).catch((err) =>
+        console.error("Failed to run AI pipeline:", err)
+      )
     );
 
     // Schedule notifications for the next session (non-blocking)

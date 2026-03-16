@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { waitUntil } from "@vercel/functions";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { runAIPipelineDirect } from "@/lib/ai/pipeline";
@@ -47,8 +48,8 @@ export async function POST(
           return { error: "NOT_FOUND" as const };
         }
 
-        // Verify AI status is "failed"
-        if (sessionRecord.aiStatus !== "failed") {
+        // Verify AI status is "failed" or stuck "pending"
+        if (sessionRecord.aiStatus !== "failed" && sessionRecord.aiStatus !== "pending") {
           return { error: "INVALID_STATUS" as const };
         }
 
@@ -113,15 +114,16 @@ export async function POST(
       }
     }
 
-    // Fire-and-forget: run AI pipeline directly
-    runAIPipelineDirect({
-      sessionId,
-      seriesId: result.seriesId,
-      tenantId: session.user.tenantId,
-      managerId: result.managerId,
-      reportId: result.reportId,
-    }).catch((err) =>
-      console.error("Failed to run AI retry pipeline:", err)
+    waitUntil(
+      runAIPipelineDirect({
+        sessionId,
+        seriesId: result.seriesId,
+        tenantId: session.user.tenantId,
+        managerId: result.managerId,
+        reportId: result.reportId,
+      }).catch((err) =>
+        console.error("Failed to run AI retry pipeline:", err)
+      )
     );
 
     return NextResponse.json({ ok: true });
