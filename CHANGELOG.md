@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.11] - 2026-03-16
+
+### Fixed
+- Admin "Regenerate" button on completed AI summaries now actually re-generates — endpoint was blocking retry when `aiStatus = "completed"`; admins can now force re-generation from any status
+- "Regenerate" button label corrected (was showing "Retry" translation key)
+
 ## [1.3.10] - 2026-03-16
 
 ### Added

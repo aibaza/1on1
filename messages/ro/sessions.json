@@ -183,6 +183,7 @@
       "generating": "Se generează...",
       "retrying": "Se reîncearcă...",
       "retry": "Reîncearcă",
+      "regenerate": "Regenerează",
       "takingLong": "Generarea AI durează mai mult decât era de așteptat.",
       "managerRetry": "Apasă reîncearcă pentru a relansa procesul.",
       "memberRetry": "Managerul poate relansa generarea.",

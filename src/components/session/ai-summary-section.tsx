@@ -238,7 +238,7 @@ export function AISummarySection({
               <RefreshCw
                 className={`h-3.5 w-3.5 ${retryMutation.isPending ? "animate-spin" : ""}`}
               />
-              {retryMutation.isPending ? t("retrying") : t("retry")}
+              {retryMutation.isPending ? t("retrying") : t("regenerate")}
             </Button>
           )}
         </div>

@@ -48,12 +48,7 @@ export async function POST(
           return { error: "NOT_FOUND" as const };
         }
 
-        // Verify AI status is "failed" or stuck "pending"
-        if (sessionRecord.aiStatus !== "failed" && sessionRecord.aiStatus !== "pending") {
-          return { error: "INVALID_STATUS" as const };
-        }
-
-        // Fetch the series to verify the user is the manager
+        // Fetch the series to verify the user is the manager or admin
         const [series] = await tx
           .select({
             managerId: meetingSeries.managerId,
@@ -66,8 +61,19 @@ export async function POST(
           return { error: "NOT_FOUND" as const };
         }
 
-        if (session.user.id !== series.managerId && session.user.role !== "admin") {
+        const isManagerOnSeries = session.user.id === series.managerId;
+        const isAdmin = session.user.role === "admin";
+
+        if (!isManagerOnSeries && !isAdmin) {
           return { error: "FORBIDDEN" as const };
+        }
+
+        // Admins can re-generate from any status; managers only from failed/pending
+        const validStatuses = isAdmin
+          ? ["failed", "pending", "completed"]
+          : ["failed", "pending"];
+        if (!validStatuses.includes(sessionRecord.aiStatus ?? "")) {
+          return { error: "INVALID_STATUS" as const };
         }
 
         // Reset AI status to pending

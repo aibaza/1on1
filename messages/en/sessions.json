@@ -183,6 +183,7 @@
       "generating": "Generating...",
       "retrying": "Retrying...",
       "retry": "Retry",
+      "regenerate": "Regenerate",
       "takingLong": "AI generation is taking longer than expected.",
       "managerRetry": "Click retry to re-trigger the pipeline.",
       "memberRetry": "The manager can retry generation.",
