@@ -125,23 +125,139 @@
 
 ---
 
+## Milestone: v1.3 — UI/UX Improvements
+
+**Shipped:** 2026-03-16
+**Phases:** 5 (18-22) | **Plans:** 18 | **Timeline:** 2026-03-08 → 2026-03-16 (8 days)
+
+### What Was Built
+- **Critical Bugs**: `contentToHtml()` utility for Tiptap JSON→HTML rendering; spec.json i18n namespace fix; AI editor mobile tab layout
+- **Design System**: `EmptyState` shared component replacing 10 inline patterns; badge variant semantics (default=active, outline=complete); sentence-case section headers; button color audit
+- **Mobile Responsiveness**: 44px touch targets on nudge cards; responsive column hiding via TanStack Table `meta.className`; dual-layout template editor with mobile overflow menu
+- **Content & Data Display**: Numeric score badges on series cards; collapsible Talking Points/Action Items with count badges in wizard; team heatmap contributor threshold guard; aggregate analytics stat cards
+- **Safety & Inputs**: Danger Zone with AlertDialog confirmation for destructive delete; shared DatePicker (react-day-picker v9 + date-fns); contextual 404 page scoped to session summary segment
+
+### What Worked
+- **TDD Wave 0 for all phases**: RED tests first on phases 19, 20, 22 — caught component interface mismatches before implementation on every phase
+- **Audit-driven requirements**: Starting from UX audit findings (POL-*, DES-*, MOB-*, CON-*, SAFE-*, ERR-*, INP-*) made scope crisp and measurable
+- **Dual-layout Tailwind pattern**: `hidden md:flex` / `flex md:hidden` sibling elements for responsive action bars — clean, no JS required
+- **Controlled dialog from DropdownMenuItem**: Avoided Radix portal/focus-trap conflicts by using `onSelect + useState` instead of nested `DialogTrigger`
+
+### What Was Inefficient
+- **Phase 22 out-of-order execution**: Plans 22-01→04 were built but then additional plans ran after phase 28 was complete — history entries in STATE.md appear out of sequence
+- **shadcn CLI unavailable**: `calendar.tsx` had to be written manually because `bunx shadcn` isn't accessible in execution context — requires knowing react-day-picker v9 API from memory
+
+### Patterns Established
+- `EmptyState` API: `icon?`, `heading`, `description?`, `action?`, `className?` — standardized across 10+ locations
+- Badge semantics: `default` = active/in-progress (heavy), `outline` = completed/receded (light), `destructive` = error
+- `meta.className` on TanStack Table `ColumnDef` for responsive column hiding — apply to both `TableHead` and `TableCell`
+- `not-found.tsx` at segment level (not route level) to scope 404 interception precisely
+- DatePicker string boundary: component accepts/emits `YYYY-MM-DD` string, never `Date` objects to consumers
+
+### Key Lessons
+1. **UX audit as milestone input works well** — external audit → requirement codes → phases → measurable success criteria is a clean pipeline
+2. **Responsive patterns belong in design system** — dual-layout and `meta.className` patterns are now reusable conventions for all future tables and action bars
+3. **Wave 0 TDD caught real issues again** — @testing-library/react install requirement discovered at Phase 19 Wave 0, not mid-phase
+4. **react-day-picker v9 is a major API change from v8** — DayPicker props changed significantly; `shadcn` CLI would have handled this automatically
+
+---
+
+## Milestone: v1.4 — Session Corrections & Accountability
+
+**Shipped:** 2026-03-16
+**Phases:** 4 (24-27) | **Plans:** 12 | **Timeline:** 2026-03-10 → 2026-03-13 (3 days)
+
+### What Was Built
+- **Schema Foundation**: `session_answer_history` append-only table (typed snapshot columns, tenant_id RLS, FORCE RLS for adminDb); `notificationTypeEnum` extended with `session_correction` via hand-written ALTER TYPE migration; Drizzle journal gap fixed
+- **Core API**: `canCorrectSession()` RBAC helper; `validateCorrectionReason()` AI service (claude-haiku, degrades to `{pass:true}` on outage); correction mutation route (atomic: history snapshot + answer update + score recompute + audit log in one transaction); validate-reason AI route (advisory-only, no DB writes)
+- **Email Notification & i18n**: `CorrectionEmail` React Email component (EN+RO); `sendCorrectionEmails()` with 5-minute session-level deduplication; fire-and-forget IIFE pattern in mutation route; adminDb for post-commit email context resolution
+- **UI Integration**: `AmendedBadge` on corrected answer rows; inline `AnswerCorrectionForm` with debounced AI feedback; `CorrectionHistoryPanel` (collapsed when empty, expanded when corrections present); full Vitest suite with happy-dom environment
+
+### What Worked
+- **Strict phase dependency chain** (schema → API → email → UI): Zero rework across phases — each layer consumed the previous cleanly
+- **AI-advisory-only validation**: AI outages degrade gracefully to `{pass:true}` — never blocks the mutation, never causes user-facing failures
+- **Chainable adminDb mock**: vi.mock factory returning `select().from().where().limit()` resolving to `[]` — enables dedup tests without per-test setup
+- **`computeSessionScore` already implemented**: TDD RED tests discovered the function was already green — research phase saved implementation time
+
+### What Was Inefficient
+- **Drizzle migration tracking gap**: 6 migrations (0012-0017) unregistered in `__drizzle_migrations` — required manual INSERT fix before new migration could apply
+- **Enum extension requires hand-written SQL**: drizzle-kit cannot handle `ALTER TYPE ... ADD VALUE` without dropping FK references — this pattern will recur whenever enums are extended
+
+### Patterns Established
+- Hand-written `ALTER TYPE ... ADD VALUE IF NOT EXISTS` migration pattern for extending PostgreSQL enums
+- IIFE `(async () => { ... })()` fire-and-forget in API routes for post-commit async work (email sends)
+- `adminDb` acceptable for notification infrastructure (outside RLS, operates on resolved context)
+- AI validation endpoint: separate route, auth-only RBAC (no series check), returns `{pass, feedback}` — never a database write
+- `correctionsByAnswerId: Map<string, Correction[]>` — O(1) lookup pattern for per-row badge display
+
+### Key Lessons
+1. **Enum extension is always hand-written SQL** — drizzle-kit generate breaks FK references when altering enums; document this as a standing pattern
+2. **Migration tracking gaps accumulate silently** — `__drizzle_migrations` can fall out of sync; always verify before running `drizzle-kit migrate` on a mature DB
+3. **AI as advisory layer (not gate) is the right UX** — blocking form submission on AI validation result would create frustrating experience; pass/fail is guidance, not enforcement
+4. **Zod v4 uses `.issues` not `.errors`** — breaking change from Zod v3; affects ZodError catch blocks everywhere
+
+---
+
+## Milestone: v1.5 — Playwright E2E Test Suite
+
+**Shipped:** 2026-03-16
+**Phases:** 1 (28) | **Plans:** 6 | **Timeline:** 2026-03-13 → 2026-03-13 (1 day)
+
+### What Was Built
+- **Auth setup fix**: Resolved `CallbackRouteError` — auth uses `signIn(provider, credentials)` directly, not form submission; reusable `adminPage`, `managerPage`, `memberPage` fixtures with `storageState`
+- **Core flow specs**: login/logout, dashboard load, sessions list, start-session wizard (complete flow), session summary page — semantic selectors throughout
+- **RBAC specs**: manager can open correction form; member cannot see edit icon or correction controls
+- **Template & People specs**: template CRUD (create, add section, add question, archive), people management flows
+- **CI pipeline**: `bun run test:e2e` script; GitHub Actions workflow with Neon/local DB detection, browser install caching, `PLAYWRIGHT_BROWSERS_PATH`
+- **Seed UUID fix**: Replaced 6000-variant UUIDs with RFC4122 8000-variant — enables correction POST (Zod uuid() validation); `DELETE` old rows before insert for idempotent re-seeding
+
+### What Worked
+- **Playwright fixtures for multi-role tests**: Fresh browser context per test enables role-switching within the same spec — cleaner than `storageState` at project level
+- **Semantic selectors throughout**: Initials-based button (`getByRole('button', { name: /^AJ$/ })`), `menuitem` for Radix dropdowns — zero brittle CSS selector dependencies
+- **Neon/local DB detection**: `URL.includes('.neon.tech')` pattern → WebSocket pool vs standard pg — enables same code to run in both CI and local dev
+- **Debug spec as diagnostic tool**: Structured browser error capture → diagnosis conclusion in SUMMARY.md — the `[object ErrorEvent]` crash was attributed to Next.js HMR WebSocket, not app code
+
+### What Was Inefficient
+- **Seed UUID variant bug**: 6000-variant UUIDs (not RFC4122 compliant) caused `canCorrectSession` Zod validation to fail — required a second gap-closure plan to fix
+- **Template flow brittleness**: Template create redirects to detail page in some environments — test had to handle both list and detail outcomes after creation
+
+### Patterns Established
+- Playwright fixtures pattern: `adminPage`, `managerPage`, `memberPage` via `test.extend()` — one fixture file, role-specific test context
+- `vitest.config.ts` exclude: `['e2e/**', 'node_modules/**']` — prevents Playwright specs from being picked up by Vitest
+- `PLAYWRIGHT_BROWSERS_PATH=/home/runner/.cache/ms-playwright` in GitHub Actions — browser binary caching
+- `DELETE` old seed rows before insert when PKs change between runs — idempotent seeding for UUID-keyed tables
+
+### Key Lessons
+1. **Auth setup is the critical path for E2E** — once `storageState` is reliable, all subsequent specs run cleanly
+2. **Seed data UUID compliance matters** — Zod `uuid()` validates RFC4122 variant bits; seeded test data must use proper UUIDs
+3. **Playwright fixtures > storageState at project level** for multi-role specs — fresh context per test avoids cross-test contamination
+4. **E2E suite maintenance requires fixtures abstraction** — role fixtures make it easy to add new specs without re-implementing auth
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
 
-| Milestone | Commits | Phases | Key Change |
-|-----------|---------|--------|------------|
-| v1.0 | 224 | 10 | First milestone — established all patterns |
-| v1.1 | ~80 | 4 | Mega-phase design (Phase 12 covered 16 requirements); email standalone translator |
-| v1.2 | ~70 | 3 | TDD Wave 0 contract-first; parallel Phase 16+17 after Phase 15 |
+| Milestone | Phases | Plans | Key Change |
+|-----------|--------|-------|------------|
+| v1.0 | 10 | 40 | First milestone — established all patterns |
+| v1.1 | 4 | 13 | Mega-phase design; email standalone translator |
+| v1.2 | 3 | 16 | TDD Wave 0 contract-first; parallel phases after schema |
+| v1.3 | 5 | 18 | Audit-driven requirements; dual-layout Tailwind pattern |
+| v1.4 | 4 | 12 | Strict dependency chain; AI-advisory-only pattern |
+| v1.5 | 1 | 6 | Playwright fixtures; CI pipeline; UUID compliance fix |
 
 ### Cumulative Quality
 
 | Milestone | Unit Tests | LOC | Source Files |
 |-----------|------------|-----|--------------|
-| v1.0 | 4 E2E suites | 41,464 | 290 |
-| v1.1 | + CI key-parity test | ~+8,000 | ~310 |
-| v1.2 | + 7 export unit tests, + import schema tests, + AI contract tests | ~+26,500 inserts | 323 |
+| v1.0 | initial suite | 41,464 | 290 |
+| v1.1 | + CI key-parity test | ~49,000 | ~310 |
+| v1.2 | + export/import/AI contract tests | ~+26,500 | 323 |
+| v1.3 | + EmptyState, badge, mobile, date-picker tests | ~+4,000 | ~335 |
+| v1.4 | + correction API, email dedup, UI component tests | ~+5,000 | ~345 |
+| v1.5 | + full Playwright E2E suite + CI | 52,632 | 345 |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -149,4 +265,6 @@
 2. UAT gap closure as explicit follow-up plans catches real integration issues
 3. Autonomous execution (yolo mode) works when plans are well-structured
 4. TDD Wave 0 (contract-first failing stubs) prevents cross-plan interface drift in multi-plan features
-5. Architecture decisions made at phase boundaries (dual-layer i18n, portable JSON schema) pay dividends for downstream phases
+5. Architecture decisions made at phase boundaries (dual-layer i18n, portable JSON schema, AI-advisory-only) pay dividends for downstream phases
+6. Audit-driven requirements (external UX audit → requirement codes) produce crisp, measurable success criteria
+7. E2E test suite requires fixtures abstraction from day one — role fixtures make new specs cheap to add

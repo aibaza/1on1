@@ -40,13 +40,19 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 - ✓ Template import from JSON (preview, language mismatch warning, conflict resolution, field-specific validation errors) — v1.2
 - ✓ In-app AI template generator (describe → AI generates in company language → preview → save) — v1.2
 - ✓ DIY prompt kit (copyable schema + principles + example for Claude, ChatGPT, etc.) — v1.2
+- ✓ Design system: consistent badge semantics, sentence-case headers, EmptyState shared component — v1.3
+- ✓ Mobile responsiveness: 44px touch targets, responsive column hiding, overflow menus — v1.3
+- ✓ Content & data display: numeric score badges, collapsible wizard sections with counts, aggregate analytics stats — v1.3
+- ✓ Safety & inputs: Danger Zone with AlertDialog, shared DatePicker, contextual 404 page — v1.3
+- ✓ Session correction: manager can amend answers in a completed session with append-only history — v1.4
+- ✓ Correction reason: mandatory text (20–500 chars), AI-validated for quality and language compliance — v1.4
+- ✓ Correction notification: report + all admins emailed with session link, 5-minute deduplication window — v1.4
+- ✓ Correction audit trail: atomic write (history + answer update + audit log in one transaction) — v1.4
+- ✓ Playwright E2E test suite: auth setup, full flow coverage, RBAC assertions, CI pipeline (GitHub Actions) — v1.5
 
 ### Active
 
-- [ ] Session correction: manager can edit answers in a completed session (v1.4)
-- [ ] Correction reason: explicit text explanation required, AI-validated in company language (v1.4)
-- [ ] Correction notification: email sent to report and admins with before/after context (v1.4)
-- [ ] Correction audit trail: stored with timestamp, actor, reason, and original values (v1.4)
+- [ ] Low-priority polish: 9 small visual and copy tweaks (registration, audit log, auth pages, people list, action items, team cards, session cards, mobile history) (v1.6)
 
 ### Future
 
@@ -77,20 +83,23 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 - Manager scoring / ranking — creates perverse incentives
 - Multi-language template translations — questionnaires defined in one language per company, no per-template multi-language support yet
 
-## Current Milestone: v1.4 Session Corrections & Accountability
+## Current Milestone: v1.6 Low-Priority Polish
 
-**Goal:** Allow managers to correct answers in past sessions with a mandatory explanation that is AI-validated in the company language, producing a full audit trail and email notification to all involved parties.
+**Goal:** Apply 9 small text, visual, and layout tweaks for a professionally finished product — correct placeholder text, accurate copy, properly styled dividers, centered auth pages, hidden redundant badges, and mobile-optimised layout details.
 
 **Target features:**
-- Session correction: manager can edit answers in a completed session
-- Mandatory correction reason: explicit text explanation required before saving
-- AI validation: reason checked for quality, relevance, and company language compliance
-- Email notification: all involved parties (report, admins) notified of the correction with before/after context
-- Audit trail: correction stored with timestamp, actor, reason, and original values
+- Correct company name placeholder in registration ("Acme Corp")
+- Fix audit log acronym casing ("AI Pipeline Completed")
+- Center forgot-password page card (match login/register)
+- Hide "Active" badge when all users are active
+- Style COMPLETED divider in action items (13px, hairline)
+- Dark mode border on team cards
+- "Start first session" link on empty session cards
+- Short mobile history search placeholder
 
 ## Context
 
-**Shipped v1.2 AI-Ready Templates** on 2026-03-07 (323 TypeScript/TSX source files). v1.0 shipped 2026-03-05 (41,464 LOC / 290 files), v1.1 shipped 2026-03-07 (i18n + Romanian), v1.2 shipped 2026-03-07 (template portability + AI co-authoring).
+**Shipped v1.5 Playwright E2E Test Suite** on 2026-03-16 (345 TypeScript/TSX source files, 52,632 LOC). v1.0 shipped 2026-03-05 (290 files), v1.1 shipped 2026-03-07 (i18n + Romanian), v1.2 shipped 2026-03-07 (template portability + AI co-authoring), v1.3 shipped 2026-03-16 (UX audit closure — 5 phases, 18 plans), v1.4 shipped 2026-03-16 (session corrections with AI validation + full audit trail), v1.5 shipped 2026-03-16 (Playwright E2E suite + CI).
 
 **Tech stack:** Next.js 15 (App Router) + TypeScript + Drizzle ORM + PostgreSQL 16 + shadcn/ui + Tailwind CSS 4 + Vercel AI SDK + Auth.js v5 + Inngest + TanStack Query + Recharts + React Email + Tiptap.
 
@@ -135,4 +144,4 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 | Nodemailer over Resend | Works with any SMTP provider | ✓ Good — provider flexibility |
 
 ---
-*Last updated: 2026-03-10 after v1.4 milestone start (Session Corrections & Accountability)*
+*Last updated: 2026-03-16 after v1.3, v1.4, v1.5 milestone completion*

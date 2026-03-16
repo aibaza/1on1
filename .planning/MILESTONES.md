@@ -1,5 +1,32 @@
 # Milestones
 
+## v1.5 Playwright E2E Test Suite (Shipped: 2026-03-16)
+
+**Phases completed:** 10 phases, 36 plans, 10 tasks
+
+**Key accomplishments:**
+- (none recorded)
+
+---
+
+## v1.4 Session Corrections & Accountability (Shipped: 2026-03-16)
+
+**Phases completed:** 10 phases, 36 plans, 10 tasks
+
+**Key accomplishments:**
+- (none recorded)
+
+---
+
+## v1.3 UI/UX Improvements (Shipped: 2026-03-16)
+
+**Phases completed:** 10 phases, 36 plans, 10 tasks
+
+**Key accomplishments:**
+- (none recorded)
+
+---
+
 ## v1.2 AI-Ready Templates (Shipped: 2026-03-07)
 
 **Phases completed:** 3 phases (15-17), 16 plans

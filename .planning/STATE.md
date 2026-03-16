@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: UI/UX Improvements
+milestone: v1.6
+milestone_name: Low-Priority Polish
 status: planning
-stopped_at: Completed 22-safety-errors-inputs plan 03 — DatePicker component + native date input replacement (INP-01)
-last_updated: "2026-03-16T07:32:58.443Z"
-last_activity: 2026-03-10 — Roadmap created for v1.4 (phases 24-27, 13 requirements)
+stopped_at: Archived milestones v1.3, v1.4, v1.5 — phases 18-28 complete
+last_updated: "2026-03-16T10:33:47.591Z"
+last_activity: 2026-03-16 — Archived v1.3 (phases 18-22), v1.4 (phases 24-27), v1.5 (phase 28)
 progress:
-  total_phases: 11
-  completed_phases: 10
-  total_plans: 36
-  completed_plans: 36
-  percent: 62
+  total_phases: 1
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-10)
 
 **Core value:** The AI context layer that makes every meeting smarter than the last
-**Current focus:** v1.4 Session Corrections & Accountability — Phase 24 ready to plan
+**Current focus:** v1.6 Low-Priority Polish — Phase 23 (planning next milestone)
 
 ## Current Position
 
-Phase: 24 of 27 (Schema Foundation) — not started
+Phase: 23 (Low-Priority Polish) — not yet planned
 Plan: —
-Status: Ready to plan Phase 24
-Last activity: 2026-03-10 — Roadmap created for v1.4 (phases 24-27, 13 requirements)
+Status: Ready to plan v1.6 milestone (Phase 23)
+Last activity: 2026-03-16 — Archived milestones v1.3, v1.4, v1.5 (phases 18-28, 49 total plans)
 
 Progress: [████████████████░░░░░░░░░░] 62% (phases 1-21 complete, 22-27 pending)
 
