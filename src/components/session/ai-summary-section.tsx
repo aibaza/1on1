@@ -227,6 +227,20 @@ export function AISummarySection({
           >
             {{ positive: t("sentimentPositive"), neutral: t("sentimentNeutral"), mixed: t("sentimentMixed"), concerning: t("sentimentConcerning") }[summary.overallSentiment] ?? summary.overallSentiment}
           </Badge>
+          {isAdmin && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-auto h-7 gap-1.5 text-xs"
+              onClick={() => retryMutation.mutate()}
+              disabled={retryMutation.isPending}
+            >
+              <RefreshCw
+                className={`h-3.5 w-3.5 ${retryMutation.isPending ? "animate-spin" : ""}`}
+              />
+              {retryMutation.isPending ? t("retrying") : t("retry")}
+            </Button>
+          )}
         </div>
 
         {/* Key Takeaways */}
