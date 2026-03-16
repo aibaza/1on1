@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- `POST /api/invites/resend`: create invite token on the fly for seeded/imported users who have no existing token — previously returned 400 for all such users
+
 ## [1.3.6] - 2026-03-16
 
 ### Added

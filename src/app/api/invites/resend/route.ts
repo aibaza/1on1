@@ -7,7 +7,7 @@ import { auth } from "@/lib/auth/config";
 import { requireRole } from "@/lib/auth/rbac";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { adminDb } from "@/lib/db";
-import { inviteTokens } from "@/lib/db/schema";
+import { inviteTokens, users } from "@/lib/db/schema";
 import { logAuditEvent } from "@/lib/audit/log";
 import { InviteEmail } from "@/lib/email/templates/invite";
 import { getTransport, getEmailFrom } from "@/lib/email/send";
@@ -60,11 +60,32 @@ export async function POST(request: Request) {
       ),
   });
 
+  // If no invite token exists, check if this is a seeded/imported unverified user
+  // and create their first invite token on the fly
+  let inviteId: string;
+  let inviteRole: string;
+
   if (!existingInvite) {
-    return NextResponse.json(
-      { error: "No pending invite found for this email" },
-      { status: 400 }
-    );
+    const unverifiedUser = await adminDb.query.users.findFirst({
+      where: (u, ops) =>
+        ops.and(
+          ops.eq(u.tenantId, tenantId),
+          ops.eq(u.email, email),
+          isNull(u.emailVerified)
+        ),
+      columns: { id: true, role: true },
+    });
+
+    if (!unverifiedUser) {
+      return NextResponse.json(
+        { error: "No pending invite found for this email" },
+        { status: 400 }
+      );
+    }
+
+    inviteRole = unverifiedUser.role;
+  } else {
+    inviteRole = existingInvite.role;
   }
 
   // Generate new token and expiry
@@ -76,18 +97,34 @@ export async function POST(request: Request) {
 
   try {
     await withTenantContext(tenantId, actorId, async (tx) => {
-      await tx
-        .update(inviteTokens)
-        .set({ token: newToken, expiresAt: newExpiresAt })
-        .where(eq(inviteTokens.id, existingInvite.id));
+      if (existingInvite) {
+        await tx
+          .update(inviteTokens)
+          .set({ token: newToken, expiresAt: newExpiresAt })
+          .where(eq(inviteTokens.id, existingInvite.id));
+        inviteId = existingInvite.id;
+      } else {
+        const [inserted] = await tx
+          .insert(inviteTokens)
+          .values({
+            tenantId,
+            email,
+            role: inviteRole as "admin" | "manager" | "member",
+            token: newToken,
+            invitedBy: actorId,
+            expiresAt: newExpiresAt,
+          })
+          .returning({ id: inviteTokens.id });
+        inviteId = inserted.id;
+      }
 
       await logAuditEvent(tx, {
         tenantId,
         actorId,
         action: "invite_resent",
         resourceType: "invite_token",
-        resourceId: existingInvite.id,
-        metadata: { email, role: existingInvite.role },
+        resourceId: inviteId,
+        metadata: { email, role: inviteRole },
         ipAddress: ipAddress ?? undefined,
       });
     });
@@ -111,7 +148,7 @@ export async function POST(request: Request) {
 
     const baseUrl = getBaseUrl();
     const inviteUrl = `${baseUrl}/invite/${newToken}`;
-    const role = existingInvite.role;
+    const role = inviteRole;
     const html = await render(
       InviteEmail({
         inviteUrl,
