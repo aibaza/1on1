@@ -231,7 +231,7 @@ export function AISummarySection({
             <Button
               variant="ghost"
               size="sm"
-              className="ml-auto h-7 gap-1.5 text-xs"
+              className="ml-auto h-7 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
               onClick={() => retryMutation.mutate()}
               disabled={retryMutation.isPending}
             >

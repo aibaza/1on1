@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.12] - 2026-03-16
+
+### Fixed
+- "Regenerate" button on AI summary now shows hover state (muted→foreground color transition) so it's clearly actionable
+
 ## [1.3.11] - 2026-03-16
 
 ### Fixed
