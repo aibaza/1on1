@@ -6,19 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.6] - 2026-03-16
+
 ### Added
-- `src/app/(dashboard)/teams/[id]/team-detail-client.tsx`: Danger Zone section with AlertDialog — replaces window.confirm(), delete button uses outlined destructive styling (SAFE-01)
-- `messages/en/teams.json` + `messages/ro/teams.json`: added `dangerZone`, `dangerZoneDesc`, `deleteConfirmTitle`, `cancel` i18n keys for Danger Zone section (SAFE-01)
-- `react-day-picker@9.14.0` and `date-fns@4.1.0` installed as dependencies for shadcn Calendar/DatePicker
+- `src/app/(dashboard)/sessions/[id]/summary/not-found.tsx`: contextual 404 page for non-existent session summary URLs — shown inside dashboard layout with "Back to Sessions" link (ERR-01)
+- `messages/en/sessions.json` + `messages/ro/sessions.json`: added `notFound` i18n keys for session summary 404 page (ERR-01)
 - `src/components/ui/calendar.tsx`: shadcn Calendar component (react-day-picker v9, new-york style)
-- `src/components/ui/__tests__/date-picker.test.tsx`: TDD RED — failing tests for DatePicker string↔Date conversion contract (INP-01)
-- `src/components/teams/__tests__/team-detail-danger-zone.test.tsx`: TDD RED — failing tests for Danger Zone AlertDialog UI contract (SAFE-01)
 - `src/components/ui/date-picker.tsx`: shared DatePicker component (Calendar + Popover composition, string↔Date boundary, INP-01)
+- `react-day-picker@9.14.0` and `date-fns@4.1.0` as dependencies for DatePicker
 
 ### Changed
-- `src/components/history/history-page.tsx`: replace native `<input type="date">` with DatePicker for "from" and "to" date filters (INP-01)
-- `src/app/(dashboard)/settings/audit-log/audit-log-client.tsx`: replace native `<input type="date">` with DatePicker for date range filters (INP-01)
-- `src/components/ui/__tests__/date-picker.test.tsx`: remove now-resolved `@ts-expect-error` directive (date-picker.tsx exists)
+- `src/app/(dashboard)/teams/[id]/team-detail-client.tsx`: Delete Team moved into a Danger Zone section — `window.confirm()` replaced with accessible AlertDialog, red outlined button styling (SAFE-01)
+- `messages/en/teams.json` + `messages/ro/teams.json`: added `dangerZone`, `dangerZoneDesc`, `deleteConfirmTitle`, `cancel` i18n keys (SAFE-01)
+- `src/components/history/history-page.tsx`: replace native `<input type="date">` with shared DatePicker (INP-01)
+- `src/app/(dashboard)/settings/audit-log/audit-log-client.tsx`: replace native `<input type="date">` with shared DatePicker (INP-01)
 
 ## [1.3.5] - 2026-03-15
 
