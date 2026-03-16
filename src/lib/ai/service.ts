@@ -109,7 +109,8 @@ export async function generateManagerAddendum(
 
 - Sentiment: 1 sentence
 - Patterns: a few words each, only if real
-- Coaching: 1 sentence each, only what matters`;
+- Coaching: 1 sentence each, only what matters
+- ATTRIBUTION: In a 1:1, the manager records answers about the report's experience. Any unnamed subject ("I", "we", or no subject at all) refers to the REPORT, not the manager. Only attribute something to the manager if the answer explicitly names the manager.`;
 
     const parts: string[] = [];
     parts.push(

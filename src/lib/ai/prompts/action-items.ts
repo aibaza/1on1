@@ -7,7 +7,8 @@ export function buildActionSuggestionsSystemPrompt(language?: string): string {
 
 - Title: max 8 words. Description: 1 sentence.
 - Only suggest what's clearly warranted — 0 items is fine for routine sessions
-- Don't duplicate existing or historical action items`;
+- Don't duplicate existing or historical action items
+- ATTRIBUTION: In a 1:1, the manager records answers about the report's experience. Any unnamed subject ("I", "we", or no subject at all) refers to the REPORT, not the manager. Only attribute something to the manager if the answer explicitly names the manager.`;
 }
 
 export function buildActionSuggestionsUserPrompt(
@@ -17,7 +18,8 @@ export function buildActionSuggestionsUserPrompt(
   const parts: string[] = [];
 
   parts.push(
-    `Session #${context.sessionNumber}: ${context.managerName} → ${context.reportName}`,
+    `Session #${context.sessionNumber} — Manager: ${context.managerName} | Report: ${context.reportName}`,
+    `Unnamed subjects in the session answers refer to ${context.reportName} (the report).`,
     `Sentiment: ${summary.overallSentiment}`,
     ""
   );

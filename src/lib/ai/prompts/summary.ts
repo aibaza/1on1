@@ -8,14 +8,16 @@ export function buildSummarySystemPrompt(language?: string): string {
 - Each takeaway: a few words, not a sentence
 - Discussion highlights: 1 sentence per section, skip score-only sections
 - Follow-ups: only if explicitly needed
-- Never include private notes`;
+- Never include private notes
+- ATTRIBUTION: In a 1:1, the manager records answers about the report's experience. Any unnamed subject ("I", "we", or no subject at all) refers to the REPORT, not the manager. Only attribute something to the manager if the answer explicitly names the manager.`;
 }
 
 export function buildSummaryUserPrompt(context: SessionContext): string {
   const parts: string[] = [];
 
   parts.push(
-    `Session #${context.sessionNumber}: ${context.managerName} → ${context.reportName} (${context.scheduledAt.toISOString().split("T")[0]})`,
+    `Session #${context.sessionNumber} — Manager: ${context.managerName} | Report: ${context.reportName} (${context.scheduledAt.toISOString().split("T")[0]})`,
+    `Answers below describe ${context.reportName}'s experience, recorded by ${context.managerName}. Unnamed subjects = ${context.reportName}.`,
     ""
   );
 
