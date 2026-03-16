@@ -61,7 +61,7 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 - [x] **Phase 19: Design System** — Establish consistent button colors, badge weights, casing, and empty-state component (completed 2026-03-08)
 - [x] **Phase 20: Mobile Responsiveness** — Fix action bars, touch targets, and table layouts on mobile (completed 2026-03-08)
 - [x] **Phase 21: Content & Data Display** — Analytics aggregate metrics, score display, session card data density (completed 2026-03-08)
-- [ ] **Phase 22: Safety, Errors & Inputs** — Danger zones, 404 pages, date picker consistency
+- [x] **Phase 22: Safety, Errors & Inputs** — Danger zones, 404 pages, date picker consistency (completed 2026-03-15)
 
 ### 📋 v1.4 Session Corrections & Accountability (Planned)
 
@@ -285,7 +285,7 @@ Plans:
 | 19. Design System | v1.3 | 3/3 | Complete | 2026-03-08 |
 | 20. Mobile Responsiveness | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 21. Content & Data Display | v1.3 | 4/4 | Complete | 2026-03-08 |
-| 22. Safety, Errors & Inputs | 3/4 | In Progress|  | — |
+| 22. Safety, Errors & Inputs | 4/4 | Complete    | 2026-03-16 | — |
 | 23. Low-Priority Polish | v1.6 | 0/? | Not started | — |
 | 24. Schema Foundation | 2/2 | Complete    | 2026-03-10 | — |
 | 25. Core API & Business Logic | 3/3 | Complete    | 2026-03-10 | — |
