@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { gatherSessionContext } from "./context";
 import {
   generateSummary,
@@ -28,8 +29,12 @@ interface PipelineInput {
 export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
   const { sessionId, seriesId, tenantId, managerId, reportId } = input;
 
+  // Attach pipeline context to all Sentry events in this scope
+  Sentry.setContext("ai_pipeline", { sessionId, seriesId, tenantId, managerId, reportId });
+
   try {
-    // Set status to generating
+    // Step 1 — set status to generating
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Starting: setting status to generating", level: "info", data: { sessionId } });
     await withTenantContext(tenantId, managerId, async (tx) => {
       await tx
         .update(sessions)
@@ -37,7 +42,8 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
         .where(eq(sessions.id, sessionId));
     });
 
-    // Gather context
+    // Step 2 — gather context
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Gathering session context", level: "info", data: { sessionId } });
     const context = await gatherSessionContext({
       sessionId,
       seriesId,
@@ -45,8 +51,9 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       managerId,
       reportId,
     });
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Context gathered", level: "info", data: { sessionId, answersCount: context.answers.length, previousSessionsCount: context.previousSessions.length } });
 
-    // Fetch tenant's preferred language for AI content
+    // Step 3 — fetch tenant language
     const tenantData = await withTenantContext(tenantId, managerId, async (tx) => {
       const [t] = await tx
         .select({ settings: tenants.settings })
@@ -56,14 +63,19 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       return t;
     });
     const language = (tenantData?.settings as Record<string, unknown> | null)?.preferredLanguage as string | undefined;
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Language resolved", level: "info", data: { sessionId, language: language ?? "en (default)" } });
 
-    // Generate summary
+    // Step 4 — generate summary
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Calling generateSummary", level: "info", data: { sessionId } });
     const summary = await generateSummary(context, language);
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Summary generated", level: "info", data: { sessionId, keyTakeaways: summary.keyTakeaways.length } });
 
-    // Generate manager addendum
+    // Step 5 — generate manager addendum
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Calling generateManagerAddendum", level: "info", data: { sessionId } });
     const addendum = await generateManagerAddendum(context, language);
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Addendum generated", level: "info", data: { sessionId, assessmentScore: addendum.assessmentScore } });
 
-    // Store summary + addendum + AI assessment score
+    // Step 6 — store summary + addendum
     await withTenantContext(tenantId, managerId, async (tx) => {
       await tx
         .update(sessions)
@@ -76,10 +88,12 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
         .where(eq(sessions.id, sessionId));
     });
 
-    // Generate action suggestions
+    // Step 7 — generate action suggestions
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Calling generateActionSuggestions", level: "info", data: { sessionId } });
     const suggestions = await generateActionSuggestions(context, summary, language);
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Suggestions generated", level: "info", data: { sessionId, suggestionsCount: suggestions.suggestions.length } });
 
-    // Store suggestions
+    // Step 8 — store suggestions
     await withTenantContext(tenantId, managerId, async (tx) => {
       await tx
         .update(sessions)
@@ -90,7 +104,7 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
         .where(eq(sessions.id, sessionId));
     });
 
-    // Finalize
+    // Step 9 — finalize
     const now = new Date();
     await withTenantContext(tenantId, managerId, async (tx) => {
       await tx
@@ -115,16 +129,17 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
         },
       });
     });
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Pipeline completed successfully", level: "info", data: { sessionId } });
 
-    // Compute analytics snapshot
+    // Compute analytics snapshot (non-fatal)
     try {
       await withTenantContext(tenantId, managerId, async (tx) => {
         await computeSessionSnapshot(tx, sessionId, tenantId, reportId, seriesId);
       });
       console.log(`[AI Pipeline] Analytics snapshot computed for session ${sessionId}`);
     } catch (snapshotError) {
-      // Non-fatal: log but don't fail the pipeline for snapshot errors
       console.error(`[AI Pipeline] Analytics snapshot failed for session ${sessionId}:`, snapshotError);
+      Sentry.captureException(snapshotError, { tags: { pipeline_step: "analytics_snapshot" }, extra: { sessionId, tenantId } });
     }
 
     // Send post-session summary emails (non-fatal)
@@ -139,11 +154,25 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       console.log(`[AI Pipeline] Summary emails sent for session ${sessionId}`);
     } catch (emailError) {
       console.error(`[AI Pipeline] Summary email failed for session ${sessionId}:`, emailError);
+      Sentry.captureException(emailError, { tags: { pipeline_step: "summary_email" }, extra: { sessionId, tenantId } });
     }
 
     console.log(`[AI Pipeline] Completed for session ${sessionId}`);
   } catch (error) {
     console.error(`[AI Pipeline] Failed for session ${sessionId}:`, error);
+
+    // Report to Sentry with full context
+    Sentry.captureException(error, {
+      tags: { pipeline_step: "ai_generation" },
+      extra: {
+        sessionId,
+        seriesId,
+        tenantId,
+        managerId,
+        reportId,
+        anthropicKeyPresent: !!process.env.ANTHROPIC_API_KEY,
+      },
+    });
 
     // Set status to failed
     try {
@@ -155,6 +184,7 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       });
     } catch (failError) {
       console.error("[AI Pipeline] Failed to set failed status:", failError);
+      Sentry.captureException(failError, { tags: { pipeline_step: "set_failed_status" }, extra: { sessionId, tenantId } });
     }
 
     // Still send degraded summary email (without AI content)
@@ -168,6 +198,7 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       });
     } catch (emailError) {
       console.error("[AI Pipeline] Summary email failed after AI failure:", emailError);
+      Sentry.captureException(emailError, { tags: { pipeline_step: "degraded_email" }, extra: { sessionId, tenantId } });
     }
   }
 }

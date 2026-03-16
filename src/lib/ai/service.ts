@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { generateText, generateObject, Output } from "ai";
 import { reasonValidationResultSchema, type ReasonValidationResult } from "./schemas/correction";
 import type { ModelMessage } from "ai";
@@ -78,6 +79,17 @@ export async function generateSummary(
     return output;
   } catch (error) {
     console.error("[AI Service] Summary generation failed:", error);
+    Sentry.captureException(error, {
+      tags: { ai_operation: "generateSummary", model: "summary" },
+      extra: {
+        sessionId: context.sessionId,
+        tenantId: context.tenantId,
+        sessionNumber: context.sessionNumber,
+        answersCount: context.answers.length,
+        language,
+        anthropicKeyPresent: !!process.env.ANTHROPIC_API_KEY,
+      },
+    });
     throw error;
   }
 }
@@ -170,6 +182,16 @@ export async function generateManagerAddendum(
     return output;
   } catch (error) {
     console.error("[AI Service] Manager addendum generation failed:", error);
+    Sentry.captureException(error, {
+      tags: { ai_operation: "generateManagerAddendum", model: "managerAddendum" },
+      extra: {
+        sessionId: context.sessionId,
+        tenantId: context.tenantId,
+        sessionNumber: context.sessionNumber,
+        language,
+        anthropicKeyPresent: !!process.env.ANTHROPIC_API_KEY,
+      },
+    });
     throw error;
   }
 }
@@ -205,6 +227,16 @@ export async function generateActionSuggestions(
       "[AI Service] Action suggestions generation failed:",
       error
     );
+    Sentry.captureException(error, {
+      tags: { ai_operation: "generateActionSuggestions", model: "actionSuggestions" },
+      extra: {
+        sessionId: context.sessionId,
+        tenantId: context.tenantId,
+        sessionNumber: context.sessionNumber,
+        language,
+        anthropicKeyPresent: !!process.env.ANTHROPIC_API_KEY,
+      },
+    });
     throw error;
   }
 }
