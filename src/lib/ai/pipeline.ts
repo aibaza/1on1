@@ -32,8 +32,15 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
   // Attach pipeline context to all Sentry events in this scope
   Sentry.setContext("ai_pipeline", { sessionId, seriesId, tenantId, managerId, reportId });
 
+  // Diagnostic: confirm pipeline was invoked and server-side Sentry is working.
+  // This runs in a waitUntil background task — HTTP response already sent.
+  Sentry.captureMessage(`[AI Pipeline] Invoked for session ${sessionId}`, "info");
+
   try {
     // Step 1 — set status to generating
+    // NOTE: Sentry.flush() is called in the finally block below.
+    // This is required because pipeline runs in a waitUntil background task —
+    // the HTTP response was already sent, so the normal Sentry flush never fires.
     Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Starting: setting status to generating", level: "info", data: { sessionId } });
     await withTenantContext(tenantId, managerId, async (tx) => {
       await tx
@@ -200,5 +207,11 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       console.error("[AI Pipeline] Summary email failed after AI failure:", emailError);
       Sentry.captureException(emailError, { tags: { pipeline_step: "degraded_email" }, extra: { sessionId, tenantId } });
     }
+  } finally {
+    // Flush Sentry before the background task exits.
+    // In a waitUntil context the HTTP response is already sent, so the normal
+    // Sentry flush-on-response-end never fires — without this, all captured
+    // exceptions and breadcrumbs would be silently discarded.
+    await Sentry.flush(3000);
   }
 }

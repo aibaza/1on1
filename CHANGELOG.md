@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.8] - 2026-03-16
+
+### Fixed
+- `src/lib/ai/pipeline.ts`: add `await Sentry.flush(3000)` in `finally` block — without this, all Sentry events captured inside `waitUntil` background tasks were silently discarded (HTTP response already sent, normal flush-on-response never fired)
+- `src/lib/ai/pipeline.ts`: add `Sentry.captureMessage` at pipeline start as diagnostic signal to confirm server-side Sentry is working and the pipeline function is invoked
+- `src/app/api/sessions/[id]/ai-summary/route.ts`: extend stuck detection to cover `pending` status (not just `generating`) — sessions where the pipeline never started (e.g. `waitUntil` killed) now auto-reset to `failed` after 5 minutes, showing the retry button instead of spinning forever
+
 ## [1.3.7] - 2026-03-16
 
 ### Added
