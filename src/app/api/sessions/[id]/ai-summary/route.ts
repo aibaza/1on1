@@ -80,6 +80,7 @@ export async function GET(
         }
 
         const isManager = session.user.id === series.managerId;
+        const userIsAdmin = isAdmin(session.user.role);
 
         // Detect stuck sessions and auto-reset to "failed" so the UI shows the retry button.
         // Covers both "generating" (pipeline started but died) and "pending" (pipeline never started,
@@ -99,7 +100,7 @@ export async function GET(
         return {
           status: effectiveStatus,
           summary: sessionRecord.aiSummary ?? null,
-          addendum: isManager ? (sessionRecord.aiManagerAddendum ?? null) : null,
+          addendum: (isManager || userIsAdmin) ? (sessionRecord.aiManagerAddendum ?? null) : null,
           completedAt: sessionRecord.aiCompletedAt?.toISOString() ?? null,
         };
       }

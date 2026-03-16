@@ -1,0 +1,25 @@
+{
+  "cookies": [
+    {
+      "name": "__Secure-authjs.callback-url",
+      "value": "https%3A%2F%2F1on1.surmont.co%2Foverview",
+      "domain": "1on1.surmont.co",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__Secure-authjs.session-token",
+      "value": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2lkIjoiQ2Fib2hlby1UeG9OQlp1anE3VU5MRTh2ZmFTQlFsUmdRaVdrVHk2ek5Qb1I0OFFCUjE5anoxNjlSTWRrZ1AxX3BNT09KT2hCTFhySUZyT3JCMlV6RGcifQ..EYsW-Mqzw-3V5rjg8hKf_g.3TKdVdYO-KxAVzWCn-Mgg7m5xxy7eWa6hkAGGblgm87LvFRzBwNaEIAsSOW5ZWCigKqPiTNUfezeQLigJa7nTYjv5k5WPTMRDfFPBRqpFZeWa-X8FhBJtftK1zjgBcigKkNXE8gL474PtJC9YscblxZvct171bhyj2kOPyuSFR1xMpsFrb5EytQnFxpcG-EgiPoHWfzjhGAWAUgXeBOH9emcHnJM2Mp20wy7esfdr83YLXUi6-PWHd1ue_QkUqeMwUovdpuGNyfnqiOblAj-89mZH_5MOpz1mKjmK9PnS8cH2YrR4VZMvDSd9O7blPw4d9hpjsBjn5si9xcAqDOJ7kbUVT2CDaVNvYmM6o4FI00e0ULWtMG2uFEX6i6rPt4u4deedaw3pZnRp-xk155CokFhrvJ9gkp7pAABQyDOQCEEVrwKP9Vx0FU5HbC7RFgq1-u6EUz7S9Siu8ag3_SxbEoEkO-qBeOuyP51qF5rIvs.AJUsUB82fpGlO3NW1LNsZisPomzNz9o2fPpIlyaLwu0",
+      "domain": "1on1.surmont.co",
+      "path": "/",
+      "expires": 1776070452.567277,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}

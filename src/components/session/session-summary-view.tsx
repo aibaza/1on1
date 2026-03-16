@@ -237,6 +237,7 @@ export function SessionSummaryView({
           <AISummarySection
             sessionId={sessionId}
             isManager={isManager}
+            isAdmin={isAdmin}
             initialStatus={aiStatus}
             initialSummary={aiSummary}
             initialAddendum={aiAddendum}

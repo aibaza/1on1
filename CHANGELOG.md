@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.3.9] - 2026-03-16
+
+### Added
+- Admin can now regenerate AI summaries (retry button visible on failed/stuck sessions)
+- Admin can now see manager addendum (sentiment analysis, coaching suggestions, assessment score) — previously only the manager on the series could see it
+- Admin can now see all private notes from all authors in the session summary — previously only own notes were shown
+
 ## [1.3.8] - 2026-03-16
 
 ### Fixed

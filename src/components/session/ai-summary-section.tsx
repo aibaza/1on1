@@ -23,6 +23,7 @@ const AI_POLLING_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes
 interface AISummarySectionProps {
   sessionId: string;
   isManager: boolean;
+  isAdmin?: boolean;
   initialStatus: string | null;
   initialSummary: AISummary | null;
   initialAddendum: AIManagerAddendum | null;
@@ -51,10 +52,13 @@ const PRIORITY_COLORS: Record<string, string> = {
 export function AISummarySection({
   sessionId,
   isManager,
+  isAdmin = false,
   initialStatus,
   initialSummary,
   initialAddendum,
 }: AISummarySectionProps) {
+  const canRetry = isManager || isAdmin;
+  const canSeeAddendum = isManager || isAdmin;
   const t = useTranslations("sessions.aiSummary");
   const queryClient = useQueryClient();
   const [pollingTimedOut, setPollingTimedOut] = useState(false);
@@ -121,7 +125,7 @@ export function AISummarySection({
             <AlertTriangle className="h-5 w-5 text-amber-500" />
             <h3 className="font-medium">{t("title")}</h3>
           </div>
-          {isManager && (
+          {canRetry && (
             <Button
               variant="outline"
               size="sm"
@@ -140,7 +144,7 @@ export function AISummarySection({
         </div>
         <p className="mt-2 text-sm text-muted-foreground">
           {t("takingLong")}{" "}
-          {isManager
+          {canRetry
             ? t("managerRetry")
             : t("memberRetry")}
         </p>
@@ -184,7 +188,7 @@ export function AISummarySection({
             <AlertTriangle className="h-5 w-5 text-amber-500" />
             <h3 className="font-medium">{t("title")}</h3>
           </div>
-          {isManager && (
+          {canRetry && (
             <Button
               variant="outline"
               size="sm"
@@ -199,7 +203,7 @@ export function AISummarySection({
           )}
         </div>
         <p className="mt-2 text-sm text-muted-foreground">
-          {t("failed")} {isManager ? t("managerRetryFailed") : t("memberRetryFailed")}
+          {t("failed")} {canRetry ? t("managerRetryFailed") : t("memberRetryFailed")}
         </p>
       </div>
     );
@@ -281,8 +285,8 @@ export function AISummarySection({
         )}
       </div>
 
-      {/* Manager Addendum (manager-only) */}
-      {isManager && addendum && (
+      {/* Manager Addendum (manager or admin) */}
+      {canSeeAddendum && addendum && (
         <div className="rounded-lg border border-dashed p-6 bg-muted/10">
           <div className="flex items-center gap-2 mb-4">
             <Lock className="h-4 w-4 text-muted-foreground" />

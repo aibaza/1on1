@@ -178,21 +178,33 @@ export default async function SessionSummaryPage({
           .from(talkingPoints)
           .where(eq(talkingPoints.sessionId, sessionId))
           .orderBy(asc(talkingPoints.sortOrder)),
-        tx
-          .select({
-            id: privateNotes.id,
-            content: privateNotes.content,
-            category: privateNotes.category,
-            authorId: privateNotes.authorId,
-            keyVersion: privateNotes.keyVersion,
-          })
-          .from(privateNotes)
-          .where(
-            and(
-              eq(privateNotes.sessionId, sessionId),
-              eq(privateNotes.authorId, session.user.id)
-            )
-          ),
+        // Admin sees all notes (all authors); manager/report see only their own
+        isAdmin(session.user.role)
+          ? tx
+              .select({
+                id: privateNotes.id,
+                content: privateNotes.content,
+                category: privateNotes.category,
+                authorId: privateNotes.authorId,
+                keyVersion: privateNotes.keyVersion,
+              })
+              .from(privateNotes)
+              .where(eq(privateNotes.sessionId, sessionId))
+          : tx
+              .select({
+                id: privateNotes.id,
+                content: privateNotes.content,
+                category: privateNotes.category,
+                authorId: privateNotes.authorId,
+                keyVersion: privateNotes.keyVersion,
+              })
+              .from(privateNotes)
+              .where(
+                and(
+                  eq(privateNotes.sessionId, sessionId),
+                  eq(privateNotes.authorId, session.user.id)
+                )
+              ),
         tx
           .select({
             id: actionItems.id,
@@ -436,7 +448,7 @@ export default async function SessionSummaryPage({
         seriesId: series.id,
         aiStatus: sessionRecord.aiStatus,
         aiSummary: sessionRecord.aiSummary ?? null,
-        aiAddendum: isManager
+        aiAddendum: (isManager || isAdmin(session.user.role))
           ? (sessionRecord.aiManagerAddendum ?? null)
           : null,
         managerId: series.managerId,

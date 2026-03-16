@@ -34,3 +34,7 @@
 - [[Phase-21]] — Content & Data Display
 - [[Phase-22]] — Safety, Errors & Inputs
 - [[Phase-23]] — Low-Priority Polish
+- [[Phase-24]] — Schema Foundation
+- [[Phase-25]] — Core API & Business Logic
+- [[Phase-26]] — Email Notification & i18n
+- [[Phase-27]] — UI Integration

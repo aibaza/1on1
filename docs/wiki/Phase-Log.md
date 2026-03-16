@@ -4,9 +4,9 @@
 
 Implementation follows a phase-based roadmap managed via the [GSD workflow](https://github.com/cyanheads/claude-gsd). Each phase delivers a coherent, verifiable capability. Phases execute sequentially with some parallelization opportunities after Phase 5.
 
-**Total phases**: 23 (10 v1.0 + 4 v1.1 + 3 v1.2 + 6 v1.3)
-**Completed**: 21/23
-**Current**: Milestone v1.3 in progress (phases 22–23 remaining)
+**Total phases**: 27 (10 v1.0 + 4 v1.1 + 3 v1.2 + 6 v1.3 + 4 v1.4)
+**Completed**: 24/27
+**Current**: Milestone v1.4 in progress (phase 27 remaining); v1.3 phases 22–23 pending
 
 ## Phase Summary
 
@@ -52,6 +52,15 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 | [[Phase-21]] | Content & Data Display | Analytics stat cards, score badges, collapsible sections, heatmap threshold | Complete | Phase 19 |
 | [[Phase-22]] | Safety, Errors & Inputs | Danger zone, 404 pages, date picker consistency | Not Started | Phase 19 |
 | [[Phase-23]] | Low-Priority Polish | 9 small text/visual/layout tweaks | Not Started | Phase 22 |
+
+### Milestone v1.4 — Session Corrections & Accountability (In Progress)
+
+| Phase | Name | Focus | Status | Dependencies |
+|-------|------|-------|--------|--------------|
+| [[Phase-24]] | Schema Foundation | Append-only history table with RLS, notificationTypeEnum extension, migration | Complete | Phase 23 |
+| [[Phase-25]] | Core API & Business Logic | RBAC helper, AI validation service, atomic correction route, audit log, score recompute | Complete | Phase 24 |
+| [[Phase-26]] | Email Notification & i18n | Correction email template EN+RO, session-level deduplication sender | Complete | Phase 25 |
+| [[Phase-27]] | UI Integration | Correction dialog, Amended badge, correction history panel wired into session detail | Not Started | Phase 26 |
 
 ## Execution Order
 
@@ -108,6 +117,16 @@ Phase 17 (v1.2 complete)
 ```
 
 Phases 20 and 21 both depend only on Phase 19 and can execute in parallel.
+
+### v1.4 Phases
+
+```
+Phase 23 (v1.3 complete)
+  └── Phase 24 (Schema Foundation)
+        └── Phase 25 (Core API & Business Logic)
+              └── Phase 26 (Email Notification & i18n)
+                    └── Phase 27 (UI Integration)
+```
 
 ## Conventions
 
