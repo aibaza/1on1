@@ -19,6 +19,7 @@
       "manager": "Manager",
       "member": "Member",
       "allTeams": "All Teams",
+      "allManagers": "All Managers",
       "allStatus": "All Status",
       "active": "Active",
       "pending": "Pending",

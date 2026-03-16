@@ -169,6 +169,10 @@ export function createColumns({
       id: "manager",
       meta: { className: "hidden md:table-cell" },
       accessorFn: (row) => row.managerName ?? "",
+      filterFn: (row, _id, value) => {
+        if (!value || value === "all") return true;
+        return row.original.managerId === value;
+      },
       header: ({ column }) => (
         <Button
           variant="ghost"

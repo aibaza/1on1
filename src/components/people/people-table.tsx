@@ -63,6 +63,19 @@ export function PeopleTable({
     initialData,
   });
 
+  // Build available managers list (users who manage at least one person)
+  const availableManagers = useMemo(() => {
+    const managerMap = new Map<string, string>();
+    for (const u of users ?? []) {
+      if (u.managerId && u.managerName) {
+        managerMap.set(u.managerId, u.managerName);
+      }
+    }
+    return Array.from(managerMap.entries())
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [users]);
+
   // Build allUsers list for manager select
   const allUsers = useMemo(
     () =>
@@ -167,6 +180,31 @@ export function PeopleTable({
               {availableTeams.map((team) => (
                 <SelectItem key={team.id} value={team.id}>
                   {team.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+
+        {availableManagers.length > 0 && (
+          <Select
+            value={
+              (table.getColumn("manager")?.getFilterValue() as string) ?? "all"
+            }
+            onValueChange={(value) =>
+              table
+                .getColumn("manager")
+                ?.setFilterValue(value === "all" ? "" : value)
+            }
+          >
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder={t("table.manager")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("table.allManagers")}</SelectItem>
+              {availableManagers.map((m) => (
+                <SelectItem key={m.id} value={m.id}>
+                  {m.name}
                 </SelectItem>
               ))}
             </SelectContent>
