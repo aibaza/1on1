@@ -66,7 +66,7 @@ export async function POST(
           return { error: "NOT_FOUND" as const };
         }
 
-        if (session.user.id !== series.managerId) {
+        if (session.user.id !== series.managerId && session.user.role !== "admin") {
           return { error: "FORBIDDEN" as const };
         }
 
