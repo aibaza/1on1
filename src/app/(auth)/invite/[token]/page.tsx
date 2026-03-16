@@ -78,11 +78,21 @@ export default async function InvitePage({ params }: InvitePageProps) {
     );
   }
 
-  // Get tenant name for display
-  const tenant = await adminDb.query.tenants.findFirst({
-    where: (t, { eq }) => eq(t.id, invite.tenantId),
-    columns: { name: true },
-  });
+  // Get tenant name and inviter name for display
+  const [tenant, inviter] = await Promise.all([
+    adminDb.query.tenants.findFirst({
+      where: (t, { eq }) => eq(t.id, invite.tenantId),
+      columns: { name: true },
+    }),
+    adminDb.query.users.findFirst({
+      where: (u, { eq }) => eq(u.id, invite.invitedBy),
+      columns: { firstName: true, lastName: true },
+    }),
+  ]);
+
+  const inviterName = inviter
+    ? `${inviter.firstName} ${inviter.lastName}`.trim()
+    : undefined;
 
   return (
     <InviteAcceptForm
@@ -90,6 +100,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
       email={invite.email}
       organizationName={tenant?.name || "your organization"}
       role={invite.role}
+      inviterName={inviterName}
     />
   );
 }

@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Fixed
+- Invite activation page now shows a welcome screen (org name, inviter, role) before any password form — prevents false phishing warnings from ESET and similar security tools
+
+### Fixed
 - AI session summaries, action item suggestions, and manager addendum now correctly attribute unnamed subjects to the report (employee), not the manager — "I delivered X" in a 1:1 answer always means the report delivered X
 
 ## [1.3.9] - 2026-03-16

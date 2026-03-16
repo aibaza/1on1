@@ -24,7 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, ArrowRight, Building2 } from "lucide-react";
 import { useZodI18nErrors } from "@/lib/i18n/zod-error-map";
 
 // Combined form schema for both steps
@@ -51,6 +51,7 @@ interface InviteAcceptFormProps {
   email: string;
   organizationName: string;
   role: string;
+  inviterName?: string;
 }
 
 export function InviteAcceptForm({
@@ -58,10 +59,11 @@ export function InviteAcceptForm({
   email,
   organizationName,
   role,
+  inviterName,
 }: InviteAcceptFormProps) {
   const t = useTranslations("auth");
   useZodI18nErrors();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -122,6 +124,42 @@ export function InviteAcceptForm({
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  if (step === 0) {
+    return (
+      <Card>
+        <CardHeader className="space-y-1">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 mb-2">
+            <Building2 className="h-6 w-6 text-primary" />
+          </div>
+          <CardTitle className="text-2xl font-bold">
+            {t("invite.welcomeTitle", { organization: organizationName })}
+          </CardTitle>
+          <CardDescription>
+            {inviterName
+              ? t("invite.welcomeBodyWithInviter", { inviterName, organization: organizationName })
+              : t("invite.welcomeBody", { organization: organizationName })}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="rounded-md border bg-muted/40 px-4 py-3 space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{t("invite.emailLabel")}</span>
+              <span className="text-sm font-medium">{email}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{t("invite.roleLabel")}</span>
+              <Badge variant="secondary" className="capitalize">{role}</Badge>
+            </div>
+          </div>
+          <Button className="w-full" onClick={() => setStep(1)}>
+            {t("invite.acceptButton")}
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
