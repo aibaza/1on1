@@ -4,9 +4,9 @@
 
 Implementation follows a phase-based roadmap managed via the [GSD workflow](https://github.com/cyanheads/claude-gsd). Each phase delivers a coherent, verifiable capability. Phases execute sequentially with some parallelization opportunities after Phase 5.
 
-**Total phases**: 27 (10 v1.0 + 4 v1.1 + 3 v1.2 + 6 v1.3 + 4 v1.4)
-**Completed**: 24/27
-**Current**: Milestone v1.4 in progress (phase 27 remaining); v1.3 phases 22–23 pending
+**Total phases**: 28 (10 v1.0 + 4 v1.1 + 3 v1.2 + 5 v1.3 + 4 v1.4 + 1 v1.5 + 1 v1.6 pending)
+**Completed**: 27/28
+**Current**: v1.6 Low-Priority Polish (Phase 23 — planning)
 
 ## Phase Summary
 
@@ -25,7 +25,7 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 | [[Phase-09]] | Email Notifications | Invite emails, reminders, post-session summaries | Complete | Phase 5 |
 | [[Phase-10]] | Integration & Polish | Dark mode, top nav, wizard redesign, responsive polish, E2E tests | Complete | Phase 8, 9 |
 
-### Milestone v1.1 — Internationalization (Released 2026-03-06)
+### Milestone v1.1 — Internationalization (Shipped 2026-03-07)
 
 | Phase | Name | Focus | Status | Dependencies |
 |-------|------|-------|--------|--------------|
@@ -34,7 +34,7 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 | [[Phase-13]] | Email Translation | Email templates in correct content language, standalone translator for background jobs | Complete | Phase 11 |
 | [[Phase-14]] | Romanian & Quality | Complete RO translations, plural forms, diacritics, CI key parity | Complete | Phase 12, 13 |
 
-### Milestone v1.2 — AI-Ready Templates (Released 2026-03-07)
+### Milestone v1.2 — AI-Ready Templates (Shipped 2026-03-07)
 
 | Phase | Name | Focus | Status | Dependencies |
 |-------|------|-------|--------|--------------|
@@ -42,7 +42,7 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 | [[Phase-16]] | Template Import | JSON upload with preview, language mismatch warning, conflict resolution, field-specific validation errors | Complete | Phase 15 |
 | [[Phase-17]] | AI Generator & DIY Kit | In-app AI chat editor for template generation, live preview, DIY prompt kit tab | Complete | Phase 15 |
 
-### Milestone v1.3 — UI/UX Improvements (In Progress)
+### Milestone v1.3 — UI/UX Improvements (Shipped 2026-03-16)
 
 | Phase | Name | Focus | Status | Dependencies |
 |-------|------|-------|--------|--------------|
@@ -50,17 +50,28 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 | [[Phase-19]] | Design System | Badge semantics, casing, EmptyState component | Complete | Phase 18 |
 | [[Phase-20]] | Mobile Responsiveness | Template action bars, touch targets, responsive table columns | Complete | Phase 19 |
 | [[Phase-21]] | Content & Data Display | Analytics stat cards, score badges, collapsible sections, heatmap threshold | Complete | Phase 19 |
-| [[Phase-22]] | Safety, Errors & Inputs | Danger zone, 404 pages, date picker consistency | Not Started | Phase 19 |
-| [[Phase-23]] | Low-Priority Polish | 9 small text/visual/layout tweaks | Not Started | Phase 22 |
+| [[Phase-22]] | Safety, Errors & Inputs | Danger zone, 404 pages, date picker consistency | Complete | Phase 19 |
 
-### Milestone v1.4 — Session Corrections & Accountability (In Progress)
+### Milestone v1.4 — Session Corrections & Accountability (Shipped 2026-03-16)
 
 | Phase | Name | Focus | Status | Dependencies |
 |-------|------|-------|--------|--------------|
 | [[Phase-24]] | Schema Foundation | Append-only history table with RLS, notificationTypeEnum extension, migration | Complete | Phase 23 |
 | [[Phase-25]] | Core API & Business Logic | RBAC helper, AI validation service, atomic correction route, audit log, score recompute | Complete | Phase 24 |
 | [[Phase-26]] | Email Notification & i18n | Correction email template EN+RO, session-level deduplication sender | Complete | Phase 25 |
-| [[Phase-27]] | UI Integration | Correction dialog, Amended badge, correction history panel wired into session detail | Not Started | Phase 26 |
+| [[Phase-27]] | UI Integration | Correction dialog, Amended badge, correction history panel wired into session detail | Complete | Phase 26 |
+
+### Milestone v1.5 — Playwright E2E Test Suite (Shipped 2026-03-16)
+
+| Phase | Name | Focus | Status | Dependencies |
+|-------|------|-------|--------|--------------|
+| [[Phase-28]] | Playwright E2E Test Suite | Auth setup, full flow coverage, RBAC assertions, corrections specs, CI pipeline | Complete | Phase 27 |
+
+### Milestone v1.6 — Low-Priority Polish (Planned)
+
+| Phase | Name | Focus | Status | Dependencies |
+|-------|------|-------|--------|--------------|
+| [[Phase-23]] | Low-Priority Polish | 9 small text/visual/layout tweaks | Next | Phase 19 |
 
 ## Execution Order
 
@@ -111,22 +122,37 @@ Phase 17 (v1.2 complete)
   └── Phase 18 (Critical Bugs)
         └── Phase 19 (Design System)
               ├── Phase 20 (Mobile Responsiveness)   ← parallel
-              └── Phase 21 (Content & Data Display)
-                    └── Phase 22 (Safety, Errors & Inputs)
-                          └── Phase 23 (Low-Priority Polish)
+              ├── Phase 21 (Content & Data Display)
+              └── Phase 22 (Safety, Errors & Inputs)
 ```
 
-Phases 20 and 21 both depend only on Phase 19 and can execute in parallel.
+Phases 20, 21, and 22 all depend only on Phase 19 and can execute in parallel.
 
 ### v1.4 Phases
 
 ```
-Phase 23 (v1.3 complete)
+Phase 22 (v1.3 complete)
   └── Phase 24 (Schema Foundation)
         └── Phase 25 (Core API & Business Logic)
               └── Phase 26 (Email Notification & i18n)
                     └── Phase 27 (UI Integration)
 ```
+
+### v1.5 Phases
+
+```
+Phase 27 (v1.4 complete)
+  └── Phase 28 (Playwright E2E Test Suite)
+```
+
+### v1.6 Phases
+
+```
+Phase 19 (Design System, v1.3)
+  └── Phase 23 (Low-Priority Polish)
+```
+
+Note: Phase 23 depends on Phase 19 (uses EmptyState and design system conventions). Scheduled for v1.6 after v1.3–v1.5 were shipped.
 
 ## Conventions
 
