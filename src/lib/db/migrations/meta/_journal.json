@@ -134,6 +134,13 @@
       "when": 1773100000000,
       "tag": "0018_session_answer_history",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1773731262854,
+      "tag": "0019_score_weight_and_rls",
+      "breakpoints": true
     }
   ]
 }
