@@ -36,9 +36,10 @@ test.describe("Audit Log Page", () => {
       .filter({ hasText: "All actions" });
     await expect(actionFilter).toBeVisible();
 
-    // Date inputs
-    const dateInputs = page.locator("input[type='date']");
-    await expect(dateInputs).toHaveCount(2);
+    // Date pickers (custom Popover-based, not native input[type=date])
+    // Both render a <button> with placeholder text "Pick a date" when empty
+    const datePickers = page.getByRole("button", { name: /pick a date/i });
+    await expect(datePickers).toHaveCount(2);
   });
 
   test("action type dropdown shows expected action types", async ({

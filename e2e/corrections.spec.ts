@@ -24,7 +24,7 @@ test.describe("RBAC: edit icon visibility on completed session", () => {
     await managerPage.goto(SESSION_SUMMARY_URL);
     await managerPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
     // The Pencil button has title="Correct Answer" — Playwright matches name via title attribute
-    const editBtn = managerPage.getByRole("button", { name: /correct answer/i }).first();
+    const editBtn = managerPage.getByRole("button", { name: /edit section/i }).first();
     await expect(editBtn).toBeVisible({ timeout: 10_000 });
   });
 
@@ -33,7 +33,7 @@ test.describe("RBAC: edit icon visibility on completed session", () => {
     await memberPage.goto(SESSION_SUMMARY_URL);
     await memberPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
     await memberPage.waitForTimeout(1_000); // Let React hydrate
-    const editBtns = memberPage.getByRole("button", { name: /correct answer/i });
+    const editBtns = memberPage.getByRole("button", { name: /edit section/i });
     await expect(editBtns).toHaveCount(0, { timeout: 5_000 });
   });
 });
@@ -47,7 +47,7 @@ test.describe("Inline correction form", () => {
   test("manager can open and close inline correction form", async ({ managerPage }) => {
     await managerPage.goto(SESSION_SUMMARY_URL);
     await managerPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
-    const editBtn = managerPage.getByRole("button", { name: /correct answer/i }).first();
+    const editBtn = managerPage.getByRole("button", { name: /edit section/i }).first();
     await editBtn.click();
     // Form should appear inline — look for reason textarea / label
     // The label text comes from t("corrections.reasonLabel") = "Correction Reason" (EN)
@@ -68,7 +68,7 @@ test.describe("AI validation feedback", () => {
   test("AI validation feedback appears after typing reason and submit button stays enabled", async ({ managerPage }) => {
     await managerPage.goto(SESSION_SUMMARY_URL);
     await managerPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
-    const editBtn = managerPage.getByRole("button", { name: /correct answer/i }).first();
+    const editBtn = managerPage.getByRole("button", { name: /edit section/i }).first();
     await editBtn.click();
     // Wait for form to render — find the last textbox (reason field is last in form)
     const reasonField = managerPage.getByRole("textbox").last();

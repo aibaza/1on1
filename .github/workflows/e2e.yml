@@ -12,6 +12,10 @@ jobs:
     timeout-minutes: 35
 
     services:
+      mailhog:
+        image: mailhog/mailhog:latest
+        ports:
+          - 1025:1025
       postgres:
         image: postgres:16-alpine
         env:
@@ -39,6 +43,13 @@ jobs:
       ENCRYPTION_MASTER_KEY: 1f9dee0dc292c25c07a5405548c0ebc709275d5f0a84631be4942d1e6294254f
       # Optional: AI features degrade gracefully without this
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      # MailHog SMTP (fake server — allows invite/email tests to pass)
+      SMTP_HOST: localhost
+      SMTP_PORT: "1025"
+      SMTP_SECURE: ""
+      SMTP_USERNAME: ""
+      SMTP_PASSWORD: ""
+      EMAIL_FROM: "1on1 CI <ci@test.example.com>"
       PLAYWRIGHT_BROWSERS_PATH: /home/runner/.cache/ms-playwright
 
     steps:
