@@ -137,6 +137,10 @@ async function login(page: Page, email: string, password: string): Promise<void>
 // ---------------------------------------------------------------------------
 
 test("screenshot tour", async ({ browser }) => {
+  // Skip in CI — this is a visual documentation tool, not a functional test.
+  // The wizard-summary step triggers AI polling (3s interval, 2 min timeout)
+  // which hangs networkidle and causes the 25-min test timeout to fire.
+  if (process.env.CI) test.skip();
   test.setTimeout(25 * 60 * 1_000); // 25 min total
 
   for (const cfg of CONFIGS) {
