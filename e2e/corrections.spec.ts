@@ -49,13 +49,15 @@ test.describe("Inline correction form", () => {
     await managerPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
     const editBtn = managerPage.getByRole("button", { name: /edit section/i }).first();
     await editBtn.click();
-    // Form should appear inline — look for reason textarea / label
-    // The label text comes from t("corrections.reasonLabel") = "Correction Reason" (EN)
-    const reasonField = managerPage.getByRole("textbox").last();
+    // SectionCorrectionDialog opens as a modal — wait for the dialog to appear
+    const dialog = managerPage.getByRole("dialog");
+    await expect(dialog).toBeVisible({ timeout: 8_000 });
+    // Reason textarea is in the dialog footer
+    const reasonField = dialog.getByRole("textbox").last();
     await expect(reasonField).toBeVisible({ timeout: 5_000 });
-    // Cancel button closes the form — t("corrections.cancelButton") = "Cancel"
-    await managerPage.getByRole("button", { name: /cancel/i }).first().click();
-    await expect(reasonField).not.toBeVisible({ timeout: 3_000 });
+    // Cancel button closes the dialog — t("corrections.cancelButton") = "Cancel"
+    await dialog.getByRole("button", { name: /cancel/i }).first().click();
+    await expect(dialog).not.toBeVisible({ timeout: 5_000 });
   });
 });
 
@@ -70,8 +72,11 @@ test.describe("AI validation feedback", () => {
     await managerPage.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
     const editBtn = managerPage.getByRole("button", { name: /edit section/i }).first();
     await editBtn.click();
-    // Wait for form to render — find the last textbox (reason field is last in form)
-    const reasonField = managerPage.getByRole("textbox").last();
+    // SectionCorrectionDialog opens as a modal — wait for the dialog to appear
+    const dialog = managerPage.getByRole("dialog");
+    await expect(dialog).toBeVisible({ timeout: 8_000 });
+    // Reason textarea is in the dialog footer — scope search within dialog
+    const reasonField = dialog.getByRole("textbox").last();
     await expect(reasonField).toBeVisible({ timeout: 5_000 });
     // Type a reason >= 20 chars to trigger debounced AI validation
     await reasonField.fill("The original answer was recorded incorrectly due to a technical issue during the session.");
@@ -79,7 +84,7 @@ test.describe("AI validation feedback", () => {
     await managerPage.waitForTimeout(1_500);
     // Submit button (t("corrections.submitButton") = "Save Correction" or "Submit") must stay enabled
     // Advisory-only: AI result never disables the submit button
-    const submitBtn = managerPage.getByRole("button", { name: /save correction|submit correction|submit/i }).first();
+    const submitBtn = dialog.getByRole("button", { name: /save correction|submit correction|submit/i }).first();
     await expect(submitBtn).toBeEnabled({ timeout: 15_000 });
   });
 });

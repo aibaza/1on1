@@ -261,30 +261,28 @@ export function SessionSummaryView({
         return (
           <div key={category.name} className="mb-6">
             <Collapsible open={isOpen} onOpenChange={() => toggleCategory(category.name)}>
-              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-1 py-2 hover:bg-muted/50 transition-colors">
-                <h2 className="text-lg font-semibold">{category.name}</h2>
-                <div className="flex items-center gap-2">
-                  {isManager && status === "completed" && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 gap-1.5 text-xs"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditingCategoryName(category.name);
-                      }}
-                    >
-                      <Pencil className="h-3 w-3" />
-                      {t("corrections.editSection")}
-                    </Button>
-                  )}
+              {/* Wrap in a div to avoid nesting <button> inside <button> (CollapsibleTrigger + Button) */}
+              <div className="flex w-full items-center justify-between rounded-md px-1 py-2 hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="flex flex-1 items-center justify-between">
+                  <h2 className="text-lg font-semibold">{category.name}</h2>
                   {isOpen ? (
                     <ChevronDown className="h-4 w-4 text-muted-foreground" />
                   ) : (
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   )}
-                </div>
-              </CollapsibleTrigger>
+                </CollapsibleTrigger>
+                {isManager && status === "completed" && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="ml-2 h-7 gap-1.5 text-xs"
+                    onClick={() => setEditingCategoryName(category.name)}
+                  >
+                    <Pencil className="h-3 w-3" />
+                    {t("corrections.editSection")}
+                  </Button>
+                )}
+              </div>
               <CollapsibleContent>
                 <Separator className="my-3" />
 

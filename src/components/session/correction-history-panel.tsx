@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -80,6 +80,11 @@ export function CorrectionHistoryPanel({
   const hasCorrectionHistory = corrections.length > 0;
   const [historyOpen, setHistoryOpen] = useState(hasCorrectionHistory);
   const [revertState, setRevertState] = useState<RevertState | null>(null);
+
+  // Ensure the panel opens if corrections arrive after initial render (streaming hydration)
+  useEffect(() => {
+    if (hasCorrectionHistory) setHistoryOpen(true);
+  }, [hasCorrectionHistory]);
 
   async function handleRevertConfirm(entryId: string) {
     setRevertState({ entryId, status: "loading" });

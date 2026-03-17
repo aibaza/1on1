@@ -20,10 +20,10 @@ export function getTransport() {
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT || 587),
       secure: process.env.SMTP_SECURE === "ssl",
-      auth: {
-        user: process.env.SMTP_USERNAME,
-        pass: process.env.SMTP_PASSWORD,
-      },
+      // Only include auth when credentials are provided (omit for unauthenticated servers like MailHog)
+      ...(process.env.SMTP_USERNAME
+        ? { auth: { user: process.env.SMTP_USERNAME, pass: process.env.SMTP_PASSWORD } }
+        : {}),
     });
   }
   return _transport;
