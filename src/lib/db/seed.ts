@@ -1700,6 +1700,24 @@ async function seedNotifications() {
   }
 }
 
+async function seedAnswerHistory() {
+  console.log('  Seeding answer history (corrections)...');
+  // One correction on Session 1 / Blockers answer — required by corrections.spec.ts E2E tests
+  await db
+    .insert(schema.sessionAnswerHistory)
+    .values({
+      id: 'cccccccc-0001-4000-c000-000000000001',
+      sessionAnswerId: ANSWER_S1_BLOCKERS_ID,
+      sessionId: SESSION_1_ID,
+      tenantId: ACME_TENANT_ID,
+      correctedById: BOB_ID,
+      originalAnswerText: 'Having some difficulty with the codebase, no staging access yet.',
+      originalSkipped: false,
+      correctionReason: 'Dave clarified in person that the original phrasing was overly negative; updated to reflect his actual sentiment.',
+    })
+    .onConflictDoNothing();
+}
+
 async function seed() {
   console.log('Seeding database...\n');
 
@@ -1710,6 +1728,7 @@ async function seed() {
   await seedMeetingSeries();
   await seedSessions();
   await seedAnswers();
+  await seedAnswerHistory();
   await seedAnalyticsSnapshots();
   await seedActionItems();
   await seedPrivateNotes();
