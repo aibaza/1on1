@@ -58,18 +58,15 @@ jobs:
 
       - name: Init database roles and schemas
         run: |
-          PGPASSWORD=postgres psql -h localhost -U postgres -c "
-            CREATE DATABASE oneonone_dev;
-            CREATE ROLE app_user WITH LOGIN PASSWORD 'app_password';
-          "
-          PGPASSWORD=postgres psql -h localhost -U postgres -d oneonone_dev -c "
-            GRANT CONNECT ON DATABASE oneonone_dev TO app_user;
-            GRANT USAGE, CREATE ON SCHEMA public TO app_user;
-            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
-            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_user;
-            GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO app_user;
-            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO app_user;
-          "
+          PGPASSWORD=postgres psql -h localhost -U postgres -c "CREATE DATABASE oneonone_dev;"
+          PGPASSWORD=postgres psql -h localhost -U postgres -c "CREATE ROLE app_user WITH LOGIN PASSWORD 'app_password';"
+          PGPASSWORD=postgres psql -h localhost -U postgres -d oneonone_dev \
+            -c "GRANT CONNECT ON DATABASE oneonone_dev TO app_user;" \
+            -c "GRANT USAGE, CREATE ON SCHEMA public TO app_user;" \
+            -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;" \
+            -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_user;" \
+            -c "GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO app_user;" \
+            -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO app_user;"
 
       - name: Run database migrations
         run: bun run db:migrate
