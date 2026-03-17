@@ -10,11 +10,34 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     env:
       CI: true
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      # Local postgres (non-sensitive CI test values)
+      DATABASE_URL: postgresql://app_user:app_password@localhost:5432/oneonone_dev
+      SEED_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/oneonone_dev
+      DATABASE_ADMIN_URL: postgresql://postgres:postgres@localhost:5432/oneonone_dev
+      AUTH_SECRET: ci-test-auth-secret-for-playwright-32c
+      AUTH_TRUST_HOST: "true"
+      NEXT_PUBLIC_APP_URL: http://localhost:4301
+      AUTH_URL: http://localhost:4301
+      # Encryption key for test data (non-production)
+      ENCRYPTION_MASTER_KEY: 1f9dee0dc292c25c07a5405548c0ebc709275d5f0a84631be4942d1e6294254f
+      # Optional: AI features degrade gracefully without this
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       PLAYWRIGHT_BROWSERS_PATH: /home/runner/.cache/ms-playwright
 
@@ -32,6 +55,24 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+
+      - name: Init database roles and schemas
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -c "
+            CREATE DATABASE oneonone_dev;
+            CREATE ROLE app_user WITH LOGIN PASSWORD 'app_password';
+          "
+          PGPASSWORD=postgres psql -h localhost -U postgres -d oneonone_dev -c "
+            GRANT CONNECT ON DATABASE oneonone_dev TO app_user;
+            GRANT USAGE, CREATE ON SCHEMA public TO app_user;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
+            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_user;
+            GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO app_user;
+            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO app_user;
+          "
+
+      - name: Run database migrations
+        run: bun run db:migrate
 
       - name: Seed test database
         run: bun run db:seed
