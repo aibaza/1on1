@@ -6,6 +6,7 @@ export default defineConfig({
   schema: "./src/lib/db/schema/index.ts",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    // Use admin URL for migrations (needs CREATE TABLE perms); fall back to DATABASE_URL
+    url: (process.env.DATABASE_ADMIN_URL || process.env.DATABASE_URL)!,
   },
 });
