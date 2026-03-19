@@ -187,6 +187,61 @@ export async function GET(
           .from(sessionAnswers)
           .where(eq(sessionAnswers.sessionId, sessionId));
 
+        // Include archived questions/sections that have answers in this session.
+        // When a template is edited, old questions are archived but answers still
+        // reference them. Without this, completed sessions show answers as "skipped".
+        const loadedQuestionIds = new Set(questions.map((q) => q.id));
+        const missingQuestionIds = answers
+          .map((a) => a.questionId)
+          .filter((qid) => !loadedQuestionIds.has(qid));
+
+        if (missingQuestionIds.length > 0) {
+          const archivedQuestions = await tx
+            .select({
+              id: templateQuestions.id,
+              questionText: templateQuestions.questionText,
+              helpText: templateQuestions.helpText,
+              sectionId: templateQuestions.sectionId,
+              answerType: templateQuestions.answerType,
+              answerConfig: templateQuestions.answerConfig,
+              isRequired: templateQuestions.isRequired,
+              sortOrder: templateQuestions.sortOrder,
+              conditionalOnQuestionId:
+                templateQuestions.conditionalOnQuestionId,
+              conditionalOperator: templateQuestions.conditionalOperator,
+              conditionalValue: templateQuestions.conditionalValue,
+            })
+            .from(templateQuestions)
+            .where(inArray(templateQuestions.id, missingQuestionIds));
+
+          questions.push(...archivedQuestions);
+
+          // Also load any missing sections those archived questions belong to
+          const loadedSectionIds = new Set(sectionData.map((s) => s.id));
+          const missingSectionIds = [
+            ...new Set(
+              archivedQuestions
+                .map((q) => q.sectionId)
+                .filter((sid) => !loadedSectionIds.has(sid))
+            ),
+          ];
+
+          if (missingSectionIds.length > 0) {
+            const archivedSections = await tx
+              .select({
+                id: templateSections.id,
+                name: templateSections.name,
+                description: templateSections.description,
+                sortOrder: templateSections.sortOrder,
+              })
+              .from(templateSections)
+              .where(inArray(templateSections.id, missingSectionIds));
+
+            sectionData.push(...archivedSections);
+            sectionData.sort((a, b) => a.sortOrder - b.sortOrder);
+          }
+        }
+
         // Fetch previous completed sessions for this series (last 3)
         const previousSessions = await tx
           .select({
