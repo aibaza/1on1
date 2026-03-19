@@ -137,7 +137,7 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 | 21. Content & Data Display | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 22. Safety, Errors & Inputs | v1.3 | 4/4 | Complete | 2026-03-16 |
 | 23. Low-Priority Polish | v1.6 | 0/? | Not started | — |
-| 24. Schema Foundation | 2/2 | Complete   | 2026-03-19 | 2026-03-10 |
+| 24. Schema Foundation | 2/2 | Complete    | 2026-03-19 | 2026-03-10 |
 | 25. Core API & Business Logic | v1.4 | 3/3 | Complete | 2026-03-10 |
 | 26. Email Notification & i18n | v1.4 | 3/3 | Complete | 2026-03-13 |
 | 27. UI Integration | v1.4 | 4/4 | Complete | 2026-03-13 |
@@ -148,9 +148,9 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 **Goal:** Each role sees only authorized series on the sessions page (admin grouped by manager, manager split into My Team/My 1:1s, member flat list), and both participants can add talking points to scheduled sessions via an agenda sheet before starting the wizard
 **Requirements**: ACC-01, ACC-02, ACC-03, ACC-04, TP-01, TP-02, TP-03, I18N-01
 **Depends on:** Phase 23
-**Plans:** 2/2 plans complete
+**Plans:** 3/3 plans complete — completed 2026-03-19
 
 Plans:
 - [x] 24-00-PLAN.md — Wave 0 TDD: test scaffolds for series role filtering and talking points status gate
-- [ ] 24-01-PLAN.md — API + query changes: role-based series filtering, manager info, talking points status relaxation
-- [ ] 24-02-PLAN.md — UI: role-based grouping in SeriesList, AgendaSheet component, i18n keys
+- [x] 24-01-PLAN.md — API + query changes: role-based series filtering, manager info, talking points status relaxation
+- [x] 24-02-PLAN.md — UI: role-based grouping in SeriesList, AgendaSheet component, i18n keys
