@@ -2,8 +2,8 @@
 phase: 24
 slug: sessions-access-control-and-pre-meeting-talking-points
 status: draft
-nyquist_compliant: false
-wave_0_complete: false
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-03-19
 ---
 
@@ -38,20 +38,27 @@ created: 2026-03-19
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 24-01-01 | 01 | 1 | ACC-01 | unit | `bun run test -- series` | ✅ | ⬜ pending |
-| 24-01-02 | 01 | 1 | ACC-02 | unit | `bun run test -- series` | ✅ | ⬜ pending |
-| 24-01-03 | 01 | 1 | ACC-03 | unit | `bun run test -- series` | ✅ | ⬜ pending |
-| 24-02-01 | 02 | 2 | TP-01 | unit | `bun run test -- talking-points` | ✅ | ⬜ pending |
-| 24-02-02 | 02 | 2 | TP-02 | manual | — visual inspection | — | ⬜ pending |
-| 24-02-03 | 02 | 2 | TP-03 | unit | `bun run test -- talking-points` | ✅ | ⬜ pending |
+| 24-00-01 | 00 | 0 | ACC-01, ACC-02, ACC-03 | unit | `bun run test -- src/lib/queries/__tests__/series.test.ts` | Wave 0 creates | ⬜ pending |
+| 24-00-02 | 00 | 0 | TP-01 | unit | `bun run test -- src/app/api/sessions/__tests__/talking-points.test.ts` | Wave 0 creates | ⬜ pending |
+| 24-01-01 | 01 | 1 | ACC-01, ACC-02, ACC-03 | unit | `bun run test -- src/lib/queries/__tests__/series.test.ts` | Created by 24-00 | ⬜ pending |
+| 24-01-02 | 01 | 1 | ACC-04, TP-01 | unit | `bun run test -- src/app/api/sessions/__tests__/talking-points.test.ts` | Created by 24-00 | ⬜ pending |
+| 24-02-01 | 02 | 2 | TP-02 | manual | -- visual inspection | -- | ⬜ pending |
+| 24-02-02 | 02 | 2 | TP-03, I18N-01 | unit | `bun run test && bun run typecheck` | -- | ⬜ pending |
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+*Status: ⬜ pending / ✅ green / ❌ red / ⚠️ flaky*
 
 ---
 
 ## Wave 0 Requirements
 
-- Existing infrastructure covers all phase requirements.
+Plan 24-00 (Wave 0, TDD) creates the following test files BEFORE implementation begins:
+
+| File | Created By | Tests |
+|------|-----------|-------|
+| `src/lib/queries/__tests__/series.test.ts` | 24-00 Task 1 | SeriesCardData contract (manager field, scheduledAt, talkingPointCount), role filtering smoke |
+| `src/app/api/sessions/__tests__/talking-points.test.ts` | 24-00 Task 2 | Status gate contract (scheduled accepted, completed rejected) |
+
+These tests establish behavioral contracts. Plan 01 makes the series contract tests pass (by extending SeriesCardData and fixing the manager OR-query). Plan 01 Task 2 ensures the talking-points route matches the status gate contract.
 
 ---
 
@@ -67,11 +74,11 @@ created: 2026-03-19
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 30s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 30s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved
