@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `template_version` table: immutable version snapshots created on each template publish, with RLS tenant isolation
+- `buildTemplateSnapshot` utility: captures full template state (sections, questions, labels) as self-contained JSONB
+- Zod validation schemas for template version API payloads (`templateVersionSnapshotSchema`, `versionListItemSchema`, `restoreVersionSchema`)
+- Publish endpoint now creates version snapshot and auto-increments version number
 - `scripts/rebuild-uat.sh`: rebuilds Docker stack, runs migrations, and seeds demo data — seed never runs on production/Vercel deploys
 - Techvibe SRL Romanian test tenant in seed: 7 users, 2 teams, 2 Romanian templates, 5 series, 15 sessions, talking points, action items, private notes, and analytics snapshots
 - Action items page "Ale mele" / "My Items" section: items assigned to current user with collapsible completed section
