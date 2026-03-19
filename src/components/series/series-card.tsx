@@ -215,6 +215,8 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
   const { showApiError } = useApiErrorToast();
   const router = useRouter();
   const [agendaOpen, setAgendaOpen] = useState(false);
+  const [agendaSessionId, setAgendaSessionId] = useState<string | null>(null);
+  const [agendaSessionNumber, setAgendaSessionNumber] = useState<number>(0);
   const hasInProgress = series.latestSession?.status === "in_progress";
   const isManager = series.managerId === currentUserId;
 
@@ -237,6 +239,38 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
       showApiError(error);
     },
   });
+
+  const ensureSession = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/series/${series.id}/ensure-session`, { method: "POST" });
+      if (!res.ok) throw new Error("Failed to ensure session");
+      return res.json() as Promise<{ sessionId: string; sessionNumber: number }>;
+    },
+    onSuccess: (data) => {
+      setAgendaSessionId(data.sessionId);
+      setAgendaSessionNumber(data.sessionNumber);
+      setAgendaOpen(true);
+    },
+    onError: (error: Error) => {
+      showApiError(error);
+    },
+  });
+
+  const handleAgendaClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // If we already have an open session from latestSession, use it directly
+    const openSession = series.latestSession?.status !== "completed" && series.latestSession?.status !== "cancelled"
+      ? series.latestSession
+      : null;
+    if (openSession) {
+      setAgendaSessionId(openSession.id);
+      setAgendaSessionNumber(openSession.sessionNumber);
+      setAgendaOpen(true);
+    } else {
+      ensureSession.mutate();
+    }
+  };
 
   const score =
     series.latestSession?.sessionScore && series.latestSession.status === "completed"
@@ -316,7 +350,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
               : t("series.statusArchived")}
           </Badge>
         )}
-        {series.latestSession?.status !== "completed" && series.latestSession?.status !== "cancelled" && series.latestSession && (
+        {series.status === "active" && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -324,31 +358,30 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
                   variant="ghost"
                   size="icon"
                   className="relative z-10 h-8 w-8"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setAgendaOpen(true);
-                  }}
+                  onClick={handleAgendaClick}
+                  disabled={ensureSession.isPending}
                   aria-label={`${series.report.firstName} ${series.report.lastName} ${t("series.agenda")}`}
                 >
                   <ListTodo className="h-4 w-4" />
-                  {series.latestSession.talkingPointCount > 0 && (
+                  {(series.latestSession?.talkingPointCount ?? 0) > 0 && (
                     <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-0.5 text-[10px] font-semibold">
-                      {series.latestSession.talkingPointCount}
+                      {series.latestSession!.talkingPointCount}
                     </Badge>
                   )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{t("series.agenda")}</TooltipContent>
             </Tooltip>
-            <AgendaSheet
-              open={agendaOpen}
-              onOpenChange={setAgendaOpen}
-              sessionId={series.latestSession.id}
-              personName={`${series.report.firstName} ${series.report.lastName}`}
-              sessionNumber={series.latestSession.sessionNumber}
-              sessionDate={series.latestSession.scheduledAt ?? series.nextSessionAt ?? ""}
-            />
+            {agendaSessionId && (
+              <AgendaSheet
+                open={agendaOpen}
+                onOpenChange={setAgendaOpen}
+                sessionId={agendaSessionId}
+                personName={`${series.report.firstName} ${series.report.lastName}`}
+                sessionNumber={agendaSessionNumber}
+                sessionDate={series.latestSession?.scheduledAt ?? series.nextSessionAt ?? ""}
+              />
+            )}
           </>
         )}
       </CardHeader>

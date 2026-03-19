@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Dashboard admin scoping: admin users now see only their own series on home page (same OR filter as manager — managerId OR reportId) instead of entire tenant
 - Dashboard overdue items scoped to current user's own assigned items only (team items on Action Items page)
 - Email sending: `.example.com` addresses are silently skipped — emails logged to `logs/email-dev.log` for testing instead of sending via SMTP
+- Agenda button visible on all active series cards, not just those with an existing open session — lazy-creates a scheduled session on first click
+- `POST /api/series/[id]/ensure-session` endpoint: returns existing open session or creates a scheduled one (both participants can call)
 - Agenda sheet shows all template sections as categories (not just those with existing talking points), with step numbers (e.g. "1. Stare generală")
 - Talking points API returns template section names as available categories
 
