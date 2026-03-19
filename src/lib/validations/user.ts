@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { uuid } from "./uuid";
 
 export const inviteUsersSchema = z.object({
   emails: z
@@ -44,7 +45,7 @@ export const updateUserRoleSchema = z.object({
 });
 
 export const assignManagerSchema = z.object({
-  managerId: z.string().uuid().nullable(),
+  managerId: uuid.nullable(),
 });
 
 export const updateLanguageSchema = z.object({

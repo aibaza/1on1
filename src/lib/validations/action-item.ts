@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { uuid } from "./uuid";
 
 /**
  * Schema for standalone action item update (from the dedicated Action Items page).
@@ -8,7 +9,7 @@ import { z } from "zod";
 export const standaloneUpdateActionItemSchema = z.object({
   title: z.string().min(1).max(500).optional(),
   description: z.string().nullable().optional(),
-  assigneeId: z.string().uuid().optional(),
+  assigneeId: uuid.optional(),
   dueDate: z.string().nullable().optional(),
   status: z.enum(["open", "completed"]).optional(),
 });

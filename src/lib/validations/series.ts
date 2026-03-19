@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { uuid } from "./uuid";
 
 // Series cadences (mirrors DB enum)
 export const cadences = ["weekly", "biweekly", "monthly", "custom"] as const;
@@ -15,7 +16,7 @@ export const createSeriesSchema = z
     reportId: z.string().uuid("Invalid report ID"),
     cadence: z.enum(cadences),
     cadenceCustomDays: z.number().int().min(1).max(365).optional(),
-    defaultTemplateId: z.string().uuid().optional(),
+    defaultTemplateId: uuid.optional(),
     preferredDay: z.enum(preferredDays).optional(),
     preferredTime: z
       .string()
@@ -40,7 +41,7 @@ export const createSeriesSchema = z
 export const updateSeriesSchema = z.object({
   cadence: z.enum(cadences).optional(),
   cadenceCustomDays: z.number().int().min(1).max(365).nullable().optional(),
-  defaultTemplateId: z.string().uuid().nullable().optional(),
+  defaultTemplateId: uuid.nullable().optional(),
   preferredDay: z.enum(preferredDays).nullable().optional(),
   preferredTime: z
     .string()

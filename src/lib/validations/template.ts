@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { uuid } from "./uuid";
 
 // Answer types (mirrors DB enum)
 export const answerTypes = [
@@ -23,7 +24,7 @@ export const conditionalOperators = [
 // --- Section schemas ---
 
 export const sectionSchema = z.object({
-  id: z.string().uuid().optional(),
+  id: uuid.optional(),
   name: z.string().min(1, "Section name is required").max(255),
   description: z.string().max(2000).nullable().optional(),
   sortOrder: z.number().int().min(0),
@@ -32,7 +33,7 @@ export const sectionSchema = z.object({
 // --- Label schemas ---
 
 export const labelSchema = z.object({
-  id: z.string().uuid().optional(),
+  id: uuid.optional(),
   name: z.string().min(1, "Label name is required").max(100),
   color: z.string().max(7).nullable().optional(),
 });
@@ -55,7 +56,7 @@ export const questionSchema = z.object({
 
 // Question with optional ID for batch saves (existing questions have IDs, new ones don't)
 export const saveQuestionSchema = questionSchema.extend({
-  id: z.string().uuid().optional(),
+  id: uuid.optional(),
 });
 
 // Section with its questions for batch save
@@ -67,21 +68,21 @@ export const saveSectionSchema = sectionSchema.extend({
 export const createTemplateSchema = z.object({
   name: z.string().min(1, "Template name is required").max(255),
   description: z.string().max(2000).optional(),
-  labelIds: z.array(z.string().uuid()).optional(),
+  labelIds: z.array(uuid).optional(),
 });
 
 // Update template metadata
 export const updateTemplateSchema = z.object({
   name: z.string().min(1).max(255).optional(),
   description: z.string().max(2000).nullable().optional(),
-  labelIds: z.array(z.string().uuid()).optional(),
+  labelIds: z.array(uuid).optional(),
 });
 
 // Batch save: template metadata + sections with questions
 export const saveTemplateSchema = z.object({
   name: z.string().min(1).max(255),
   description: z.string().max(2000).nullable().optional(),
-  labelIds: z.array(z.string().uuid()).optional(),
+  labelIds: z.array(uuid).optional(),
   sections: z
     .array(saveSectionSchema)
     .min(1, "Template must have at least 1 section"),
@@ -89,7 +90,7 @@ export const saveTemplateSchema = z.object({
 
 // Reorder questions (array of question IDs in desired order)
 export const reorderQuestionsSchema = z.object({
-  questionIds: z.array(z.string().uuid()).min(1),
+  questionIds: z.array(uuid).min(1),
 });
 
 /**

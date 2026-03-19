@@ -1,10 +1,11 @@
 import { z } from "zod";
+import { uuid } from "./uuid";
 
 /**
  * Schema for upserting a single answer during auto-save.
  */
 export const answerUpsertSchema = z.object({
-  questionId: z.string().uuid(),
+  questionId: uuid,
   answerText: z.string().optional(),
   answerNumeric: z.number().optional(),
   answerJson: z.any().optional(),
@@ -48,7 +49,7 @@ export type CreateTalkingPointInput = z.infer<typeof createTalkingPointSchema>;
  * Schema for toggling a talking point's discussed status.
  */
 export const toggleTalkingPointSchema = z.object({
-  id: z.string().uuid(),
+  id: uuid,
   isDiscussed: z.boolean(),
 });
 
@@ -58,7 +59,7 @@ export type ToggleTalkingPointInput = z.infer<typeof toggleTalkingPointSchema>;
  * Schema for deleting a talking point.
  */
 export const deleteTalkingPointSchema = z.object({
-  id: z.string().uuid(),
+  id: uuid,
 });
 
 export type DeleteTalkingPointInput = z.infer<typeof deleteTalkingPointSchema>;
@@ -68,7 +69,7 @@ export type DeleteTalkingPointInput = z.infer<typeof deleteTalkingPointSchema>;
  */
 export const createActionItemSchema = z.object({
   title: z.string().min(1).max(500),
-  assigneeId: z.string().uuid(),
+  assigneeId: uuid,
   dueDate: z.string().optional(),
   category: z.string().max(50).optional(),
 });
@@ -79,7 +80,7 @@ export type CreateActionItemInput = z.infer<typeof createActionItemSchema>;
  * Schema for updating an action item (title, status).
  */
 export const updateActionItemSchema = z.object({
-  id: z.string().uuid(),
+  id: uuid,
   title: z.string().min(1).max(500).optional(),
   status: z.enum(["open", "in_progress", "completed", "cancelled"]).optional(),
 });

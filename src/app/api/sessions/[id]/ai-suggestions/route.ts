@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { uuid } from "@/lib/validations/uuid";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { logAuditEvent } from "@/lib/audit/log";
@@ -20,7 +21,7 @@ const suggestionActionSchema = z.object({
     .object({
       title: z.string().max(500).optional(),
       description: z.string().max(2000).optional(),
-      assigneeId: z.string().uuid().optional(),
+      assigneeId: uuid.optional(),
     })
     .optional(),
 });

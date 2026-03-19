@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { uuid } from "./uuid";
 
 /**
  * Zod schema matching TemplateVersionSnapshot interface.
@@ -9,13 +10,13 @@ export const templateVersionSnapshotSchema = z.object({
   description: z.string().nullable(),
   sections: z.array(
     z.object({
-      id: z.string().uuid(),
+      id: uuid,
       name: z.string(),
       description: z.string().nullable(),
       sortOrder: z.number(),
       questions: z.array(
         z.object({
-          id: z.string().uuid(),
+          id: uuid,
           questionText: z.string(),
           helpText: z.string().nullable(),
           answerType: z.string(),
@@ -23,14 +24,14 @@ export const templateVersionSnapshotSchema = z.object({
           isRequired: z.boolean(),
           sortOrder: z.number(),
           scoreWeight: z.string(),
-          conditionalOnQuestionId: z.string().uuid().nullable(),
+          conditionalOnQuestionId: uuid.nullable(),
           conditionalOperator: z.string().nullable(),
           conditionalValue: z.string().nullable(),
         })
       ),
     })
   ),
-  labelIds: z.array(z.string().uuid()),
+  labelIds: z.array(uuid),
 });
 
 /**
