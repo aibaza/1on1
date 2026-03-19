@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `scripts/rebuild-uat.sh`: rebuilds Docker stack, runs migrations, and seeds demo data — seed never runs on production/Vercel deploys
 - Techvibe SRL Romanian test tenant in seed: 7 users, 2 teams, 2 Romanian templates, 5 series, 15 sessions, talking points, action items, private notes, and analytics snapshots
 - Action items page "Ale mele" / "My Items" section: items assigned to current user with collapsible completed section
 - Action items page "Echipa mea" / "My Reports" section: per-report groups with collapsible completed sections and overdue-first sort
