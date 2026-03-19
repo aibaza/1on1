@@ -142,3 +142,14 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 | 26. Email Notification & i18n | v1.4 | 3/3 | Complete | 2026-03-13 |
 | 27. UI Integration | v1.4 | 4/4 | Complete | 2026-03-13 |
 | 28. Playwright E2E Test Suite | v1.5 | 6/6 | Complete | 2026-03-13 |
+
+### Phase 24: Sessions Access Control and Pre-Meeting Talking Points
+
+**Goal:** Each role sees only authorized series on the sessions page (admin grouped by manager, manager split into My Team/My 1:1s, member flat list), and both participants can add talking points to scheduled sessions via an agenda sheet before starting the wizard
+**Requirements**: ACC-01, ACC-02, ACC-03, ACC-04, TP-01, TP-02, TP-03, I18N-01
+**Depends on:** Phase 23
+**Plans:** 2 plans
+
+Plans:
+- [ ] 24-01-PLAN.md — API + query changes: role-based series filtering, manager info, talking points status relaxation
+- [ ] 24-02-PLAN.md — UI: role-based grouping in SeriesList, AgendaSheet component, i18n keys
