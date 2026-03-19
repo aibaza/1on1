@@ -115,9 +115,9 @@ export async function GET(request: Request) {
           managerMap = new Map(managerUsers.map((u) => [u.id, u]));
         }
 
-        // Fetch talking point counts for scheduled sessions
+        // Fetch talking point counts for active (scheduled or in_progress) sessions
         const scheduledSessionIds = latestSessions
-          .filter((s) => s.status === "scheduled")
+          .filter((s) => s.status === "scheduled" || s.status === "in_progress")
           .map((s) => s.id);
 
         const talkingPointCountMap = new Map<string, number>();

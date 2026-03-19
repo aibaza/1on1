@@ -304,7 +304,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
               : t("series.statusArchived")}
           </Badge>
         )}
-        {series.latestSession?.status === "scheduled" && (
+        {series.latestSession?.status !== "completed" && series.latestSession?.status !== "cancelled" && series.latestSession && (
           <>
             <Button
               variant="ghost"

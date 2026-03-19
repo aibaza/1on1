@@ -145,9 +145,9 @@ export async function getSeriesCardData(
 
   const latestMap = new Map(latestSessions.map((s) => [s.seriesId, s]));
 
-  // Fetch talking point counts for scheduled sessions
+  // Fetch talking point counts for active (scheduled or in_progress) sessions
   const scheduledSessionIds = latestSessions
-    .filter((s) => s.status === "scheduled")
+    .filter((s) => s.status === "scheduled" || s.status === "in_progress")
     .map((s) => s.id);
 
   const talkingPointCountMap = new Map<string, number>();
