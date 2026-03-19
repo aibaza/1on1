@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations, useFormatter } from "next-intl";
-import { ListTodo, ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -15,7 +15,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { EmptyState } from "@/components/ui/empty-state";
 import { TalkingPointList, type TalkingPoint } from "@/components/session/talking-point-list";
 
 interface AgendaSheetProps {
@@ -43,8 +42,11 @@ export function AgendaSheet({
   const t = useTranslations("sessions");
   const format = useFormatter();
 
-  // Fetch talking points when sheet opens
-  const { data, isLoading, error } = useQuery<{ talkingPoints: TalkingPoint[] }>({
+  // Fetch talking points + available categories when sheet opens
+  const { data, isLoading, error } = useQuery<{
+    talkingPoints: TalkingPoint[];
+    categories: string[];
+  }>({
     queryKey: ["talking-points", sessionId],
     queryFn: async () => {
       const res = await fetch(`/api/sessions/${sessionId}/talking-points`);
@@ -54,10 +56,14 @@ export function AgendaSheet({
     enabled: open,
   });
 
-  // Group points by category
+  // Build category sections: show ALL template categories, with their points (or empty)
   const categories: CategoryData[] = (() => {
-    if (!data?.talkingPoints) return [];
+    if (!data) return [];
+    const allCategories = data.categories ?? ["General"];
     const grouped = new Map<string, TalkingPoint[]>();
+    for (const cat of allCategories) {
+      grouped.set(cat, []);
+    }
     for (const point of data.talkingPoints) {
       const cat = point.category ?? "General";
       const arr = grouped.get(cat) ?? [];
@@ -92,29 +98,12 @@ export function AgendaSheet({
             <p className="text-sm text-destructive px-2">{t("agenda.loadError")}</p>
           )}
 
-          {!isLoading && !error && categories.length === 0 && (
-            <div className="space-y-6">
-              <EmptyState
-                icon={ListTodo}
-                heading={t("agenda.emptyHeading")}
-                description={t("agenda.emptyBody")}
-              />
-              <div className="px-2">
-                <TalkingPointList
-                  sessionId={sessionId}
-                  category="General"
-                  initialPoints={[]}
-                  readOnly={false}
-                />
-              </div>
-            </div>
-          )}
-
           {!isLoading && !error && categories.length > 0 && (
             <div className="space-y-4">
-              {categories.map((cat) => (
+              {categories.map((cat, index) => (
                 <CategorySection
                   key={cat.name}
+                  stepNumber={index + 1}
                   name={cat.name}
                   sessionId={sessionId}
                   initialPoints={cat.points}
@@ -129,10 +118,12 @@ export function AgendaSheet({
 }
 
 function CategorySection({
+  stepNumber,
   name,
   sessionId,
   initialPoints,
 }: {
+  stepNumber: number;
   name: string;
   sessionId: string;
   initialPoints: TalkingPoint[];
@@ -148,7 +139,7 @@ function CategorySection({
           <ChevronRight className="size-3 shrink-0 text-muted-foreground" />
         )}
         <span className="text-xs font-normal uppercase tracking-wide text-muted-foreground">
-          {name}
+          {stepNumber}. {name}
         </span>
       </CollapsibleTrigger>
       <CollapsibleContent>

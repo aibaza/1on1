@@ -12,7 +12,6 @@ import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Plus, FileText, Hash, BookOpen, Wand2, MoreHorizontal, Upload } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { canManageTemplates } from "@/lib/auth/rbac";
-import { ExportButton } from "@/components/templates/export-button";
 import { ImportDialog } from "@/components/templates/import-dialog";
 import { createTemplateSchema } from "@/lib/validations/template";
 import { Button } from "@/components/ui/button";
@@ -284,11 +283,6 @@ export function TemplateList({
                   </CardContent>
                 </Card>
               </Link>
-              {canManageTemplates(currentUserRole) && (
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ExportButton templateId={template.id} variant="icon" />
-                </div>
-              )}
             </div>
           ))}
         </div>

@@ -15,6 +15,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 - Dashboard admin scoping: admin users now see only their own series on home page (same OR filter as manager — managerId OR reportId) instead of entire tenant
+- Dashboard overdue items scoped to current user's own assigned items only (team items on Action Items page)
+- Email sending: `.example.com` addresses are silently skipped — emails logged to `logs/email-dev.log` for testing instead of sending via SMTP
+- Agenda sheet shows all template sections as categories (not just those with existing talking points), with step numbers (e.g. "1. Stare generală")
+- Talking points API returns template section names as available categories
+
+### Removed
+- Export button from template cards on the templates listing page
 
 ### Added
 - Role-based series grouping: admin sees by-manager groups, manager sees My Team/My 1:1s, member sees flat list

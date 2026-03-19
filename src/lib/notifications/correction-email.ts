@@ -1,6 +1,6 @@
 import { render } from "@react-email/render";
 import { adminDb } from "@/lib/db";
-import { getTransport, getEmailFrom } from "@/lib/email/send";
+import { sendEmail, getEmailFrom } from "@/lib/email/send";
 import { CorrectionNotificationEmail } from "@/lib/email/templates/correction-notification";
 import { notifications } from "@/lib/db/schema/notifications";
 import { eq, and, gt } from "drizzle-orm";
@@ -98,7 +98,6 @@ export async function sendCorrectionEmails(
   // Resolve i18n translator for tenant locale
   const t = await createEmailTranslator(locale);
 
-  const transport = getTransport();
   const from = getEmailFrom();
   const subject = t("emails.sessionCorrection.subject");
 
@@ -146,7 +145,7 @@ export async function sendCorrectionEmails(
         })
       );
 
-      await transport.sendMail({
+      await sendEmail({
         from,
         to: recipient.email,
         subject,

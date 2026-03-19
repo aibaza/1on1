@@ -11,6 +11,7 @@ import {
   sessions,
   meetingSeries,
   talkingPoints,
+  templateSections,
 } from "@/lib/db/schema";
 import { eq, and, asc, sql } from "drizzle-orm";
 
@@ -39,7 +40,7 @@ export async function GET(
       async (tx) => {
         // Verify session exists
         const sessionRows = await tx
-          .select({ id: sessions.id, seriesId: sessions.seriesId })
+          .select({ id: sessions.id, seriesId: sessions.seriesId, templateId: sessions.templateId })
           .from(sessions)
           .where(
             and(
@@ -74,6 +75,17 @@ export async function GET(
           return { error: "FORBIDDEN" as const };
         }
 
+        // Fetch template section names (these are the available categories)
+        let sectionNames: string[] = [];
+        if (sessionRows[0].templateId) {
+          const sectionRows = await tx
+            .select({ name: templateSections.name })
+            .from(templateSections)
+            .where(eq(templateSections.templateId, sessionRows[0].templateId))
+            .orderBy(asc(templateSections.sortOrder));
+          sectionNames = sectionRows.map((s) => s.name);
+        }
+
         // Build query
         const conditions = [eq(talkingPoints.sessionId, sessionId)];
         if (category) {
@@ -87,6 +99,7 @@ export async function GET(
           .orderBy(asc(talkingPoints.sortOrder));
 
         return {
+          categories: sectionNames.length > 0 ? sectionNames : ["General"],
           talkingPoints: points.map((p) => ({
             id: p.id,
             content: p.content,

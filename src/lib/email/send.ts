@@ -1,6 +1,8 @@
 import { createTransport } from "nodemailer";
 import { render } from "@react-email/render";
 import { randomBytes } from "crypto";
+import { appendFile, mkdir } from "fs/promises";
+import { join } from "path";
 import { eq } from "drizzle-orm";
 import { adminDb } from "@/lib/db";
 import {
@@ -31,6 +33,33 @@ export function getTransport() {
 
 export function getEmailFrom(): string {
   return process.env.EMAIL_FROM || "1on1 <noreply@example.com>";
+}
+
+/**
+ * Send an email via SMTP, or log it to disk if the recipient is a test address.
+ * Addresses ending in `.example.com` are silently skipped — the full email is
+ * written to `logs/email-dev.log` so it can be inspected during testing.
+ */
+export async function sendEmail(opts: {
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
+}) {
+  if (opts.to.endsWith(".example.com")) {
+    const logDir = join(process.cwd(), "logs");
+    await mkdir(logDir, { recursive: true });
+    const entry =
+      JSON.stringify({
+        timestamp: new Date().toISOString(),
+        to: opts.to,
+        subject: opts.subject,
+        html: opts.html,
+      }) + "\n";
+    await appendFile(join(logDir, "email-dev.log"), entry);
+    return;
+  }
+  await getTransport().sendMail(opts);
 }
 
 export async function sendVerificationEmail(
@@ -66,7 +95,7 @@ export async function sendVerificationEmail(
     })
   );
 
-  await getTransport().sendMail({
+  await sendEmail({
     from: getEmailFrom(),
     to: email,
     subject: t("emails.verification.subject"),
@@ -107,7 +136,7 @@ export async function sendPasswordResetEmail(
     })
   );
 
-  await getTransport().sendMail({
+  await sendEmail({
     from: getEmailFrom(),
     to: email,
     subject: t("emails.passwordReset.subject"),

@@ -1,6 +1,6 @@
 import { render } from "@react-email/render";
 import { adminDb } from "@/lib/db";
-import { getTransport, getEmailFrom } from "@/lib/email/send";
+import { sendEmail, getEmailFrom } from "@/lib/email/send";
 import { SessionSummaryEmail } from "@/lib/email/templates/session-summary";
 import { notifications } from "@/lib/db/schema/notifications";
 import {
@@ -153,7 +153,6 @@ export async function sendPostSessionSummaryEmails(params: {
       }
     : null;
 
-  const transport = getTransport();
   const from = getEmailFrom();
   const subject = t("emails.sessionSummary.subject", { sessionNumber: session.sessionNumber });
 
@@ -199,7 +198,7 @@ export async function sendPostSessionSummaryEmails(params: {
       })
     );
 
-    await transport.sendMail({
+    await sendEmail({
       from,
       to: report.email,
       subject,
@@ -247,7 +246,7 @@ export async function sendPostSessionSummaryEmails(params: {
       })
     );
 
-    await transport.sendMail({
+    await sendEmail({
       from,
       to: manager.email,
       subject,

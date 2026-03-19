@@ -4,7 +4,7 @@ import { adminDb } from "@/lib/db";
 import { meetingSeries } from "@/lib/db/schema/series";
 import { users } from "@/lib/db/schema/users";
 import { tenants } from "@/lib/db/schema/tenants";
-import { getTransport, getEmailFrom } from "@/lib/email/send";
+import { sendEmail, getEmailFrom } from "@/lib/email/send";
 import { PreMeetingReminderEmail } from "@/lib/email/templates/pre-meeting-reminder";
 import { AgendaPrepEmail } from "@/lib/email/templates/agenda-prep";
 import { createEmailTranslator } from "@/lib/email/translator";
@@ -128,7 +128,7 @@ async function processPreMeeting(
     })
   );
 
-  await getTransport().sendMail({
+  await sendEmail({
     from: getEmailFrom(),
     to: recipient.email,
     subject: t("emails.preMeeting.subject", { otherPartyName }),
@@ -217,7 +217,7 @@ async function processAgendaPrep(
     })
   );
 
-  await getTransport().sendMail({
+  await sendEmail({
     from: getEmailFrom(),
     to: recipient.email,
     subject: t("emails.agendaPrep.subject", { otherPartyName }),

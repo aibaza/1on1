@@ -31,11 +31,9 @@ vi.mock("@/lib/db", () => {
   };
 });
 
-// Mock email transport — correction-email.ts calls getTransport().sendMail(...)
+// Mock email transport — correction-email.ts calls sendEmail(...)
 vi.mock("@/lib/email/send", () => ({
-  getTransport: vi.fn(() => ({
-    sendMail: vi.fn().mockResolvedValue({}),
-  })),
+  sendEmail: vi.fn().mockResolvedValue(undefined),
   getEmailFrom: vi.fn(() => "noreply@test.com"),
 }));
 
@@ -127,16 +125,15 @@ describe("sendCorrectionEmails — recipient assembly", () => {
       throw new Error("sendCorrectionEmails not found — module not implemented yet");
     }
 
-    const { getTransport } = await import("@/lib/email/send");
-    const mockSendMail = vi.fn().mockResolvedValue({});
-    vi.mocked(getTransport).mockReturnValue({ sendMail: mockSendMail } as never);
+    const { sendEmail } = await import("@/lib/email/send");
+    vi.mocked(sendEmail).mockClear();
 
     await sendCorrectionEmails({
       ...sessionContext,
       activeAdmins: [],
     });
 
-    const calls = mockSendMail.mock.calls;
+    const calls = vi.mocked(sendEmail).mock.calls;
     const reportCall = calls.find((c) => c[0]?.to === reportUser.email);
     expect(reportCall).toBeDefined();
   });
@@ -146,16 +143,15 @@ describe("sendCorrectionEmails — recipient assembly", () => {
       throw new Error("sendCorrectionEmails not found — module not implemented yet");
     }
 
-    const { getTransport } = await import("@/lib/email/send");
-    const mockSendMail = vi.fn().mockResolvedValue({});
-    vi.mocked(getTransport).mockReturnValue({ sendMail: mockSendMail } as never);
+    const { sendEmail } = await import("@/lib/email/send");
+    vi.mocked(sendEmail).mockClear();
 
     await sendCorrectionEmails({
       ...sessionContext,
       activeAdmins: [activeAdmin1, inactiveAdmin],
     });
 
-    const toAddresses = mockSendMail.mock.calls.map((c) => c[0]?.to);
+    const toAddresses = vi.mocked(sendEmail).mock.calls.map((c) => c[0]?.to);
     expect(toAddresses).toContain(activeAdmin1.email);
     expect(toAddresses).not.toContain(inactiveAdmin.email);
   });
@@ -165,9 +161,8 @@ describe("sendCorrectionEmails — recipient assembly", () => {
       throw new Error("sendCorrectionEmails not found — module not implemented yet");
     }
 
-    const { getTransport } = await import("@/lib/email/send");
-    const mockSendMail = vi.fn().mockResolvedValue({});
-    vi.mocked(getTransport).mockReturnValue({ sendMail: mockSendMail } as never);
+    const { sendEmail } = await import("@/lib/email/send");
+    vi.mocked(sendEmail).mockClear();
 
     // Report user is also listed in active admins
     const reportAsAdmin = { ...reportUser, role: "admin" as const };
@@ -177,7 +172,7 @@ describe("sendCorrectionEmails — recipient assembly", () => {
       activeAdmins: [reportAsAdmin],
     });
 
-    const toAddresses = mockSendMail.mock.calls.map((c) => c[0]?.to);
+    const toAddresses = vi.mocked(sendEmail).mock.calls.map((c) => c[0]?.to);
     const reportEmailCount = toAddresses.filter((a) => a === reportUser.email).length;
     expect(reportEmailCount).toBe(1);
   });

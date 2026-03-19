@@ -215,14 +215,11 @@ export async function getOverdueActionItems(
   const now = new Date();
   const reportUser = alias(users, "reportUser");
 
-  // Show items where user is the assignee OR the manager of the series
+  // Show only items assigned to the current user (team items live on the Action Items page)
   const conditions = [
     inArray(actionItems.status, ["open", "in_progress"]),
     lt(actionItems.dueDate, now.toISOString().slice(0, 10)),
-    or(
-      eq(actionItems.assigneeId, userId),
-      eq(meetingSeries.managerId, userId)
-    )!,
+    eq(actionItems.assigneeId, userId),
   ];
 
   const rows = await tx
