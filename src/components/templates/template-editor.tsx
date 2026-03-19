@@ -42,6 +42,7 @@ import {
   ChevronRight,
   Wand2,
   MoreHorizontal,
+  History,
 } from "lucide-react";
 import {
   createTemplateSchema,
@@ -79,6 +80,7 @@ import {
 import { QuestionCard } from "./question-card";
 import { QuestionForm } from "./question-form";
 import { ExportButton } from "@/components/templates/export-button";
+import { VersionHistoryTab } from "./version-history-tab";
 import { canManageTemplates } from "@/lib/auth/rbac";
 import {
   DropdownMenu,
@@ -256,6 +258,9 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
 
   // Controlled archive dialog state (used by mobile overflow menu to avoid Radix focus-trap conflict)
   const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
+
+  // Version history view state
+  const [showHistory, setShowHistory] = useState(false);
 
   // DnD sensors
   const sensors = useSensors(
@@ -590,6 +595,14 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
               <Button
                 variant="outline"
                 size="sm"
+                onClick={() => setShowHistory(!showHistory)}
+              >
+                <History className="mr-2 h-4 w-4" />
+                {showHistory ? t("history.hideHistory") : t("history.showHistory")}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => publishMutation.mutate()}
                 disabled={publishMutation.isPending}
               >
@@ -671,6 +684,10 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
                       </Link>
                     </DropdownMenuItem>
                   )}
+                  <DropdownMenuItem onSelect={() => setShowHistory(!showHistory)}>
+                    <History className="mr-2 h-4 w-4" />
+                    {showHistory ? t("history.hideHistory") : t("history.showHistory")}
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onSelect={() => publishMutation.mutate()}
                     disabled={publishMutation.isPending}
@@ -756,7 +773,11 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
 
       <Separator />
 
-      {/* Template metadata form */}
+      {/* Version history view (replaces form when active) */}
+      {showHistory && !isCreateMode ? (
+        <VersionHistoryTab templateId={template!.id} />
+      ) : (
+      /* Template metadata form */
       <form onSubmit={handleSubmit(onSave)} className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
@@ -1038,6 +1059,7 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
           </>
         )}
       </form>
+      )}
 
       {/* Question form dialog */}
       <Dialog open={questionDialogOpen} onOpenChange={setQuestionDialogOpen}>
