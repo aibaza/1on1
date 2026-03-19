@@ -34,7 +34,13 @@
       "schedule": "{cadence}, {day} la {time}",
       "scheduleDayOnly": "{cadence}, {day}",
       "scheduleTimeOnly": "{cadence} la {time}",
-      "scheduleNone": "{cadence}"
+      "scheduleNone": "{cadence}",
+      "agenda": "Agenda"
+    },
+    "sections": {
+      "myTeam": "Echipa mea",
+      "myOneOnOnes": "Intalnirile mele 1:1",
+      "youSuffix": "(Tu)"
     },
     "detail": {
       "oneOnOneWith": "1:1 cu {name}",
@@ -151,9 +157,16 @@
       "statusInProgress": "în desfășurare",
       "statusOpen": "deschis"
     },
+    "agenda": {
+      "sessionLabel": "Sesiunea {number}",
+      "emptyHeading": "Niciun punct pe agenda",
+      "emptyBody": "Adauga puncte de discutie pentru a te pregati pentru intalnire.",
+      "loadError": "Nu s-au putut incarca punctele de pe agenda. Incearca din nou."
+    },
     "talkingPoints": {
       "addPlaceholder": "Adaugă un punct de discuție...",
-      "fromSession": "Din #{number}"
+      "fromSession": "Din #{number}",
+      "saveError": "Nu s-a putut salva punctul de discutie. Incearca din nou."
     },
     "actionItemsInline": {
       "titlePlaceholder": "Titlul acțiunii...",

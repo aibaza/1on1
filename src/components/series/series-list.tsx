@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SeriesCard } from "./series-card";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Plus, CalendarDays, ChevronDown, ChevronRight, Archive } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -44,17 +45,119 @@ interface Series {
 interface SeriesListProps {
   initialSeries: Series[];
   currentUserId: string;
-  userRole?: string;
+  userRole: string;
 }
 
-function SeriesGrid({ items, currentUserId, muted = false }: { items: Series[]; currentUserId: string; muted?: boolean }) {
+function SeriesGrid({
+  items,
+  currentUserId,
+  muted = false,
+  showManagerName = false,
+}: {
+  items: Series[];
+  currentUserId: string;
+  muted?: boolean;
+  showManagerName?: boolean;
+}) {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 items-stretch">
       {items.map((s) => (
         <div key={s.id} className={muted ? "opacity-50" : undefined}>
-          <SeriesCard series={s} currentUserId={currentUserId} />
+          <SeriesCard
+            series={s}
+            currentUserId={currentUserId}
+            showManagerName={showManagerName}
+          />
         </div>
       ))}
+    </div>
+  );
+}
+
+function AdminGroupedView({
+  activeSeries,
+  currentUserId,
+  t,
+}: {
+  activeSeries: Series[];
+  currentUserId: string;
+  t: ReturnType<typeof useTranslations<"sessions">>;
+}) {
+  // Group active series by managerId
+  const groups = new Map<string, Series[]>();
+  for (const s of activeSeries) {
+    const arr = groups.get(s.managerId) ?? [];
+    arr.push(s);
+    groups.set(s.managerId, arr);
+  }
+
+  // Sort: own group first, rest alphabetical by manager lastName then firstName
+  const sortedGroups = [...groups.entries()].sort(
+    ([aId, aItems], [bId, bItems]) => {
+      if (aId === currentUserId) return -1;
+      if (bId === currentUserId) return 1;
+      const aName = `${aItems[0].manager.lastName} ${aItems[0].manager.firstName}`;
+      const bName = `${bItems[0].manager.lastName} ${bItems[0].manager.firstName}`;
+      return aName.localeCompare(bName);
+    }
+  );
+
+  return (
+    <div>
+      {sortedGroups.map(([managerId, items], index) => (
+        <div key={managerId}>
+          {index > 0 && <Separator className="my-6" />}
+          <h3 className="text-sm font-semibold mb-2">
+            {items[0].manager.firstName} {items[0].manager.lastName}
+            {managerId === currentUserId && (
+              <span className="ml-1 font-normal text-muted-foreground">
+                {t("sections.youSuffix")}
+              </span>
+            )}
+          </h3>
+          <SeriesGrid items={items} currentUserId={currentUserId} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ManagerSectionView({
+  activeSeries,
+  currentUserId,
+  t,
+}: {
+  activeSeries: Series[];
+  currentUserId: string;
+  t: ReturnType<typeof useTranslations<"sessions">>;
+}) {
+  const myTeam = activeSeries.filter((s) => s.managerId === currentUserId);
+  const myOneOnOnes = activeSeries.filter(
+    (s) => s.managerId !== currentUserId
+  );
+
+  return (
+    <div>
+      {myTeam.length > 0 && (
+        <div>
+          <h3 className="text-sm font-semibold mb-2">
+            {t("sections.myTeam")}
+          </h3>
+          <SeriesGrid items={myTeam} currentUserId={currentUserId} />
+        </div>
+      )}
+      {myOneOnOnes.length > 0 && (
+        <div className={myTeam.length > 0 ? "mt-8" : undefined}>
+          <h3 className="text-sm font-semibold mb-2">
+            {t("sections.myOneOnOnes")}
+          </h3>
+          <SeriesGrid
+            items={myOneOnOnes}
+            currentUserId={currentUserId}
+            showManagerName
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -97,7 +200,23 @@ export function SeriesList({ initialSeries, currentUserId, userRole }: SeriesLis
   return (
     <div className="space-y-6">
       {activeSeries.length > 0 && (
-        <SeriesGrid items={activeSeries} currentUserId={currentUserId} />
+        <>
+          {userRole === "admin" ? (
+            <AdminGroupedView
+              activeSeries={activeSeries}
+              currentUserId={currentUserId}
+              t={t}
+            />
+          ) : userRole === "manager" ? (
+            <ManagerSectionView
+              activeSeries={activeSeries}
+              currentUserId={currentUserId}
+              t={t}
+            />
+          ) : (
+            <SeriesGrid items={activeSeries} currentUserId={currentUserId} />
+          )}
+        </>
       )}
 
       {archivedSeries.length > 0 && (

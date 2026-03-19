@@ -6,12 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, Play, RotateCcw, Star } from "lucide-react";
+import { CalendarDays, ListTodo, Play, RotateCcw, Star } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { useTranslations, useFormatter } from "next-intl";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { AgendaSheet } from "./agenda-sheet";
 import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
 import { hashSeriesColor } from "@/lib/chart-colors";
 
@@ -48,6 +49,7 @@ interface SeriesCardProps {
     questionHistories: { questionText: string; scoreWeight: number; values: number[] }[];
   };
   currentUserId: string;
+  showManagerName?: boolean;
 }
 
 function questionOpacity(weight: number): number {
@@ -206,11 +208,12 @@ function formatSchedule(
   return t("series.scheduleNone", { cadence: cadenceLabel });
 }
 
-export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
+export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCardProps) {
   const t = useTranslations("sessions");
   const format = useFormatter();
   const { showApiError } = useApiErrorToast();
   const router = useRouter();
+  const [agendaOpen, setAgendaOpen] = useState(false);
   const hasInProgress = series.latestSession?.status === "in_progress";
   const isManager = series.managerId === currentUserId;
 
@@ -289,12 +292,47 @@ export function SeriesCard({ series, currentUserId }: SeriesCardProps) {
             );
           })()}
         </div>
+        {showManagerName && (
+          <span className="text-xs font-normal text-muted-foreground">
+            {series.manager.firstName} {series.manager.lastName}
+          </span>
+        )}
         {series.status !== "active" && (
           <Badge variant="outline" className={statusClass[series.status] ?? ""}>
             {series.status === "paused"
               ? t("series.statusPaused")
               : t("series.statusArchived")}
           </Badge>
+        )}
+        {series.latestSession?.status === "scheduled" && (
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative z-10 h-8 w-8"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setAgendaOpen(true);
+              }}
+              aria-label={`${series.report.firstName} ${series.report.lastName} ${t("series.agenda")}`}
+            >
+              <ListTodo className="h-4 w-4" />
+              {series.latestSession.talkingPointCount > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-0.5 text-[10px] font-semibold">
+                  {series.latestSession.talkingPointCount}
+                </Badge>
+              )}
+            </Button>
+            <AgendaSheet
+              open={agendaOpen}
+              onOpenChange={setAgendaOpen}
+              sessionId={series.latestSession.id}
+              personName={`${series.report.firstName} ${series.report.lastName}`}
+              sessionNumber={series.latestSession.sessionNumber}
+              sessionDate={series.latestSession.scheduledAt ?? series.nextSessionAt ?? ""}
+            />
+          </>
         )}
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-2 pt-0">

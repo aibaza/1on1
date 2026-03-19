@@ -34,7 +34,13 @@
       "schedule": "{cadence} on {day}s at {time}",
       "scheduleDayOnly": "{cadence} on {day}s",
       "scheduleTimeOnly": "{cadence} at {time}",
-      "scheduleNone": "{cadence}"
+      "scheduleNone": "{cadence}",
+      "agenda": "Agenda"
+    },
+    "sections": {
+      "myTeam": "My Team",
+      "myOneOnOnes": "My 1:1s",
+      "youSuffix": "(You)"
     },
     "detail": {
       "oneOnOneWith": "1:1 with {name}",
@@ -151,9 +157,16 @@
       "statusInProgress": "in progress",
       "statusOpen": "open"
     },
+    "agenda": {
+      "sessionLabel": "Session {number}",
+      "emptyHeading": "No agenda items yet",
+      "emptyBody": "Add talking points to prepare for your upcoming meeting.",
+      "loadError": "Could not load agenda items. Please try again."
+    },
     "talkingPoints": {
       "addPlaceholder": "Add a talking point...",
-      "fromSession": "From #{number}"
+      "fromSession": "From #{number}",
+      "saveError": "Could not save talking point. Please try again."
     },
     "actionItemsInline": {
       "titlePlaceholder": "Action item title...",
