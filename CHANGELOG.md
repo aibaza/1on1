@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Version history API: `GET /api/templates/:id/versions` lists versions with question counts, `GET /api/templates/:id/versions/:versionNumber` returns full snapshot
+- Version restore API: `POST /api/templates/:id/versions/:versionNumber/restore` archives current content, inserts snapshot content with conditional question remapping, sets template as unpublished draft
+- `computeVersionDiff` utility: detects added/removed/modified sections and questions between two template snapshots
 - `template_version` table: immutable version snapshots created on each template publish, with RLS tenant isolation
 - `buildTemplateSnapshot` utility: captures full template state (sections, questions, labels) as self-contained JSONB
 - Zod validation schemas for template version API payloads (`templateVersionSnapshotSchema`, `versionListItemSchema`, `restoreVersionSchema`)
