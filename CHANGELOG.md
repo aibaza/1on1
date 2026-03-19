@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- TDD RED test scaffold for role-based series filtering (SeriesCardData contract tests)
+- TDD RED test scaffold for talking points POST status gate (scheduled session support)
+
 ## [1.3.12] - 2026-03-16
 
 ### Fixed
