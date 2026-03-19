@@ -5,7 +5,7 @@ import { canManageSeries } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
 import { createSeriesSchema } from "@/lib/validations/series";
 import { scheduleSeriesNotifications } from "@/lib/notifications/scheduler";
-import { meetingSeries, sessions, users, sessionAnswers, templateQuestions } from "@/lib/db/schema";
+import { meetingSeries, sessions, users, sessionAnswers, templateQuestions, talkingPoints } from "@/lib/db/schema";
 import { eq, and, asc, sql, ne } from "drizzle-orm";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
 
@@ -35,6 +35,19 @@ export async function GET(request: Request) {
             )
           );
         }
+
+        // Role-based access control
+        const userRole = session.user.role;
+        const userId = session.user.id;
+
+        if (userRole === "member") {
+          conditions.push(eq(meetingSeries.reportId, userId));
+        } else if (userRole === "manager") {
+          conditions.push(
+            sql`(${meetingSeries.managerId} = ${userId} OR ${meetingSeries.reportId} = ${userId})`
+          );
+        }
+        // admin sees all -- no additional filter
 
         // Get all series with report info
         const seriesList = await tx
@@ -74,6 +87,7 @@ export async function GET(request: Request) {
             status: sessions.status,
             sessionNumber: sessions.sessionNumber,
             sessionScore: sessions.sessionScore,
+            scheduledAt: sessions.scheduledAt,
           })
           .from(sessions)
           .where(
@@ -85,6 +99,41 @@ export async function GET(request: Request) {
         const latestSessionMap = new Map(
           latestSessions.map((s) => [s.seriesId, s])
         );
+
+        // Fetch manager info for grouping
+        const managerIds = [...new Set(seriesList.map((s) => s.managerId))];
+        let managerMap = new Map<string, { id: string; firstName: string; lastName: string }>();
+        if (managerIds.length > 0) {
+          const managerUsers = await tx
+            .select({
+              id: users.id,
+              firstName: users.firstName,
+              lastName: users.lastName,
+            })
+            .from(users)
+            .where(sql`${users.id} IN ${managerIds}`);
+          managerMap = new Map(managerUsers.map((u) => [u.id, u]));
+        }
+
+        // Fetch talking point counts for scheduled sessions
+        const scheduledSessionIds = latestSessions
+          .filter((s) => s.status === "scheduled")
+          .map((s) => s.id);
+
+        const talkingPointCountMap = new Map<string, number>();
+        if (scheduledSessionIds.length > 0) {
+          const counts = await tx
+            .select({
+              sessionId: talkingPoints.sessionId,
+              count: sql<number>`count(*)::int`,
+            })
+            .from(talkingPoints)
+            .where(sql`${talkingPoints.sessionId} IN ${scheduledSessionIds}`)
+            .groupBy(talkingPoints.sessionId);
+          for (const c of counts) {
+            talkingPointCountMap.set(c.sessionId, c.count);
+          }
+        }
 
         // Fetch AI assessment history and latest aiSummary (completed sessions ordered by session number)
         const scoreRows = await tx
@@ -170,6 +219,11 @@ export async function GET(request: Request) {
             status: s.status,
             nextSessionAt: s.nextSessionAt?.toISOString() ?? null,
             createdAt: s.createdAt.toISOString(),
+            manager: {
+              id: s.managerId,
+              firstName: managerMap.get(s.managerId)?.firstName ?? "",
+              lastName: managerMap.get(s.managerId)?.lastName ?? "",
+            },
             report: {
               id: s.reportId,
               firstName: s.reportFirstName,
@@ -182,6 +236,8 @@ export async function GET(request: Request) {
                   status: latest.status,
                   sessionNumber: latest.sessionNumber,
                   sessionScore: latest.sessionScore,
+                  scheduledAt: latest.scheduledAt?.toISOString() ?? null,
+                  talkingPointCount: talkingPointCountMap.get(latest.id) ?? 0,
                 }
               : null,
             latestSummary: latestSummaryMap.get(s.id) ?? null,

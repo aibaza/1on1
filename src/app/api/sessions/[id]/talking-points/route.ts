@@ -174,8 +174,8 @@ export async function POST(
           return { error: "NOT_FOUND" as const };
         }
 
-        if (sessionRows[0].status !== "in_progress") {
-          return { error: "SESSION_NOT_IN_PROGRESS" as const };
+        if (sessionRows[0].status !== "in_progress" && sessionRows[0].status !== "scheduled") {
+          return { error: "SESSION_NOT_ACTIVE" as const };
         }
 
         // Verify participant
@@ -236,9 +236,9 @@ export async function POST(
           );
         case "FORBIDDEN":
           return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-        case "SESSION_NOT_IN_PROGRESS":
+        case "SESSION_NOT_ACTIVE":
           return NextResponse.json(
-            { error: "Session is not in progress" },
+            { error: "Session is not active" },
             { status: 409 }
           );
       }
