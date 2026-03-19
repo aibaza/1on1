@@ -51,6 +51,8 @@ export async function getSeriesCardData(
     /** Filter by role — 'member' shows series where user is reportId */
     role?: string;
     userId?: string;
+    /** Home page mode: show only series where user is manager OR report */
+    myOnly?: boolean;
   }
 ): Promise<SeriesCardData[]> {
   const conditions = [eq(meetingSeries.tenantId, tenantId)];
@@ -62,14 +64,19 @@ export async function getSeriesCardData(
     );
   }
 
-  if (options?.role === "member" && options?.userId) {
+  if (options?.myOnly && options?.userId) {
+    // Home page: always show only series where user is manager OR report
+    conditions.push(
+      sql`(${meetingSeries.managerId} = ${options.userId} OR ${meetingSeries.reportId} = ${options.userId})`
+    );
+  } else if (options?.role === "member" && options?.userId) {
     conditions.push(eq(meetingSeries.reportId, options.userId));
   } else if (options?.role === "manager" && options?.userId) {
     conditions.push(
       sql`(${meetingSeries.managerId} = ${options.userId} OR ${meetingSeries.reportId} = ${options.userId})`
     );
   }
-  // admin sees all
+  // admin sees all (when myOnly is not set)
 
   let query = tx
     .select({

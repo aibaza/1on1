@@ -36,7 +36,7 @@ export default async function OverviewPage() {
         getSeriesCardData(tx, user.tenantId, {
           upcomingOnly: true,
           limit: 3,
-          role: user.role,
+          myOnly: true,
           userId: user.id,
         }),
         getOverdueActionItems(tx, user.id, user.role),

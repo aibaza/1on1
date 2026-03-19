@@ -7,6 +7,7 @@ import { ImpersonationBanner } from "@/components/admin/impersonation-banner";
 import { Toaster } from "@/components/ui/sonner";
 import { CommandPalette } from "@/components/search/command-palette";
 import { ThemeColorProvider } from "@/components/theme-color-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { tenants } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -46,6 +47,7 @@ export default async function DashboardLayout({
     <SessionProvider session={session}>
       <QueryProvider>
         <ThemeColorProvider colorTheme={colorTheme}>
+          <TooltipProvider delayDuration={300}>
           <div className="min-h-screen flex flex-col">
             <ImpersonationBanner />
             <TopNav />
@@ -53,6 +55,7 @@ export default async function DashboardLayout({
               <div className="mx-auto max-w-7xl animate-fade-in">{children}</div>
             </main>
           </div>
+          </TooltipProvider>
         </ThemeColorProvider>
         <CommandPalette />
         <Toaster />

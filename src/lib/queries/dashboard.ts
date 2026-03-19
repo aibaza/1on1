@@ -1,6 +1,7 @@
 import {
   eq,
   and,
+  or,
   gte,
   lte,
   lt,
@@ -214,17 +215,14 @@ export async function getOverdueActionItems(
   const now = new Date();
   const reportUser = alias(users, "reportUser");
 
-  const roleFilter =
-    role === "member"
-      ? eq(actionItems.assigneeId, userId)
-      : role === "admin"
-        ? undefined
-        : eq(meetingSeries.managerId, userId);
-
+  // Show items where user is the assignee OR the manager of the series
   const conditions = [
     inArray(actionItems.status, ["open", "in_progress"]),
     lt(actionItems.dueDate, now.toISOString().slice(0, 10)),
-    ...(roleFilter ? [roleFilter] : []),
+    or(
+      eq(actionItems.assigneeId, userId),
+      eq(meetingSeries.managerId, userId)
+    )!,
   ];
 
   const rows = await tx

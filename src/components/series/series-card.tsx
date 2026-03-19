@@ -6,13 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, ListTodo, Play, RotateCcw, Star } from "lucide-react";
+import { CalendarDays, ListTodo, Play, RotateCcw, Star, UserCog, UserCheck } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { useTranslations, useFormatter } from "next-intl";
 import { useMemo, useState } from "react";
 import { AgendaSheet } from "./agenda-sheet";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
 import { hashSeriesColor } from "@/lib/chart-colors";
 
@@ -251,10 +252,21 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
       <Link href={`/sessions/${series.id}`} className="absolute inset-0 z-0" />
       <ScoreSparkline assessmentHistory={series.assessmentHistory} questionHistories={series.questionHistories} id={series.id} />
       <CardHeader className="flex flex-row items-center gap-3 pb-2">
-        <Avatar className="h-10 w-10">
-          <AvatarImage src={series.report.avatarUrl ?? undefined} />
-          <AvatarFallback>{initials}</AvatarFallback>
-        </Avatar>
+        <div className="relative shrink-0">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={series.report.avatarUrl ?? undefined} />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+          {isManager ? (
+            <span className="absolute -top-1 -left-1 flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 ring-2 ring-background">
+              <UserCog className="h-2.5 w-2.5 text-white" />
+            </span>
+          ) : (
+            <span className="absolute -top-1 -left-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-background">
+              <UserCheck className="h-2.5 w-2.5 text-white" />
+            </span>
+          )}
+        </div>
         <div className="flex-1 min-w-0">
           <CardTitle className="text-base truncate">
             {series.report.firstName} {series.report.lastName}
@@ -306,24 +318,29 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
         )}
         {series.latestSession?.status !== "completed" && series.latestSession?.status !== "cancelled" && series.latestSession && (
           <>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative z-10 h-8 w-8"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setAgendaOpen(true);
-              }}
-              aria-label={`${series.report.firstName} ${series.report.lastName} ${t("series.agenda")}`}
-            >
-              <ListTodo className="h-4 w-4" />
-              {series.latestSession.talkingPointCount > 0 && (
-                <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-0.5 text-[10px] font-semibold">
-                  {series.latestSession.talkingPointCount}
-                </Badge>
-              )}
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative z-10 h-8 w-8"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setAgendaOpen(true);
+                  }}
+                  aria-label={`${series.report.firstName} ${series.report.lastName} ${t("series.agenda")}`}
+                >
+                  <ListTodo className="h-4 w-4" />
+                  {series.latestSession.talkingPointCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-0.5 text-[10px] font-semibold">
+                      {series.latestSession.talkingPointCount}
+                    </Badge>
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{t("series.agenda")}</TooltipContent>
+            </Tooltip>
             <AgendaSheet
               open={agendaOpen}
               onOpenChange={setAgendaOpen}
