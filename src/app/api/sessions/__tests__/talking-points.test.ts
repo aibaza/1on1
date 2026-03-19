@@ -1,4 +1,19 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+
+// Mock Next.js server modules to allow route file import in test environment.
+// next-auth transitively imports next/server which is not resolvable outside
+// the Next.js runtime. Mocking prevents the ESM resolution error.
+vi.mock("next/server", () => ({
+  NextResponse: {
+    json: vi.fn((data: unknown, init?: ResponseInit) => ({ data, init })),
+    next: vi.fn(),
+  },
+  NextRequest: vi.fn(),
+}));
+vi.mock("@/lib/auth/config", () => ({ auth: vi.fn() }));
+vi.mock("@/lib/db/tenant-context", () => ({
+  withTenantContext: vi.fn(),
+}));
 
 /**
  * TDD RED tests for Phase 24 Plan 00.

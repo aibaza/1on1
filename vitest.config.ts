@@ -23,6 +23,8 @@ export default defineConfig({
       // zod v4 ESM re-exports `z` as a namespace binding that Vite SSR
       // cannot traverse. The CJS build does not have this issue.
       'zod': path.resolve(__dirname, 'node_modules/zod/index.cjs'),
+      // next-auth imports next/server without .js extension which fails in ESM
+      'next/server': path.resolve(__dirname, 'node_modules/next/server.js'),
     },
   },
 });
