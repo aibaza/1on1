@@ -48,7 +48,7 @@ Exceptions: none
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 14px | 400 (regular) | 1.5 |
-| Label | 12px | 500 (medium) | 1.4 |
+| Label | 12px | 400 (regular) | 1.4 |
 | Heading | 20px | 600 (semibold) | 1.2 |
 | Section header | 14px | 600 (semibold) | 1.4 |
 
@@ -62,7 +62,7 @@ Phase-specific typography decisions:
 | Manager name on "My 1:1s" card (top-right) | 12px | 400 | `muted-foreground` |
 | Sheet header person name | 16px | 600 | `foreground` |
 | Sheet header session + date | 14px | 400 | `muted-foreground` |
-| Talking point count badge | 10px | 600 | `primary-foreground` on `primary` |
+| Talking point count badge | 12px | 600 | `primary-foreground` on `primary` |
 
 ---
 
@@ -188,7 +188,7 @@ Additional color usage in this phase:
 
 - Agenda button: `variant="ghost"` `size="icon"`, positioned in the card header row, after status badge (or in its place if no badge)
 - Icon: `ListTodo` from lucide-react, 16x16px (h-4 w-4)
-- Count badge: absolute positioned top-right of button (-top-1 -right-1), `h-4 min-w-4 px-0.5 text-[10px]` font-semibold, primary background
+- Count badge: absolute positioned top-right of button (-top-1 -right-1), `h-4 min-w-4 px-0.5 text-xs` font-semibold, primary background
 - Only shown when `latestSession?.status === "scheduled"`
 - `z-10` to sit above the card's full-cover Link overlay
 - `onClick` calls `e.preventDefault()` + `e.stopPropagation()` to prevent card navigation
@@ -222,7 +222,7 @@ Additional color usage in this phase:
 - Sheet side: `right`
 - Sheet width: `sm:max-w-[400px]` (shadcn default side sheet behavior, full-width on mobile)
 - Category sections use `Collapsible` with `defaultOpen={true}`
-- Category header: 12px medium text, uppercase tracking-wide, muted-foreground (matches wizard context panel pattern)
+- Category header: 12px regular text, uppercase tracking-wide, muted-foreground (matches wizard context panel pattern)
 - Vertical spacing between categories: 16px
 - `readOnly={false}` for discussed toggle -- users can mark items as informally discussed pre-meeting
 - Sheet body has `overflow-y-auto` for scrolling when many talking points exist
