@@ -17,7 +17,10 @@ export default async function SessionsPage() {
   const seriesData = await withTenantContext(
     session.user.tenantId,
     session.user.id,
-    async (tx) => getSeriesCardData(tx, session.user.tenantId)
+    async (tx) => getSeriesCardData(tx, session.user.tenantId, {
+      role: session.user.role,
+      userId: session.user.id,
+    })
   );
 
   const showCreateButton = canManageSeries(session.user.role);
@@ -44,6 +47,7 @@ export default async function SessionsPage() {
       <SeriesList
         initialSeries={seriesData}
         currentUserId={session.user.id}
+        userRole={session.user.role}
       />
     </div>
   );

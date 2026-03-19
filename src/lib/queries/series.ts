@@ -1,6 +1,6 @@
 import { eq, sql, and, asc } from "drizzle-orm";
 import type { TransactionClient } from "@/lib/db/tenant-context";
-import { meetingSeries, sessions, users, sessionAnswers, templateQuestions } from "@/lib/db/schema";
+import { meetingSeries, sessions, users, sessionAnswers, templateQuestions, talkingPoints } from "@/lib/db/schema";
 
 export interface SeriesCardData {
   id: string;
@@ -10,6 +10,11 @@ export interface SeriesCardData {
   nextSessionAt: string | null;
   preferredDay: string | null;
   preferredTime: string | null;
+  manager: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
   report: {
     id: string;
     firstName: string;
@@ -21,6 +26,8 @@ export interface SeriesCardData {
     status: string;
     sessionNumber: number;
     sessionScore: string | null;
+    scheduledAt: string | null;
+    talkingPointCount: number;
   } | null;
   latestSummary: { blurb: string; sentiment: string } | null;
   assessmentHistory: number[];
@@ -58,7 +65,9 @@ export async function getSeriesCardData(
   if (options?.role === "member" && options?.userId) {
     conditions.push(eq(meetingSeries.reportId, options.userId));
   } else if (options?.role === "manager" && options?.userId) {
-    conditions.push(eq(meetingSeries.managerId, options.userId));
+    conditions.push(
+      sql`(${meetingSeries.managerId} = ${options.userId} OR ${meetingSeries.reportId} = ${options.userId})`
+    );
   }
   // admin sees all
 
@@ -104,6 +113,18 @@ export async function getSeriesCardData(
 
   const reportMap = new Map(reportUsers.map((u) => [u.id, u]));
 
+  // Fetch manager info
+  const managerIds = [...new Set(seriesList.map((s) => s.managerId))];
+  const managerUsers = await tx
+    .select({
+      id: users.id,
+      firstName: users.firstName,
+      lastName: users.lastName,
+    })
+    .from(users)
+    .where(sql`${users.id} IN ${managerIds}`);
+  const managerMap = new Map(managerUsers.map((u) => [u.id, u]));
+
   // Fetch latest session for each series
   const seriesIds = seriesList.map((s) => s.id);
   const latestSessions = await tx
@@ -113,6 +134,7 @@ export async function getSeriesCardData(
       status: sessions.status,
       sessionNumber: sessions.sessionNumber,
       sessionScore: sessions.sessionScore,
+      scheduledAt: sessions.scheduledAt,
     })
     .from(sessions)
     .where(
@@ -122,6 +144,26 @@ export async function getSeriesCardData(
     );
 
   const latestMap = new Map(latestSessions.map((s) => [s.seriesId, s]));
+
+  // Fetch talking point counts for scheduled sessions
+  const scheduledSessionIds = latestSessions
+    .filter((s) => s.status === "scheduled")
+    .map((s) => s.id);
+
+  const talkingPointCountMap = new Map<string, number>();
+  if (scheduledSessionIds.length > 0) {
+    const counts = await tx
+      .select({
+        sessionId: talkingPoints.sessionId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(talkingPoints)
+      .where(sql`${talkingPoints.sessionId} IN ${scheduledSessionIds}`)
+      .groupBy(talkingPoints.sessionId);
+    for (const c of counts) {
+      talkingPointCountMap.set(c.sessionId, c.count);
+    }
+  }
 
   // Fetch score history and latest aiSummary (completed sessions ordered by session number)
   const scoreRows = await tx
@@ -215,6 +257,11 @@ export async function getSeriesCardData(
       nextSessionAt: s.nextSessionAt?.toISOString() ?? null,
       preferredDay: s.preferredDay,
       preferredTime: s.preferredTime,
+      manager: {
+        id: s.managerId,
+        firstName: managerMap.get(s.managerId)?.firstName ?? "",
+        lastName: managerMap.get(s.managerId)?.lastName ?? "",
+      },
       report: {
         id: s.reportId,
         firstName: report?.firstName ?? "",
@@ -227,6 +274,8 @@ export async function getSeriesCardData(
             status: latest.status,
             sessionNumber: latest.sessionNumber,
             sessionScore: latest.sessionScore,
+            scheduledAt: latest.scheduledAt?.toISOString() ?? null,
+            talkingPointCount: talkingPointCountMap.get(latest.id) ?? 0,
           }
         : null,
       latestSummary: latestSummaryMap.get(s.id) ?? null,

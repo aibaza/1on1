@@ -39,9 +39,7 @@ describe("SeriesCardData contract — manager field", () => {
     //
     // The @ts-expect-error below suppresses the current type error.
     // When Plan 01 adds the field, remove the directive — the test becomes GREEN.
-    type ManagerField =
-      // @ts-expect-error — Plan 01 will add `manager` to SeriesCardData
-      SeriesCardData["manager"];
+    type ManagerField = SeriesCardData["manager"];
 
     // Runtime check: verify the type resolves (compiles = pass)
     const managerMock: { id: string; firstName: string; lastName: string } = {
@@ -61,7 +59,6 @@ describe("SeriesCardData contract — latestSession extensions", () => {
     // Plan 01 will add `scheduledAt` to the latestSession shape.
     // The @ts-expect-error below suppresses the current type error.
     type ScheduledAtField =
-      // @ts-expect-error — Plan 01 will add `scheduledAt` to latestSession
       NonNullable<SeriesCardData["latestSession"]>["scheduledAt"];
 
     // Runtime assertion on expected shape
@@ -78,7 +75,6 @@ describe("SeriesCardData contract — latestSession extensions", () => {
   it("includes talkingPointCount on latestSession", () => {
     // Plan 01 will add `talkingPointCount` to the latestSession shape.
     type TalkingPointCountField =
-      // @ts-expect-error — Plan 01 will add `talkingPointCount` to latestSession
       NonNullable<SeriesCardData["latestSession"]>["talkingPointCount"];
 
     const session = {

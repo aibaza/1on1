@@ -24,6 +24,11 @@ interface SeriesCardProps {
     nextSessionAt: string | null;
     preferredDay: string | null;
     preferredTime: string | null;
+    manager: {
+      id: string;
+      firstName: string;
+      lastName: string;
+    };
     report: {
       id: string;
       firstName: string;
@@ -35,6 +40,8 @@ interface SeriesCardProps {
       status: string;
       sessionNumber: number;
       sessionScore: string | null;
+      scheduledAt: string | null;
+      talkingPointCount: number;
     } | null;
     latestSummary: { blurb: string; sentiment: string } | null;
     assessmentHistory: number[];

@@ -17,6 +17,11 @@ interface Series {
   nextSessionAt: string | null;
   preferredDay: string | null;
   preferredTime: string | null;
+  manager: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
   report: {
     id: string;
     firstName: string;
@@ -28,6 +33,8 @@ interface Series {
     status: string;
     sessionNumber: number;
     sessionScore: string | null;
+    scheduledAt: string | null;
+    talkingPointCount: number;
   } | null;
   latestSummary: { blurb: string; sentiment: string } | null;
   assessmentHistory: number[];
@@ -37,6 +44,7 @@ interface Series {
 interface SeriesListProps {
   initialSeries: Series[];
   currentUserId: string;
+  userRole?: string;
 }
 
 function SeriesGrid({ items, currentUserId, muted = false }: { items: Series[]; currentUserId: string; muted?: boolean }) {
@@ -51,7 +59,7 @@ function SeriesGrid({ items, currentUserId, muted = false }: { items: Series[]; 
   );
 }
 
-export function SeriesList({ initialSeries, currentUserId }: SeriesListProps) {
+export function SeriesList({ initialSeries, currentUserId, userRole }: SeriesListProps) {
   const t = useTranslations("sessions");
   const [archivedOpen, setArchivedOpen] = useState(false);
 

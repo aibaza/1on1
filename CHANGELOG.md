@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Manager info (id, firstName, lastName) returned with every series card for grouping by manager
+- scheduledAt and talkingPointCount fields on latestSession in SeriesCardData
+- Role-based access control on sessions page SSR call (member/manager/admin filtering)
+- Manager role OR-query: managers now see series where they are manager OR report
 - TDD RED test scaffold for role-based series filtering (SeriesCardData contract tests)
 - TDD RED test scaffold for talking points POST status gate (scheduled session support)
 
