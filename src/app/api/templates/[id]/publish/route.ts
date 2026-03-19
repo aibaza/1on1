@@ -3,7 +3,8 @@ import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { canManageTemplates } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
-import { questionnaireTemplates, templateQuestions } from "@/lib/db/schema";
+import { questionnaireTemplates, templateQuestions, templateVersions } from "@/lib/db/schema";
+import { buildTemplateSnapshot } from "@/lib/templates/snapshot";
 import { eq, and, sql } from "drizzle-orm";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -30,6 +31,7 @@ export async function PUT(request: Request, { params }: RouteContext) {
           .select({
             id: questionnaireTemplates.id,
             name: questionnaireTemplates.name,
+            description: questionnaireTemplates.description,
             isPublished: questionnaireTemplates.isPublished,
             isArchived: questionnaireTemplates.isArchived,
           })
@@ -76,6 +78,39 @@ export async function PUT(request: Request, { params }: RouteContext) {
           .update(questionnaireTemplates)
           .set({ isPublished: newPublishedState, updatedAt: new Date() })
           .where(eq(questionnaireTemplates.id, id));
+
+        // Create version snapshot on publish
+        if (newPublishedState) {
+          const snapshot = await buildTemplateSnapshot(
+            tx,
+            id,
+            template.name,
+            template.description ?? null
+          );
+
+          // Get next version number (race-safe: UNIQUE constraint catches conflicts)
+          const [maxVersion] = await tx
+            .select({ max: sql<number>`coalesce(max(version_number), 0)` })
+            .from(templateVersions)
+            .where(eq(templateVersions.templateId, id));
+
+          const nextVersion = (maxVersion?.max ?? 0) + 1;
+
+          // Insert version snapshot
+          await tx.insert(templateVersions).values({
+            templateId: id,
+            tenantId: session.user.tenantId,
+            versionNumber: nextVersion,
+            snapshot: snapshot,
+            createdBy: session.user.id,
+          });
+
+          // Sync questionnaireTemplates.version with published version number
+          await tx
+            .update(questionnaireTemplates)
+            .set({ version: nextVersion })
+            .where(eq(questionnaireTemplates.id, id));
+        }
 
         await logAuditEvent(tx, {
           tenantId: session.user.tenantId,
