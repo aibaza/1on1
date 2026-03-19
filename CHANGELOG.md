@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Role-based series grouping: admin sees by-manager groups, manager sees My Team/My 1:1s, member sees flat list
+- Agenda button on series cards with scheduled sessions, showing talking point count badge
+- AgendaSheet component: right-side sheet with category-grouped talking points for pre-meeting prep
+- Manager name display on "My 1:1s" cards (top-right, muted)
+- i18n keys for sections (myTeam, myOneOnOnes, youSuffix), agenda sheet, and talkingPoints.saveError in EN + RO
 - Manager info (id, firstName, lastName) returned with every series card for grouping by manager
 - scheduledAt and talkingPointCount fields on latestSession in SeriesCardData
 - Role-based access control on sessions page SSR call (member/manager/admin filtering)
