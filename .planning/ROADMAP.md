@@ -142,7 +142,7 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 | 26. Email Notification & i18n | v1.4 | 3/3 | Complete | 2026-03-13 |
 | 27. UI Integration | v1.4 | 4/4 | Complete | 2026-03-13 |
 | 28. Playwright E2E Test Suite | v1.5 | 6/6 | Complete | 2026-03-13 |
-| 29. Template Versioning & Answer Remapping | 3/3 | Complete | 2026-03-19 |
+| 29. Template Versioning & Answer Remapping | 3/3 | Complete    | 2026-03-19 |
 
 ### Phase 24: Sessions Access Control and Pre-Meeting Talking Points
 
@@ -161,7 +161,7 @@ Plans:
 **Goal:** On publish, snapshot the current template to a template_version table (JSONB). Show version history in the template editor with read-only preview, change list diff, and restore capability. Answers always point to original question_id (no remapping). Prevents answer loss on template edits.
 **Requirements**: VER-01, VER-02, VER-03, VER-04, VER-05, VER-06, VER-07, VER-08
 **Depends on:** Phase 24
-**Plans:** 3/3 plans complete — completed 2026-03-19
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 29-01-PLAN.md — Schema + snapshot utility + publish hook (template_version table, buildTemplateSnapshot, Zod schemas)
