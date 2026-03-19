@@ -148,7 +148,7 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 **Goal:** Each role sees only authorized series on the sessions page (admin grouped by manager, manager split into My Team/My 1:1s, member flat list), and both participants can add talking points to scheduled sessions via an agenda sheet before starting the wizard
 **Requirements**: ACC-01, ACC-02, ACC-03, ACC-04, TP-01, TP-02, TP-03, I18N-01
 **Depends on:** Phase 23
-**Plans:** 1/3 plans complete
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 24-00-PLAN.md — Wave 0 TDD: test scaffolds for series role filtering and talking points status gate

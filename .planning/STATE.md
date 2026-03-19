@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: Low-Priority Polish
 status: unknown
-stopped_at: Completed 24-00-PLAN.md
-last_updated: "2026-03-19T16:28:40.779Z"
+stopped_at: Completed 24-01-PLAN.md
+last_updated: "2026-03-19T16:37:00.000Z"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-10)
 ## Current Position
 
 Phase: 24 (Sessions Access Control and Pre-Meeting Talking Points) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -69,6 +69,7 @@ Plan: 2 of 3
 | Phase 22-safety-errors-inputs P02 | 3 | 2 tasks | 3 files |
 | Phase 22-safety-errors-inputs P03 | 4 | 2 tasks | 5 files |
 | Phase 24 P00 | 4 | 2 tasks | 3 files |
+| Phase 24 P01 | 5 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -131,6 +132,9 @@ Recent decisions affecting current work:
 - [Phase 22-safety-errors-inputs]: DatePicker string boundary: accepts YYYY-MM-DD string, never leaks Date objects to consumers — history and audit-log state contracts unchanged
 - [Phase 22-safety-errors-inputs]: @ts-expect-error directive in date-picker.test.tsx removed once date-picker.tsx exists — TDD RED placeholder no longer needed
 - [Phase 24]: @ts-expect-error used for type-level TDD RED assertions on SeriesCardData — directives become unused when Plan 01 adds fields
+- [Phase 24-01]: Manager OR-query: managers see series where they are manager OR report (SQL OR condition)
+- [Phase 24-01]: Talking points status gate relaxed from in_progress-only to in_progress OR scheduled
+- [Phase 24-01]: Wave 0 @ts-expect-error directives removed — contract tests now GREEN
 
 ### Roadmap Evolution
 
@@ -147,6 +151,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T16:28:40.775Z
-Stopped at: Completed 24-00-PLAN.md
+Last session: 2026-03-19T16:37:00.000Z
+Stopped at: Completed 24-01-PLAN.md
 Resume file: None
