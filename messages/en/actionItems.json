@@ -13,6 +13,8 @@
     "updated": "Action item updated",
     "sessionBadge": "Session #{number}",
     "completedSection": "Completed",
+    "sectionMine": "My Items",
+    "sectionTeam": "My Reports",
     "edit": {
       "title": "Edit Action Item",
       "description": "Update the details of this action item.",

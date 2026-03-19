@@ -118,7 +118,7 @@ export async function getUpcomingSessions(
     role === "member"
       ? eq(meetingSeries.reportId, userId)
       : role === "admin"
-        ? undefined
+        ? or(eq(meetingSeries.managerId, userId), eq(meetingSeries.reportId, userId))!
         : eq(meetingSeries.managerId, userId);
 
   // Query active series with a nextSessionAt, ordered by soonest, limit 3
@@ -291,7 +291,7 @@ export async function getQuickStats(
     role === "member"
       ? eq(meetingSeries.reportId, userId)
       : role === "admin"
-        ? undefined
+        ? or(eq(meetingSeries.managerId, userId), eq(meetingSeries.reportId, userId))!
         : eq(meetingSeries.managerId, userId);
 
   const reportConditions = [
@@ -313,7 +313,7 @@ export async function getQuickStats(
     role === "member"
       ? eq(meetingSeries.reportId, userId)
       : role === "admin"
-        ? undefined
+        ? or(eq(meetingSeries.managerId, userId), eq(meetingSeries.reportId, userId))!
         : eq(meetingSeries.managerId, userId);
 
   const sessionConditions = [
@@ -357,7 +357,7 @@ export async function getStatsTrends(
     role === "member"
       ? eq(meetingSeries.reportId, userId)
       : role === "admin"
-        ? undefined
+        ? or(eq(meetingSeries.managerId, userId), eq(meetingSeries.reportId, userId))!
         : eq(meetingSeries.managerId, userId);
 
   // Monthly completed sessions + avg score
@@ -454,7 +454,7 @@ export async function getRecentSessions(
     role === "member"
       ? eq(meetingSeries.reportId, userId)
       : role === "admin"
-        ? undefined
+        ? or(eq(meetingSeries.managerId, userId), eq(meetingSeries.reportId, userId))!
         : eq(meetingSeries.managerId, userId);
 
   const conditions = [

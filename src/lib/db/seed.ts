@@ -272,6 +272,109 @@ const NOTIF_AGENDA_PREP_BOB_ID = 'aaccddee-0003-4000-ac00-000000000003';
 const NOTIF_AGENDA_PREP_DAVE_ID = 'aaccddee-0004-4000-ac00-000000000004';
 
 // =============================================================================
+// Techvibe SRL — Romanian test tenant
+// =============================================================================
+
+const TV_TENANT_ID = 'eeeeeeee-eeee-4000-e000-eeeeeeeeeeee';
+
+// Users
+const TV_CIPRIAN_ID = 'eeeeeeee-0001-4000-e000-eeeeeeeeeeee'; // manager, also report of Elena
+const TV_ELENA_ID   = 'eeeeeeee-0002-4000-e000-eeeeeeeeeeee'; // admin / CEO
+const TV_ANDREI_ID  = 'eeeeeeee-0003-4000-e000-eeeeeeeeeeee'; // member, report of Ciprian
+const TV_MARIA_ID   = 'eeeeeeee-0004-4000-e000-eeeeeeeeeeee'; // member, report of Ciprian
+const TV_RADU_ID    = 'eeeeeeee-0005-4000-e000-eeeeeeeeeeee'; // manager, report of Elena
+const TV_IOANA_ID   = 'eeeeeeee-0006-4000-e000-eeeeeeeeeeee'; // member, report of Radu
+const TV_ALEX_ID    = 'eeeeeeee-0007-4000-e000-eeeeeeeeeeee'; // member, report of Radu
+
+// Teams
+const TV_TEAM_PRODUS_ID = 'ffffffff-0001-4000-f000-ffffffffffff';
+const TV_TEAM_OPS_ID    = 'ffffffff-0002-4000-f000-ffffffffffff';
+
+// Team member junction IDs
+const TV_TM_CIPRIAN = 'eeeedddd-0001-4000-e000-eeeeeeeeeeee';
+const TV_TM_ANDREI  = 'eeeedddd-0002-4000-e000-eeeeeeeeeeee';
+const TV_TM_MARIA   = 'eeeedddd-0003-4000-e000-eeeeeeeeeeee';
+const TV_TM_RADU    = 'eeeedddd-0004-4000-e000-eeeeeeeeeeee';
+const TV_TM_IOANA   = 'eeeedddd-0005-4000-e000-eeeeeeeeeeee';
+const TV_TM_ALEX_TV = 'eeeedddd-0006-4000-e000-eeeeeeeeeeee';
+
+// Templates
+const TV_CHECKIN_TEMPLATE_ID = 'dddddddd-0010-4000-d000-dddddddddddd';
+const TV_RETRO_TEMPLATE_ID   = 'dddddddd-0011-4000-d000-dddddddddddd';
+
+// Template labels
+const TV_LABEL_CHECKIN_ID = 'eeeedddd-0010-4000-e000-eeeeeeeeeeee';
+const TV_LABEL_RETRO_ID   = 'eeeedddd-0011-4000-e000-eeeeeeeeeeee';
+
+// Template sections — Check-in
+const TV_SEC_STARE_ID     = 'eeeeffff-0001-4000-e000-eeeeeeeeeeee';
+const TV_SEC_PROGRES_ID   = 'eeeeffff-0002-4000-e000-eeeeeeeeeeee';
+const TV_SEC_COLLAB_ID    = 'eeeeffff-0003-4000-e000-eeeeeeeeeeee';
+// Template sections — Retro
+const TV_SEC_REALIZARI_ID  = 'eeeeffff-0004-4000-e000-eeeeeeeeeeee';
+const TV_SEC_OBIECTIVE_ID  = 'eeeeffff-0005-4000-e000-eeeeeeeeeeee';
+const TV_SEC_DEZVOLTARE_ID = 'eeeeffff-0006-4000-e000-eeeeeeeeeeee';
+
+// Template questions — Check-in
+const TV_Q_MOOD_ID         = 'eeee0000-0001-4000-e000-eeeeeeeeeeee';
+const TV_Q_ENERGIE_ID      = 'eeee0000-0002-4000-e000-eeeeeeeeeeee';
+const TV_Q_BLOCKERS_TV_ID  = 'eeee0000-0003-4000-e000-eeeeeeeeeeee';
+const TV_Q_HELP_TV_ID      = 'eeee0000-0004-4000-e000-eeeeeeeeeeee';
+const TV_Q_SATISFACTION_TV = 'eeee0000-0005-4000-e000-eeeeeeeeeeee';
+// Template questions — Retro
+const TV_Q_REALIZARE_ID    = 'eeee0000-0006-4000-e000-eeeeeeeeeeee';
+const TV_Q_OBJ_SCORE_ID    = 'eeee0000-0007-4000-e000-eeeeeeeeeeee';
+const TV_Q_IMBUNATATI_ID   = 'eeee0000-0008-4000-e000-eeeeeeeeeeee';
+const TV_Q_COLLAB_SCORE_ID = 'eeee0000-0009-4000-e000-eeeeeeeeeeee';
+
+// Meeting series
+const TV_SERIES_EC_ID = 'ffffffff-0010-4000-f000-ffffffffffff'; // Elena -> Ciprian
+const TV_SERIES_CA_ID = 'ffffffff-0011-4000-f000-ffffffffffff'; // Ciprian -> Andrei
+const TV_SERIES_CM_ID = 'ffffffff-0012-4000-f000-ffffffffffff'; // Ciprian -> Maria
+const TV_SERIES_RI_ID = 'ffffffff-0013-4000-f000-ffffffffffff'; // Radu -> Ioana
+const TV_SERIES_RA_ID = 'ffffffff-0014-4000-f000-ffffffffffff'; // Radu -> Alexandru
+
+// Sessions
+const TV_S_EC_1 = '99999999-0010-4000-9000-999999999999'; // Elena/Ciprian S1
+const TV_S_EC_2 = '99999999-0011-4000-9000-999999999999'; // S2
+const TV_S_EC_3 = '99999999-0012-4000-9000-999999999999'; // S3
+const TV_S_EC_4 = '99999999-0013-4000-9000-999999999999'; // S4 in_progress
+const TV_S_CA_1 = '99999999-0014-4000-9000-999999999999'; // Ciprian/Andrei S1
+const TV_S_CA_2 = '99999999-0015-4000-9000-999999999999';
+const TV_S_CA_3 = '99999999-0016-4000-9000-999999999999';
+const TV_S_CA_4 = '99999999-0017-4000-9000-999999999999'; // S4 in_progress
+const TV_S_CM_1 = '99999999-0018-4000-9000-999999999999'; // Ciprian/Maria S1
+const TV_S_CM_2 = '99999999-0019-4000-9000-999999999999';
+const TV_S_CM_3 = '99999999-0020-4000-9000-999999999999'; // S3 in_progress
+const TV_S_RI_1 = '99999999-0021-4000-9000-999999999999'; // Radu/Ioana S1
+const TV_S_RI_2 = '99999999-0022-4000-9000-999999999999';
+const TV_S_RA_1 = '99999999-0023-4000-9000-999999999999'; // Radu/Alexandru S1
+const TV_S_RA_2 = '99999999-0024-4000-9000-999999999999';
+
+// Talking points
+const TV_TP_1 = '77777777-0001-4000-7000-777777777777';
+const TV_TP_2 = '77777777-0002-4000-7000-777777777777';
+const TV_TP_3 = '77777777-0003-4000-7000-777777777777';
+const TV_TP_4 = '77777777-0004-4000-7000-777777777777';
+const TV_TP_5 = '77777777-0005-4000-7000-777777777777';
+
+// Action items
+const TV_AI_01 = '88888888-0001-4000-8000-888888888888';
+const TV_AI_02 = '88888888-0002-4000-8000-888888888888';
+const TV_AI_03 = '88888888-0003-4000-8000-888888888888';
+const TV_AI_04 = '88888888-0004-4000-8000-888888888888';
+const TV_AI_05 = '88888888-0005-4000-8000-888888888888';
+const TV_AI_06 = '88888888-0006-4000-8000-888888888888';
+const TV_AI_07 = '88888888-0007-4000-8000-888888888888';
+const TV_AI_08 = '88888888-0008-4000-8000-888888888888';
+const TV_AI_09 = '88888888-0009-4000-8000-888888888888';
+const TV_AI_10 = '88888888-0010-4000-8000-888888888888';
+
+// Private notes
+const TV_NOTE_1 = '44440000-0001-4000-4400-eeeeeeeeeeee';
+const TV_NOTE_2 = '44440000-0002-4000-4400-eeeeeeeeeeee';
+
+// =============================================================================
 // Seed functions
 // =============================================================================
 
@@ -1629,6 +1732,540 @@ async function seedAnalyticsSnapshots() {
 }
 
 // =============================================================================
+// Techvibe SRL seed
+// =============================================================================
+
+async function seedTechvibe() {
+  console.log('  Seeding Techvibe SRL...');
+
+  const now = new Date();
+  const fourWeeksAgo   = new Date(now.getTime() - 28 * 24 * 60 * 60 * 1000);
+  const threeWeeksAgo  = new Date(now.getTime() - 21 * 24 * 60 * 60 * 1000);
+  const twoWeeksAgo    = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+  const oneWeekAgo     = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const nextWeekDate   = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+  function monthRange(d: Date) {
+    const y = d.getFullYear(), m = d.getMonth();
+    return {
+      start: new Date(y, m, 1).toISOString().split('T')[0]!,
+      end:   new Date(y, m + 1, 0).toISOString().split('T')[0]!,
+    };
+  }
+
+  // --------------------------------------------------------------------------
+  // Tenant
+  // --------------------------------------------------------------------------
+  await db
+    .insert(schema.tenants)
+    .values({
+      id: TV_TENANT_ID,
+      name: 'Techvibe SRL',
+      slug: 'techvibe-srl',
+      orgType: 'for_profit' as const,
+      plan: 'pro',
+      settings: {
+        timezone: 'Europe/Bucharest',
+        defaultCadence: 'weekly',
+        defaultDurationMinutes: 30,
+        preferredLanguage: 'ro',
+      },
+    })
+    .onConflictDoUpdate({
+      target: schema.tenants.id,
+      set: {
+        name: sql`excluded.name`,
+        slug: sql`excluded.slug`,
+        plan: sql`excluded.plan`,
+        settings: sql`excluded.settings`,
+        updatedAt: sql`now()`,
+      },
+    });
+
+  // --------------------------------------------------------------------------
+  // Users
+  // --------------------------------------------------------------------------
+  const tvUsers = [
+    { id: TV_ELENA_ID,   tenantId: TV_TENANT_ID, email: 'elena@techvibe.example.com',   firstName: 'Elena',     lastName: 'Constantin', role: 'admin' as const,   jobTitle: 'CEO',               passwordHash: TEST_PASSWORD_HASH, isActive: true },
+    { id: TV_CIPRIAN_ID, tenantId: TV_TENANT_ID, email: 'ciprian@techvibe.example.com', firstName: 'Ciprian',   lastName: 'Surmont',    role: 'manager' as const, jobTitle: 'Director Produs',   passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_ELENA_ID },
+    { id: TV_RADU_ID,    tenantId: TV_TENANT_ID, email: 'radu@techvibe.example.com',    firstName: 'Radu',      lastName: 'Dumitru',    role: 'manager' as const, jobTitle: 'Manager Operațiuni',passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_ELENA_ID },
+    { id: TV_ANDREI_ID,  tenantId: TV_TENANT_ID, email: 'andrei@techvibe.example.com',  firstName: 'Andrei',    lastName: 'Ionescu',    role: 'member' as const,  jobTitle: 'Inginer Software',  passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_CIPRIAN_ID },
+    { id: TV_MARIA_ID,   tenantId: TV_TENANT_ID, email: 'maria@techvibe.example.com',   firstName: 'Maria',     lastName: 'Popa',       role: 'member' as const,  jobTitle: 'Designer UX',       passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_CIPRIAN_ID },
+    { id: TV_IOANA_ID,   tenantId: TV_TENANT_ID, email: 'ioana@techvibe.example.com',   firstName: 'Ioana',     lastName: 'Munteanu',   role: 'member' as const,  jobTitle: 'Analist Date',      passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_RADU_ID },
+    { id: TV_ALEX_ID,    tenantId: TV_TENANT_ID, email: 'alex@techvibe.example.com',    firstName: 'Alexandru', lastName: 'Vasile',     role: 'member' as const,  jobTitle: 'DevOps Engineer',   passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_RADU_ID },
+  ];
+
+  for (const user of tvUsers) {
+    await db
+      .insert(schema.users)
+      .values(user)
+      .onConflictDoUpdate({
+        target: schema.users.id,
+        set: {
+          email: sql`excluded.email`,
+          firstName: sql`excluded.first_name`,
+          lastName: sql`excluded.last_name`,
+          role: sql`excluded.role`,
+          jobTitle: sql`excluded.job_title`,
+          passwordHash: sql`excluded.password_hash`,
+          managerId: sql`excluded.manager_id`,
+          isActive: sql`excluded.is_active`,
+          updatedAt: sql`now()`,
+        },
+      });
+  }
+
+  // --------------------------------------------------------------------------
+  // Teams
+  // --------------------------------------------------------------------------
+  await db
+    .insert(schema.teams)
+    .values([
+      { id: TV_TEAM_PRODUS_ID, tenantId: TV_TENANT_ID, name: 'Produs & Engineering', description: 'Echipa de produs și inginerie', managerId: TV_CIPRIAN_ID },
+      { id: TV_TEAM_OPS_ID,    tenantId: TV_TENANT_ID, name: 'Operațiuni',           description: 'Echipa de operațiuni și analiză', managerId: TV_RADU_ID },
+    ])
+    .onConflictDoUpdate({
+      target: schema.teams.id,
+      set: {
+        name: sql`excluded.name`,
+        description: sql`excluded.description`,
+        managerId: sql`excluded.manager_id`,
+        updatedAt: sql`now()`,
+      },
+    });
+
+  const tvTeamMembers = [
+    { id: TV_TM_CIPRIAN, teamId: TV_TEAM_PRODUS_ID, userId: TV_CIPRIAN_ID, role: 'lead' as const },
+    { id: TV_TM_ANDREI,  teamId: TV_TEAM_PRODUS_ID, userId: TV_ANDREI_ID,  role: 'member' as const },
+    { id: TV_TM_MARIA,   teamId: TV_TEAM_PRODUS_ID, userId: TV_MARIA_ID,   role: 'member' as const },
+    { id: TV_TM_RADU,    teamId: TV_TEAM_OPS_ID,    userId: TV_RADU_ID,    role: 'lead' as const },
+    { id: TV_TM_IOANA,   teamId: TV_TEAM_OPS_ID,    userId: TV_IOANA_ID,   role: 'member' as const },
+    { id: TV_TM_ALEX_TV, teamId: TV_TEAM_OPS_ID,    userId: TV_ALEX_ID,    role: 'member' as const },
+  ];
+
+  for (const member of tvTeamMembers) {
+    await db
+      .insert(schema.teamMembers)
+      .values(member)
+      .onConflictDoUpdate({
+        target: schema.teamMembers.id,
+        set: { teamId: sql`excluded.team_id`, userId: sql`excluded.user_id`, role: sql`excluded.role` },
+      });
+  }
+
+  // --------------------------------------------------------------------------
+  // Templates
+  // --------------------------------------------------------------------------
+  await db
+    .insert(schema.questionnaireTemplates)
+    .values([
+      {
+        id: TV_CHECKIN_TEMPLATE_ID,
+        tenantId: TV_TENANT_ID,
+        name: 'Check-in Săptămânal',
+        description: 'Check-in săptămânal acoperind starea generală, progresul și colaborarea',
+        isDefault: true,
+        isPublished: true,
+        createdBy: TV_ELENA_ID,
+        version: 1,
+      },
+      {
+        id: TV_RETRO_TEMPLATE_ID,
+        tenantId: TV_TENANT_ID,
+        name: 'Retrospectivă Lunară',
+        description: 'Retrospectivă lunară acoperind realizările, obiectivele și dezvoltarea',
+        isDefault: false,
+        isPublished: true,
+        createdBy: TV_ELENA_ID,
+        version: 1,
+      },
+    ])
+    .onConflictDoUpdate({
+      target: schema.questionnaireTemplates.id,
+      set: {
+        name: sql`excluded.name`,
+        description: sql`excluded.description`,
+        updatedAt: sql`now()`,
+      },
+    });
+
+  // Labels
+  await db
+    .insert(schema.templateLabels)
+    .values([
+      { id: TV_LABEL_CHECKIN_ID, tenantId: TV_TENANT_ID, name: 'Check-in',       color: '#3b82f6' },
+      { id: TV_LABEL_RETRO_ID,   tenantId: TV_TENANT_ID, name: 'Retrospectivă',  color: '#8b5cf6' },
+    ])
+    .onConflictDoUpdate({
+      target: schema.templateLabels.id,
+      set: { name: sql`excluded.name`, color: sql`excluded.color` },
+    });
+
+  await db
+    .insert(schema.templateLabelAssignments)
+    .values([
+      { templateId: TV_CHECKIN_TEMPLATE_ID, labelId: TV_LABEL_CHECKIN_ID },
+      { templateId: TV_RETRO_TEMPLATE_ID,   labelId: TV_LABEL_RETRO_ID },
+    ])
+    .onConflictDoNothing();
+
+  // Sections
+  const tvSections = [
+    { id: TV_SEC_STARE_ID,     templateId: TV_CHECKIN_TEMPLATE_ID, tenantId: TV_TENANT_ID, name: 'Stare generală', sortOrder: 0 },
+    { id: TV_SEC_PROGRES_ID,   templateId: TV_CHECKIN_TEMPLATE_ID, tenantId: TV_TENANT_ID, name: 'Progres',        sortOrder: 1 },
+    { id: TV_SEC_COLLAB_ID,    templateId: TV_CHECKIN_TEMPLATE_ID, tenantId: TV_TENANT_ID, name: 'Colaborare',     sortOrder: 2 },
+    { id: TV_SEC_REALIZARI_ID, templateId: TV_RETRO_TEMPLATE_ID,   tenantId: TV_TENANT_ID, name: 'Realizări',      sortOrder: 0 },
+    { id: TV_SEC_OBIECTIVE_ID, templateId: TV_RETRO_TEMPLATE_ID,   tenantId: TV_TENANT_ID, name: 'Obiective',      sortOrder: 1 },
+    { id: TV_SEC_DEZVOLTARE_ID,templateId: TV_RETRO_TEMPLATE_ID,   tenantId: TV_TENANT_ID, name: 'Dezvoltare',     sortOrder: 2 },
+  ];
+
+  for (const sec of tvSections) {
+    await db
+      .insert(schema.templateSections)
+      .values(sec)
+      .onConflictDoUpdate({
+        target: schema.templateSections.id,
+        set: { name: sql`excluded.name`, sortOrder: sql`excluded.sort_order` },
+      });
+  }
+
+  // Questions
+  const tvQuestions = [
+    // Check-in questions
+    { id: TV_Q_MOOD_ID,        templateId: TV_CHECKIN_TEMPLATE_ID, sectionId: TV_SEC_STARE_ID,     questionText: 'Cum te simți săptămâna aceasta?',                answerType: 'mood' as const,        answerConfig: { options: ['great', 'good', 'okay', 'struggling', 'bad'] }, isRequired: true,  sortOrder: 1 },
+    { id: TV_Q_ENERGIE_ID,     templateId: TV_CHECKIN_TEMPLATE_ID, sectionId: TV_SEC_STARE_ID,     questionText: 'Cum îți evaluezi nivelul de energie?',           answerType: 'rating_1_5' as const,  answerConfig: { labels: { 1: 'Foarte scăzut', 3: 'Mediu', 5: 'Excelent' } },  isRequired: true,  sortOrder: 2 },
+    { id: TV_Q_BLOCKERS_TV_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sectionId: TV_SEC_PROGRES_ID,   questionText: 'Cu ce te-ai confruntat ca blocaj?',             answerType: 'text' as const,        answerConfig: {},                                                             isRequired: false, sortOrder: 3 },
+    { id: TV_Q_HELP_TV_ID,     templateId: TV_CHECKIN_TEMPLATE_ID, sectionId: TV_SEC_PROGRES_ID,   questionText: 'Ai nevoie de ajutor din partea mea?',           answerType: 'yes_no' as const,      answerConfig: {},                                                             isRequired: true,  sortOrder: 4 },
+    { id: TV_Q_SATISFACTION_TV,templateId: TV_CHECKIN_TEMPLATE_ID, sectionId: TV_SEC_COLLAB_ID,    questionText: 'Cât de mulțumit ești de activitatea săptămânii?',answerType: 'rating_1_10' as const, answerConfig: {},                                                             isRequired: true,  sortOrder: 5 },
+    // Retro questions
+    { id: TV_Q_REALIZARE_ID,   templateId: TV_RETRO_TEMPLATE_ID,   sectionId: TV_SEC_REALIZARI_ID, questionText: 'Care a fost cea mai importantă realizare a lunii?', answerType: 'text' as const,      answerConfig: {},                                                             isRequired: true,  sortOrder: 1 },
+    { id: TV_Q_OBJ_SCORE_ID,   templateId: TV_RETRO_TEMPLATE_ID,   sectionId: TV_SEC_OBIECTIVE_ID, questionText: 'Cât de bine ai avansat pe obiectivele lunare?',      answerType: 'rating_1_5' as const,answerConfig: { labels: { 1: 'Deloc', 3: 'Moderat', 5: 'Excelent' } },          isRequired: true,  sortOrder: 2 },
+    { id: TV_Q_IMBUNATATI_ID,  templateId: TV_RETRO_TEMPLATE_ID,   sectionId: TV_SEC_OBIECTIVE_ID, questionText: 'Ce ai vrea să îmbunătățești luna viitoare?',        answerType: 'text' as const,      answerConfig: {},                                                             isRequired: false, sortOrder: 3 },
+    { id: TV_Q_COLLAB_SCORE_ID,templateId: TV_RETRO_TEMPLATE_ID,   sectionId: TV_SEC_DEZVOLTARE_ID,questionText: 'Cum evaluezi colaborarea cu echipa?',               answerType: 'rating_1_5' as const,answerConfig: { labels: { 1: 'Dificilă', 3: 'Normală', 5: 'Excelentă' } },      isRequired: true,  sortOrder: 4 },
+  ];
+
+  for (const q of tvQuestions) {
+    await db
+      .insert(schema.templateQuestions)
+      .values(q)
+      .onConflictDoUpdate({
+        target: schema.templateQuestions.id,
+        set: {
+          questionText: sql`excluded.question_text`,
+          sectionId:    sql`excluded.section_id`,
+          answerType:   sql`excluded.answer_type`,
+          answerConfig: sql`excluded.answer_config`,
+          sortOrder:    sql`excluded.sort_order`,
+        },
+      });
+  }
+
+  // --------------------------------------------------------------------------
+  // Meeting Series
+  // --------------------------------------------------------------------------
+  const tvSeries = [
+    { id: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, managerId: TV_ELENA_ID,   reportId: TV_CIPRIAN_ID, cadence: 'weekly' as const,    defaultDurationMinutes: 30, defaultTemplateId: TV_CHECKIN_TEMPLATE_ID, preferredDay: 'mon' as const, preferredTime: '09:00', status: 'active' as const, nextSessionAt: nextWeekDate },
+    { id: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, managerId: TV_CIPRIAN_ID, reportId: TV_ANDREI_ID,  cadence: 'biweekly' as const,  defaultDurationMinutes: 30, defaultTemplateId: TV_CHECKIN_TEMPLATE_ID, preferredDay: 'tue' as const, preferredTime: '10:00', status: 'active' as const, nextSessionAt: nextWeekDate },
+    { id: TV_SERIES_CM_ID, tenantId: TV_TENANT_ID, managerId: TV_CIPRIAN_ID, reportId: TV_MARIA_ID,   cadence: 'weekly' as const,    defaultDurationMinutes: 30, defaultTemplateId: TV_CHECKIN_TEMPLATE_ID, preferredDay: 'thu' as const, preferredTime: '11:00', status: 'active' as const, nextSessionAt: nextWeekDate },
+    { id: TV_SERIES_RI_ID, tenantId: TV_TENANT_ID, managerId: TV_RADU_ID,    reportId: TV_IOANA_ID,   cadence: 'biweekly' as const,  defaultDurationMinutes: 30, defaultTemplateId: TV_CHECKIN_TEMPLATE_ID, preferredDay: 'wed' as const, preferredTime: '14:00', status: 'active' as const, nextSessionAt: nextWeekDate },
+    { id: TV_SERIES_RA_ID, tenantId: TV_TENANT_ID, managerId: TV_RADU_ID,    reportId: TV_ALEX_ID,    cadence: 'weekly' as const,    defaultDurationMinutes: 30, defaultTemplateId: TV_RETRO_TEMPLATE_ID,   preferredDay: 'fri' as const, preferredTime: '15:00', status: 'active' as const, nextSessionAt: nextWeekDate },
+  ];
+
+  for (const s of tvSeries) {
+    await db
+      .insert(schema.meetingSeries)
+      .values(s)
+      .onConflictDoUpdate({
+        target: schema.meetingSeries.id,
+        set: {
+          cadence: sql`excluded.cadence`,
+          defaultTemplateId: sql`excluded.default_template_id`,
+          preferredDay: sql`excluded.preferred_day`,
+          preferredTime: sql`excluded.preferred_time`,
+          status: sql`excluded.status`,
+          nextSessionAt: sql`excluded.next_session_at`,
+          updatedAt: sql`now()`,
+        },
+      });
+  }
+
+  // --------------------------------------------------------------------------
+  // Sessions
+  // --------------------------------------------------------------------------
+  const tvSessions = [
+    // Elena ↔ Ciprian (Ciprian is report)
+    { id: TV_S_EC_1, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: fourWeeksAgo,  startedAt: fourWeeksAgo,  completedAt: new Date(fourWeeksAgo.getTime()  + 30*60*1000), status: 'completed' as const, sessionScore: '7.00', durationMinutes: 30 },
+    { id: TV_S_EC_2, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '8.00', durationMinutes: 30 },
+    { id: TV_S_EC_3, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 3, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '7.50', durationMinutes: 30 },
+    { id: TV_S_EC_4, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 4, scheduledAt: now,            startedAt: now,           status: 'in_progress' as const },
+    // Ciprian ↔ Andrei
+    { id: TV_S_CA_1, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: fourWeeksAgo,  startedAt: fourWeeksAgo,  completedAt: new Date(fourWeeksAgo.getTime()  + 30*60*1000), status: 'completed' as const, sessionScore: '6.50', durationMinutes: 30 },
+    { id: TV_S_CA_2, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '7.00', durationMinutes: 30 },
+    { id: TV_S_CA_3, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 3, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '8.00', durationMinutes: 30 },
+    { id: TV_S_CA_4, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 4, scheduledAt: now,            startedAt: now,           status: 'in_progress' as const },
+    // Ciprian ↔ Maria
+    { id: TV_S_CM_1, seriesId: TV_SERIES_CM_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '8.00', durationMinutes: 30 },
+    { id: TV_S_CM_2, seriesId: TV_SERIES_CM_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '7.50', durationMinutes: 30 },
+    { id: TV_S_CM_3, seriesId: TV_SERIES_CM_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 3, scheduledAt: now,            startedAt: now,           status: 'in_progress' as const },
+    // Radu ↔ Ioana
+    { id: TV_S_RI_1, seriesId: TV_SERIES_RI_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '7.00', durationMinutes: 30 },
+    { id: TV_S_RI_2, seriesId: TV_SERIES_RI_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: oneWeekAgo,    startedAt: oneWeekAgo,    completedAt: new Date(oneWeekAgo.getTime()    + 30*60*1000), status: 'completed' as const, sessionScore: '8.00', durationMinutes: 30 },
+    // Radu ↔ Alexandru
+    { id: TV_S_RA_1, seriesId: TV_SERIES_RA_ID, tenantId: TV_TENANT_ID, templateId: TV_RETRO_TEMPLATE_ID,   sessionNumber: 1, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '6.00', durationMinutes: 30 },
+    { id: TV_S_RA_2, seriesId: TV_SERIES_RA_ID, tenantId: TV_TENANT_ID, templateId: TV_RETRO_TEMPLATE_ID,   sessionNumber: 2, scheduledAt: oneWeekAgo,    startedAt: oneWeekAgo,    completedAt: new Date(oneWeekAgo.getTime()    + 30*60*1000), status: 'completed' as const, sessionScore: '7.00', durationMinutes: 30 },
+  ];
+
+  for (const s of tvSessions) {
+    await db
+      .insert(schema.sessions)
+      .values(s)
+      .onConflictDoUpdate({
+        target: schema.sessions.id,
+        set: {
+          sessionNumber: sql`excluded.session_number`,
+          scheduledAt:   sql`excluded.scheduled_at`,
+          startedAt:     sql`excluded.started_at`,
+          completedAt:   sql`excluded.completed_at`,
+          status:        sql`excluded.status`,
+          sessionScore:  sql`excluded.session_score`,
+          durationMinutes: sql`excluded.duration_minutes`,
+          updatedAt:     sql`now()`,
+        },
+      });
+  }
+
+  // --------------------------------------------------------------------------
+  // Session Answers (completed sessions only)
+  // --------------------------------------------------------------------------
+  // Helper: answer ID using block/session/question indexes
+  const aid = (b: number, s: number, q: number) =>
+    `66660000-${b}${s}0${q}-4000-6600-eeeeeeeeeeee`;
+
+  const tvAnswers = [
+    // Elena↔Ciprian S1 (Ciprian responds): mood=good, energie=3, blocker="Lipsă context pe decizia de roadmap", help=yes, satisfaction=7
+    { id: aid(1,1,1), sessionId: TV_S_EC_1, questionId: TV_Q_MOOD_ID,        respondentId: TV_CIPRIAN_ID, answerJson: { value: 'good' } },
+    { id: aid(1,1,2), sessionId: TV_S_EC_1, questionId: TV_Q_ENERGIE_ID,     respondentId: TV_CIPRIAN_ID, answerNumeric: '3.00' },
+    { id: aid(1,1,3), sessionId: TV_S_EC_1, questionId: TV_Q_BLOCKERS_TV_ID, respondentId: TV_CIPRIAN_ID, answerText: 'Lipsă context pe decizia de roadmap' },
+    { id: aid(1,1,4), sessionId: TV_S_EC_1, questionId: TV_Q_HELP_TV_ID,     respondentId: TV_CIPRIAN_ID, answerJson: { value: true } },
+    { id: aid(1,1,5), sessionId: TV_S_EC_1, questionId: TV_Q_SATISFACTION_TV,respondentId: TV_CIPRIAN_ID, answerNumeric: '7.00' },
+    // Elena↔Ciprian S2: mood=great, energie=4, blocker="Nimic semnificativ", help=no, satisfaction=8
+    { id: aid(1,2,1), sessionId: TV_S_EC_2, questionId: TV_Q_MOOD_ID,        respondentId: TV_CIPRIAN_ID, answerJson: { value: 'great' } },
+    { id: aid(1,2,2), sessionId: TV_S_EC_2, questionId: TV_Q_ENERGIE_ID,     respondentId: TV_CIPRIAN_ID, answerNumeric: '4.00' },
+    { id: aid(1,2,3), sessionId: TV_S_EC_2, questionId: TV_Q_BLOCKERS_TV_ID, respondentId: TV_CIPRIAN_ID, answerText: 'Nimic semnificativ' },
+    { id: aid(1,2,4), sessionId: TV_S_EC_2, questionId: TV_Q_HELP_TV_ID,     respondentId: TV_CIPRIAN_ID, answerJson: { value: false } },
+    { id: aid(1,2,5), sessionId: TV_S_EC_2, questionId: TV_Q_SATISFACTION_TV,respondentId: TV_CIPRIAN_ID, answerNumeric: '8.00' },
+    // Elena↔Ciprian S3: mood=good, energie=3, blocker="Prea multe meeting-uri", help=yes, satisfaction=7
+    { id: aid(1,3,1), sessionId: TV_S_EC_3, questionId: TV_Q_MOOD_ID,        respondentId: TV_CIPRIAN_ID, answerJson: { value: 'good' } },
+    { id: aid(1,3,2), sessionId: TV_S_EC_3, questionId: TV_Q_ENERGIE_ID,     respondentId: TV_CIPRIAN_ID, answerNumeric: '3.00' },
+    { id: aid(1,3,3), sessionId: TV_S_EC_3, questionId: TV_Q_BLOCKERS_TV_ID, respondentId: TV_CIPRIAN_ID, answerText: 'Prea multe meeting-uri' },
+    { id: aid(1,3,4), sessionId: TV_S_EC_3, questionId: TV_Q_HELP_TV_ID,     respondentId: TV_CIPRIAN_ID, answerJson: { value: true } },
+    { id: aid(1,3,5), sessionId: TV_S_EC_3, questionId: TV_Q_SATISFACTION_TV,respondentId: TV_CIPRIAN_ID, answerNumeric: '7.00' },
+
+    // Ciprian↔Andrei S1 (Andrei responds): mood=okay, energie=2, blocker=long text, help=yes, satisfaction=6
+    { id: aid(2,1,1), sessionId: TV_S_CA_1, questionId: TV_Q_MOOD_ID,        respondentId: TV_ANDREI_ID, answerJson: { value: 'okay' } },
+    { id: aid(2,1,2), sessionId: TV_S_CA_1, questionId: TV_Q_ENERGIE_ID,     respondentId: TV_ANDREI_ID, answerNumeric: '2.00' },
+    { id: aid(2,1,3), sessionId: TV_S_CA_1, questionId: TV_Q_BLOCKERS_TV_ID, respondentId: TV_ANDREI_ID, answerText: 'Documentația lipsă pentru modulul de autentificare' },
+    { id: aid(2,1,4), sessionId: TV_S_CA_1, questionId: TV_Q_HELP_TV_ID,     respondentId: TV_ANDREI_ID, answerJson: { value: true } },
+    { id: aid(2,1,5), sessionId: TV_S_CA_1, questionId: TV_Q_SATISFACTION_TV,respondentId: TV_ANDREI_ID, answerNumeric: '6.00' },
+    // Ciprian↔Andrei S2: mood=good, energie=3, blocker="Review-uri întârziate", help=yes, satisfaction=7
+    { id: aid(2,2,1), sessionId: TV_S_CA_2, questionId: TV_Q_MOOD_ID,        respondentId: TV_ANDREI_ID, answerJson: { value: 'good' } },
+    { id: aid(2,2,2), sessionId: TV_S_CA_2, questionId: TV_Q_ENERGIE_ID,     respondentId: TV_ANDREI_ID, answerNumeric: '3.00' },
+    { id: aid(2,2,3), sessionId: TV_S_CA_2, questionId: TV_Q_BLOCKERS_TV_ID, respondentId: TV_ANDREI_ID, answerText: 'Review-uri întârziate' },
+    { id: aid(2,2,4), sessionId: TV_S_CA_2, questionId: TV_Q_HELP_TV_ID,     respondentId: TV_ANDREI_ID, answerJson: { value: true } },
+    { id: aid(2,2,5), sessionId: TV_S_CA_2, questionId: TV_Q_SATISFACTION_TV,respondentId: TV_ANDREI_ID, answerNumeric: '7.00' },
+    // Ciprian↔Andrei S3: mood=great, energie=4, blocker="", help=no, satisfaction=8
+    { id: aid(2,3,1), sessionId: TV_S_CA_3, questionId: TV_Q_MOOD_ID,        respondentId: TV_ANDREI_ID, answerJson: { value: 'great' } },
+    { id: aid(2,3,2), sessionId: TV_S_CA_3, questionId: TV_Q_ENERGIE_ID,     respondentId: TV_ANDREI_ID, answerNumeric: '4.00' },
+    { id: aid(2,3,3), sessionId: TV_S_CA_3, questionId: TV_Q_BLOCKERS_TV_ID, respondentId: TV_ANDREI_ID, answerText: '' },
+    { id: aid(2,3,4), sessionId: TV_S_CA_3, questionId: TV_Q_HELP_TV_ID,     respondentId: TV_ANDREI_ID, answerJson: { value: false } },
+    { id: aid(2,3,5), sessionId: TV_S_CA_3, questionId: TV_Q_SATISFACTION_TV,respondentId: TV_ANDREI_ID, answerNumeric: '8.00' },
+
+    // Ciprian↔Maria S1 (Maria responds): mood=great, energie=4, blocker="", help=no, satisfaction=8
+    { id: aid(3,1,1), sessionId: TV_S_CM_1, questionId: TV_Q_MOOD_ID,        respondentId: TV_MARIA_ID, answerJson: { value: 'great' } },
+    { id: aid(3,1,2), sessionId: TV_S_CM_1, questionId: TV_Q_ENERGIE_ID,     respondentId: TV_MARIA_ID, answerNumeric: '4.00' },
+    { id: aid(3,1,3), sessionId: TV_S_CM_1, questionId: TV_Q_BLOCKERS_TV_ID, respondentId: TV_MARIA_ID, answerText: '' },
+    { id: aid(3,1,4), sessionId: TV_S_CM_1, questionId: TV_Q_HELP_TV_ID,     respondentId: TV_MARIA_ID, answerJson: { value: false } },
+    { id: aid(3,1,5), sessionId: TV_S_CM_1, questionId: TV_Q_SATISFACTION_TV,respondentId: TV_MARIA_ID, answerNumeric: '8.00' },
+    // Ciprian↔Maria S2: mood=good, energie=3, blocker="Feedback lent pe mockup-uri", help=yes, satisfaction=7
+    { id: aid(3,2,1), sessionId: TV_S_CM_2, questionId: TV_Q_MOOD_ID,        respondentId: TV_MARIA_ID, answerJson: { value: 'good' } },
+    { id: aid(3,2,2), sessionId: TV_S_CM_2, questionId: TV_Q_ENERGIE_ID,     respondentId: TV_MARIA_ID, answerNumeric: '3.00' },
+    { id: aid(3,2,3), sessionId: TV_S_CM_2, questionId: TV_Q_BLOCKERS_TV_ID, respondentId: TV_MARIA_ID, answerText: 'Feedback lent pe mockup-uri' },
+    { id: aid(3,2,4), sessionId: TV_S_CM_2, questionId: TV_Q_HELP_TV_ID,     respondentId: TV_MARIA_ID, answerJson: { value: true } },
+    { id: aid(3,2,5), sessionId: TV_S_CM_2, questionId: TV_Q_SATISFACTION_TV,respondentId: TV_MARIA_ID, answerNumeric: '7.00' },
+
+    // Radu↔Ioana S1 (Ioana responds): mood=good, energie=3, blocker="", help=no, satisfaction=7
+    { id: aid(4,1,1), sessionId: TV_S_RI_1, questionId: TV_Q_MOOD_ID,        respondentId: TV_IOANA_ID, answerJson: { value: 'good' } },
+    { id: aid(4,1,2), sessionId: TV_S_RI_1, questionId: TV_Q_ENERGIE_ID,     respondentId: TV_IOANA_ID, answerNumeric: '3.00' },
+    { id: aid(4,1,3), sessionId: TV_S_RI_1, questionId: TV_Q_BLOCKERS_TV_ID, respondentId: TV_IOANA_ID, answerText: '' },
+    { id: aid(4,1,4), sessionId: TV_S_RI_1, questionId: TV_Q_HELP_TV_ID,     respondentId: TV_IOANA_ID, answerJson: { value: false } },
+    { id: aid(4,1,5), sessionId: TV_S_RI_1, questionId: TV_Q_SATISFACTION_TV,respondentId: TV_IOANA_ID, answerNumeric: '7.00' },
+    // Radu↔Ioana S2: mood=great, energie=4, blocker="", help=no, satisfaction=8
+    { id: aid(4,2,1), sessionId: TV_S_RI_2, questionId: TV_Q_MOOD_ID,        respondentId: TV_IOANA_ID, answerJson: { value: 'great' } },
+    { id: aid(4,2,2), sessionId: TV_S_RI_2, questionId: TV_Q_ENERGIE_ID,     respondentId: TV_IOANA_ID, answerNumeric: '4.00' },
+    { id: aid(4,2,3), sessionId: TV_S_RI_2, questionId: TV_Q_BLOCKERS_TV_ID, respondentId: TV_IOANA_ID, answerText: '' },
+    { id: aid(4,2,4), sessionId: TV_S_RI_2, questionId: TV_Q_HELP_TV_ID,     respondentId: TV_IOANA_ID, answerJson: { value: false } },
+    { id: aid(4,2,5), sessionId: TV_S_RI_2, questionId: TV_Q_SATISFACTION_TV,respondentId: TV_IOANA_ID, answerNumeric: '8.00' },
+
+    // Radu↔Alexandru S1 (Alexandru responds, retro template): realizare/obj_score/imbunatati/collab
+    { id: aid(5,1,1), sessionId: TV_S_RA_1, questionId: TV_Q_REALIZARE_ID,    respondentId: TV_ALEX_ID, answerText: 'Am finalizat migrarea la pipeline CI nou' },
+    { id: aid(5,1,2), sessionId: TV_S_RA_1, questionId: TV_Q_OBJ_SCORE_ID,    respondentId: TV_ALEX_ID, answerNumeric: '2.00' },
+    { id: aid(5,1,3), sessionId: TV_S_RA_1, questionId: TV_Q_IMBUNATATI_ID,   respondentId: TV_ALEX_ID, answerText: 'Eliminare deploy-uri manuale, automatizare completă' },
+    { id: aid(5,1,4), sessionId: TV_S_RA_1, questionId: TV_Q_COLLAB_SCORE_ID, respondentId: TV_ALEX_ID, answerNumeric: '3.00' },
+    // Radu↔Alexandru S2: realizare/obj_score/imbunatati/collab
+    { id: aid(5,2,1), sessionId: TV_S_RA_2, questionId: TV_Q_REALIZARE_ID,    respondentId: TV_ALEX_ID, answerText: 'Automatizat deploy-ul cu GitHub Actions' },
+    { id: aid(5,2,2), sessionId: TV_S_RA_2, questionId: TV_Q_OBJ_SCORE_ID,    respondentId: TV_ALEX_ID, answerNumeric: '3.00' },
+    { id: aid(5,2,3), sessionId: TV_S_RA_2, questionId: TV_Q_IMBUNATATI_ID,   respondentId: TV_ALEX_ID, answerText: 'Documentație mai bună pentru procesele DevOps' },
+    { id: aid(5,2,4), sessionId: TV_S_RA_2, questionId: TV_Q_COLLAB_SCORE_ID, respondentId: TV_ALEX_ID, answerNumeric: '4.00' },
+  ];
+
+  for (const a of tvAnswers) {
+    await db
+      .insert(schema.sessionAnswers)
+      .values(a)
+      .onConflictDoUpdate({
+        target: schema.sessionAnswers.id,
+        set: {
+          answerText:    sql`excluded.answer_text`,
+          answerNumeric: sql`excluded.answer_numeric`,
+          answerJson:    sql`excluded.answer_json`,
+        },
+      });
+  }
+
+  // --------------------------------------------------------------------------
+  // Talking Points (in_progress sessions)
+  // --------------------------------------------------------------------------
+  const tvTalkingPoints = [
+    // Ciprian↔Andrei S4 (in_progress)
+    { id: TV_TP_1, sessionId: TV_S_CA_4, authorId: TV_CIPRIAN_ID, content: 'Reviziurea arhitecturii modulului de notificări',       category: 'performance', sortOrder: 0 },
+    { id: TV_TP_2, sessionId: TV_S_CA_4, authorId: TV_ANDREI_ID,  content: 'Discuție despre creșterea în carieră — tech lead track', category: 'career',      sortOrder: 1 },
+    { id: TV_TP_3, sessionId: TV_S_CA_4, authorId: TV_CIPRIAN_ID, content: 'Feedback pe PR-ul #247 — patterns de testare',           category: 'performance', sortOrder: 2 },
+    // Ciprian↔Maria S3 (in_progress)
+    { id: TV_TP_4, sessionId: TV_S_CM_3, authorId: TV_MARIA_ID,   content: 'Prezentarea noului design system propus',                category: 'performance', sortOrder: 0 },
+    { id: TV_TP_5, sessionId: TV_S_CM_3, authorId: TV_CIPRIAN_ID, content: 'Timeline pentru redesign-ul paginii de onboarding',      category: 'performance', sortOrder: 1 },
+  ];
+
+  for (const tp of tvTalkingPoints) {
+    await db
+      .insert(schema.talkingPoints)
+      .values(tp)
+      .onConflictDoUpdate({
+        target: schema.talkingPoints.id,
+        set: {
+          content:   sql`excluded.content`,
+          category:  sql`excluded.category`,
+          sortOrder: sql`excluded.sort_order`,
+        },
+      });
+  }
+
+  // --------------------------------------------------------------------------
+  // Action Items
+  // --------------------------------------------------------------------------
+  const fiveDaysAgo   = new Date(now.getTime() - 5  * 24 * 60 * 60 * 1000);
+  const threeDaysAgo  = new Date(now.getTime() - 3  * 24 * 60 * 60 * 1000);
+  const fiveDaysOut   = new Date(now.getTime() + 5  * 24 * 60 * 60 * 1000);
+  const sevenDaysOut  = new Date(now.getTime() + 7  * 24 * 60 * 60 * 1000);
+  const tenDaysOut    = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000);
+  const threeDaysOut  = new Date(now.getTime() + 3  * 24 * 60 * 60 * 1000);
+
+  const tvActionItems = [
+    // Ciprian (assigned to him from Elena series)
+    { id: TV_AI_01, sessionId: TV_S_EC_3, tenantId: TV_TENANT_ID, assigneeId: TV_CIPRIAN_ID, createdById: TV_ELENA_ID,   title: 'Pregătire document strategie produs Q2',              category: 'performance', dueDate: fiveDaysAgo.toISOString().split('T')[0],  status: 'open' as const },
+    { id: TV_AI_02, sessionId: TV_S_EC_4, tenantId: TV_TENANT_ID, assigneeId: TV_CIPRIAN_ID, createdById: TV_ELENA_ID,   title: 'Organizare workshop de prioritizare cu echipa',       category: 'check_in',    dueDate: sevenDaysOut.toISOString().split('T')[0], status: 'in_progress' as const },
+    { id: TV_AI_03, sessionId: TV_S_EC_1, tenantId: TV_TENANT_ID, assigneeId: TV_CIPRIAN_ID, createdById: TV_ELENA_ID,   title: 'Actualizare roadmap cu feedback de la investitori',   category: 'performance', dueDate: threeWeeksAgo.toISOString().split('T')[0],status: 'completed' as const, completedAt: new Date(threeWeeksAgo.getTime() + 2*24*60*60*1000) },
+    // Andrei (assigned to him from Ciprian series)
+    { id: TV_AI_04, sessionId: TV_S_CA_1, tenantId: TV_TENANT_ID, assigneeId: TV_ANDREI_ID,  createdById: TV_CIPRIAN_ID, title: 'Scriere documentație pentru API-ul de autentificare', category: 'performance', dueDate: threeDaysAgo.toISOString().split('T')[0],  status: 'open' as const },
+    { id: TV_AI_05, sessionId: TV_S_CA_3, tenantId: TV_TENANT_ID, assigneeId: TV_ANDREI_ID,  createdById: TV_CIPRIAN_ID, title: 'Refactorizare modulul de upload fișiere',             category: 'performance', dueDate: tenDaysOut.toISOString().split('T')[0],   status: 'open' as const },
+    { id: TV_AI_06, sessionId: TV_S_CA_2, tenantId: TV_TENANT_ID, assigneeId: TV_ANDREI_ID,  createdById: TV_CIPRIAN_ID, title: 'Rezolvare bug critic #189 — sesiuni expirate',        category: 'performance', dueDate: twoWeeksAgo.toISOString().split('T')[0],  status: 'completed' as const, completedAt: new Date(twoWeeksAgo.getTime() + 24*60*60*1000) },
+    // Maria (assigned to her from Ciprian series)
+    { id: TV_AI_07, sessionId: TV_S_CM_2, tenantId: TV_TENANT_ID, assigneeId: TV_MARIA_ID,   createdById: TV_CIPRIAN_ID, title: 'Prototip nou pentru fluxul de onboarding',            category: 'performance', dueDate: fiveDaysOut.toISOString().split('T')[0],  status: 'open' as const },
+    { id: TV_AI_08, sessionId: TV_S_CM_1, tenantId: TV_TENANT_ID, assigneeId: TV_MARIA_ID,   createdById: TV_CIPRIAN_ID, title: 'Audit accesibilitate pe componentele existente',      category: 'performance', dueDate: threeWeeksAgo.toISOString().split('T')[0],status: 'completed' as const, completedAt: new Date(threeWeeksAgo.getTime() + 3*24*60*60*1000) },
+    // Ioana (assigned to her from Radu series)
+    { id: TV_AI_09, sessionId: TV_S_RI_2, tenantId: TV_TENANT_ID, assigneeId: TV_IOANA_ID,   createdById: TV_RADU_ID,    title: 'Analiză date utilizatori Q1',                        category: 'performance', dueDate: threeDaysOut.toISOString().split('T')[0], status: 'open' as const },
+    { id: TV_AI_10, sessionId: TV_S_RI_1, tenantId: TV_TENANT_ID, assigneeId: TV_IOANA_ID,   createdById: TV_RADU_ID,    title: 'Prezentare raport lunar ops',                        category: 'performance', dueDate: oneWeekAgo.toISOString().split('T')[0],   status: 'completed' as const, completedAt: new Date(oneWeekAgo.getTime() + 24*60*60*1000) },
+  ];
+
+  for (const item of tvActionItems) {
+    await db
+      .insert(schema.actionItems)
+      .values(item)
+      .onConflictDoUpdate({
+        target: schema.actionItems.id,
+        set: {
+          title:       sql`excluded.title`,
+          description: sql`excluded.description`,
+          dueDate:     sql`excluded.due_date`,
+          status:      sql`excluded.status`,
+          completedAt: sql`excluded.completed_at`,
+          updatedAt:   sql`now()`,
+        },
+      });
+  }
+
+  // --------------------------------------------------------------------------
+  // Private Notes (encrypted)
+  // --------------------------------------------------------------------------
+  const note1Content = 'Andrei pare motivat dar se blochează ușor când nu are context suficient. Ar beneficia de mai multă autonomie pe taskuri mici.';
+  const note2Content = 'Maria are potențial mare de leadership. De explorat posibilitatea unui rol senior în H2.';
+  const encNote1 = encryptNote(note1Content, TV_TENANT_ID, 1);
+  const encNote2 = encryptNote(note2Content, TV_TENANT_ID, 1);
+
+  await db
+    .insert(schema.privateNotes)
+    .values([
+      { id: TV_NOTE_1, sessionId: TV_S_CA_2, authorId: TV_CIPRIAN_ID, content: JSON.stringify(encNote1), category: 'general', keyVersion: 1 },
+      { id: TV_NOTE_2, sessionId: TV_S_CM_1, authorId: TV_CIPRIAN_ID, content: JSON.stringify(encNote2), category: 'general', keyVersion: 1 },
+    ])
+    .onConflictDoUpdate({
+      target: schema.privateNotes.id,
+      set: {
+        content:    sql`excluded.content`,
+        keyVersion: sql`excluded.key_version`,
+        updatedAt:  sql`now()`,
+      },
+    });
+
+  // --------------------------------------------------------------------------
+  // Analytics Snapshots (per completed session, session_score + Stare generală)
+  // --------------------------------------------------------------------------
+  const tvSnapshots = [];
+  let snapIdx = 1;
+
+  const snapEntries: Array<{ sessionId: string; userId: string; seriesId: string; completedAt: Date; score: string; stare: string }> = [
+    // Ciprian as report in EC series
+    { sessionId: TV_S_EC_1, userId: TV_CIPRIAN_ID, seriesId: TV_SERIES_EC_ID, completedAt: new Date(fourWeeksAgo.getTime()  + 30*60*1000), score: '7.000', stare: '3.000' },
+    { sessionId: TV_S_EC_2, userId: TV_CIPRIAN_ID, seriesId: TV_SERIES_EC_ID, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), score: '8.000', stare: '4.000' },
+    { sessionId: TV_S_EC_3, userId: TV_CIPRIAN_ID, seriesId: TV_SERIES_EC_ID, completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), score: '7.500', stare: '3.000' },
+    // Andrei as report in CA series
+    { sessionId: TV_S_CA_1, userId: TV_ANDREI_ID,  seriesId: TV_SERIES_CA_ID, completedAt: new Date(fourWeeksAgo.getTime()  + 30*60*1000), score: '6.500', stare: '2.000' },
+    { sessionId: TV_S_CA_2, userId: TV_ANDREI_ID,  seriesId: TV_SERIES_CA_ID, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), score: '7.000', stare: '3.000' },
+    { sessionId: TV_S_CA_3, userId: TV_ANDREI_ID,  seriesId: TV_SERIES_CA_ID, completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), score: '8.000', stare: '4.000' },
+    // Maria as report in CM series
+    { sessionId: TV_S_CM_1, userId: TV_MARIA_ID,   seriesId: TV_SERIES_CM_ID, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), score: '8.000', stare: '4.000' },
+    { sessionId: TV_S_CM_2, userId: TV_MARIA_ID,   seriesId: TV_SERIES_CM_ID, completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), score: '7.500', stare: '3.000' },
+  ];
+
+  for (const entry of snapEntries) {
+    const period = monthRange(entry.completedAt);
+    const idScore = `55550000-${String(snapIdx).padStart(4, '0')}-4000-5500-eeeeeeeeeeee`;
+    snapIdx++;
+    const idStare = `55550000-${String(snapIdx).padStart(4, '0')}-4000-5500-eeeeeeeeeeee`;
+    snapIdx++;
+
+    tvSnapshots.push(
+      { id: idScore, tenantId: TV_TENANT_ID, userId: entry.userId, seriesId: entry.seriesId, periodType: 'month' as const, periodStart: period.start, periodEnd: period.end, metricName: 'session_score', metricValue: entry.score, sampleCount: 1 },
+      { id: idStare, tenantId: TV_TENANT_ID, userId: entry.userId, seriesId: entry.seriesId, periodType: 'month' as const, periodStart: period.start, periodEnd: period.end, metricName: 'Stare generală', metricValue: entry.stare, sampleCount: 1 },
+    );
+  }
+
+  for (const snap of tvSnapshots) {
+    await db.delete(schema.analyticsSnapshots).where(sql`id = ${snap.id}`);
+    await db.insert(schema.analyticsSnapshots).values(snap);
+  }
+}
+
+// =============================================================================
 // Main
 // =============================================================================
 
@@ -1733,10 +2370,12 @@ async function seed() {
   await seedActionItems();
   await seedPrivateNotes();
   await seedNotifications();
+  await seedTechvibe();
 
   console.log('\nSeed complete!');
-  console.log(`  Acme Corp (${ACME_TENANT_ID}): 7 users, 2 teams, 2 templates, 4 series, 9 sessions`);
-  console.log(`  Beta Inc  (${BETA_TENANT_ID}): 3 users, 0 teams, 1 template, 1 series, 0 sessions`);
+  console.log(`  Acme Corp      (${ACME_TENANT_ID}): 7 users, 2 teams, 2 templates, 4 series, 9 sessions`);
+  console.log(`  Beta Inc       (${BETA_TENANT_ID}): 3 users, 0 teams, 1 template, 1 series, 0 sessions`);
+  console.log(`  Techvibe SRL   (${TV_TENANT_ID}): 7 users, 2 teams, 2 templates, 5 series, 15 sessions`);
 
   await pool.end();
 }

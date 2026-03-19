@@ -13,6 +13,8 @@
     "updated": "Acțiune actualizată",
     "sessionBadge": "Sesiunea #{number}",
     "completedSection": "Finalizate",
+    "sectionMine": "Ale mele",
+    "sectionTeam": "Echipa mea",
     "edit": {
       "title": "Editează acțiunea",
       "description": "Actualizează detaliile acțiunii.",

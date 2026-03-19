@@ -7,6 +7,8 @@ import {
   AlertCircle,
   CalendarDays,
   CheckCircle2,
+  ChevronDown,
+  ChevronRight,
   Circle,
   ListChecks,
   Pencil,
@@ -33,6 +35,11 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -68,7 +75,29 @@ function isOverdue(dueDate: string | null, status: string): boolean {
   return new Date(dueDate) < today;
 }
 
-interface SeriesGroup {
+function sortActive(a: ActionItemRow, b: ActionItemRow) {
+  const aOverdue = isOverdue(a.dueDate, a.status);
+  const bOverdue = isOverdue(b.dueDate, b.status);
+  if (aOverdue !== bOverdue) return aOverdue ? -1 : 1;
+  if (a.dueDate && b.dueDate)
+    return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+  if (a.dueDate) return -1;
+  if (b.dueDate) return 1;
+  return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+}
+
+function sortCompleted(a: ActionItemRow, b: ActionItemRow) {
+  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+}
+
+interface MyItemsData {
+  activeItems: ActionItemRow[];
+  completedItems: ActionItemRow[];
+  totalCount: number;
+  overdueCount: number;
+}
+
+interface ReportGroup {
   seriesId: string;
   reportName: string;
   activeItems: ActionItemRow[];
@@ -81,6 +110,8 @@ export function ActionItemsPage({ initialItems, currentUserId }: ActionItemsPage
   const format = useFormatter();
   const queryClient = useQueryClient();
   const [editItem, setEditItem] = useState<ActionItemRow | null>(null);
+  const [myCompletedOpen, setMyCompletedOpen] = useState(false);
+  const [reportCompletedOpen, setReportCompletedOpen] = useState<Record<string, boolean>>({});
 
   // Edit form state
   const [editTitle, setEditTitle] = useState("");
@@ -100,11 +131,22 @@ export function ActionItemsPage({ initialItems, currentUserId }: ActionItemsPage
 
   const items = data?.actionItems ?? [];
 
-  // Group items by series, split active vs completed
-  const groups = useMemo<SeriesGroup[]>(() => {
-    const groupMap = new Map<string, SeriesGroup>();
+  // My items: assigned to current user
+  const myItemsData = useMemo<MyItemsData>(() => {
+    const mine = items.filter((i) => i.assigneeId === currentUserId);
+    const active = mine.filter((i) => i.status !== "completed").sort(sortActive);
+    const completed = mine.filter((i) => i.status === "completed").sort(sortCompleted);
+    const overdueCount = active.filter((i) => isOverdue(i.dueDate, i.status)).length;
+    return { activeItems: active, completedItems: completed, totalCount: mine.length, overdueCount };
+  }, [items, currentUserId]);
 
-    for (const item of items) {
+  // Report groups: items from series where I'm the manager, not assigned to me
+  const reportGroupsData = useMemo<ReportGroup[]>(() => {
+    const reportItems = items.filter(
+      (i) => i.managerId === currentUserId && i.assigneeId !== currentUserId
+    );
+    const groupMap = new Map<string, ReportGroup>();
+    for (const item of reportItems) {
       let group = groupMap.get(item.seriesId);
       if (!group) {
         group = {
@@ -120,36 +162,24 @@ export function ActionItemsPage({ initialItems, currentUserId }: ActionItemsPage
         group.completedItems.push(item);
       } else {
         group.activeItems.push(item);
-        if (isOverdue(item.dueDate, item.status)) {
-          group.overdueCount++;
-        }
+        if (isOverdue(item.dueDate, item.status)) group.overdueCount++;
       }
     }
-
-    const sortActive = (a: ActionItemRow, b: ActionItemRow) => {
-      const aOverdue = isOverdue(a.dueDate, a.status);
-      const bOverdue = isOverdue(b.dueDate, b.status);
-      if (aOverdue !== bOverdue) return aOverdue ? -1 : 1;
-      if (a.dueDate && b.dueDate)
-        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-      if (a.dueDate) return -1;
-      if (b.dueDate) return 1;
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    };
-
-    const sortCompleted = (a: ActionItemRow, b: ActionItemRow) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-
     for (const group of groupMap.values()) {
       group.activeItems.sort(sortActive);
       group.completedItems.sort(sortCompleted);
     }
-
-    // Only return groups that have at least one item
     return Array.from(groupMap.values())
       .filter((g) => g.activeItems.length > 0 || g.completedItems.length > 0)
-      .sort((a, b) => a.reportName.localeCompare(b.reportName));
-  }, [items]);
+      .sort((a, b) => {
+        const aOverdue = a.overdueCount > 0;
+        const bOverdue = b.overdueCount > 0;
+        if (aOverdue !== bOverdue) return aOverdue ? -1 : 1;
+        if (a.activeItems.length !== b.activeItems.length)
+          return b.activeItems.length - a.activeItems.length;
+        return a.reportName.localeCompare(b.reportName);
+      });
+  }, [items, currentUserId]);
 
   // Toggle status mutation
   const toggleMutation = useMutation({
@@ -264,7 +294,7 @@ export function ActionItemsPage({ initialItems, currentUserId }: ActionItemsPage
     return Array.from(participantMap.values());
   }, [editItem, items]);
 
-  const hasAnyItems = groups.length > 0;
+  const hasAnyItems = myItemsData.totalCount > 0 || reportGroupsData.length > 0;
 
   if (!hasAnyItems) {
     return (
@@ -283,32 +313,31 @@ export function ActionItemsPage({ initialItems, currentUserId }: ActionItemsPage
 
   return (
     <>
-      <div className="space-y-6">
-        {groups.map((group) => (
-          <div key={group.seriesId}>
-            {/* Group header */}
-            <div className="flex items-center gap-2 mb-3">
-              <h2 className="text-sm font-semibold">{group.reportName}</h2>
-              {group.activeItems.length > 0 && (
+      <div className="space-y-8">
+        {/* My Items section */}
+        {myItemsData.totalCount > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="text-sm font-semibold">{t("sectionMine")}</h2>
+              {myItemsData.activeItems.length > 0 && (
                 <Badge variant="secondary" className="text-[10px] font-normal">
-                  {t("open", { count: group.activeItems.length })}
+                  {t("open", { count: myItemsData.activeItems.length })}
                 </Badge>
               )}
-              {group.overdueCount > 0 && (
+              {myItemsData.overdueCount > 0 && (
                 <Badge variant="destructive" className="text-[10px] font-normal">
-                  {t("overdue", { count: group.overdueCount })}
+                  {t("overdue", { count: myItemsData.overdueCount })}
                 </Badge>
               )}
             </div>
 
-            {/* Active items */}
-            {group.activeItems.length > 0 && (
+            {myItemsData.activeItems.length > 0 && (
               <div className="space-y-1.5">
-                {group.activeItems.map((item) => (
+                {myItemsData.activeItems.map((item) => (
                   <ActionItemCard
                     key={item.id}
                     item={item}
-                    isAssignee={item.assigneeId === currentUserId}
+                    isAssignee
                     overdue={isOverdue(item.dueDate, item.status)}
                     format={format}
                     t={t}
@@ -321,39 +350,150 @@ export function ActionItemsPage({ initialItems, currentUserId }: ActionItemsPage
               </div>
             )}
 
-            {/* Completed items */}
-            {group.completedItems.length > 0 && (
-              <div className="mt-3">
-                {group.activeItems.length > 0 && (
-                  <div className="flex items-center gap-2 my-3">
+            {myItemsData.completedItems.length > 0 && (
+              <Collapsible open={myCompletedOpen} onOpenChange={setMyCompletedOpen}>
+                <CollapsibleTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex items-center gap-2 w-full my-3 group"
+                  >
                     <Separator className="flex-1" />
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
-                      {t("completedSection")}
+                    <span className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60 group-hover:text-muted-foreground transition-colors shrink-0">
+                      {myCompletedOpen ? (
+                        <ChevronDown className="size-3" />
+                      ) : (
+                        <ChevronRight className="size-3" />
+                      )}
+                      {t("completedSection")} ({myItemsData.completedItems.length})
                     </span>
                     <Separator className="flex-1" />
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="space-y-1.5">
+                    {myItemsData.completedItems.map((item) => (
+                      <ActionItemCard
+                        key={item.id}
+                        item={item}
+                        isAssignee
+                        overdue={false}
+                        format={format}
+                        t={t}
+                        onToggle={() =>
+                          toggleMutation.mutate({ id: item.id, status: "open" })
+                        }
+                        onEdit={() => openEditSheet(item)}
+                        completed
+                      />
+                    ))}
                   </div>
-                )}
-                <div className="space-y-1.5">
-                  {group.completedItems.map((item) => (
-                    <ActionItemCard
-                      key={item.id}
-                      item={item}
-                      isAssignee={item.assigneeId === currentUserId}
-                      overdue={false}
-                      format={format}
-                      t={t}
-                      onToggle={() =>
-                        toggleMutation.mutate({ id: item.id, status: "open" })
-                      }
-                      onEdit={() => openEditSheet(item)}
-                      completed
-                    />
-                  ))}
-                </div>
-              </div>
+                </CollapsibleContent>
+              </Collapsible>
             )}
           </div>
-        ))}
+        )}
+
+        {/* My Reports section */}
+        {reportGroupsData.length > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="text-sm font-semibold">{t("sectionTeam")}</h2>
+            </div>
+
+            <div className="space-y-6">
+              {reportGroupsData.map((group) => (
+                <div key={group.seriesId}>
+                  {/* Report group header */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      {group.reportName}
+                    </h3>
+                    {group.activeItems.length > 0 && (
+                      <Badge variant="secondary" className="text-[10px] font-normal">
+                        {t("open", { count: group.activeItems.length })}
+                      </Badge>
+                    )}
+                    {group.overdueCount > 0 && (
+                      <Badge variant="destructive" className="text-[10px] font-normal">
+                        {t("overdue", { count: group.overdueCount })}
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Active items */}
+                  {group.activeItems.length > 0 && (
+                    <div className="space-y-1.5">
+                      {group.activeItems.map((item) => (
+                        <ActionItemCard
+                          key={item.id}
+                          item={item}
+                          isAssignee={item.assigneeId === currentUserId}
+                          overdue={isOverdue(item.dueDate, item.status)}
+                          format={format}
+                          t={t}
+                          onToggle={() =>
+                            toggleMutation.mutate({ id: item.id, status: "completed" })
+                          }
+                          onEdit={() => openEditSheet(item)}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Completed items (collapsible) */}
+                  {group.completedItems.length > 0 && (
+                    <Collapsible
+                      open={reportCompletedOpen[group.seriesId] ?? false}
+                      onOpenChange={(open) =>
+                        setReportCompletedOpen((prev) => ({
+                          ...prev,
+                          [group.seriesId]: open,
+                        }))
+                      }
+                    >
+                      <CollapsibleTrigger asChild>
+                        <button
+                          type="button"
+                          className="flex items-center gap-2 w-full my-3 group"
+                        >
+                          <Separator className="flex-1" />
+                          <span className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60 group-hover:text-muted-foreground transition-colors shrink-0">
+                            {(reportCompletedOpen[group.seriesId] ?? false) ? (
+                              <ChevronDown className="size-3" />
+                            ) : (
+                              <ChevronRight className="size-3" />
+                            )}
+                            {t("completedSection")} ({group.completedItems.length})
+                          </span>
+                          <Separator className="flex-1" />
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <div className="space-y-1.5">
+                          {group.completedItems.map((item) => (
+                            <ActionItemCard
+                              key={item.id}
+                              item={item}
+                              isAssignee={item.assigneeId === currentUserId}
+                              overdue={false}
+                              format={format}
+                              t={t}
+                              onToggle={() =>
+                                toggleMutation.mutate({ id: item.id, status: "open" })
+                              }
+                              onEdit={() => openEditSheet(item)}
+                              completed
+                            />
+                          ))}
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Edit sheet */}

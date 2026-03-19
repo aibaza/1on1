@@ -7,6 +7,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Techvibe SRL Romanian test tenant in seed: 7 users, 2 teams, 2 Romanian templates, 5 series, 15 sessions, talking points, action items, private notes, and analytics snapshots
+- Action items page "Ale mele" / "My Items" section: items assigned to current user with collapsible completed section
+- Action items page "Echipa mea" / "My Reports" section: per-report groups with collapsible completed sections and overdue-first sort
+- i18n keys `sectionMine` / `sectionTeam` in EN + RO for action items page sections
+
+### Changed
+- Dashboard admin scoping: admin users now see only their own series on home page (same OR filter as manager — managerId OR reportId) instead of entire tenant
+
+### Added
 - Role-based series grouping: admin sees by-manager groups, manager sees My Team/My 1:1s, member sees flat list
 - Agenda button on series cards with scheduled sessions, showing talking point count badge
 - AgendaSheet component: right-side sheet with category-grouped talking points for pre-meeting prep
