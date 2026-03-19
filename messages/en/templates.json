@@ -190,6 +190,31 @@
       "operatorLte": "at most",
       "operatorGte": "at least"
     },
+    "history": {
+      "showHistory": "History",
+      "hideHistory": "Back to Editor",
+      "title": "Version History",
+      "emptyTitle": "No version history yet",
+      "emptyDescription": "Publish your template to create the first version.",
+      "versionLabel": "v{number}",
+      "questionCount": "{count} questions",
+      "selectVersion": "Select a version to preview",
+      "showChanges": "Show changes",
+      "hideChanges": "Hide changes",
+      "noChanges": "No changes from previous version",
+      "noPrevious": "First published version",
+      "restoreButton": "Restore this version",
+      "restoreTitle": "Restore version {number}?",
+      "restoreDescription": "This will replace the current template content with version {number}. The template will become an unpublished draft. You can review and publish it when ready. Scheduled sessions will not be affected until you publish.",
+      "restoreCancel": "Cancel",
+      "restoreConfirm": "Restore",
+      "restoreSuccess": "Version restored. Template is now an unpublished draft.",
+      "changeAdded": "Added",
+      "changeRemoved": "Removed",
+      "changeModified": "Modified",
+      "section": "Section",
+      "question": "Question"
+    },
     "aiEditor": {
       "pageTitle": "AI Template Editor",
       "header": {

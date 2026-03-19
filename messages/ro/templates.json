@@ -190,6 +190,31 @@
       "operatorLte": "cel mult",
       "operatorGte": "cel puțin"
     },
+    "history": {
+      "showHistory": "Istoric",
+      "hideHistory": "Inapoi la editor",
+      "title": "Istoric versiuni",
+      "emptyTitle": "Niciun istoric de versiuni",
+      "emptyDescription": "Publicati sablonul pentru a crea prima versiune.",
+      "versionLabel": "v{number}",
+      "questionCount": "{count} intrebari",
+      "selectVersion": "Selectati o versiune pentru previzualizare",
+      "showChanges": "Arata modificari",
+      "hideChanges": "Ascunde modificari",
+      "noChanges": "Nicio modificare fata de versiunea anterioara",
+      "noPrevious": "Prima versiune publicata",
+      "restoreButton": "Restaureaza aceasta versiune",
+      "restoreTitle": "Restaurare versiunea {number}?",
+      "restoreDescription": "Aceasta va inlocui continutul actual al sablonului cu versiunea {number}. Sablonul va deveni o ciorna nepublicata. Puteti revizui si publica cand sunteti pregatit. Sesiunile programate nu vor fi afectate pana la publicare.",
+      "restoreCancel": "Anuleaza",
+      "restoreConfirm": "Restaureaza",
+      "restoreSuccess": "Versiunea a fost restaurata. Sablonul este acum o ciorna nepublicata.",
+      "changeAdded": "Adaugat",
+      "changeRemoved": "Sters",
+      "changeModified": "Modificat",
+      "section": "Sectiune",
+      "question": "Intrebare"
+    },
     "aiEditor": {
       "pageTitle": "Editor AI de Șabloane",
       "header": {
