@@ -13,3 +13,4 @@ export * from "./action-items";
 export * from "./notifications";
 export * from "./analytics";
 export * from "./audit-log";
+export * from "./template-versions";

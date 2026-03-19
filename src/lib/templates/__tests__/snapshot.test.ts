@@ -32,20 +32,34 @@ vi.mock("drizzle-orm", () => ({
   asc: (col: unknown) => ({ _type: "asc", col }),
 }));
 
-// Chainable mock tx
+// Chainable mock tx — each select() starts a new query chain.
+// The chain is thenable so it resolves when awaited at any terminal point.
 function makeMockTx(responses: unknown[][]) {
   let callIndex = 0;
-  const tx = {
-    select: vi.fn().mockReturnThis(),
-    from: vi.fn().mockReturnThis(),
-    where: vi.fn().mockReturnThis(),
-    orderBy: vi.fn().mockImplementation(() => {
-      const result = responses[callIndex] ?? [];
-      callIndex++;
-      return Promise.resolve(result);
-    }),
-  };
-  return tx;
+
+  function makeChain() {
+    const result = () => responses[callIndex] ?? [];
+    const chain = {
+      select: vi.fn().mockImplementation(() => {
+        // Each select() starts a new chain, so capture the current callIndex
+        const idx = callIndex;
+        callIndex++;
+        const innerChain: Record<string, unknown> = {};
+        const getResult = () => responses[idx] ?? [];
+        innerChain.from = vi.fn().mockReturnValue(innerChain);
+        innerChain.where = vi.fn().mockReturnValue(innerChain);
+        innerChain.orderBy = vi.fn().mockReturnValue(innerChain);
+        // Make thenable so `await tx.select().from().where()` resolves
+        innerChain.then = (resolve: (v: unknown) => void, reject?: (e: unknown) => void) => {
+          return Promise.resolve(getResult()).then(resolve, reject);
+        };
+        return innerChain;
+      }),
+    };
+    return chain;
+  }
+
+  return makeChain();
 }
 
 describe("buildTemplateSnapshot", () => {
