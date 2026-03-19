@@ -48,7 +48,7 @@ const BOB_EMAIL   = "bob@acme.example.com";
 const PASSWORD    = "password123";
 
 const SESSION_1   = "99999999-0001-4000-9000-000000000001";
-const TEMPLATE_1  = "dddddddd-0001-4000-d000-000000000001";
+const TEMPLATE_1  = "dddddddd-0001-4000-a000-000000000001";
 const DAVE_ID     = "aaaaaaaa-0004-4000-a000-000000000004";
 
 // ---------------------------------------------------------------------------

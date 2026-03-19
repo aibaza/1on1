@@ -55,18 +55,18 @@ const YURI_ID = 'bbbbbbbb-0002-4000-b000-000000000002'; // manager
 const XENA_ID = 'bbbbbbbb-0003-4000-b000-000000000003'; // member (Yuri's report)
 
 // Acme Teams
-const ENGINEERING_TEAM_ID = 'cccccccc-0001-4000-c000-000000000001';
-const PRODUCT_TEAM_ID = 'cccccccc-0002-4000-c000-000000000002';
+const ENGINEERING_TEAM_ID = 'cccccccc-0001-4000-a000-000000000001';
+const PRODUCT_TEAM_ID = 'cccccccc-0002-4000-a000-000000000002';
 
 // Acme Templates
-const WEEKLY_TEMPLATE_ID = 'dddddddd-0001-4000-d000-000000000001';
-const CAREER_TEMPLATE_ID = 'dddddddd-0002-4000-d000-000000000002';
+const WEEKLY_TEMPLATE_ID = 'dddddddd-0001-4000-a000-000000000001';
+const CAREER_TEMPLATE_ID = 'dddddddd-0002-4000-a000-000000000002';
 
 // Structured 1:1 Template (Acme default)
-const STRUCTURED_TEMPLATE_ID = 'dddddddd-0004-4000-d000-000000000004';
+const STRUCTURED_TEMPLATE_ID = 'dddddddd-0004-4000-a000-000000000004';
 
 // Beta Template
-const BETA_TEMPLATE_ID = 'dddddddd-0003-4000-d000-000000000003';
+const BETA_TEMPLATE_ID = 'dddddddd-0003-4000-a000-000000000003';
 
 // Acme Template Sections (Weekly Check-in)
 const SEC_WEEKLY_WELLBEING_ID = 'aaaabbbb-0001-4000-ab00-000000000001';
@@ -87,22 +87,22 @@ const SEC_S11_LEARNING_ID = 'aaaabbbb-0015-4000-ab00-000000000015';
 const SEC_S11_CAPACITY_ID = 'aaaabbbb-0016-4000-ab00-000000000016';
 
 // Structured 1:1 Questions
-const Q_S11_RESOLVE_SCORE_ID = 'eeeeeeee-0020-4000-e000-000000000020';
-const Q_S11_RESOLVE_COMMENT_ID = 'eeeeeeee-0021-4000-e000-000000000021';
-const Q_S11_ENERGY_SCORE_ID = 'eeeeeeee-0022-4000-e000-000000000022';
-const Q_S11_ENERGY_COMMENT_ID = 'eeeeeeee-0023-4000-e000-000000000023';
-const Q_S11_PROGRESS_SCORE_ID = 'eeeeeeee-0024-4000-e000-000000000024';
-const Q_S11_PROGRESS_COMMENT_ID = 'eeeeeeee-0025-4000-e000-000000000025';
-const Q_S11_BLOCKERS_SCORE_ID = 'eeeeeeee-0026-4000-e000-000000000026';
-const Q_S11_BLOCKERS_MAIN_ID = 'eeeeeeee-0027-4000-e000-000000000027';
-const Q_S11_BLOCKERS_HELP_ID = 'eeeeeeee-0028-4000-e000-000000000028';
-const Q_S11_COLLAB_SCORE_ID = 'eeeeeeee-0029-4000-e000-000000000029';
-const Q_S11_COLLAB_COMMENT_ID = 'eeeeeeee-0030-4000-e000-000000000030';
-const Q_S11_LEARNED_YN_ID = 'eeeeeeee-0031-4000-e000-000000000031';
-const Q_S11_LEARNED_WHAT_ID = 'eeeeeeee-0032-4000-e000-000000000032';
-const Q_S11_EXPLORE_ID = 'eeeeeeee-0033-4000-e000-000000000033';
-const Q_S11_CAPACITY_SCORE_ID = 'eeeeeeee-0034-4000-e000-000000000034';
-const Q_S11_CAPACITY_COMMENT_ID = 'eeeeeeee-0035-4000-e000-000000000035';
+const Q_S11_RESOLVE_SCORE_ID = 'eeeeeeee-0020-4000-a000-000000000020';
+const Q_S11_RESOLVE_COMMENT_ID = 'eeeeeeee-0021-4000-a000-000000000021';
+const Q_S11_ENERGY_SCORE_ID = 'eeeeeeee-0022-4000-a000-000000000022';
+const Q_S11_ENERGY_COMMENT_ID = 'eeeeeeee-0023-4000-a000-000000000023';
+const Q_S11_PROGRESS_SCORE_ID = 'eeeeeeee-0024-4000-a000-000000000024';
+const Q_S11_PROGRESS_COMMENT_ID = 'eeeeeeee-0025-4000-a000-000000000025';
+const Q_S11_BLOCKERS_SCORE_ID = 'eeeeeeee-0026-4000-a000-000000000026';
+const Q_S11_BLOCKERS_MAIN_ID = 'eeeeeeee-0027-4000-a000-000000000027';
+const Q_S11_BLOCKERS_HELP_ID = 'eeeeeeee-0028-4000-a000-000000000028';
+const Q_S11_COLLAB_SCORE_ID = 'eeeeeeee-0029-4000-a000-000000000029';
+const Q_S11_COLLAB_COMMENT_ID = 'eeeeeeee-0030-4000-a000-000000000030';
+const Q_S11_LEARNED_YN_ID = 'eeeeeeee-0031-4000-a000-000000000031';
+const Q_S11_LEARNED_WHAT_ID = 'eeeeeeee-0032-4000-a000-000000000032';
+const Q_S11_EXPLORE_ID = 'eeeeeeee-0033-4000-a000-000000000033';
+const Q_S11_CAPACITY_SCORE_ID = 'eeeeeeee-0034-4000-a000-000000000034';
+const Q_S11_CAPACITY_COMMENT_ID = 'eeeeeeee-0035-4000-a000-000000000035';
 
 // Beta Template Sections
 const SEC_BETA_CHECKIN_ID = 'aaaabbbb-0006-4000-ab00-000000000006';
@@ -113,28 +113,28 @@ const LABEL_CAREER_ID = 'aabbccee-0002-4000-ab00-000000000002';
 const LABEL_STRUCTURED_ID = 'aabbccee-0003-4000-ab00-000000000003';
 
 // Acme Template Questions (Weekly Check-in)
-const Q_MOOD_ID = 'eeeeeeee-0001-4000-e000-000000000001';
-const Q_WORKLOAD_ID = 'eeeeeeee-0002-4000-e000-000000000002';
-const Q_BLOCKERS_ID = 'eeeeeeee-0003-4000-e000-000000000003';
-const Q_HELP_ID = 'eeeeeeee-0004-4000-e000-000000000004';
-const Q_SATISFACTION_ID = 'eeeeeeee-0005-4000-e000-000000000005';
+const Q_MOOD_ID = 'eeeeeeee-0001-4000-a000-000000000001';
+const Q_WORKLOAD_ID = 'eeeeeeee-0002-4000-a000-000000000002';
+const Q_BLOCKERS_ID = 'eeeeeeee-0003-4000-a000-000000000003';
+const Q_HELP_ID = 'eeeeeeee-0004-4000-a000-000000000004';
+const Q_SATISFACTION_ID = 'eeeeeeee-0005-4000-a000-000000000005';
 
 // Acme Template Questions (Career Development)
-const Q_CAREER_GOALS_ID = 'eeeeeeee-0006-4000-e000-000000000006';
-const Q_GROWTH_ID = 'eeeeeeee-0007-4000-e000-000000000007';
-const Q_LEARNING_ID = 'eeeeeeee-0008-4000-e000-000000000008';
-const Q_FEEDBACK_ID = 'eeeeeeee-0009-4000-e000-000000000009';
+const Q_CAREER_GOALS_ID = 'eeeeeeee-0006-4000-a000-000000000006';
+const Q_GROWTH_ID = 'eeeeeeee-0007-4000-a000-000000000007';
+const Q_LEARNING_ID = 'eeeeeeee-0008-4000-a000-000000000008';
+const Q_FEEDBACK_ID = 'eeeeeeee-0009-4000-a000-000000000009';
 
 // Beta Template Questions
-const Q_BETA_MOOD_ID = 'eeeeeeee-0010-4000-e000-000000000010';
+const Q_BETA_MOOD_ID = 'eeeeeeee-0010-4000-a000-000000000010';
 
 // Acme Meeting Series
-const SERIES_BOB_DAVE_ID = 'ffffffff-0001-4000-f000-000000000001';
-const SERIES_BOB_EVE_ID = 'ffffffff-0002-4000-f000-000000000002';
-const SERIES_CAROL_FRANK_ID = 'ffffffff-0003-4000-f000-000000000003';
+const SERIES_BOB_DAVE_ID = 'ffffffff-0001-4000-a000-000000000001';
+const SERIES_BOB_EVE_ID = 'ffffffff-0002-4000-a000-000000000002';
+const SERIES_CAROL_FRANK_ID = 'ffffffff-0003-4000-a000-000000000003';
 
 // Beta Meeting Series
-const SERIES_YURI_XENA_ID = 'ffffffff-0004-4000-f000-000000000004';
+const SERIES_YURI_XENA_ID = 'ffffffff-0004-4000-a000-000000000004';
 
 // Acme Sessions (Bob <-> Dave)
 const SESSION_1_ID = '99999999-0001-4000-9000-000000000001';
@@ -150,18 +150,18 @@ const ACTION_DONE_DAVE_2_ID = '88888888-0005-4000-8000-000000000005';
 const ACTION_DONE_DAVE_3_ID = '88888888-0006-4000-8000-000000000006';
 
 // Analytics Snapshots
-const SNAPSHOT_S1_SCORE_ID = '55555555-0001-4000-5000-000000000001';
-const SNAPSHOT_S1_WELLBEING_ID = '55555555-0002-4000-5000-000000000002';
-const SNAPSHOT_S1_PERFORMANCE_ID = '55555555-0003-4000-5000-000000000003';
-const SNAPSHOT_S1_CHECKIN_ID = '55555555-0004-4000-5000-000000000004';
-const SNAPSHOT_S2_SCORE_ID = '55555555-0005-4000-5000-000000000005';
-const SNAPSHOT_S2_WELLBEING_ID = '55555555-0006-4000-5000-000000000006';
-const SNAPSHOT_S2_PERFORMANCE_ID = '55555555-0007-4000-5000-000000000007';
-const SNAPSHOT_S2_CHECKIN_ID = '55555555-0008-4000-5000-000000000008';
-const SNAPSHOT_S3_SCORE_ID = '55555555-0009-4000-5000-000000000009';
-const SNAPSHOT_S3_WELLBEING_ID = '55555555-0010-4000-5000-000000000010';
-const SNAPSHOT_S3_PERFORMANCE_ID = '55555555-0011-4000-5000-000000000011';
-const SNAPSHOT_S3_CHECKIN_ID = '55555555-0012-4000-5000-000000000012';
+const SNAPSHOT_S1_SCORE_ID = '55555555-0001-4000-a000-000000000001';
+const SNAPSHOT_S1_WELLBEING_ID = '55555555-0002-4000-a000-000000000002';
+const SNAPSHOT_S1_PERFORMANCE_ID = '55555555-0003-4000-a000-000000000003';
+const SNAPSHOT_S1_CHECKIN_ID = '55555555-0004-4000-a000-000000000004';
+const SNAPSHOT_S2_SCORE_ID = '55555555-0005-4000-a000-000000000005';
+const SNAPSHOT_S2_WELLBEING_ID = '55555555-0006-4000-a000-000000000006';
+const SNAPSHOT_S2_PERFORMANCE_ID = '55555555-0007-4000-a000-000000000007';
+const SNAPSHOT_S2_CHECKIN_ID = '55555555-0008-4000-a000-000000000008';
+const SNAPSHOT_S3_SCORE_ID = '55555555-0009-4000-a000-000000000009';
+const SNAPSHOT_S3_WELLBEING_ID = '55555555-0010-4000-a000-000000000010';
+const SNAPSHOT_S3_PERFORMANCE_ID = '55555555-0011-4000-a000-000000000011';
+const SNAPSHOT_S3_CHECKIN_ID = '55555555-0012-4000-a000-000000000012';
 
 // Eve Sessions (Bob <-> Eve)
 const SESSION_EVE_1_ID = '99999999-0004-4000-9000-000000000004';
@@ -196,25 +196,25 @@ const ANSWER_FRANK_S2_HELP_ID = '66666666-0038-4000-8000-000000000038';
 const ANSWER_FRANK_S2_SATISFACTION_ID = '66666666-0039-4000-8000-000000000039';
 
 // Eve & Frank Analytics Snapshots
-const SNAPSHOT_EVE_S1_SCORE_ID = '55555555-0020-4000-5000-000000000020';
-const SNAPSHOT_EVE_S1_WELLBEING_ID = '55555555-0021-4000-5000-000000000021';
-const SNAPSHOT_EVE_S1_CHECKIN_ID = '55555555-0022-4000-5000-000000000022';
-const SNAPSHOT_EVE_S2_SCORE_ID = '55555555-0023-4000-5000-000000000023';
-const SNAPSHOT_EVE_S2_WELLBEING_ID = '55555555-0024-4000-5000-000000000024';
-const SNAPSHOT_EVE_S2_CHECKIN_ID = '55555555-0025-4000-5000-000000000025';
-const SNAPSHOT_FRANK_S1_SCORE_ID = '55555555-0030-4000-5000-000000000030';
-const SNAPSHOT_FRANK_S1_WELLBEING_ID = '55555555-0031-4000-5000-000000000031';
-const SNAPSHOT_FRANK_S1_CHECKIN_ID = '55555555-0032-4000-5000-000000000032';
-const SNAPSHOT_FRANK_S2_SCORE_ID = '55555555-0033-4000-5000-000000000033';
-const SNAPSHOT_FRANK_S2_WELLBEING_ID = '55555555-0034-4000-5000-000000000034';
-const SNAPSHOT_FRANK_S2_CHECKIN_ID = '55555555-0035-4000-5000-000000000035';
+const SNAPSHOT_EVE_S1_SCORE_ID = '55555555-0020-4000-a000-000000000020';
+const SNAPSHOT_EVE_S1_WELLBEING_ID = '55555555-0021-4000-a000-000000000021';
+const SNAPSHOT_EVE_S1_CHECKIN_ID = '55555555-0022-4000-a000-000000000022';
+const SNAPSHOT_EVE_S2_SCORE_ID = '55555555-0023-4000-a000-000000000023';
+const SNAPSHOT_EVE_S2_WELLBEING_ID = '55555555-0024-4000-a000-000000000024';
+const SNAPSHOT_EVE_S2_CHECKIN_ID = '55555555-0025-4000-a000-000000000025';
+const SNAPSHOT_FRANK_S1_SCORE_ID = '55555555-0030-4000-a000-000000000030';
+const SNAPSHOT_FRANK_S1_WELLBEING_ID = '55555555-0031-4000-a000-000000000031';
+const SNAPSHOT_FRANK_S1_CHECKIN_ID = '55555555-0032-4000-a000-000000000032';
+const SNAPSHOT_FRANK_S2_SCORE_ID = '55555555-0033-4000-a000-000000000033';
+const SNAPSHOT_FRANK_S2_WELLBEING_ID = '55555555-0034-4000-a000-000000000034';
+const SNAPSHOT_FRANK_S2_CHECKIN_ID = '55555555-0035-4000-a000-000000000035';
 
 // Grace Sessions (Carol <-> Grace)
 const SESSION_GRACE_1_ID = '99999999-0008-4000-9000-000000000008';
 const SESSION_GRACE_2_ID = '99999999-0009-4000-9000-000000000009';
 
 // Grace series
-const SERIES_CAROL_GRACE_ID = 'ffffffff-0005-4000-f000-000000000005';
+const SERIES_CAROL_GRACE_ID = 'ffffffff-0005-4000-a000-000000000005';
 
 // Grace Session Answers
 const ANSWER_GRACE_S1_MOOD_ID = '66666666-0040-4000-8000-000000000040';
@@ -229,15 +229,15 @@ const ANSWER_GRACE_S2_HELP_ID = '66666666-0048-4000-8000-000000000048';
 const ANSWER_GRACE_S2_SATISFACTION_ID = '66666666-0049-4000-8000-000000000049';
 
 // Grace Analytics Snapshots
-const SNAPSHOT_GRACE_S1_SCORE_ID = '55555555-0040-4000-5000-000000000040';
-const SNAPSHOT_GRACE_S1_WELLBEING_ID = '55555555-0041-4000-5000-000000000041';
-const SNAPSHOT_GRACE_S1_CHECKIN_ID = '55555555-0042-4000-5000-000000000042';
-const SNAPSHOT_GRACE_S2_SCORE_ID = '55555555-0043-4000-5000-000000000043';
-const SNAPSHOT_GRACE_S2_WELLBEING_ID = '55555555-0044-4000-5000-000000000044';
-const SNAPSHOT_GRACE_S2_CHECKIN_ID = '55555555-0045-4000-5000-000000000045';
+const SNAPSHOT_GRACE_S1_SCORE_ID = '55555555-0040-4000-a000-000000000040';
+const SNAPSHOT_GRACE_S1_WELLBEING_ID = '55555555-0041-4000-a000-000000000041';
+const SNAPSHOT_GRACE_S1_CHECKIN_ID = '55555555-0042-4000-a000-000000000042';
+const SNAPSHOT_GRACE_S2_SCORE_ID = '55555555-0043-4000-a000-000000000043';
+const SNAPSHOT_GRACE_S2_WELLBEING_ID = '55555555-0044-4000-a000-000000000044';
+const SNAPSHOT_GRACE_S2_CHECKIN_ID = '55555555-0045-4000-a000-000000000045';
 
 // Acme Private Note
-const PRIVATE_NOTE_ID = '77777777-0001-4000-7000-000000000001';
+const PRIVATE_NOTE_ID = '77777777-0001-4000-a000-000000000001';
 
 // Session Answers
 const ANSWER_S1_MOOD_ID = '66666666-0001-4000-8000-000000000001';
@@ -275,64 +275,64 @@ const NOTIF_AGENDA_PREP_DAVE_ID = 'aaccddee-0004-4000-ac00-000000000004';
 // Techvibe SRL — Romanian test tenant
 // =============================================================================
 
-const TV_TENANT_ID = 'eeeeeeee-eeee-4000-e000-eeeeeeeeeeee';
+const TV_TENANT_ID = 'eeeeeeee-eeee-4000-a000-eeeeeeeeeeee';
 
 // Users
-const TV_CIPRIAN_ID = 'eeeeeeee-0001-4000-e000-eeeeeeeeeeee'; // manager, also report of Elena
-const TV_ELENA_ID   = 'eeeeeeee-0002-4000-e000-eeeeeeeeeeee'; // admin / CEO
-const TV_ANDREI_ID  = 'eeeeeeee-0003-4000-e000-eeeeeeeeeeee'; // member, report of Ciprian
-const TV_MARIA_ID   = 'eeeeeeee-0004-4000-e000-eeeeeeeeeeee'; // member, report of Ciprian
-const TV_RADU_ID    = 'eeeeeeee-0005-4000-e000-eeeeeeeeeeee'; // manager, report of Elena
-const TV_IOANA_ID   = 'eeeeeeee-0006-4000-e000-eeeeeeeeeeee'; // member, report of Radu
-const TV_ALEX_ID    = 'eeeeeeee-0007-4000-e000-eeeeeeeeeeee'; // member, report of Radu
+const TV_CIPRIAN_ID = 'eeeeeeee-0001-4000-a000-eeeeeeeeeeee'; // manager, also report of Elena
+const TV_ELENA_ID   = 'eeeeeeee-0002-4000-a000-eeeeeeeeeeee'; // admin / CEO
+const TV_ANDREI_ID  = 'eeeeeeee-0003-4000-a000-eeeeeeeeeeee'; // member, report of Ciprian
+const TV_MARIA_ID   = 'eeeeeeee-0004-4000-a000-eeeeeeeeeeee'; // member, report of Ciprian
+const TV_RADU_ID    = 'eeeeeeee-0005-4000-a000-eeeeeeeeeeee'; // manager, report of Elena
+const TV_IOANA_ID   = 'eeeeeeee-0006-4000-a000-eeeeeeeeeeee'; // member, report of Radu
+const TV_ALEX_ID    = 'eeeeeeee-0007-4000-a000-eeeeeeeeeeee'; // member, report of Radu
 
 // Teams
-const TV_TEAM_PRODUS_ID = 'ffffffff-0001-4000-f000-ffffffffffff';
-const TV_TEAM_OPS_ID    = 'ffffffff-0002-4000-f000-ffffffffffff';
+const TV_TEAM_PRODUS_ID = 'ffffffff-0001-4000-a000-ffffffffffff';
+const TV_TEAM_OPS_ID    = 'ffffffff-0002-4000-a000-ffffffffffff';
 
 // Team member junction IDs
-const TV_TM_CIPRIAN = 'eeeedddd-0001-4000-e000-eeeeeeeeeeee';
-const TV_TM_ANDREI  = 'eeeedddd-0002-4000-e000-eeeeeeeeeeee';
-const TV_TM_MARIA   = 'eeeedddd-0003-4000-e000-eeeeeeeeeeee';
-const TV_TM_RADU    = 'eeeedddd-0004-4000-e000-eeeeeeeeeeee';
-const TV_TM_IOANA   = 'eeeedddd-0005-4000-e000-eeeeeeeeeeee';
-const TV_TM_ALEX_TV = 'eeeedddd-0006-4000-e000-eeeeeeeeeeee';
+const TV_TM_CIPRIAN = 'eeeedddd-0001-4000-a000-eeeeeeeeeeee';
+const TV_TM_ANDREI  = 'eeeedddd-0002-4000-a000-eeeeeeeeeeee';
+const TV_TM_MARIA   = 'eeeedddd-0003-4000-a000-eeeeeeeeeeee';
+const TV_TM_RADU    = 'eeeedddd-0004-4000-a000-eeeeeeeeeeee';
+const TV_TM_IOANA   = 'eeeedddd-0005-4000-a000-eeeeeeeeeeee';
+const TV_TM_ALEX_TV = 'eeeedddd-0006-4000-a000-eeeeeeeeeeee';
 
 // Templates
-const TV_CHECKIN_TEMPLATE_ID = 'dddddddd-0010-4000-d000-dddddddddddd';
-const TV_RETRO_TEMPLATE_ID   = 'dddddddd-0011-4000-d000-dddddddddddd';
+const TV_CHECKIN_TEMPLATE_ID = 'dddddddd-0010-4000-a000-dddddddddddd';
+const TV_RETRO_TEMPLATE_ID   = 'dddddddd-0011-4000-a000-dddddddddddd';
 
 // Template labels
-const TV_LABEL_CHECKIN_ID = 'eeeedddd-0010-4000-e000-eeeeeeeeeeee';
-const TV_LABEL_RETRO_ID   = 'eeeedddd-0011-4000-e000-eeeeeeeeeeee';
+const TV_LABEL_CHECKIN_ID = 'eeeedddd-0010-4000-a000-eeeeeeeeeeee';
+const TV_LABEL_RETRO_ID   = 'eeeedddd-0011-4000-a000-eeeeeeeeeeee';
 
 // Template sections — Check-in
-const TV_SEC_STARE_ID     = 'eeeeffff-0001-4000-e000-eeeeeeeeeeee';
-const TV_SEC_PROGRES_ID   = 'eeeeffff-0002-4000-e000-eeeeeeeeeeee';
-const TV_SEC_COLLAB_ID    = 'eeeeffff-0003-4000-e000-eeeeeeeeeeee';
+const TV_SEC_STARE_ID     = 'eeeeffff-0001-4000-a000-eeeeeeeeeeee';
+const TV_SEC_PROGRES_ID   = 'eeeeffff-0002-4000-a000-eeeeeeeeeeee';
+const TV_SEC_COLLAB_ID    = 'eeeeffff-0003-4000-a000-eeeeeeeeeeee';
 // Template sections — Retro
-const TV_SEC_REALIZARI_ID  = 'eeeeffff-0004-4000-e000-eeeeeeeeeeee';
-const TV_SEC_OBIECTIVE_ID  = 'eeeeffff-0005-4000-e000-eeeeeeeeeeee';
-const TV_SEC_DEZVOLTARE_ID = 'eeeeffff-0006-4000-e000-eeeeeeeeeeee';
+const TV_SEC_REALIZARI_ID  = 'eeeeffff-0004-4000-a000-eeeeeeeeeeee';
+const TV_SEC_OBIECTIVE_ID  = 'eeeeffff-0005-4000-a000-eeeeeeeeeeee';
+const TV_SEC_DEZVOLTARE_ID = 'eeeeffff-0006-4000-a000-eeeeeeeeeeee';
 
 // Template questions — Check-in
-const TV_Q_MOOD_ID         = 'eeee0000-0001-4000-e000-eeeeeeeeeeee';
-const TV_Q_ENERGIE_ID      = 'eeee0000-0002-4000-e000-eeeeeeeeeeee';
-const TV_Q_BLOCKERS_TV_ID  = 'eeee0000-0003-4000-e000-eeeeeeeeeeee';
-const TV_Q_HELP_TV_ID      = 'eeee0000-0004-4000-e000-eeeeeeeeeeee';
-const TV_Q_SATISFACTION_TV = 'eeee0000-0005-4000-e000-eeeeeeeeeeee';
+const TV_Q_MOOD_ID         = 'eeee0000-0001-4000-a000-eeeeeeeeeeee';
+const TV_Q_ENERGIE_ID      = 'eeee0000-0002-4000-a000-eeeeeeeeeeee';
+const TV_Q_BLOCKERS_TV_ID  = 'eeee0000-0003-4000-a000-eeeeeeeeeeee';
+const TV_Q_HELP_TV_ID      = 'eeee0000-0004-4000-a000-eeeeeeeeeeee';
+const TV_Q_SATISFACTION_TV = 'eeee0000-0005-4000-a000-eeeeeeeeeeee';
 // Template questions — Retro
-const TV_Q_REALIZARE_ID    = 'eeee0000-0006-4000-e000-eeeeeeeeeeee';
-const TV_Q_OBJ_SCORE_ID    = 'eeee0000-0007-4000-e000-eeeeeeeeeeee';
-const TV_Q_IMBUNATATI_ID   = 'eeee0000-0008-4000-e000-eeeeeeeeeeee';
-const TV_Q_COLLAB_SCORE_ID = 'eeee0000-0009-4000-e000-eeeeeeeeeeee';
+const TV_Q_REALIZARE_ID    = 'eeee0000-0006-4000-a000-eeeeeeeeeeee';
+const TV_Q_OBJ_SCORE_ID    = 'eeee0000-0007-4000-a000-eeeeeeeeeeee';
+const TV_Q_IMBUNATATI_ID   = 'eeee0000-0008-4000-a000-eeeeeeeeeeee';
+const TV_Q_COLLAB_SCORE_ID = 'eeee0000-0009-4000-a000-eeeeeeeeeeee';
 
 // Meeting series
-const TV_SERIES_EC_ID = 'ffffffff-0010-4000-f000-ffffffffffff'; // Elena -> Ciprian
-const TV_SERIES_CA_ID = 'ffffffff-0011-4000-f000-ffffffffffff'; // Ciprian -> Andrei
-const TV_SERIES_CM_ID = 'ffffffff-0012-4000-f000-ffffffffffff'; // Ciprian -> Maria
-const TV_SERIES_RI_ID = 'ffffffff-0013-4000-f000-ffffffffffff'; // Radu -> Ioana
-const TV_SERIES_RA_ID = 'ffffffff-0014-4000-f000-ffffffffffff'; // Radu -> Alexandru
+const TV_SERIES_EC_ID = 'ffffffff-0010-4000-a000-ffffffffffff'; // Elena -> Ciprian
+const TV_SERIES_CA_ID = 'ffffffff-0011-4000-a000-ffffffffffff'; // Ciprian -> Andrei
+const TV_SERIES_CM_ID = 'ffffffff-0012-4000-a000-ffffffffffff'; // Ciprian -> Maria
+const TV_SERIES_RI_ID = 'ffffffff-0013-4000-a000-ffffffffffff'; // Radu -> Ioana
+const TV_SERIES_RA_ID = 'ffffffff-0014-4000-a000-ffffffffffff'; // Radu -> Alexandru
 
 // Sessions
 const TV_S_EC_1 = '99999999-0010-4000-9000-999999999999'; // Elena/Ciprian S1
@@ -352,11 +352,11 @@ const TV_S_RA_1 = '99999999-0023-4000-9000-999999999999'; // Radu/Alexandru S1
 const TV_S_RA_2 = '99999999-0024-4000-9000-999999999999';
 
 // Talking points
-const TV_TP_1 = '77777777-0001-4000-7000-777777777777';
-const TV_TP_2 = '77777777-0002-4000-7000-777777777777';
-const TV_TP_3 = '77777777-0003-4000-7000-777777777777';
-const TV_TP_4 = '77777777-0004-4000-7000-777777777777';
-const TV_TP_5 = '77777777-0005-4000-7000-777777777777';
+const TV_TP_1 = '77777777-0001-4000-a000-777777777777';
+const TV_TP_2 = '77777777-0002-4000-a000-777777777777';
+const TV_TP_3 = '77777777-0003-4000-a000-777777777777';
+const TV_TP_4 = '77777777-0004-4000-a000-777777777777';
+const TV_TP_5 = '77777777-0005-4000-a000-777777777777';
 
 // Action items
 const TV_AI_01 = '88888888-0001-4000-8000-888888888888';
@@ -371,8 +371,8 @@ const TV_AI_09 = '88888888-0009-4000-8000-888888888888';
 const TV_AI_10 = '88888888-0010-4000-8000-888888888888';
 
 // Private notes
-const TV_NOTE_1 = '44440000-0001-4000-4400-eeeeeeeeeeee';
-const TV_NOTE_2 = '44440000-0002-4000-4400-eeeeeeeeeeee';
+const TV_NOTE_1 = '44440000-0001-4000-a400-eeeeeeeeeeee';
+const TV_NOTE_2 = '44440000-0002-4000-a400-eeeeeeeeeeee';
 
 // =============================================================================
 // Seed functions
@@ -1342,7 +1342,7 @@ async function seedAnswers() {
   // This handles re-seeding after the UUID fix so onConflictDoUpdate(id) works correctly.
   await db.execute(sql`
     DELETE FROM session_answer
-    WHERE id::text LIKE '66666666-%-4000-6%'
+    WHERE id::text LIKE '66666666-%-4000-a%'
   `);
 
   const answers = [
@@ -2039,7 +2039,7 @@ async function seedTechvibe() {
   // --------------------------------------------------------------------------
   // Helper: answer ID using block/session/question indexes
   const aid = (b: number, s: number, q: number) =>
-    `66660000-${b}${s}0${q}-4000-6600-eeeeeeeeeeee`;
+    `66660000-${b}${s}0${q}-4000-a600-eeeeeeeeeeee`;
 
   const tvAnswers = [
     // Elena↔Ciprian S1 (Ciprian responds): mood=good, energie=3, blocker="Lipsă context pe decizia de roadmap", help=yes, satisfaction=7
@@ -2248,9 +2248,9 @@ async function seedTechvibe() {
 
   for (const entry of snapEntries) {
     const period = monthRange(entry.completedAt);
-    const idScore = `55550000-${String(snapIdx).padStart(4, '0')}-4000-5500-eeeeeeeeeeee`;
+    const idScore = `55550000-${String(snapIdx).padStart(4, '0')}-4000-a500-eeeeeeeeeeee`;
     snapIdx++;
-    const idStare = `55550000-${String(snapIdx).padStart(4, '0')}-4000-5500-eeeeeeeeeeee`;
+    const idStare = `55550000-${String(snapIdx).padStart(4, '0')}-4000-a500-eeeeeeeeeeee`;
     snapIdx++;
 
     tvSnapshots.push(
@@ -2343,7 +2343,7 @@ async function seedAnswerHistory() {
   await db
     .insert(schema.sessionAnswerHistory)
     .values({
-      id: 'cccccccc-0001-4000-c000-000000000001',
+      id: 'cccccccc-0001-4000-a000-000000000001',
       sessionAnswerId: ANSWER_S1_BLOCKERS_ID,
       sessionId: SESSION_1_ID,
       tenantId: ACME_TENANT_ID,
