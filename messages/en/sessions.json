@@ -35,7 +35,19 @@
       "scheduleDayOnly": "{cadence} on {day}s",
       "scheduleTimeOnly": "{cadence} at {time}",
       "scheduleNone": "{cadence}",
-      "agenda": "Agenda"
+      "agenda": "Agenda",
+      "tooltipReport": "Direct report",
+      "tooltipManager": "Your manager",
+      "tooltipYouManage": "You manage this person",
+      "tooltipYourManager": "Your manager in this series",
+      "tooltipScore": "Session score",
+      "tooltipManagedBy": "Manager",
+      "tooltipAiSummary": "AI summary from last session",
+      "tooltipSessionStatus": "Current session status",
+      "tooltipTemplate": "Meeting template",
+      "tooltipNextSession": "Next scheduled session",
+      "tooltipSchedule": "Meeting cadence",
+      "tooltipAgenda": "Talking points & agenda"
     },
     "sections": {
       "myTeam": "My Team",

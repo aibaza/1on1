@@ -35,7 +35,19 @@
       "scheduleDayOnly": "{cadence}, {day}",
       "scheduleTimeOnly": "{cadence} la {time}",
       "scheduleNone": "{cadence}",
-      "agenda": "Agenda"
+      "agenda": "Agenda",
+      "tooltipReport": "Subordonat direct",
+      "tooltipManager": "Managerul tău",
+      "tooltipYouManage": "Tu conduci această persoană",
+      "tooltipYourManager": "Managerul tău în această serie",
+      "tooltipScore": "Scorul sesiunii",
+      "tooltipManagedBy": "Manager",
+      "tooltipAiSummary": "Rezumatul AI din ultima sesiune",
+      "tooltipSessionStatus": "Starea sesiunii curente",
+      "tooltipTemplate": "Template-ul discuției",
+      "tooltipNextSession": "Următoarea sesiune programată",
+      "tooltipSchedule": "Cadența întâlnirilor",
+      "tooltipAgenda": "Puncte de discuție & agendă"
     },
     "sections": {
       "myTeam": "Echipa mea",

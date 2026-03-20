@@ -17,6 +17,38 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
 import { hashSeriesColor } from "@/lib/chart-colors";
 
+// ── Rich tooltip helper ─────────────────────────────────
+// label = always shown (muted), value = shown only when text is truncated
+
+function RichTooltip({
+  label,
+  value,
+  children,
+}: {
+  label: string;
+  value?: string | null;
+  children: React.ReactElement;
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        {children}
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs">
+        <span className="opacity-60">{label}</span>
+        {value && (
+          <>
+            <br />
+            <strong>{value}</strong>
+          </>
+        )}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+// ── Types ────────────────────────────────────────────────
+
 interface SeriesCardProps {
   series: {
     id: string;
@@ -53,6 +85,8 @@ interface SeriesCardProps {
   currentUserId: string;
   showManagerName?: boolean;
 }
+
+// ── Sparkline ────────────────────────────────────────────
 
 function questionOpacity(weight: number): number {
   return ((weight - 0.5) / 1.5) * 0.18 + 0.02;
@@ -111,7 +145,6 @@ function ScoreSparkline({ assessmentHistory, questionHistories, id }: SparklineP
             })}
           </defs>
           <YAxis domain={[minValue, maxValue]} hide />
-          {/* Per-question areas (rendered first = behind) */}
           {questionHistories.map((q, qi) => {
             const color = hashSeriesColor(q.questionText);
             const opacity = questionOpacity(q.scoreWeight);
@@ -129,7 +162,6 @@ function ScoreSparkline({ assessmentHistory, questionHistories, id }: SparklineP
               />
             );
           })}
-          {/* Main assessment area (on top) */}
           <Area
             type="monotone"
             dataKey="main"
@@ -145,6 +177,8 @@ function ScoreSparkline({ assessmentHistory, questionHistories, id }: SparklineP
     </div>
   );
 }
+
+// ── Helpers ──────────────────────────────────────────────
 
 const statusClass: Record<string, string> = {
   paused: "border-amber-400/60 text-amber-700 bg-amber-50 dark:border-amber-500/40 dark:text-amber-400 dark:bg-amber-950/30",
@@ -210,6 +244,8 @@ function formatSchedule(
   return t("series.scheduleNone", { cadence: cadenceLabel });
 }
 
+// ── Card component ──────────────────────────────────────
+
 export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCardProps) {
   const t = useTranslations("sessions");
   const format = useFormatter();
@@ -260,7 +296,6 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
   const handleAgendaClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // If we already have an open session from latestSession, use it directly
     const openSession = series.latestSession?.status !== "completed" && series.latestSession?.status !== "cancelled"
       ? series.latestSession
       : null;
@@ -278,9 +313,15 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
       ? parseFloat(series.latestSession.sessionScore)
       : null;
 
+  const reportFullName = `${series.report.firstName} ${series.report.lastName}`;
+  const managerFullName = `${series.manager.firstName} ${series.manager.lastName}`;
   const initials =
     (series.report.firstName?.[0] ?? "") +
     (series.report.lastName?.[0] ?? "");
+  const scheduleText = formatSchedule(series.cadence, series.preferredDay, series.preferredTime, t);
+  const nextDateText = series.nextSessionAt
+    ? formatRelativeDate(series.nextSessionAt, t, format)
+    : t("series.notScheduled");
 
   return (
     <Card className={`group relative flex h-full flex-col overflow-hidden transition-all duration-200 hover:shadow-md ${sentimentBorder[series.latestSummary?.sentiment ?? ""] ?? ""}`}>
@@ -293,56 +334,77 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           {isManager ? (
-            <span className="absolute -top-1 -left-1 flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 ring-2 ring-background">
-              <UserCog className="h-2.5 w-2.5 text-white" />
-            </span>
+            <RichTooltip label={t("series.tooltipYouManage")}>
+              <span className="absolute -top-1 -left-1 flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 ring-2 ring-background">
+                <UserCog className="h-2.5 w-2.5 text-white" />
+              </span>
+            </RichTooltip>
           ) : (
-            <span className="absolute -top-1 -left-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-background">
-              <UserCheck className="h-2.5 w-2.5 text-white" />
-            </span>
+            <RichTooltip label={t("series.tooltipYourManager")}>
+              <span className="absolute -top-1 -left-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-background">
+                <UserCheck className="h-2.5 w-2.5 text-white" />
+              </span>
+            </RichTooltip>
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <CardTitle className="text-base truncate">
-            {series.report.firstName} {series.report.lastName}
-          </CardTitle>
+          <RichTooltip label={isManager ? t("series.tooltipReport") : t("series.tooltipManager")} value={reportFullName}>
+            <CardTitle className="text-base truncate">
+              {reportFullName}
+            </CardTitle>
+          </RichTooltip>
           {(() => {
             const fullStars = score !== null ? Math.floor(score) : 0;
             const hasHalf = score !== null && score - fullStars >= 0.5;
             return (
-              <div className="flex items-center gap-0.5">
-                {Array.from({ length: 5 }, (_, i) => {
-                  if (score === null) {
-                    return <Star key={i} className="h-3 w-3 text-muted-foreground/20" />;
-                  }
-                  if (i < fullStars) {
-                    return <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />;
-                  }
-                  if (i === fullStars && hasHalf) {
-                    return (
-                      <span key={i} className="relative inline-flex h-3 w-3">
-                        <Star className="absolute h-3 w-3 text-muted-foreground/20" />
-                        <span className="absolute inset-0 overflow-hidden" style={{ width: "50%" }}>
-                          <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                        </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-0.5">
+                    {Array.from({ length: 5 }, (_, i) => {
+                      if (score === null) {
+                        return <Star key={i} className="h-3 w-3 text-muted-foreground/20" />;
+                      }
+                      if (i < fullStars) {
+                        return <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />;
+                      }
+                      if (i === fullStars && hasHalf) {
+                        return (
+                          <span key={i} className="relative inline-flex h-3 w-3">
+                            <Star className="absolute h-3 w-3 text-muted-foreground/20" />
+                            <span className="absolute inset-0 overflow-hidden" style={{ width: "50%" }}>
+                              <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                            </span>
+                          </span>
+                        );
+                      }
+                      return <Star key={i} className="h-3 w-3 text-muted-foreground/20" />;
+                    })}
+                    {score !== null && (
+                      <span className="ml-1 text-xs tabular-nums text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
+                        {format.number(score, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
                       </span>
-                    );
-                  }
-                  return <Star key={i} className="h-3 w-3 text-muted-foreground/20" />;
-                })}
-                {score !== null && (
-                  <span className="ml-1 text-xs tabular-nums text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
-                    {format.number(score, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-                  </span>
-                )}
-              </div>
+                    )}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <span className="opacity-60">{t("series.tooltipScore")}</span>
+                  {score !== null && (
+                    <>
+                      <br />
+                      <strong>{format.number(score, { maximumFractionDigits: 1, minimumFractionDigits: 1 })} / 5</strong>
+                    </>
+                  )}
+                </TooltipContent>
+              </Tooltip>
             );
           })()}
         </div>
         {showManagerName && (
-          <span className="text-xs font-normal text-muted-foreground">
-            {series.manager.firstName} {series.manager.lastName}
-          </span>
+          <RichTooltip label={t("series.tooltipManagedBy")} value={managerFullName}>
+            <span className="text-xs font-normal text-muted-foreground truncate max-w-[30%]">
+              {managerFullName}
+            </span>
+          </RichTooltip>
         )}
         {series.status !== "active" && (
           <Badge variant="outline" className={statusClass[series.status] ?? ""}>
@@ -361,7 +423,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
                   className="relative z-10 h-8 w-8"
                   onClick={handleAgendaClick}
                   disabled={ensureSession.isPending}
-                  aria-label={`${series.report.firstName} ${series.report.lastName} ${t("series.agenda")}`}
+                  aria-label={`${reportFullName} ${t("series.agenda")}`}
                 >
                   <ListTodo className="h-4 w-4" />
                   {(series.latestSession?.talkingPointCount ?? 0) > 0 && (
@@ -371,14 +433,16 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
                   )}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>{t("series.agenda")}</TooltipContent>
+              <TooltipContent>
+                <span className="opacity-60">{t("series.tooltipAgenda")}</span>
+              </TooltipContent>
             </Tooltip>
             {agendaSessionId && (
               <AgendaSheet
                 open={agendaOpen}
                 onOpenChange={setAgendaOpen}
                 sessionId={agendaSessionId}
-                personName={`${series.report.firstName} ${series.report.lastName}`}
+                personName={reportFullName}
                 sessionNumber={agendaSessionNumber}
                 sessionDate={series.latestSession?.scheduledAt ?? series.nextSessionAt ?? ""}
               />
@@ -388,47 +452,52 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-2 pt-0">
         {series.latestSummary ? (
-          <p className="flex items-start gap-1.5 text-xs text-muted-foreground line-clamp-2">
-            <span
-              className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${
-                series.latestSummary.sentiment === "positive"
-                  ? "bg-green-500"
-                  : series.latestSummary.sentiment === "concerning"
-                    ? "bg-red-500"
-                    : "bg-amber-500"
-              }`}
-            />
-            {series.latestSummary.blurb}
-          </p>
+          <RichTooltip label={t("series.tooltipAiSummary")} value={series.latestSummary.blurb}>
+            <p className="flex items-start gap-1.5 text-xs text-muted-foreground line-clamp-2">
+              <span
+                className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${
+                  series.latestSummary.sentiment === "positive"
+                    ? "bg-green-500"
+                    : series.latestSummary.sentiment === "concerning"
+                      ? "bg-red-500"
+                      : "bg-amber-500"
+                }`}
+              />
+              {series.latestSummary.blurb}
+            </p>
+          </RichTooltip>
         ) : (
-          <p className="text-xs text-muted-foreground/40 line-clamp-2 italic">
-            {t("series.summaryPlaceholder")}
-          </p>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <p className="text-xs text-muted-foreground/40 line-clamp-2 italic">
+                {t("series.summaryPlaceholder")}
+              </p>
+            </TooltipTrigger>
+            <TooltipContent>
+              <span className="opacity-60">{t("series.tooltipAiSummary")}</span>
+            </TooltipContent>
+          </Tooltip>
         )}
         {hasInProgress && series.latestSession && (
           <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-            <span>{t("series.inProgress", { number: series.latestSession.sessionNumber })}</span>
+            <RichTooltip label={t("series.tooltipSessionStatus")}>
+              <span>{t("series.inProgress", { number: series.latestSession.sessionNumber })}</span>
+            </RichTooltip>
             {series.defaultTemplateName && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="max-w-[50%] truncate text-muted-foreground/60">
-                    {series.defaultTemplateName}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>{series.defaultTemplateName}</TooltipContent>
-              </Tooltip>
+              <RichTooltip label={t("series.tooltipTemplate")} value={series.defaultTemplateName}>
+                <span className="max-w-[50%] truncate text-muted-foreground/60">
+                  {series.defaultTemplateName}
+                </span>
+              </RichTooltip>
             )}
           </div>
         )}
         {!hasInProgress && series.defaultTemplateName && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <p className="text-xs text-muted-foreground/60 truncate max-w-[50%] ml-auto">
-                {series.defaultTemplateName}
-              </p>
-            </TooltipTrigger>
-            <TooltipContent>{series.defaultTemplateName}</TooltipContent>
-          </Tooltip>
+          <RichTooltip label={t("series.tooltipTemplate")} value={series.defaultTemplateName}>
+            <p className="text-xs text-muted-foreground/60 truncate max-w-[50%] ml-auto">
+              {series.defaultTemplateName}
+            </p>
+          </RichTooltip>
         )}
         <div className="mt-auto flex items-end justify-between pt-2">
           {isManager && series.status === "active" ? (
@@ -460,17 +529,17 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
             </Button>
           ) : <div />}
           <div className="flex flex-col items-end gap-0.5">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
-              <CalendarDays className="h-3 w-3" />
-              {series.nextSessionAt ? (
-                <span>{formatRelativeDate(series.nextSessionAt, t, format)}</span>
-              ) : (
-                <span>{t("series.notScheduled")}</span>
-              )}
-            </div>
-            <span className="text-xs text-muted-foreground/50">
-              {formatSchedule(series.cadence, series.preferredDay, series.preferredTime, t)}
-            </span>
+            <RichTooltip label={t("series.tooltipNextSession")} value={series.nextSessionAt ? format.dateTime(new Date(series.nextSessionAt), { dateStyle: "full", timeStyle: "short" }) : undefined}>
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
+                <CalendarDays className="h-3 w-3" />
+                <span>{nextDateText}</span>
+              </div>
+            </RichTooltip>
+            <RichTooltip label={t("series.tooltipSchedule")}>
+              <span className="text-xs text-muted-foreground/50">
+                {scheduleText}
+              </span>
+            </RichTooltip>
           </div>
         </div>
       </CardContent>
