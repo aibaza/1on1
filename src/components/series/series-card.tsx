@@ -475,16 +475,30 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
             </p>
           </RichTooltip>
         ) : (
-          <Tooltip>
-            <TooltipTrigger asChild className="pointer-events-auto" onClick={() => router.push(seriesUrl)}>
-              <p className="text-xs text-muted-foreground/40 line-clamp-2 italic cursor-pointer">
-                {t("series.summaryPlaceholder")}
-              </p>
-            </TooltipTrigger>
-            <TooltipContent>
-              <span className="opacity-60">{t("series.tooltipAiSummary")}</span>
-            </TooltipContent>
-          </Tooltip>
+          <>
+            <Tooltip>
+              <TooltipTrigger asChild className="pointer-events-auto" onClick={() => router.push(seriesUrl)}>
+                <p className="text-xs text-muted-foreground/40 line-clamp-2 italic cursor-pointer">
+                  {t("series.summaryPlaceholder")}
+                </p>
+              </TooltipTrigger>
+              <TooltipContent>
+                <span className="opacity-60">{t("series.tooltipAiSummary")}</span>
+              </TooltipContent>
+            </Tooltip>
+            {isManager && !series.latestSession && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  startSession.mutate();
+                }}
+                className="relative z-10 pointer-events-auto text-xs text-primary hover:underline mt-1"
+              >
+                {t("series.startFirst")} {"\u2192"}
+              </button>
+            )}
+          </>
         )}
         {hasInProgress && series.latestSession && (
           <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
