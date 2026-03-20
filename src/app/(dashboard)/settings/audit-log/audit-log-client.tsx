@@ -68,12 +68,14 @@ export function AuditLogClient() {
 
   const ACTION_LABEL_MAP = new Map(ACTION_TYPES.map((a) => [a.value, a.label]));
 
+  const ACRONYMS: ReadonlySet<string> = new Set(["ai", "rls", "api"]);
+
   function formatActionLabel(action: string): string {
     return (
       ACTION_LABEL_MAP.get(action) ??
       action
         .split("_")
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .map((w) => ACRONYMS.has(w) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1))
         .join(" ")
     );
   }
