@@ -45,10 +45,12 @@ CREATE INDEX IF NOT EXISTS "session_answer_history_tenant_idx"
 ALTER TABLE "session_answer_history" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
 ALTER TABLE "session_answer_history" FORCE ROW LEVEL SECURITY;--> statement-breakpoint
 
+DROP POLICY IF EXISTS tenant_isolation_select ON "session_answer_history";--> statement-breakpoint
 CREATE POLICY tenant_isolation_select ON "session_answer_history"
   FOR SELECT
   USING (tenant_id = current_setting('app.current_tenant_id')::uuid);--> statement-breakpoint
 
+DROP POLICY IF EXISTS tenant_isolation_insert ON "session_answer_history";--> statement-breakpoint
 CREATE POLICY tenant_isolation_insert ON "session_answer_history"
   FOR INSERT
   WITH CHECK (tenant_id = current_setting('app.current_tenant_id')::uuid);--> statement-breakpoint
