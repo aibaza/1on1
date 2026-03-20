@@ -41,16 +41,15 @@
 - Use `dark:border-border` or similar Tailwind class on Card component
 
 ### Session cards empty state (POL-07)
-- Show "Start first session" link below the AI summary placeholder on series cards with no sessions
+- Show "Start first session →" as a simple text link below the AI summary placeholder on series cards with no sessions
 - Link targets the session wizard for that series
+- **Manager-only** — only the series manager sees the link; reports don't see it (they can't start sessions)
 
 ### Mobile history search placeholder (POL-08)
-- Shorten placeholder text so it doesn't truncate on mobile screens
-- Current key: `history.searchPlaceholder`
+- Replace placeholder with "Search..." on all screen sizes (not mobile-only)
+- Update i18n key `history.searchPlaceholder` in both EN and RO
 
 ### Claude's Discretion
-- Session card empty state: exact link text, styling (text link vs subtle button), and navigation target
-- Mobile search placeholder: exact short text (e.g., "Search..." vs "Search sessions...")
 - Team card border opacity/color choice for dark mode
 - Whether Active badge logic checks visible page or full dataset
 
