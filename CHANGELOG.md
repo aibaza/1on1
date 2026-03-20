@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-03-20
+
+### Added
+- Auto-revert empty sessions: exiting the wizard with 0 answers reverts session to "scheduled" (no lingering "Resume" button)
+- Lazy cleanup: stale in_progress sessions with 0 answers older than 1 hour auto-revert on next page load
+- `POST /api/sessions/[id]/revert` endpoint for empty session reversal
+- Rich tooltips on all series card elements (person, score, AI summary, template, schedule, next session) with label + full text when truncated
+- Template name displayed on series cards (inline with session status) and wizard header
+
+### Fixed
+- Talking points disappear when agenda sheet reopened — query cache invalidation and state sync
+- Series card tooltips blocked by full-card link overlay — pointer-events layering
+- Tooltip label corrections: "Team member" / "You, in this series" (was "Direct report" / "Your manager")
+- Template name not showing on server-rendered sessions page (missing from `getSeriesCardData` query)
+
 ## [1.6.0] - 2026-03-20
 
 ### Added
