@@ -68,30 +68,58 @@ export async function POST(
           };
         }
 
-        // Count existing sessions to determine session number
-        const countResult = await tx
-          .select({
-            count: sql<number>`cast(count(*) as int)`,
-          })
+        // Check for existing scheduled session (created by ensure-session/agenda)
+        // Promote it to in_progress instead of creating a duplicate
+        const scheduled = await tx
+          .select({ id: sessions.id, sessionNumber: sessions.sessionNumber })
           .from(sessions)
-          .where(eq(sessions.seriesId, seriesId));
+          .where(
+            and(
+              eq(sessions.seriesId, seriesId),
+              eq(sessions.status, "scheduled")
+            )
+          )
+          .limit(1);
 
-        const sessionNumber = (countResult[0]?.count ?? 0) + 1;
         const now = new Date();
+        let newSession;
 
-        // Create session record
-        const [newSession] = await tx
-          .insert(sessions)
-          .values({
-            seriesId,
-            tenantId: session.user.tenantId,
-            templateId: series.defaultTemplateId,
-            sessionNumber,
-            scheduledAt: now,
-            startedAt: now,
-            status: "in_progress",
-          })
-          .returning();
+        if (scheduled.length > 0) {
+          // Promote existing scheduled session to in_progress
+          [newSession] = await tx
+            .update(sessions)
+            .set({
+              status: "in_progress",
+              startedAt: now,
+              templateId: series.defaultTemplateId,
+            })
+            .where(eq(sessions.id, scheduled[0].id))
+            .returning();
+        } else {
+          // Count existing sessions to determine session number
+          const countResult = await tx
+            .select({
+              count: sql<number>`cast(count(*) as int)`,
+            })
+            .from(sessions)
+            .where(eq(sessions.seriesId, seriesId));
+
+          const sessionNumber = (countResult[0]?.count ?? 0) + 1;
+
+          // Create session record
+          [newSession] = await tx
+            .insert(sessions)
+            .values({
+              seriesId,
+              tenantId: session.user.tenantId,
+              templateId: series.defaultTemplateId,
+              sessionNumber,
+              scheduledAt: now,
+              startedAt: now,
+              status: "in_progress",
+            })
+            .returning();
+        }
 
         await logAuditEvent(tx, {
           tenantId: session.user.tenantId,
@@ -101,7 +129,7 @@ export async function POST(
           resourceId: newSession.id,
           metadata: {
             seriesId,
-            sessionNumber,
+            sessionNumber: newSession.sessionNumber,
           },
         });
 
