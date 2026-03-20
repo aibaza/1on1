@@ -1,11 +1,12 @@
 import { eq, sql, and, asc } from "drizzle-orm";
 import type { TransactionClient } from "@/lib/db/tenant-context";
-import { meetingSeries, sessions, users, sessionAnswers, templateQuestions, talkingPoints } from "@/lib/db/schema";
+import { meetingSeries, sessions, users, sessionAnswers, templateQuestions, talkingPoints, questionnaireTemplates } from "@/lib/db/schema";
 
 export interface SeriesCardData {
   id: string;
   managerId: string;
   cadence: string;
+  defaultTemplateName?: string | null;
   status: string;
   nextSessionAt: string | null;
   preferredDay: string | null;
@@ -84,6 +85,7 @@ export async function getSeriesCardData(
       managerId: meetingSeries.managerId,
       reportId: meetingSeries.reportId,
       cadence: meetingSeries.cadence,
+      defaultTemplateId: meetingSeries.defaultTemplateId,
       status: meetingSeries.status,
       nextSessionAt: meetingSeries.nextSessionAt,
       preferredDay: meetingSeries.preferredDay,
@@ -105,6 +107,17 @@ export async function getSeriesCardData(
   const seriesList = await query;
 
   if (seriesList.length === 0) return [];
+
+  // Fetch template names
+  const templateIds = [...new Set(seriesList.map((s) => s.defaultTemplateId).filter(Boolean))] as string[];
+  let templateNameMap = new Map<string, string>();
+  if (templateIds.length > 0) {
+    const templateRows = await tx
+      .select({ id: questionnaireTemplates.id, name: questionnaireTemplates.name })
+      .from(questionnaireTemplates)
+      .where(sql`${questionnaireTemplates.id} IN ${templateIds}`);
+    templateNameMap = new Map(templateRows.map((t) => [t.id, t.name]));
+  }
 
   // Fetch report info
   const reportIds = [...new Set(seriesList.map((s) => s.reportId))];
@@ -260,6 +273,7 @@ export async function getSeriesCardData(
       id: s.id,
       managerId: s.managerId,
       cadence: s.cadence,
+      defaultTemplateName: s.defaultTemplateId ? templateNameMap.get(s.defaultTemplateId) ?? null : null,
       status: s.status,
       nextSessionAt: s.nextSessionAt?.toISOString() ?? null,
       preferredDay: s.preferredDay,
