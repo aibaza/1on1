@@ -140,7 +140,7 @@ Plans:
 | 20. Mobile Responsiveness | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 21. Content & Data Display | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 22. Safety, Errors & Inputs | v1.3 | 4/4 | Complete | 2026-03-16 |
-| 23. Low-Priority Polish | 2/2 | Complete   | 2026-03-20 | — |
+| 23. Low-Priority Polish | 2/2 | Complete    | 2026-03-20 | — |
 | 24. Schema Foundation | 2/2 | Complete    | 2026-03-19 | 2026-03-10 |
 | 25. Core API & Business Logic | v1.4 | 3/3 | Complete | 2026-03-10 |
 | 26. Email Notification & i18n | v1.4 | 3/3 | Complete | 2026-03-13 |
