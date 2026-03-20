@@ -358,7 +358,7 @@ export function ActionItemsPage({ initialItems, currentUserId }: ActionItemsPage
                     className="flex items-center gap-2 w-full my-3 group"
                   >
                     <Separator className="flex-1" />
-                    <span className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60 group-hover:text-muted-foreground transition-colors shrink-0">
+                    <span className="flex items-center gap-1 text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/60 group-hover:text-muted-foreground transition-colors shrink-0">
                       {myCompletedOpen ? (
                         <ChevronDown className="size-3" />
                       ) : (
@@ -457,7 +457,7 @@ export function ActionItemsPage({ initialItems, currentUserId }: ActionItemsPage
                           className="flex items-center gap-2 w-full my-3 group"
                         >
                           <Separator className="flex-1" />
-                          <span className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60 group-hover:text-muted-foreground transition-colors shrink-0">
+                          <span className="flex items-center gap-1 text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/60 group-hover:text-muted-foreground transition-colors shrink-0">
                             {(reportCompletedOpen[group.seriesId] ?? false) ? (
                               <ChevronDown className="size-3" />
                             ) : (

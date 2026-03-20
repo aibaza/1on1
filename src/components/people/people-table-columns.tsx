@@ -210,6 +210,7 @@ export function createColumns({
       ),
       cell: ({ row }) => {
         const status = row.original.status;
+        if (status === "active") return null;
         return (
           <Badge variant="outline" className={getStatusColor(status)}>
             {t(`table.${status}`)}
