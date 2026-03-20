@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useCallback, useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { Check, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -40,8 +40,14 @@ export function TalkingPointList({
   sessionNumberMap,
 }: TalkingPointListProps) {
   const t = useTranslations("sessions.talkingPoints");
+  const queryClient = useQueryClient();
   const [points, setPoints] = useState<TalkingPoint[]>(initialPoints);
   const [newContent, setNewContent] = useState("");
+
+  // Sync local state when parent refetches new data
+  useEffect(() => {
+    setPoints(initialPoints);
+  }, [initialPoints]);
 
   // Create talking point
   const createPoint = useMutation({
@@ -79,6 +85,7 @@ export function TalkingPointList({
           p.id === context?.optimistic.id ? data : p
         )
       );
+      queryClient.invalidateQueries({ queryKey: ["talking-points", sessionId] });
       onSavingChange?.(false);
     },
     onError: (_err, _content, context) => {
@@ -138,6 +145,9 @@ export function TalkingPointList({
       onSavingChange?.(true);
       // Optimistic remove
       setPoints((prev) => prev.filter((p) => p.id !== id));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["talking-points", sessionId] });
     },
     onSettled: () => onSavingChange?.(false),
   });

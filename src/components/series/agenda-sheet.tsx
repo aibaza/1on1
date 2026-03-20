@@ -54,6 +54,7 @@ export function AgendaSheet({
       return res.json();
     },
     enabled: open,
+    staleTime: 0,
   });
 
   // Build category sections: show ALL template categories, with their points (or empty)
