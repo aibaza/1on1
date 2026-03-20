@@ -91,7 +91,7 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 
 **Milestone Goal:** Apply 9 small text, visual, and layout tweaks for a professionally finished product — correct placeholder text, accurate copy, properly styled dividers, centered auth pages, hidden redundant badges, and mobile-optimised layout details.
 
-- [ ] **Phase 23: Low-Priority Polish** — 9 small visual and copy tweaks across registration, audit log, auth pages, people list, action items, team cards, session cards, and mobile history
+- [x] **Phase 23: Low-Priority Polish** — 9 small visual and copy tweaks across registration, audit log, auth pages, people list, action items, team cards, session cards, and mobile history (completed 2026-03-20)
 
 ## Phase Details
 
@@ -108,7 +108,7 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
   6. Team cards have a visible border in dark mode for definition against the page background
   7. Session cards with no sessions show a "Start first session" link below the AI summary placeholder
   8. Mobile history page search input placeholder is short enough to display without truncation
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 23-01-PLAN.md — i18n placeholders, audit log acronyms, forgot-password centering, active badge, action items divider
@@ -140,7 +140,7 @@ Plans:
 | 20. Mobile Responsiveness | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 21. Content & Data Display | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 22. Safety, Errors & Inputs | v1.3 | 4/4 | Complete | 2026-03-16 |
-| 23. Low-Priority Polish | v1.6 | 0/? | Not started | — |
+| 23. Low-Priority Polish | 2/2 | Complete   | 2026-03-20 | — |
 | 24. Schema Foundation | 2/2 | Complete    | 2026-03-19 | 2026-03-10 |
 | 25. Core API & Business Logic | v1.4 | 3/3 | Complete | 2026-03-10 |
 | 26. Email Notification & i18n | v1.4 | 3/3 | Complete | 2026-03-13 |

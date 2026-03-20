@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Registration placeholder changed from "Acme Inc" to "Acme Corp" (EN)
+- Audit log acronym casing: "AI Pipeline Completed" instead of "Ai Pipeline Completed"
+- History search placeholder shortened to "Search..." / "Cauta..." to prevent truncation
+- Active users no longer show redundant "active" badge in people list
+- Action items COMPLETED divider text enlarged from 10px to 13px for readability
+
 ## [1.6.2] - 2026-03-20
 
 ### Fixed
