@@ -14,6 +14,7 @@ interface Series {
   id: string;
   managerId: string;
   cadence: string;
+  defaultTemplateName?: string | null;
   status: string;
   nextSessionAt: string | null;
   preferredDay: string | null;
