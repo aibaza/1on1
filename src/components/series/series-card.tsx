@@ -22,6 +22,7 @@ interface SeriesCardProps {
     id: string;
     managerId: string;
     cadence: string;
+    defaultTemplateName?: string | null;
     status: string;
     nextSessionAt: string | null;
     preferredDay: string | null;
@@ -402,6 +403,11 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
         ) : (
           <p className="text-xs text-muted-foreground/40 line-clamp-2 italic">
             {t("series.summaryPlaceholder")}
+          </p>
+        )}
+        {series.defaultTemplateName && (
+          <p className="text-xs text-muted-foreground/60 truncate">
+            {series.defaultTemplateName}
           </p>
         )}
         {hasInProgress && series.latestSession && (

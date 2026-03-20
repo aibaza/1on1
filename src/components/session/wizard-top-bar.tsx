@@ -24,6 +24,7 @@ interface WizardTopBarProps {
   reportName: string;
   sessionNumber: number;
   date: string;
+  templateName?: string | null;
   saveStatus: SaveStatus;
   hasUnsavedChanges: boolean;
 }
@@ -33,6 +34,7 @@ export function WizardTopBar({
   reportName,
   sessionNumber,
   date,
+  templateName,
   saveStatus,
   hasUnsavedChanges,
 }: WizardTopBarProps) {
@@ -89,6 +91,7 @@ export function WizardTopBar({
         <p className="text-sm font-medium">{reportName}</p>
         <p className="text-xs text-muted-foreground">
           Session #{sessionNumber} &middot; {formattedDate}
+          {templateName && <> &middot; {templateName}</>}
         </p>
       </div>
 

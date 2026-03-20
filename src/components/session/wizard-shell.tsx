@@ -66,6 +66,7 @@ interface SessionData {
     report: { id: string; firstName: string; lastName: string; avatarUrl: string | null } | null;
   };
   template: {
+    name: string | null;
     sections: TemplateSection[];
     questions: TemplateQuestion[];
   };
@@ -799,6 +800,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         reportName={reportName}
         sessionNumber={data.session.sessionNumber}
         date={data.session.startedAt ?? data.session.scheduledAt}
+        templateName={data.template.name}
         saveStatus={aggregatedSaveStatus}
         hasUnsavedChanges={aggregatedSaveStatus === "saving"}
       />

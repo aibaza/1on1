@@ -8,6 +8,7 @@ import {
   users,
   templateQuestions,
   templateSections,
+  questionnaireTemplates,
   sessionAnswers,
   actionItems,
 } from "@/lib/db/schema";
@@ -130,6 +131,17 @@ export async function GET(
           conditionalOperator: string | null;
           conditionalValue: string | null;
         }> = [];
+
+        // Fetch template name
+        let templateName: string | null = null;
+        if (sessionRecord.templateId) {
+          const [tmpl] = await tx
+            .select({ name: questionnaireTemplates.name })
+            .from(questionnaireTemplates)
+            .where(eq(questionnaireTemplates.id, sessionRecord.templateId))
+            .limit(1);
+          templateName = tmpl?.name ?? null;
+        }
 
         if (sessionRecord.templateId) {
           sectionData = await tx
@@ -350,6 +362,7 @@ export async function GET(
             report: reportRows[0] ?? null,
           },
           template: {
+            name: templateName,
             sections: sectionData,
             questions,
           },

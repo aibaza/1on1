@@ -5,7 +5,7 @@ import { canManageSeries } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
 import { createSeriesSchema } from "@/lib/validations/series";
 import { scheduleSeriesNotifications } from "@/lib/notifications/scheduler";
-import { meetingSeries, sessions, users, sessionAnswers, templateQuestions, talkingPoints } from "@/lib/db/schema";
+import { meetingSeries, sessions, users, sessionAnswers, templateQuestions, talkingPoints, questionnaireTemplates } from "@/lib/db/schema";
 import { eq, and, asc, sql, ne } from "drizzle-orm";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
 
@@ -115,6 +115,17 @@ export async function GET(request: Request) {
           managerMap = new Map(managerUsers.map((u) => [u.id, u]));
         }
 
+        // Fetch template names for all series
+        const templateIds = [...new Set(seriesList.map((s) => s.defaultTemplateId).filter(Boolean))] as string[];
+        let templateNameMap = new Map<string, string>();
+        if (templateIds.length > 0) {
+          const templateRows = await tx
+            .select({ id: questionnaireTemplates.id, name: questionnaireTemplates.name })
+            .from(questionnaireTemplates)
+            .where(sql`${questionnaireTemplates.id} IN ${templateIds}`);
+          templateNameMap = new Map(templateRows.map((t) => [t.id, t.name]));
+        }
+
         // Fetch talking point counts for active (scheduled or in_progress) sessions
         const scheduledSessionIds = latestSessions
           .filter((s) => s.status === "scheduled" || s.status === "in_progress")
@@ -214,6 +225,7 @@ export async function GET(request: Request) {
             cadenceCustomDays: s.cadenceCustomDays,
             defaultDurationMinutes: s.defaultDurationMinutes,
             defaultTemplateId: s.defaultTemplateId,
+            defaultTemplateName: s.defaultTemplateId ? templateNameMap.get(s.defaultTemplateId) ?? null : null,
             preferredDay: s.preferredDay,
             preferredTime: s.preferredTime,
             status: s.status,
