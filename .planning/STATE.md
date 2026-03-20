@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: Low-Priority Polish
 status: unknown
-stopped_at: Phase 23 context gathered
-last_updated: "2026-03-20T16:27:38.971Z"
+stopped_at: Phase 23 UI-SPEC approved
+last_updated: "2026-03-20T17:07:10.669Z"
 progress:
   total_phases: 4
   completed_phases: 3
@@ -161,6 +161,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T16:27:38.966Z
-Stopped at: Phase 23 context gathered
-Resume file: .planning/phases/23-low-priority-polish/23-CONTEXT.md
+Last session: 2026-03-20T17:07:10.666Z
+Stopped at: Phase 23 UI-SPEC approved
+Resume file: .planning/phases/23-low-priority-polish/23-UI-SPEC.md
