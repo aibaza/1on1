@@ -34,7 +34,7 @@ test.describe("Sessions list (as admin)", () => {
       timeout: 10_000,
     });
     // Eve Davis is the seeded name in seed.ts (not Eve Johnson — see seed data)
-    await expect(adminPage.getByText(/eve/i)).toBeVisible({ timeout: 10_000 });
+    await expect(adminPage.getByText("Eve Davis")).toBeVisible({ timeout: 10_000 });
   });
 
   test("series cards are visible with session progress info", async ({

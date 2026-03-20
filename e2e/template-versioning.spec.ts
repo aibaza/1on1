@@ -16,7 +16,7 @@ import { test, expect, type Page } from "@playwright/test";
 
 // Acme Corp seed template — "Weekly Check-in"
 // DB was seeded with old UUID variant
-const TEMPLATE_ID = "dddddddd-0001-4000-d000-000000000001";
+const TEMPLATE_ID = "dddddddd-0001-4000-a000-000000000001";
 const TEMPLATE_URL = `/templates/${TEMPLATE_ID}`;
 
 // Helper: navigate to template editor and wait for load

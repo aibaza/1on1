@@ -4,14 +4,14 @@
  * These tests are EXPLORATORY — they document current behavior and reveal problems.
  *
  * Uses Acme Corp seed data:
- * - Weekly Check-in template (dddddddd-0001-4000-d000-000000000001)
+ * - Weekly Check-in template (dddddddd-0001-4000-a000-000000000001)
  * - Completed sessions from Bob→Dave series
  *
  * Flow: find completed session → record baseline → edit template → check impact
  */
 import { test, expect } from "@playwright/test";
 
-const WEEKLY_TEMPLATE_ID = "dddddddd-0001-4000-d000-000000000001";
+const WEEKLY_TEMPLATE_ID = "dddddddd-0001-4000-a000-000000000001";
 const WEEKLY_TEMPLATE_URL = `/templates/${WEEKLY_TEMPLATE_ID}`;
 // Seed completed sessions using Weekly Check-in (from DB)
 const SEED_SESSION_1 = "99999999-0001-4000-9000-000000000001";
