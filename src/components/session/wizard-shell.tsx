@@ -797,12 +797,14 @@ export function WizardShell({ sessionId }: WizardShellProps) {
     <>
       <WizardTopBar
         seriesId={data.session.seriesId}
+        sessionId={data.session.id}
         reportName={reportName}
         sessionNumber={data.session.sessionNumber}
         date={data.session.startedAt ?? data.session.scheduledAt}
         templateName={data.template.name}
         saveStatus={aggregatedSaveStatus}
         hasUnsavedChanges={aggregatedSaveStatus === "saving"}
+        hasAnswers={data.answers.length > 0}
       />
 
       {/* Mobile: full-height card carousel */}

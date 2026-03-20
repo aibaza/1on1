@@ -163,6 +163,25 @@ export async function getSeriesCardData(
       )`
     );
 
+  // Auto-revert stale in_progress sessions with 0 answers (started > 1 hour ago)
+  const staleThreshold = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const staleSessions = latestSessions.filter(
+    (s) => s.status === "in_progress" && s.scheduledAt && s.scheduledAt.toISOString() < staleThreshold
+  );
+  for (const stale of staleSessions) {
+    const [{ count }] = await tx
+      .select({ count: sql<number>`cast(count(*) as int)` })
+      .from(sessionAnswers)
+      .where(eq(sessionAnswers.sessionId, stale.id));
+    if (count === 0) {
+      await tx
+        .update(sessions)
+        .set({ status: "scheduled", startedAt: null })
+        .where(eq(sessions.id, stale.id));
+      stale.status = "scheduled";
+    }
+  }
+
   const latestMap = new Map(latestSessions.map((s) => [s.seriesId, s]));
 
   // Fetch talking point counts for active (scheduled or in_progress) sessions

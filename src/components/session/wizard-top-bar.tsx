@@ -21,28 +21,36 @@ export type SaveStatus = "saved" | "saving" | "error";
 
 interface WizardTopBarProps {
   seriesId: string;
+  sessionId: string;
   reportName: string;
   sessionNumber: number;
   date: string;
   templateName?: string | null;
   saveStatus: SaveStatus;
   hasUnsavedChanges: boolean;
+  hasAnswers: boolean;
 }
 
 export function WizardTopBar({
   seriesId,
+  sessionId,
   reportName,
   sessionNumber,
   date,
   templateName,
   saveStatus,
   hasUnsavedChanges,
+  hasAnswers,
 }: WizardTopBarProps) {
   const t = useTranslations("sessions");
   const format = useFormatter();
   const router = useRouter();
 
   const handleExit = () => {
+    // Revert empty session to scheduled (fire-and-forget)
+    if (!hasAnswers) {
+      fetch(`/api/sessions/${sessionId}/revert`, { method: "POST" }).catch(() => {});
+    }
     router.push(`/sessions/${seriesId}`);
   };
 
