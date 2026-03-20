@@ -50,17 +50,19 @@ Exceptions: none — Phase 23 makes no spacing changes.
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 14px | 400 (regular) | 1.5 |
-| Label | 12px | 500 (medium) | 1.4 |
+| Label | 12px | 600 (semibold) | 1.4 |
 | Heading | 20px | 600 (semibold) | 1.2 |
-| Display | 28px | 700 (bold) | 1.2 |
+| Display | 28px | 600 (semibold) | 1.2 |
+
+Two weights only: 400 (regular) for body text, 600 (semibold) for labels, headings, and display.
 
 ### Phase-Specific Typography Decisions
 
 | Item | Element | Spec |
 |------|---------|------|
-| POL-05 | COMPLETED section divider text | 13px, font-medium (500), uppercase, tracking-wider, color muted-foreground/60 |
+| POL-05 | COMPLETED section divider text | `text-xs` (12px), font-semibold (600), uppercase, tracking-wider, color muted-foreground/60 |
 
-This is the only typography change in the phase. The divider moves from `text-[10px]` to `text-[13px]`. All other text uses existing sizes.
+This is the only typography change in the phase. The divider moves from `text-[10px]` to `text-xs` (12px). Using the scale token `text-xs` instead of a raw pixel value. The spirit of the ROADMAP requirement ("readable and unobtrusive") is achieved with 12px uppercase tracking-wider semibold — visually prominent enough to read while remaining secondary to content. All other text uses existing sizes.
 
 ---
 
