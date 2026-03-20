@@ -74,7 +74,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "bun run dev --port 4301",
+    command: "PORT=4301 node .next/standalone/server.js",
     url: "http://localhost:4301",
     reuseExistingServer: true,
     timeout: 120_000,
