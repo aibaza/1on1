@@ -405,15 +405,30 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
             {t("series.summaryPlaceholder")}
           </p>
         )}
-        {series.defaultTemplateName && (
-          <p className="text-xs text-muted-foreground/60 truncate">
-            {series.defaultTemplateName}
-          </p>
-        )}
         {hasInProgress && series.latestSession && (
-          <p className="text-xs text-muted-foreground">
-            {t("series.inProgress", { number: series.latestSession.sessionNumber })}
-          </p>
+          <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+            <span>{t("series.inProgress", { number: series.latestSession.sessionNumber })}</span>
+            {series.defaultTemplateName && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="max-w-[50%] truncate text-muted-foreground/60">
+                    {series.defaultTemplateName}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>{series.defaultTemplateName}</TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+        )}
+        {!hasInProgress && series.defaultTemplateName && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <p className="text-xs text-muted-foreground/60 truncate max-w-[50%] ml-auto">
+                {series.defaultTemplateName}
+              </p>
+            </TooltipTrigger>
+            <TooltipContent>{series.defaultTemplateName}</TooltipContent>
+          </Tooltip>
         )}
         <div className="mt-auto flex items-end justify-between pt-2">
           {isManager && series.status === "active" ? (
