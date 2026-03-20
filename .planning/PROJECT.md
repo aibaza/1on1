@@ -52,7 +52,7 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 
 ### Active
 
-- [ ] Low-priority polish: 9 small visual and copy tweaks (registration, audit log, auth pages, people list, action items, team cards, session cards, mobile history) (v1.6)
+- ✓ Low-priority polish: 9 small visual and copy tweaks (registration, audit log, auth pages, people list, action items, team cards, session cards, mobile history) — v1.6
 - ✓ Template versioning: on-publish snapshots to template_version table, version history UI with preview/diff/restore, answers preserved via original question_id FK — v1.6
 
 ### Future
@@ -145,4 +145,4 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 | Nodemailer over Resend | Works with any SMTP provider | ✓ Good — provider flexibility |
 
 ---
-*Last updated: 2026-03-19 after Phase 29 (Template Versioning) completion*
+*Last updated: 2026-03-20 after Phase 23 (Low-Priority Polish) completion*
