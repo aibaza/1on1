@@ -6,48 +6,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-03-20
+
 ### Added
+- **Template versioning**: on-publish snapshots to `template_version` table (JSONB), version history UI with read-only preview, change list diff, and restore capability
 - Version history tab in template editor: History button toggles version list with read-only preview, diff display (added/removed/modified), and restore confirmation dialog
 - `VersionHistoryTab`, `VersionPreview`, `VersionDiffList` components with full i18n (EN + RO)
-- Version history API: `GET /api/templates/:id/versions` lists versions with question counts, `GET /api/templates/:id/versions/:versionNumber` returns full snapshot
-- Version restore API: `POST /api/templates/:id/versions/:versionNumber/restore` archives current content, inserts snapshot content with conditional question remapping, sets template as unpublished draft
+- Version history API: `GET /api/templates/:id/versions` (list), `GET .../versions/:versionNumber` (detail), `POST .../versions/:versionNumber/restore` (restore to draft)
 - `computeVersionDiff` utility: detects added/removed/modified sections and questions between two template snapshots
-- `template_version` table: immutable version snapshots created on each template publish, with RLS tenant isolation
+- `template_version` table with RLS tenant isolation — immutable version snapshots created on each publish
 - `buildTemplateSnapshot` utility: captures full template state (sections, questions, labels) as self-contained JSONB
-- Zod validation schemas for template version API payloads (`templateVersionSnapshotSchema`, `versionListItemSchema`, `restoreVersionSchema`)
-- Publish endpoint now creates version snapshot and auto-increments version number
-- `scripts/rebuild-uat.sh`: rebuilds Docker stack, runs migrations, and seeds demo data — seed never runs on production/Vercel deploys
-- Techvibe SRL Romanian test tenant in seed: 7 users, 2 teams, 2 Romanian templates, 5 series, 15 sessions, talking points, action items, private notes, and analytics snapshots
-- Action items page "Ale mele" / "My Items" section: items assigned to current user with collapsible completed section
-- Action items page "Echipa mea" / "My Reports" section: per-report groups with collapsible completed sections and overdue-first sort
-- i18n keys `sectionMine` / `sectionTeam` in EN + RO for action items page sections
+- Template name displayed on series cards (inline with session status, right-aligned, tooltip with full name)
+- Template name displayed in wizard header (after session number and date)
+- Rich tooltips on all series card elements: person name, role badge, score, AI summary, session status, template, schedule, next session — label always shown, full text shown when truncated
+- Playwright E2E tests for template versioning (9 tests) and answer remapping diagnostics (9 tests)
+- Answer remapping strategy document (`docs/wiki/Phase-29-Answer-Remapping-Strategy.md`)
+- Role-based series grouping: admin sees by-manager groups, manager sees My Team/My 1:1s, member sees flat list
+- AgendaSheet component with category-grouped talking points for pre-meeting prep
+- Agenda button on all active series cards — lazy-creates scheduled session on first click
+- Action items page split into "My Items" and "My Reports" sections
+- Techvibe SRL Romanian test tenant in seed data
+
+### Fixed
+- Session answers no longer appear as "skipped" after template edits — archived questions with answers are now loaded by the session API
+- Talking points persist when agenda sheet is closed and reopened — query cache invalidation and state sync added
+- Lenient UUID validation: replaced Zod 4's strict RFC 4122 `.uuid()` with regex accepting any 8-4-4-4-12 hex format (fixes seed data and some UUID generators)
+- Series card tooltips work despite the full-card link overlay — pointer-events layering with z-index
 
 ### Changed
-- Dashboard admin scoping: admin users now see only their own series on home page (same OR filter as manager — managerId OR reportId) instead of entire tenant
-- Dashboard overdue items scoped to current user's own assigned items only (team items on Action Items page)
-- Email sending: `.example.com` addresses are silently skipped — emails logged to `logs/email-dev.log` for testing instead of sending via SMTP
-- Agenda button visible on all active series cards, not just those with an existing open session — lazy-creates a scheduled session on first click
-- `POST /api/series/[id]/ensure-session` endpoint: returns existing open session or creates a scheduled one (both participants can call)
-- Agenda sheet shows all template sections as categories (not just those with existing talking points), with step numbers (e.g. "1. Stare generală")
-- Talking points API returns template section names as available categories
+- Dashboard admin scoping: admin users now see only their own series on home page
+- Email sending: `.example.com` addresses silently skipped (logged instead of sent via SMTP)
+- Agenda sheet shows all template sections as categories with step numbers
 
 ### Removed
 - Export button from template cards on the templates listing page
-
-### Added
-- Role-based series grouping: admin sees by-manager groups, manager sees My Team/My 1:1s, member sees flat list
-- Agenda button on series cards with scheduled sessions, showing talking point count badge
-- AgendaSheet component: right-side sheet with category-grouped talking points for pre-meeting prep
-- Manager name display on "My 1:1s" cards (top-right, muted)
-- i18n keys for sections (myTeam, myOneOnOnes, youSuffix), agenda sheet, and talkingPoints.saveError in EN + RO
-- Manager info (id, firstName, lastName) returned with every series card for grouping by manager
-- scheduledAt and talkingPointCount fields on latestSession in SeriesCardData
-- Role-based access control on sessions page SSR call (member/manager/admin filtering)
-- Manager role OR-query: managers now see series where they are manager OR report
-- Role-based access control on /api/series GET route (member/manager/admin filtering)
-- Talking points POST now accepts sessions with status "scheduled" (not just "in_progress")
-- TDD RED test scaffold for role-based series filtering (SeriesCardData contract tests)
-- TDD RED test scaffold for talking points POST status gate (scheduled session support)
 
 ## [1.3.12] - 2026-03-16
 
