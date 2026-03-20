@@ -6,12 +6,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.6.3] - 2026-03-20
+
+### Added
+- Shared `SessionListItem` component — unified session row used in both dashboard and series history
+- AI summary snippets now shown in series session history (extracted from keyTakeaways)
+- Sentiment color border (left) on session history cards — green/red/amber matching series cards
+- Dark mode border on team cards for better definition against page background
+- Quick deploy script (`scripts/quick-deploy.sh`) — local build + prebuilt Docker rebuild in ~3s
+- `Dockerfile.prebuilt` for fast iterative deploys (skips bun install/build in container)
+
+### Changed
+- Sentiment border on series cards moved from bottom to left
+- Session history on series page uses card-based layout (matching dashboard) instead of timeline dots
+- Date moved to right side (under star rating) in both dashboard and series history
+- Action items COMPLETED divider label aligned left (was centered)
+- Status in series history shown as plain text (was badge)
+
 ### Fixed
 - Registration placeholder changed from "Acme Inc" to "Acme Corp" (EN)
 - Audit log acronym casing: "AI Pipeline Completed" instead of "Ai Pipeline Completed"
 - History search placeholder shortened to "Search..." / "Cauta..." to prevent truncation
 - Active users no longer show redundant "active" badge in people list
 - Action items COMPLETED divider text enlarged from 10px to 13px for readability
+
+### Removed
+- Redundant "Start first session" link on series cards (Start button already exists)
 
 ## [1.6.2] - 2026-03-20
 

@@ -70,6 +70,7 @@ export interface RecentSession {
   sessionNumber: number;
   sessionScore: number | null;
   aiSummarySnippet: string | null;
+  sentiment: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -481,12 +482,16 @@ export async function getRecentSessions(
     .limit(limit);
 
   return rows.map((r) => {
-    // Extract first key takeaway as snippet
+    // Extract first key takeaway as snippet + sentiment
     let aiSummarySnippet: string | null = null;
+    let sentiment: string | null = null;
     if (r.aiSummary && typeof r.aiSummary === "object") {
-      const summary = r.aiSummary as { keyTakeaways?: string[] };
+      const summary = r.aiSummary as { keyTakeaways?: string[]; overallSentiment?: string };
       if (summary.keyTakeaways?.[0]) {
         aiSummarySnippet = summary.keyTakeaways[0];
+      }
+      if (summary.overallSentiment) {
+        sentiment = summary.overallSentiment;
       }
     }
 
@@ -503,6 +508,7 @@ export async function getRecentSessions(
       sessionNumber: r.sessionNumber,
       sessionScore: r.sessionScore ? parseFloat(r.sessionScore) : null,
       aiSummarySnippet,
+      sentiment,
     };
   });
 }

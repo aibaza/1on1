@@ -72,6 +72,7 @@ export default async function SeriesDetailPage({
             status: sessions.status,
             sessionScore: sessions.sessionScore,
             durationMinutes: sessions.durationMinutes,
+            aiSummary: sessions.aiSummary,
           })
           .from(sessions)
           .where(eq(sessions.seriesId, id))
@@ -92,15 +93,30 @@ export default async function SeriesDetailPage({
         updatedAt: series.updatedAt.toISOString(),
         manager: managerRows[0] ?? null,
         report: reportRows[0] ?? null,
-        sessions: sessionHistory.map((s) => ({
-          id: s.id,
-          sessionNumber: s.sessionNumber,
-          scheduledAt: s.scheduledAt.toISOString(),
-          completedAt: s.completedAt?.toISOString() ?? null,
-          status: s.status,
-          sessionScore: s.sessionScore,
-          durationMinutes: s.durationMinutes,
-        })),
+        sessions: sessionHistory.map((s) => {
+          let aiSnippet: string | null = null;
+          let sentiment: string | null = null;
+          if (s.aiSummary && typeof s.aiSummary === "object") {
+            const summary = s.aiSummary as { keyTakeaways?: string[]; overallSentiment?: string };
+            if (summary.keyTakeaways?.[0]) {
+              aiSnippet = summary.keyTakeaways[0];
+            }
+            if (summary.overallSentiment) {
+              sentiment = summary.overallSentiment;
+            }
+          }
+          return {
+            id: s.id,
+            sessionNumber: s.sessionNumber,
+            scheduledAt: s.scheduledAt.toISOString(),
+            completedAt: s.completedAt?.toISOString() ?? null,
+            status: s.status,
+            sessionScore: s.sessionScore,
+            durationMinutes: s.durationMinutes,
+            aiSnippet,
+            sentiment,
+          };
+        }),
       };
     }
   );

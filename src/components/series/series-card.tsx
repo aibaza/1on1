@@ -193,9 +193,9 @@ const statusClass: Record<string, string> = {
 };
 
 const sentimentBorder: Record<string, string> = {
-  positive: "border-b-4 border-b-green-500/50 dark:border-b-green-400/60",
-  concerning: "border-b-4 border-b-red-500/50 dark:border-b-red-400/60",
-  mixed: "border-b-4 border-b-amber-500/50 dark:border-b-amber-400/60",
+  positive: "border-l-4 border-l-green-500/50 dark:border-l-green-400/60",
+  concerning: "border-l-4 border-l-red-500/50 dark:border-l-red-400/60",
+  mixed: "border-l-4 border-l-amber-500/50 dark:border-l-amber-400/60",
   neutral: "",
 };
 
@@ -486,18 +486,6 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
                 <span className="opacity-60">{t("series.tooltipAiSummary")}</span>
               </TooltipContent>
             </Tooltip>
-            {isManager && !series.latestSession && (
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  startSession.mutate();
-                }}
-                className="relative z-10 pointer-events-auto text-xs text-primary hover:underline mt-1"
-              >
-                {t("series.startFirst")} {"\u2192"}
-              </button>
-            )}
           </>
         )}
         {hasInProgress && series.latestSession && (

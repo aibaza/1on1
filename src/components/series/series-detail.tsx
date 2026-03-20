@@ -54,6 +54,8 @@ interface SeriesDetailData {
     status: string;
     sessionScore: string | null;
     durationMinutes: number | null;
+    aiSnippet?: string | null;
+    sentiment?: string | null;
   }>;
 }
 
