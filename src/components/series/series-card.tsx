@@ -23,15 +23,22 @@ import { hashSeriesColor } from "@/lib/chart-colors";
 function RichTooltip({
   label,
   value,
+  href,
   children,
 }: {
   label: string;
   value?: string | null;
+  href?: string;
   children: React.ReactElement;
 }) {
+  const router = useRouter();
+  const handleClick = href
+    ? (e: React.MouseEvent) => { e.preventDefault(); router.push(href); }
+    : undefined;
+
   return (
     <Tooltip>
-      <TooltipTrigger asChild className="pointer-events-auto">
+      <TooltipTrigger asChild className={`pointer-events-auto ${href ? "cursor-pointer" : ""}`} onClick={handleClick}>
         {children}
       </TooltipTrigger>
       <TooltipContent className="max-w-xs">
@@ -315,6 +322,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
 
   const reportFullName = `${series.report.firstName} ${series.report.lastName}`;
   const managerFullName = `${series.manager.firstName} ${series.manager.lastName}`;
+  const seriesUrl = `/sessions/${series.id}`;
   const initials =
     (series.report.firstName?.[0] ?? "") +
     (series.report.lastName?.[0] ?? "");
@@ -348,7 +356,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <RichTooltip label={isManager ? t("series.tooltipTeamMember") : t("series.tooltipYou")} value={reportFullName}>
+          <RichTooltip label={isManager ? t("series.tooltipTeamMember") : t("series.tooltipYou")} value={reportFullName} href={seriesUrl}>
             <CardTitle className="text-base truncate">
               {reportFullName}
             </CardTitle>
@@ -358,8 +366,8 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
             const hasHalf = score !== null && score - fullStars >= 0.5;
             return (
               <Tooltip>
-                <TooltipTrigger asChild className="pointer-events-auto">
-                  <div className="flex items-center gap-0.5">
+                <TooltipTrigger asChild className="pointer-events-auto" onClick={() => router.push(seriesUrl)}>
+                  <div className="flex items-center gap-0.5 cursor-pointer">
                     {Array.from({ length: 5 }, (_, i) => {
                       if (score === null) {
                         return <Star key={i} className="h-3 w-3 text-muted-foreground/20" />;
@@ -400,7 +408,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
           })()}
         </div>
         {showManagerName && (
-          <RichTooltip label={t("series.tooltipManagedBy")} value={managerFullName}>
+          <RichTooltip label={t("series.tooltipManagedBy")} value={managerFullName} href={seriesUrl}>
             <span className="text-xs font-normal text-muted-foreground truncate max-w-[30%]">
               {managerFullName}
             </span>
@@ -452,7 +460,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
       </CardHeader>
       <CardContent className="relative z-[1] pointer-events-none flex flex-1 flex-col gap-2 pt-0">
         {series.latestSummary ? (
-          <RichTooltip label={t("series.tooltipAiSummary")} value={series.latestSummary.blurb}>
+          <RichTooltip label={t("series.tooltipAiSummary")} value={series.latestSummary.blurb} href={seriesUrl}>
             <p className="flex items-start gap-1.5 text-xs text-muted-foreground line-clamp-2">
               <span
                 className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${
@@ -468,8 +476,8 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
           </RichTooltip>
         ) : (
           <Tooltip>
-            <TooltipTrigger asChild className="pointer-events-auto">
-              <p className="text-xs text-muted-foreground/40 line-clamp-2 italic">
+            <TooltipTrigger asChild className="pointer-events-auto" onClick={() => router.push(seriesUrl)}>
+              <p className="text-xs text-muted-foreground/40 line-clamp-2 italic cursor-pointer">
                 {t("series.summaryPlaceholder")}
               </p>
             </TooltipTrigger>
@@ -480,11 +488,11 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
         )}
         {hasInProgress && series.latestSession && (
           <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-            <RichTooltip label={t("series.tooltipSessionStatus")}>
+            <RichTooltip label={t("series.tooltipSessionStatus")} href={seriesUrl}>
               <span>{t("series.inProgress", { number: series.latestSession.sessionNumber })}</span>
             </RichTooltip>
             {series.defaultTemplateName && (
-              <RichTooltip label={t("series.tooltipTemplate")} value={series.defaultTemplateName}>
+              <RichTooltip label={t("series.tooltipTemplate")} value={series.defaultTemplateName} href={seriesUrl}>
                 <span className="max-w-[50%] truncate text-muted-foreground/60">
                   {series.defaultTemplateName}
                 </span>
@@ -493,7 +501,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
           </div>
         )}
         {!hasInProgress && series.defaultTemplateName && (
-          <RichTooltip label={t("series.tooltipTemplate")} value={series.defaultTemplateName}>
+          <RichTooltip label={t("series.tooltipTemplate")} value={series.defaultTemplateName} href={seriesUrl}>
             <p className="text-xs text-muted-foreground/60 truncate max-w-[50%] ml-auto">
               {series.defaultTemplateName}
             </p>
@@ -529,13 +537,13 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
             </Button>
           ) : <div />}
           <div className="flex flex-col items-end gap-0.5">
-            <RichTooltip label={t("series.tooltipNextSession")} value={series.nextSessionAt ? format.dateTime(new Date(series.nextSessionAt), { dateStyle: "full", timeStyle: "short" }) : undefined}>
+            <RichTooltip label={t("series.tooltipNextSession")} value={series.nextSessionAt ? format.dateTime(new Date(series.nextSessionAt), { dateStyle: "full", timeStyle: "short" }) : undefined} href={seriesUrl}>
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
                 <CalendarDays className="h-3 w-3" />
                 <span>{nextDateText}</span>
               </div>
             </RichTooltip>
-            <RichTooltip label={t("series.tooltipSchedule")}>
+            <RichTooltip label={t("series.tooltipSchedule")} href={seriesUrl}>
               <span className="text-xs text-muted-foreground/50">
                 {scheduleText}
               </span>
