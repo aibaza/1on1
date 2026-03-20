@@ -108,7 +108,11 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
   6. Team cards have a visible border in dark mode for definition against the page background
   7. Session cards with no sessions show a "Start first session" link below the AI summary placeholder
   8. Mobile history page search input placeholder is short enough to display without truncation
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 23-01-PLAN.md — i18n placeholders, audit log acronyms, forgot-password centering, active badge, action items divider
+- [ ] 23-02-PLAN.md — Team card dark mode border, series card empty state link
 
 ## Progress
 
