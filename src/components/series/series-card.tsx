@@ -348,7 +348,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <RichTooltip label={isManager ? t("series.tooltipReport") : t("series.tooltipManager")} value={reportFullName}>
+          <RichTooltip label={isManager ? t("series.tooltipTeamMember") : t("series.tooltipYou")} value={reportFullName}>
             <CardTitle className="text-base truncate">
               {reportFullName}
             </CardTitle>
