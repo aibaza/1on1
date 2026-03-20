@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.6.2] - 2026-03-20
+
+### Fixed
+- Start session now promotes existing scheduled session to in_progress instead of creating a duplicate (fixes empty session #1 when agenda button was used first)
+
 ## [1.6.1] - 2026-03-20
 
 ### Added
