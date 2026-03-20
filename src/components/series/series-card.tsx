@@ -31,7 +31,7 @@ function RichTooltip({
 }) {
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
+      <TooltipTrigger asChild className="pointer-events-auto">
         {children}
       </TooltipTrigger>
       <TooltipContent className="max-w-xs">
@@ -327,7 +327,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
     <Card className={`group relative flex h-full flex-col overflow-hidden transition-all duration-200 hover:shadow-md ${sentimentBorder[series.latestSummary?.sentiment ?? ""] ?? ""}`}>
       <Link href={`/sessions/${series.id}`} className="absolute inset-0 z-0" />
       <ScoreSparkline assessmentHistory={series.assessmentHistory} questionHistories={series.questionHistories} id={series.id} />
-      <CardHeader className="flex flex-row items-center gap-3 pb-2">
+      <CardHeader className="relative z-[1] pointer-events-none flex flex-row items-center gap-3 pb-2">
         <div className="relative shrink-0">
           <Avatar className="h-10 w-10">
             <AvatarImage src={series.report.avatarUrl ?? undefined} />
@@ -358,7 +358,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
             const hasHalf = score !== null && score - fullStars >= 0.5;
             return (
               <Tooltip>
-                <TooltipTrigger asChild>
+                <TooltipTrigger asChild className="pointer-events-auto">
                   <div className="flex items-center gap-0.5">
                     {Array.from({ length: 5 }, (_, i) => {
                       if (score === null) {
@@ -416,11 +416,11 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
         {series.status === "active" && (
           <>
             <Tooltip>
-              <TooltipTrigger asChild>
+              <TooltipTrigger asChild className="pointer-events-auto">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative z-10 h-8 w-8"
+                  className="relative z-10 h-8 w-8 pointer-events-auto"
                   onClick={handleAgendaClick}
                   disabled={ensureSession.isPending}
                   aria-label={`${reportFullName} ${t("series.agenda")}`}
@@ -450,7 +450,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
           </>
         )}
       </CardHeader>
-      <CardContent className="flex flex-1 flex-col gap-2 pt-0">
+      <CardContent className="relative z-[1] pointer-events-none flex flex-1 flex-col gap-2 pt-0">
         {series.latestSummary ? (
           <RichTooltip label={t("series.tooltipAiSummary")} value={series.latestSummary.blurb}>
             <p className="flex items-start gap-1.5 text-xs text-muted-foreground line-clamp-2">
@@ -468,7 +468,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
           </RichTooltip>
         ) : (
           <Tooltip>
-            <TooltipTrigger asChild>
+            <TooltipTrigger asChild className="pointer-events-auto">
               <p className="text-xs text-muted-foreground/40 line-clamp-2 italic">
                 {t("series.summaryPlaceholder")}
               </p>
@@ -504,7 +504,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
             <Button
               variant={hasInProgress ? "default" : "ghost"}
               size="sm"
-              className="relative z-10 -ml-3 -mb-1.5"
+              className="relative z-10 -ml-3 -mb-1.5 pointer-events-auto"
               onClick={(e) => {
                 e.preventDefault();
                 if (!hasInProgress) {
