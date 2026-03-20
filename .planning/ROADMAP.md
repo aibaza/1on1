@@ -112,7 +112,7 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 
 Plans:
 - [ ] 23-01-PLAN.md — i18n placeholders, audit log acronyms, forgot-password centering, active badge, action items divider
-- [ ] 23-02-PLAN.md — Team card dark mode border, series card empty state link
+- [x] 23-02-PLAN.md — Team card dark mode border, series card empty state link
 
 ## Progress
 
