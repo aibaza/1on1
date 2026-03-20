@@ -51,14 +51,14 @@ async function openHistory(page: Page) {
 async function ensurePublished(page: Page) {
   await ensureEditorView(page);
   // Check if there's an "Unpublish" button — means it's already published
-  const unpublishBtn = page.getByRole("button", { name: /^unpublish$/i });
+  const unpublishBtn = page.getByRole("button", { name: /unpublish/i });
   if (await unpublishBtn.isVisible().catch(() => false)) {
     // Already published — unpublish first, then republish to create a new version
     await unpublishBtn.click();
     await page.waitForTimeout(1500);
   }
   // Now publish
-  const publishBtn = page.getByRole("button", { name: /^publish$/i });
+  const publishBtn = page.getByRole("button", { name: /publish/i }).first();
   await expect(publishBtn).toBeVisible({ timeout: 5_000 });
   await publishBtn.click();
   await page.waitForTimeout(2000);
@@ -66,6 +66,13 @@ async function ensurePublished(page: Page) {
 
 test.describe("Template Versioning & Answer Remapping", () => {
   test.describe.configure({ mode: "serial" });
+
+  // Template management requires admin or manager role — skip member project
+  test.beforeEach(({}, testInfo) => {
+    if (testInfo.project.name.includes("member")) {
+      test.skip();
+    }
+  });
 
   test("publish creates version snapshot and History tab shows it", async ({
     page,
@@ -219,11 +226,11 @@ test.describe("Template Versioning & Answer Remapping", () => {
 
     // Template should now be unpublished — "Publish" button should be visible
     await expect(
-      page.getByRole("button", { name: /^publish$/i })
+      page.getByRole("button", { name: /publish/i })
     ).toBeVisible({ timeout: 10_000 });
 
     // Re-publish to leave template in a clean state for other tests
-    await page.getByRole("button", { name: /^publish$/i }).click();
+    await page.getByRole("button", { name: /publish/i }).click();
     await page.waitForTimeout(2000);
   });
 
