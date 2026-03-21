@@ -49,15 +49,18 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 - ✓ Correction notification: report + all admins emailed with session link, 5-minute deduplication window — v1.4
 - ✓ Correction audit trail: atomic write (history + answer update + audit log in one transaction) — v1.4
 - ✓ Playwright E2E test suite: auth setup, full flow coverage, RBAC assertions, CI pipeline (GitHub Actions) — v1.5
-
-### Active
-
 - ✓ Low-priority polish: 9 small visual and copy tweaks (registration, audit log, auth pages, people list, action items, team cards, session cards, mobile history) — v1.6
 - ✓ Template versioning: on-publish snapshots to template_version table, version history UI with preview/diff/restore, answers preserved via original question_id FK — v1.6
+- ✓ Role-based sessions access control: admin grouped by manager, manager split into My Team/My 1:1s, member flat list — v1.6
+- ✓ Pre-meeting talking points via AgendaSheet component — v1.6
+- ✓ Unified AI pipeline: single Sonnet call replaces 3-call chain — v1.7
+- ✓ Company Internal Manifesto + team context for AI — v1.7
+- ✓ AI assessment score migrated from 1-100 to 1-5 scale — v1.7
+- ✓ Vercel Web Analytics — v1.7
+- ✓ Dev preview environment (develop branch + separate Neon DB) — v1.7
 
 ### Future
 
-- **v1.5 planned:** Playwright E2E testing suite with CI integration (GitHub Actions), SMTP mocking, role-switching helpers, full edge case + regression coverage, designed for maintainability and future-proof expansion
 - AI personal profiles built from accumulated session data (pgvector embeddings)
 - AI live suggestions during active sessions (streaming, low latency)
 - AI-generated growth narratives ("Over Q1, Alex improved communication by 23%...")
@@ -84,42 +87,39 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 - Manager scoring / ranking — creates perverse incentives
 - Multi-language template translations — questionnaires defined in one language per company, no per-template multi-language support yet
 
-## Current Milestone: v1.6 Low-Priority Polish
+## Latest Release: v1.7.0 (2026-03-21)
 
-**Goal:** Apply 9 small text, visual, and layout tweaks for a professionally finished product — correct placeholder text, accurate copy, properly styled dividers, centered auth pages, hidden redundant badges, and mobile-optimised layout details.
+All milestones v1.0–v1.7.0 archived. Ready for next milestone.
 
-**Target features:**
-- Correct company name placeholder in registration ("Acme Corp")
-- Fix audit log acronym casing ("AI Pipeline Completed")
-- Center forgot-password page card (match login/register)
-- Hide "Active" badge when all users are active
-- Style COMPLETED divider in action items (13px, hairline)
-- Dark mode border on team cards
-- "Start first session" link on empty session cards
-- Short mobile history search placeholder
+**Shipped milestones:**
+- v1.0 MVP (2026-03-05) — 10 phases, 40 plans
+- v1.1 Internationalization (2026-03-07) — 4 phases, 13 plans
+- v1.2 AI-Ready Templates (2026-03-07) — 3 phases, 16 plans
+- v1.3 UI/UX Improvements (2026-03-16) — 5 phases, 18 plans
+- v1.4 Session Corrections (2026-03-13) — 4 phases, 12 plans
+- v1.5 Playwright E2E (2026-03-13) — 1 phase, 6 plans
+- v1.6 Polish + Versioning (2026-03-20) — 3 phases, 8 plans
+- v1.7.0 Unified AI + Infrastructure (2026-03-21) — no GSD phases
 
 ## Context
 
-**Shipped v1.5 Playwright E2E Test Suite** on 2026-03-16 (345 TypeScript/TSX source files, 52,632 LOC). v1.0 shipped 2026-03-05 (290 files), v1.1 shipped 2026-03-07 (i18n + Romanian), v1.2 shipped 2026-03-07 (template portability + AI co-authoring), v1.3 shipped 2026-03-16 (UX audit closure — 5 phases, 18 plans), v1.4 shipped 2026-03-16 (session corrections with AI validation + full audit trail), v1.5 shipped 2026-03-16 (Playwright E2E suite + CI).
+**Shipped v1.7.0** on 2026-03-21. 29 GSD phases across 7 milestones, plus v1.7.0 infrastructure work done outside the phase system. Codebase: ~55,000+ LOC TypeScript/TSX. Timeline: 20 days (2026-03-02 → 2026-03-21).
 
-**Tech stack:** Next.js 15 (App Router) + TypeScript + Drizzle ORM + PostgreSQL 16 + shadcn/ui + Tailwind CSS 4 + Vercel AI SDK + Auth.js v5 + Inngest + TanStack Query + Recharts + React Email + Tiptap.
+**Tech stack:** Next.js 16 (App Router) + TypeScript + Drizzle ORM + PostgreSQL 16 + shadcn/ui + Tailwind CSS 4 + Vercel AI SDK + Auth.js v5 + TanStack Query + Recharts + React Email + Tiptap.
 
-**Architecture:** Monolith-first — single Next.js app with Server Components for reads, API routes for writes, direct async functions for AI pipeline (Inngest removed mid-milestone in favor of simpler direct execution).
+**Architecture:** Monolith-first — single Next.js app with Server Components for reads, API routes for writes, direct async functions for AI pipeline.
 
 **Key technical patterns:** PostgreSQL RLS for tenant isolation, AES-256-GCM for private note encryption, delete-then-insert for analytics snapshots, useReducer for wizard state, Collapsible context panels, optimistic UI updates, cursor-based pagination, full-text search with websearch_to_tsquery.
 
-**What worked well:** Phase-based planning with parallel execution paths (6/7/9 after 5), UAT-driven gap closure phases, yolo mode for autonomous execution.
-
 **Known tech debt:**
 - AI context retrieval uses full-text search (pgvector deferred)
-- Inngest partially removed but some infrastructure remains
 - Client-side filtering for people directory (acceptable for v1 volumes)
 - Shared notes searched via JSONB text extraction without GIN index
 
 ## Constraints
 
 - **Package manager**: Bun (not npm)
-- **Tech stack**: Next.js 15 + TypeScript + Drizzle ORM + PostgreSQL 16
+- **Tech stack**: Next.js 16 + TypeScript + Drizzle ORM + PostgreSQL 16
 - **UI framework**: shadcn/ui + Tailwind CSS 4
 - **Deployment**: Vercel (production), Docker Compose (local, port 4300)
 - **Test URL**: `https://1on1.surmont.co/` → reverse proxy to `localhost:4300`
@@ -143,6 +143,8 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 | useReducer for wizard state | Single source of truth for cross-category logic | ✓ Good |
 | Delete-then-insert for snapshots | NULL-safe unique index handling | ✓ Good |
 | Nodemailer over Resend | Works with any SMTP provider | ✓ Good — provider flexibility |
+| Unified AI (1 call vs 3) | Lower latency, better coherence, simpler code | ✓ Good — v1.7.0 |
+| 1-5 score scale over 1-100 | More intuitive for users, matches star ratings | ✓ Good — v1.7.0 |
 
 ---
-*Last updated: 2026-03-20 after Phase 23 (Low-Priority Polish) completion*
+*Last updated: 2026-03-21 — all milestones through v1.7.0 archived*

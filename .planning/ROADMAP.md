@@ -6,9 +6,10 @@
 - ✅ **v1.1 Internationalization** — Phases 11-14 (shipped 2026-03-07)
 - ✅ **v1.2 AI-Ready Templates** — Phases 15-17 (shipped 2026-03-07)
 - ✅ **v1.3 UI/UX Improvements** — Phases 18-22 (shipped 2026-03-16)
-- ✅ **v1.4 Session Corrections & Accountability** — Phases 24-27 (shipped 2026-03-16)
-- ✅ **v1.5 Playwright E2E Test Suite** — Phase 28 (shipped 2026-03-16)
-- 📋 **v1.6 Low-Priority Polish** — Phase 23 (planned)
+- ✅ **v1.4 Session Corrections & Accountability** — Phases 24-27 (shipped 2026-03-13)
+- ✅ **v1.5 Playwright E2E Test Suite** — Phase 28 (shipped 2026-03-13)
+- ✅ **v1.6 Polish + Versioning** — Phases 23, 29 (shipped 2026-03-20)
+- ✅ **v1.7.0 Unified AI + Infrastructure** — No GSD phases (shipped 2026-03-21)
 
 ## Phases
 
@@ -67,7 +68,7 @@ Full details: `.planning/milestones/v1.3-ROADMAP.md`
 </details>
 
 <details>
-<summary>✅ v1.4 Session Corrections & Accountability (Phases 24-27) — SHIPPED 2026-03-16</summary>
+<summary>✅ v1.4 Session Corrections & Accountability (Phases 24-27) — SHIPPED 2026-03-13</summary>
 
 - [x] Phase 24: Schema Foundation (2/2 plans) — completed 2026-03-10
 - [x] Phase 25: Core API & Business Logic (3/3 plans) — completed 2026-03-10
@@ -79,7 +80,7 @@ Full details: `.planning/milestones/v1.4-ROADMAP.md`
 </details>
 
 <details>
-<summary>✅ v1.5 Playwright E2E Test Suite (Phase 28) — SHIPPED 2026-03-16</summary>
+<summary>✅ v1.5 Playwright E2E Test Suite (Phase 28) — SHIPPED 2026-03-13</summary>
 
 - [x] Phase 28: Playwright E2E Test Suite (6/6 plans) — completed 2026-03-13
 
@@ -87,32 +88,31 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 
 </details>
 
-### 📋 v1.6 Low-Priority Polish (Planned)
+<details>
+<summary>✅ v1.6 Polish + Versioning (Phases 23, 29) — SHIPPED 2026-03-20</summary>
 
-**Milestone Goal:** Apply 9 small text, visual, and layout tweaks for a professionally finished product — correct placeholder text, accurate copy, properly styled dividers, centered auth pages, hidden redundant badges, and mobile-optimised layout details.
+- [x] Phase 23: Low-Priority Polish (2/2 plans) — completed 2026-03-20
+- [x] Phase 24: Sessions Access Control & Talking Points (3/3 plans) — completed 2026-03-19
+- [x] Phase 29: Template Versioning & Answer Remapping (3/3 plans) — completed 2026-03-19
 
-- [x] **Phase 23: Low-Priority Polish** — 9 small visual and copy tweaks across registration, audit log, auth pages, people list, action items, team cards, session cards, and mobile history (completed 2026-03-20)
+</details>
 
-## Phase Details
+<details>
+<summary>✅ v1.7.0 Unified AI + Infrastructure — RELEASED 2026-03-21</summary>
 
-### Phase 23: Low-Priority Polish
-**Goal**: Users see a professionally finished product — correct placeholder text, accurate copy, properly styled dividers, centered auth pages, hidden redundant badges, and mobile-optimized layout details
-**Depends on**: Phase 19
-**Requirements**: POL-01, POL-02, POL-03, POL-04, POL-05, POL-06, POL-07, POL-08, POL-09
-**Success Criteria** (what must be TRUE):
-  1. Registration company name field shows a company name placeholder ("Acme Corp") — not a person name
-  2. Audit log action names use correct acronym casing ("AI Pipeline Completed", not "Ai Pipeline Completed")
-  3. Forgot-password page card is vertically centered, matching login and register page alignment
-  4. People list hides the "Active" status badge when all users are active — badge only appears for non-default states
-  5. Action items "COMPLETED" section divider uses 13px font and a hairline hr — readable and unobtrusive
-  6. Team cards have a visible border in dark mode for definition against the page background
-  7. Session cards with no sessions show a "Start first session" link below the AI summary placeholder
-  8. Mobile history page search input placeholder is short enough to display without truncation
-**Plans:** 2/2 plans complete
+No GSD phases — work done outside the phase system:
 
-Plans:
-- [ ] 23-01-PLAN.md — i18n placeholders, audit log acronyms, forgot-password centering, active badge, action items divider
-- [x] 23-02-PLAN.md — Team card dark mode border, series card empty state link
+- Unified AI pipeline: 3 separate LLM calls → 1 Sonnet 4.5 call
+- Company "Internal Manifesto" field + team context for AI
+- `SessionListItem` shared component with sentiment color borders
+- Vercel Web Analytics integration
+- Vercel serverless moved to Frankfurt (fra1)
+- Development preview environment (`develop` branch + separate Neon DB)
+- Quick deploy script (`scripts/quick-deploy.sh`)
+- Pre-push hook simplified (typecheck only)
+- AI assessment score migrated from 1-100 to 1-5
+
+</details>
 
 ## Progress
 
@@ -140,34 +140,10 @@ Plans:
 | 20. Mobile Responsiveness | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 21. Content & Data Display | v1.3 | 4/4 | Complete | 2026-03-08 |
 | 22. Safety, Errors & Inputs | v1.3 | 4/4 | Complete | 2026-03-16 |
-| 23. Low-Priority Polish | 2/2 | Complete    | 2026-03-20 | — |
-| 24. Schema Foundation | 2/2 | Complete    | 2026-03-19 | 2026-03-10 |
+| 23. Low-Priority Polish | v1.6 | 2/2 | Complete | 2026-03-20 |
+| 24. Sessions Access Control | v1.6 | 3/3 | Complete | 2026-03-19 |
 | 25. Core API & Business Logic | v1.4 | 3/3 | Complete | 2026-03-10 |
 | 26. Email Notification & i18n | v1.4 | 3/3 | Complete | 2026-03-13 |
 | 27. UI Integration | v1.4 | 4/4 | Complete | 2026-03-13 |
 | 28. Playwright E2E Test Suite | v1.5 | 6/6 | Complete | 2026-03-13 |
-| 29. Template Versioning & Answer Remapping | 3/3 | Complete    | 2026-03-19 |
-
-### Phase 24: Sessions Access Control and Pre-Meeting Talking Points
-
-**Goal:** Each role sees only authorized series on the sessions page (admin grouped by manager, manager split into My Team/My 1:1s, member flat list), and both participants can add talking points to scheduled sessions via an agenda sheet before starting the wizard
-**Requirements**: ACC-01, ACC-02, ACC-03, ACC-04, TP-01, TP-02, TP-03, I18N-01
-**Depends on:** Phase 23
-**Plans:** 3/3 plans complete — completed 2026-03-19
-
-Plans:
-- [x] 24-00-PLAN.md — Wave 0 TDD: test scaffolds for series role filtering and talking points status gate
-- [x] 24-01-PLAN.md — API + query changes: role-based series filtering, manager info, talking points status relaxation
-- [x] 24-02-PLAN.md — UI: role-based grouping in SeriesList, AgendaSheet component, i18n keys
-
-### Phase 29: Template Versioning & Answer Remapping
-
-**Goal:** On publish, snapshot the current template to a template_version table (JSONB). Show version history in the template editor with read-only preview, change list diff, and restore capability. Answers always point to original question_id (no remapping). Prevents answer loss on template edits.
-**Requirements**: VER-01, VER-02, VER-03, VER-04, VER-05, VER-06, VER-07, VER-08
-**Depends on:** Phase 24
-**Plans:** 3/3 plans complete
-
-Plans:
-- [x] 29-01-PLAN.md — Schema + snapshot utility + publish hook (template_version table, buildTemplateSnapshot, Zod schemas)
-- [x] 29-02-PLAN.md — Version API routes (list, detail, restore) + diff computation utility
-- [x] 29-03-PLAN.md — UI: History tab in template editor, version preview, diff list, restore dialog, i18n
+| 29. Template Versioning | v1.6 | 3/3 | Complete | 2026-03-19 |
