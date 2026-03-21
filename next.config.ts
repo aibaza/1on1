@@ -23,3 +23,4 @@ export default withSentryConfig(withNextIntl(nextConfig), {
   // Only print Sentry build output in CI
   silent: !process.env.CI,
 });
+// Development preview environment
