@@ -4,10 +4,12 @@ import { redirect } from "next/navigation";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { canManageSeries } from "@/lib/auth/rbac";
 import { SeriesList } from "@/components/series/series-list";
+import { EditorialSeriesList } from "@/components/series/editorial-series-list";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getSeriesCardData } from "@/lib/queries/series";
+import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function SessionsPage() {
   const t = await getTranslations("sessions");
@@ -24,31 +26,57 @@ export default async function SessionsPage() {
   );
 
   const showCreateButton = canManageSeries(session.user.role);
+  const designPref = await getDesignPreference();
+  const isEditorial = designPref === "editorial";
 
   return (
-    <div className="space-y-6">
+    <div className={isEditorial ? "space-y-8" : "space-y-6"}>
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-          <p className="text-muted-foreground">
-            {t("description")}
-          </p>
-        </div>
+        {isEditorial ? (
+          <div>
+            <h1 className="text-4xl font-extrabold tracking-tight font-headline">{t("title")}</h1>
+            <p className="text-muted-foreground text-lg mt-2">{t("description")}</p>
+          </div>
+        ) : (
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+            <p className="text-muted-foreground">{t("description")}</p>
+          </div>
+        )}
         {showCreateButton && (
-          <Button variant="outline" asChild>
-            <Link href="/sessions/new">
+          isEditorial ? (
+            <Link
+              href="/sessions/new"
+              className="inline-flex items-center px-6 py-3 rounded-xl font-bold text-sm text-white shadow-md hover:opacity-90 transition-opacity"
+              style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
+            >
               <Plus className="mr-2 h-4 w-4" />
               {t("newSeries")}
             </Link>
-          </Button>
+          ) : (
+            <Button variant="outline" asChild>
+              <Link href="/sessions/new">
+                <Plus className="mr-2 h-4 w-4" />
+                {t("newSeries")}
+              </Link>
+            </Button>
+          )
         )}
       </div>
 
-      <SeriesList
-        initialSeries={seriesData}
-        currentUserId={session.user.id}
-        userRole={session.user.role}
-      />
+      {isEditorial ? (
+        <EditorialSeriesList
+          initialSeries={seriesData}
+          currentUserId={session.user.id}
+          userRole={session.user.role}
+        />
+      ) : (
+        <SeriesList
+          initialSeries={seriesData}
+          currentUserId={session.user.id}
+          userRole={session.user.role}
+        />
+      )}
     </div>
   );
 }
