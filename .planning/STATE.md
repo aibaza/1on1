@@ -23,7 +23,16 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 
 ## Current Position
 
-All milestones v1.0–v1.7.0 complete and archived.
+All milestones v1.0–v1.7.0 archived. Next: v1.8 UI/UX Review + Report Pre-fill (Phases 30-35).
+
+### Planned Milestones
+
+| Milestone | Phases | Focus |
+|-----------|--------|-------|
+| v1.8 | 30-35 | UI/UX audit + report pre-fill |
+| v1.9 | 36-41 | AI intelligence layer (pgvector, metrics, anomaly, narratives) |
+| v2.0 | 42-45 | Google Workspace (OAuth, Calendar, Tasks) |
+| v2.1 | 46-49 | Analytics everywhere + SMART objectives |
 
 ## Milestone History
 

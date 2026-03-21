@@ -91,7 +91,7 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 
 ## Latest Release: v1.7.0 (2026-03-21)
 
-All milestones v1.0–v1.7.0 archived. Ready for next milestone.
+All milestones v1.0–v1.7.0 archived. Next milestone: v1.8 UI/UX Review + Report Pre-fill.
 
 **Shipped milestones:**
 - v1.0 MVP (2026-03-05) — 10 phases, 40 plans
