@@ -56,6 +56,17 @@ interface SummaryCategory {
   privateNotes: SummaryPrivateNote[];
 }
 
+interface SessionHistoryItem {
+  id: string;
+  sessionNumber: number;
+  scheduledAt: string;
+  completedAt: string | null;
+  status: string;
+  sessionScore: number | null;
+  aiSnippet: string | null;
+  sentiment: string | null;
+}
+
 export interface EditorialSessionSummaryProps {
   sessionNumber: number;
   scheduledAt: string;
@@ -79,6 +90,7 @@ export interface EditorialSessionSummaryProps {
   correctionsByAnswerId: Record<string, CorrectionEntry[]>;
   allCorrections: CorrectionEntry[];
   isAdmin: boolean;
+  sessionHistory?: SessionHistoryItem[];
 }
 
 function getCategoryScore(cat: SummaryCategory): number | null {
@@ -110,9 +122,9 @@ function getCategoryAnswerCount(cat: SummaryCategory): number {
 export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
   const {
     sessionNumber, scheduledAt, completedAt, sessionScore, durationMinutes,
-    categories, isManager, seriesId, aiSummary, aiAddendum,
+    categories, isManager, seriesId, sessionId, aiSummary, aiAddendum,
     managerName, reportName, managerTeam, reportTeam,
-    correctionsByAnswerId,
+    correctionsByAnswerId, sessionHistory,
   } = props;
 
   const t = useTranslations("sessions");
@@ -406,6 +418,76 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
           )}
         </div>
       </section>
+
+      {/* Session History */}
+      {sessionHistory && sessionHistory.length > 1 && (
+        <section className="mb-10">
+          <h3 className="text-xl font-bold text-foreground mb-6 px-2 font-headline">Session History</h3>
+          <div className="bg-card rounded-2xl shadow-sm border border-border/50 overflow-hidden divide-y divide-border/50">
+            {sessionHistory.map((s) => {
+              const isActive = s.id === sessionId;
+              const sentimentColor = s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : s.sentiment === "mixed" ? "#f59e0b" : "transparent";
+              return (
+                <Link
+                  key={s.id}
+                  href={`/sessions/${s.id}/summary`}
+                  className={`flex items-center gap-6 p-5 transition-all ${
+                    isActive
+                      ? "bg-primary/5 border-l-4 border-primary"
+                      : s.status === "completed"
+                        ? "hover:bg-muted border-l-4 border-transparent"
+                        : "opacity-50 border-l-4 border-transparent"
+                  }`}
+                >
+                  {/* Session number */}
+                  <div className="text-center min-w-[50px]">
+                    <p className={`text-2xl font-extrabold ${isActive ? "text-primary" : "text-foreground"}`}>
+                      #{s.sessionNumber}
+                    </p>
+                  </div>
+
+                  <div className="w-px h-10 bg-border/30" />
+
+                  {/* Details */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-foreground">
+                        {format.dateTime(new Date(s.scheduledAt), { month: "short", day: "numeric", year: "numeric" })}
+                      </p>
+                      {isActive && (
+                        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded uppercase tracking-wider">
+                          Current
+                        </span>
+                      )}
+                      {s.status !== "completed" && (
+                        <span className="text-[10px] font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded uppercase tracking-wider">
+                          {s.status}
+                        </span>
+                      )}
+                    </div>
+                    {s.aiSnippet && (
+                      <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{s.aiSnippet}</p>
+                    )}
+                  </div>
+
+                  {/* Score + sentiment */}
+                  {s.sessionScore !== null && (
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: sentimentColor }} />
+                      <StarRating score={s.sessionScore} size="sm" />
+                      <span className="text-xs font-bold text-muted-foreground tabular-nums">{s.sessionScore.toFixed(1)}</span>
+                    </div>
+                  )}
+
+                  {s.status === "completed" && !isActive && (
+                    <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-border pt-10 flex flex-col md:flex-row items-center justify-between gap-6">

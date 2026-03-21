@@ -16,7 +16,7 @@ import {
   teamMembers,
   sessionAnswerHistory,
 } from "@/lib/db/schema";
-import { eq, and, asc, inArray, sql, desc } from "drizzle-orm";
+import { eq, and, asc, inArray, sql, desc, ne } from "drizzle-orm";
 import { decryptNote, type EncryptedPayload } from "@/lib/encryption/private-notes";
 import { SessionSummaryView } from "@/components/session/session-summary-view";
 import { EditorialSessionSummary } from "@/components/session/editorial-session-summary";
@@ -465,6 +465,21 @@ export default async function SessionSummaryPage({
         reportTeam: reportTeamRow?.name ?? null,
         correctionsByAnswerId,
         allCorrections,
+
+        // Fetch sibling sessions in same series for history navigation
+        siblingSessionsRaw: await tx
+          .select({
+            id: sessions.id,
+            sessionNumber: sessions.sessionNumber,
+            scheduledAt: sessions.scheduledAt,
+            completedAt: sessions.completedAt,
+            status: sessions.status,
+            sessionScore: sessions.sessionScore,
+            aiSummary: sessions.aiSummary,
+          })
+          .from(sessions)
+          .where(eq(sessions.seriesId, series.id))
+          .orderBy(desc(sessions.sessionNumber)),
       };
     }
   );
@@ -477,10 +492,60 @@ export default async function SessionSummaryPage({
   }
 
   const designPref = await getDesignPreference();
-  const SummaryComponent = designPref === "editorial" ? EditorialSessionSummary : SessionSummaryView;
+
+  // Build session history for editorial view
+  const sessionHistory = data.siblingSessionsRaw.map((s) => {
+    let aiSnippet: string | null = null;
+    let sentiment: string | null = null;
+    if (s.aiSummary && typeof s.aiSummary === "object") {
+      const summary = s.aiSummary as { cardBlurb?: string; overallSentiment?: string };
+      aiSnippet = summary.cardBlurb ?? null;
+      sentiment = summary.overallSentiment ?? null;
+    }
+    return {
+      id: s.id,
+      sessionNumber: s.sessionNumber,
+      scheduledAt: s.scheduledAt.toISOString(),
+      completedAt: s.completedAt?.toISOString() ?? null,
+      status: s.status,
+      sessionScore: s.sessionScore ? Number(s.sessionScore) : null,
+      aiSnippet,
+      sentiment,
+    };
+  });
+
+  if (designPref === "editorial") {
+    return (
+      <EditorialSessionSummary
+        sessionId={data.sessionId}
+        sessionNumber={data.sessionNumber}
+        scheduledAt={data.scheduledAt}
+        completedAt={data.completedAt}
+        sessionScore={data.sessionScore}
+        durationMinutes={data.durationMinutes}
+        status={data.status}
+        categories={data.categories}
+        isManager={data.isManager}
+        seriesId={data.seriesId}
+        aiStatus={data.aiStatus}
+        aiSummary={data.aiSummary}
+        aiAddendum={data.aiAddendum}
+        managerId={data.managerId}
+        reportId={data.reportId}
+        managerName={data.managerName}
+        reportName={data.reportName}
+        managerTeam={data.managerTeam}
+        reportTeam={data.reportTeam}
+        correctionsByAnswerId={data.correctionsByAnswerId}
+        allCorrections={data.allCorrections}
+        isAdmin={data.isAdmin}
+        sessionHistory={sessionHistory}
+      />
+    );
+  }
 
   return (
-    <SummaryComponent
+    <SessionSummaryView
       sessionId={data.sessionId}
       sessionNumber={data.sessionNumber}
       scheduledAt={data.scheduledAt}
