@@ -26,7 +26,7 @@ async function generateBlurb(summary: AISummary, language = "English"): Promise<
   const takeaways = summary.keyTakeaways.join("; ");
 
   const { text } = await generateText({
-    model: models.actionSuggestions,
+    model: models.unified,
     system: `You write concise one-on-one meeting summaries. Write in ${language}.`,
     prompt: `Based on these session takeaways and highlights, write a single 1-2 sentence plain-language blurb (max 25 words) suitable for a card preview. Be concrete, not generic.\n\nTakeaways: ${takeaways}\n\nHighlights:\n${highlights}\n\nBlurb:`,
   });

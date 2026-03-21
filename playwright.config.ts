@@ -74,9 +74,15 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "PORT=4301 node .next/standalone/server.js",
+    command: "npx next dev --port 4301",
     url: "http://localhost:4301",
     reuseExistingServer: true,
     timeout: 120_000,
+    env: {
+      ...process.env,
+      NEXT_PUBLIC_APP_URL: "http://localhost:4301",
+      AUTH_URL: "http://localhost:4301",
+      AUTH_TRUST_HOST: "true",
+    },
   },
 });

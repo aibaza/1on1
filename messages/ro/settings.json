@@ -43,6 +43,12 @@
       "title": "Tema de culori",
       "description": "Alege o temă de culori pentru organizație. Toți membrii vor vedea această temă aplicată în panou și grafice."
     },
+    "aiContext": {
+      "title": "Manifest intern",
+      "description": "Ajută AI-ul să înțeleagă compania ta. Acest context este inclus în fiecare analiză de sesiune pentru a genera rezumate și sugestii de coaching mai relevante.",
+      "label": "Manifestul companiei",
+      "placeholder": "Descrie cultura companiei, valorile, direcția și orice context care ar ajuta AI-ul să înțeleagă mai bine organizația ta..."
+    },
     "saved": "Setările au fost salvate.",
     "saving": "Se salvează...",
     "saveChanges": "Salvează modificările",

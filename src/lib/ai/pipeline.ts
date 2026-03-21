@@ -1,16 +1,15 @@
 import * as Sentry from "@sentry/nextjs";
 import { gatherSessionContext } from "./context";
-import {
-  generateSummary,
-  generateManagerAddendum,
-  generateActionSuggestions,
-} from "./service";
+import { generateUnifiedOutput } from "./service";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { logAuditEvent } from "@/lib/audit/log";
 import { computeSessionSnapshot } from "@/lib/analytics/compute";
 import { sendPostSessionSummaryEmails } from "@/lib/notifications/summary-email";
 import { sessions, tenants } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import type { AISummary } from "./schemas/summary";
+import type { AIManagerAddendum } from "./schemas/addendum";
+import type { AIActionSuggestions } from "./schemas/action-items";
 
 interface PipelineInput {
   sessionId: string;
@@ -21,7 +20,7 @@ interface PipelineInput {
 }
 
 /**
- * Run the full post-session AI pipeline directly (no Inngest).
+ * Run the post-session AI pipeline — single unified LLM call.
  *
  * This is a fire-and-forget function — call it without await.
  * It handles its own error handling and sets aiStatus to "failed" on error.
@@ -29,18 +28,11 @@ interface PipelineInput {
 export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
   const { sessionId, seriesId, tenantId, managerId, reportId } = input;
 
-  // Attach pipeline context to all Sentry events in this scope
   Sentry.setContext("ai_pipeline", { sessionId, seriesId, tenantId, managerId, reportId });
-
-  // Diagnostic: confirm pipeline was invoked and server-side Sentry is working.
-  // This runs in a waitUntil background task — HTTP response already sent.
   Sentry.captureMessage(`[AI Pipeline] Invoked for session ${sessionId}`, "info");
 
   try {
     // Step 1 — set status to generating
-    // NOTE: Sentry.flush() is called in the finally block below.
-    // This is required because pipeline runs in a waitUntil background task —
-    // the HTTP response was already sent, so the normal Sentry flush never fires.
     Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Starting: setting status to generating", level: "info", data: { sessionId } });
     await withTenantContext(tenantId, managerId, async (tx) => {
       await tx
@@ -49,7 +41,7 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
         .where(eq(sessions.id, sessionId));
     });
 
-    // Step 2 — gather context
+    // Step 2 — gather context (includes company context, team context, full history)
     Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Gathering session context", level: "info", data: { sessionId } });
     const context = await gatherSessionContext({
       sessionId,
@@ -72,51 +64,46 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
     const language = (tenantData?.settings as Record<string, unknown> | null)?.preferredLanguage as string | undefined;
     Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Language resolved", level: "info", data: { sessionId, language: language ?? "en (default)" } });
 
-    // Step 4 — generate summary
-    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Calling generateSummary", level: "info", data: { sessionId } });
-    const summary = await generateSummary(context, language);
-    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Summary generated", level: "info", data: { sessionId, keyTakeaways: summary.keyTakeaways.length } });
+    // Step 4 — single unified AI call
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Calling generateUnifiedOutput", level: "info", data: { sessionId } });
+    const unified = await generateUnifiedOutput(context, language);
+    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Unified output generated", level: "info", data: {
+      sessionId,
+      keyTakeaways: unified.metrics.keyTakeaways.length,
+      objectiveRating: unified.metrics.objectiveRating,
+      suggestionsCount: unified.publicSummary.suggestions.length,
+    } });
 
-    // Step 5 — generate manager addendum
-    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Calling generateManagerAddendum", level: "info", data: { sessionId } });
-    const addendum = await generateManagerAddendum(context, language);
-    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Addendum generated", level: "info", data: { sessionId, assessmentScore: addendum.assessmentScore } });
+    // Step 5 — map unified output to existing storage columns (backward compatible)
+    const summaryForStorage: AISummary = {
+      cardBlurb: unified.publicSummary.cardBlurb,
+      keyTakeaways: unified.metrics.keyTakeaways,
+      discussionHighlights: unified.publicSummary.discussionHighlights,
+      followUpItems: unified.publicSummary.followUpItems,
+      overallSentiment: unified.metrics.overallSentiment,
+    };
 
-    // Step 6 — store summary + addendum
-    await withTenantContext(tenantId, managerId, async (tx) => {
-      await tx
-        .update(sessions)
-        .set({
-          aiSummary: summary,
-          aiManagerAddendum: addendum,
-          aiAssessmentScore: addendum.assessmentScore,
-          updatedAt: new Date(),
-        })
-        .where(eq(sessions.id, sessionId));
-    });
+    const addendumForStorage: AIManagerAddendum = {
+      sentimentAnalysis: unified.managerAddendum.sentimentAnalysis,
+      patterns: unified.managerAddendum.patterns,
+      coachingSuggestions: unified.managerAddendum.coachingSuggestions,
+      followUpPriority: unified.managerAddendum.followUpPriority,
+    };
 
-    // Step 7 — generate action suggestions
-    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Calling generateActionSuggestions", level: "info", data: { sessionId } });
-    const suggestions = await generateActionSuggestions(context, summary, language);
-    Sentry.addBreadcrumb({ category: "ai_pipeline", message: "Suggestions generated", level: "info", data: { sessionId, suggestionsCount: suggestions.suggestions.length } });
+    const suggestionsForStorage: AIActionSuggestions = {
+      suggestions: unified.publicSummary.suggestions,
+    };
 
-    // Step 8 — store suggestions
-    await withTenantContext(tenantId, managerId, async (tx) => {
-      await tx
-        .update(sessions)
-        .set({
-          aiSuggestions: suggestions,
-          updatedAt: new Date(),
-        })
-        .where(eq(sessions.id, sessionId));
-    });
-
-    // Step 9 — finalize
+    // Step 6 — single DB write
     const now = new Date();
     await withTenantContext(tenantId, managerId, async (tx) => {
       await tx
         .update(sessions)
         .set({
+          aiSummary: summaryForStorage,
+          aiManagerAddendum: addendumForStorage,
+          aiSuggestions: suggestionsForStorage,
+          aiAssessmentScore: unified.metrics.objectiveRating,
           aiStatus: "completed",
           aiCompletedAt: now,
           updatedAt: now,
@@ -130,9 +117,10 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
         resourceType: "session",
         resourceId: sessionId,
         metadata: {
-          summaryKeyTakeaways: summary.keyTakeaways.length,
-          suggestionsCount: suggestions.suggestions.length,
-          mode: "direct",
+          keyTakeaways: unified.metrics.keyTakeaways.length,
+          suggestionsCount: unified.publicSummary.suggestions.length,
+          objectiveRating: unified.metrics.objectiveRating,
+          mode: "unified",
         },
       });
     });
@@ -168,7 +156,6 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
   } catch (error) {
     console.error(`[AI Pipeline] Failed for session ${sessionId}:`, error);
 
-    // Report to Sentry with full context
     Sentry.captureException(error, {
       tags: { pipeline_step: "ai_generation" },
       extra: {
@@ -208,10 +195,6 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       Sentry.captureException(emailError, { tags: { pipeline_step: "degraded_email" }, extra: { sessionId, tenantId } });
     }
   } finally {
-    // Flush Sentry before the background task exits.
-    // In a waitUntil context the HTTP response is already sent, so the normal
-    // Sentry flush-on-response-end never fires — without this, all captured
-    // exceptions and breadcrumbs would be silently discarded.
     await Sentry.flush(3000);
   }
 }

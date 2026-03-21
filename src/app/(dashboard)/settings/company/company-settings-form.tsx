@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -68,6 +69,7 @@ interface CompanySettingsFormProps {
       defaultDurationMinutes?: number;
       preferredLanguage?: string;
       colorTheme?: string;
+      companyContext?: string;
     };
   };
 }
@@ -90,6 +92,9 @@ export function CompanySettingsForm({ initialData }: CompanySettingsFormProps) {
   const [colorTheme, setColorTheme] = useState(
     initialData.settings?.colorTheme || "neutral"
   );
+  const [companyContext, setCompanyContext] = useState(
+    initialData.settings?.companyContext || ""
+  );
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -111,6 +116,7 @@ export function CompanySettingsForm({ initialData }: CompanySettingsFormProps) {
           defaultDurationMinutes: parseInt(duration, 10),
           preferredLanguage: language,
           colorTheme,
+          companyContext: companyContext || undefined,
         }),
       });
 
@@ -345,6 +351,31 @@ export function CompanySettingsForm({ initialData }: CompanySettingsFormProps) {
               </Label>
             ))}
           </RadioGroup>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">{t("aiContext.title")}</CardTitle>
+          <CardDescription>
+            {t("aiContext.description")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <Label htmlFor="company-context">{t("aiContext.label")}</Label>
+            <Textarea
+              id="company-context"
+              value={companyContext}
+              onChange={(e) => setCompanyContext(e.target.value)}
+              placeholder={t("aiContext.placeholder")}
+              rows={4}
+              maxLength={2000}
+            />
+            <p className="text-xs text-muted-foreground text-right">
+              {companyContext.length}/2000
+            </p>
+          </div>
         </CardContent>
       </Card>
 

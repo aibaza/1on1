@@ -208,8 +208,9 @@ export async function GET(request: Request) {
           let entry = qMap.get(r.questionText);
           if (!entry) { entry = { scoreWeight: parseFloat(r.scoreWeight ?? "1"), values: [] }; qMap.set(r.questionText, entry); }
           const raw = parseFloat(r.answerNumeric!);
-          const scaled = r.answerType === "rating_1_10" ? raw * 10 : raw * 20;
-          entry.values.push(Math.min(100, scaled));
+          // Normalize all rating types to 1-5 scale
+          const scaled = r.answerType === "rating_1_10" ? raw / 2 : raw;
+          entry.values.push(Math.min(5, scaled));
         }
 
         return seriesList.map((s) => {

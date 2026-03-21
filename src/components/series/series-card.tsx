@@ -127,8 +127,8 @@ function ScoreSparkline({ assessmentHistory, questionHistories, id }: SparklineP
 
   if (chartData.length < 2) return null;
 
-  const minValue = Math.max(0, Math.min(...allValues) - 5);
-  const maxValue = Math.min(100, Math.max(...allValues) + 5);
+  const minValue = Math.max(0, Math.min(...allValues) - 0.5);
+  const maxValue = Math.min(5, Math.max(...allValues) + 0.5);
   const mainGradId = `sparkGrad-${id}`;
 
   return (

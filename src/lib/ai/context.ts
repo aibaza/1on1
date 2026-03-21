@@ -9,15 +9,20 @@ import {
   users,
   templateQuestions,
   templateSections,
+  tenants,
+  teams,
+  teamMembers,
+  meetingSeries,
 } from "@/lib/db/schema";
+import type { AISummary } from "./schemas/summary";
 import { decryptNote, type EncryptedPayload } from "@/lib/encryption/private-notes";
 
 /** Maximum character length for individual text answers in AI context */
 const MAX_ANSWER_TEXT_LENGTH = 500;
 /** Maximum character length for notes in AI context */
 const MAX_NOTE_LENGTH = 1000;
-/** Number of previous sessions to include for cross-session trends */
-const HISTORY_SESSION_COUNT = 3;
+/** Number of recent sessions to include with full answer details */
+const DETAILED_HISTORY_COUNT = 5;
 
 export interface SessionAnswer {
   questionText: string;
@@ -33,6 +38,9 @@ export interface PreviousSession {
   sessionNumber: number;
   scheduledAt: Date;
   sessionScore: string | null;
+  aiSummary: AISummary | null;
+  aiAssessmentScore: number | null;
+  /** Full answers for recent sessions, empty for older ones (token budget) */
   answers: SessionAnswer[];
 }
 
@@ -49,6 +57,14 @@ export interface SessionContext {
   /** Manager and report names for prompt personalization */
   managerName: string;
   reportName: string;
+
+  /** Company context for AI (culture, direction, values) */
+  companyName: string;
+  companyContext: string | null;
+
+  /** Team context for AI */
+  teamName: string | null;
+  teamDescription: string | null;
 
   /** Current session answers grouped by section */
   answers: SessionAnswer[];
@@ -137,6 +153,33 @@ export async function gatherSessionContext(params: {
     const reportName = report
       ? `${report.firstName} ${report.lastName}`
       : "Report";
+
+    // Fetch tenant info (company name + context)
+    const [tenant] = await tx
+      .select({ name: tenants.name, settings: tenants.settings })
+      .from(tenants)
+      .where(eq(tenants.id, tenantId))
+      .limit(1);
+
+    const companyName = tenant?.name ?? "Company";
+    const companyContext = (tenant?.settings as Record<string, unknown> | null)?.companyContext as string | null ?? null;
+
+    // Fetch team context (team where report is member and manager is lead)
+    const teamRow = await tx
+      .select({ name: teams.name, description: teams.description })
+      .from(teams)
+      .innerJoin(teamMembers, eq(teams.id, teamMembers.teamId))
+      .where(
+        and(
+          eq(teamMembers.userId, reportId),
+          eq(teams.managerId, managerId),
+          eq(teams.tenantId, tenantId)
+        )
+      )
+      .limit(1);
+
+    const teamName = teamRow[0]?.name ?? null;
+    const teamDescription = teamRow[0]?.description ?? null;
 
     // Fetch current session answers with question text and section
     const answersRaw = await tx
@@ -251,13 +294,15 @@ export async function gatherSessionContext(params: {
       assigneeName: `${ai.assigneeFirstName} ${ai.assigneeLastName}`,
     }));
 
-    // Fetch previous sessions for cross-session trends
+    // Fetch ALL previous completed sessions (tiered: recent with full answers, older with summary only)
     const prevSessionsRaw = await tx
       .select({
         id: sessions.id,
         sessionNumber: sessions.sessionNumber,
         scheduledAt: sessions.scheduledAt,
         sessionScore: sessions.sessionScore,
+        aiSummary: sessions.aiSummary,
+        aiAssessmentScore: sessions.aiAssessmentScore,
       })
       .from(sessions)
       .where(
@@ -267,41 +312,50 @@ export async function gatherSessionContext(params: {
           lt(sessions.scheduledAt, session.scheduledAt)
         )
       )
-      .orderBy(desc(sessions.scheduledAt))
-      .limit(HISTORY_SESSION_COUNT);
+      .orderBy(desc(sessions.scheduledAt));
 
     const previousSessions: PreviousSession[] = [];
-    for (const prevSession of prevSessionsRaw) {
-      const prevAnswers = await tx
-        .select({
-          questionText: templateQuestions.questionText,
-          sectionName: templateSections.name,
-          answerType: templateQuestions.answerType,
-          answerText: sessionAnswers.answerText,
-          answerNumeric: sessionAnswers.answerNumeric,
-          answerJson: sessionAnswers.answerJson,
-          skipped: sessionAnswers.skipped,
-        })
-        .from(sessionAnswers)
-        .innerJoin(
-          templateQuestions,
-          eq(sessionAnswers.questionId, templateQuestions.id)
-        )
-        .innerJoin(
-          templateSections,
-          eq(templateQuestions.sectionId, templateSections.id)
-        )
-        .where(eq(sessionAnswers.sessionId, prevSession.id))
-        .orderBy(templateQuestions.sortOrder);
+    for (let i = 0; i < prevSessionsRaw.length; i++) {
+      const prevSession = prevSessionsRaw[i];
+      let prevAnswers: SessionAnswer[] = [];
+
+      // Only fetch full answers for the most recent N sessions (token budget)
+      if (i < DETAILED_HISTORY_COUNT) {
+        const answersRaw = await tx
+          .select({
+            questionText: templateQuestions.questionText,
+            sectionName: templateSections.name,
+            answerType: templateQuestions.answerType,
+            answerText: sessionAnswers.answerText,
+            answerNumeric: sessionAnswers.answerNumeric,
+            answerJson: sessionAnswers.answerJson,
+            skipped: sessionAnswers.skipped,
+          })
+          .from(sessionAnswers)
+          .innerJoin(
+            templateQuestions,
+            eq(sessionAnswers.questionId, templateQuestions.id)
+          )
+          .innerJoin(
+            templateSections,
+            eq(templateQuestions.sectionId, templateSections.id)
+          )
+          .where(eq(sessionAnswers.sessionId, prevSession.id))
+          .orderBy(templateQuestions.sortOrder);
+
+        prevAnswers = answersRaw.map((a) => ({
+          ...a,
+          answerText: truncate(a.answerText, MAX_ANSWER_TEXT_LENGTH),
+        }));
+      }
 
       previousSessions.push({
         sessionNumber: prevSession.sessionNumber,
         scheduledAt: prevSession.scheduledAt,
         sessionScore: prevSession.sessionScore,
-        answers: prevAnswers.map((a) => ({
-          ...a,
-          answerText: truncate(a.answerText, MAX_ANSWER_TEXT_LENGTH),
-        })),
+        aiSummary: prevSession.aiSummary ?? null,
+        aiAssessmentScore: prevSession.aiAssessmentScore,
+        answers: prevAnswers,
       });
     }
 
@@ -315,6 +369,10 @@ export async function gatherSessionContext(params: {
       scheduledAt: session.scheduledAt,
       managerName,
       reportName,
+      companyName,
+      companyContext,
+      teamName,
+      teamDescription,
       answers,
       sharedNotes: session.sharedNotes
         ? truncateNotes(session.sharedNotes)

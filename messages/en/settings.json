@@ -43,6 +43,12 @@
       "title": "Color Theme",
       "description": "Choose an accent color theme for your organization. All members will see this theme applied across the dashboard and charts."
     },
+    "aiContext": {
+      "title": "Internal Manifesto",
+      "description": "Help the AI understand your company. This context is included in every session analysis to produce more relevant summaries and coaching suggestions.",
+      "label": "Company manifesto",
+      "placeholder": "Describe your company culture, values, direction, and any context that would help the AI better understand your organization..."
+    },
     "saved": "Settings saved successfully.",
     "saving": "Saving...",
     "saveChanges": "Save changes",

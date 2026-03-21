@@ -13,11 +13,6 @@ export const managerAddendumSchema = z.object({
   followUpPriority: z
     .enum(["low", "medium", "high"])
     .describe("How urgently to follow up"),
-  assessmentScore: z
-    .number()
-    .describe(
-      "Overall session health score 1–100. Use the full range: 1–20 = critical/urgent intervention; 21–40 = significant issues; 41–60 = average, mixed signals; 61–80 = good, engaged and progressing; 81–100 = excellent, high energy and strong rapport. Base it on mood, blockers, growth, manager feedback quality, and engagement."
-    ),
 });
 
 export type AIManagerAddendum = z.infer<typeof managerAddendumSchema>;

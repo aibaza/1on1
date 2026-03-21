@@ -36,6 +36,7 @@ export const orgSettingsSchema = z.object({
     .max(120, "Maximum 120 minutes"),
   preferredLanguage: z.enum(supportedLanguages).optional(),
   colorTheme: z.enum(colorThemeValues).optional(),
+  companyContext: z.string().max(2000).optional(),
 });
 
 export type OrgSettings = z.infer<typeof orgSettingsSchema>;

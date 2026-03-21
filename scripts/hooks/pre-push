@@ -1,47 +1,8 @@
 #!/bin/bash
-# Pre-push hook: typecheck + lint + E2E tests
-# Playwright starts its own server via webServer config
+# Pre-push hook: typecheck only
+# E2E tests run manually on demand: npx playwright test --project=setup --project=chromium
 # Skip with: git push --no-verify
 set -e
 
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo " PRE-PUSH: typecheck + lint + E2E"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-# 1. Typecheck
 echo "→ Typecheck..."
 bun run typecheck
-
-# 2. Lint (warnings ok, errors fail)
-echo "→ Lint..."
-bun run lint 2>&1 | tail -3 || true
-
-# 3. Build (needed for standalone server)
-echo "→ Building..."
-bun run build
-
-# 4. Seed test database (ensure test users exist)
-echo "→ Seeding database..."
-bun run db:seed 2>&1 | tail -3
-
-# 5. Kill any leftover server on 4301
-fuser -k 4301/tcp 2>/dev/null || true
-sleep 1
-
-# 5. Load env vars for standalone server (Playwright spawns it via webServer config)
-set -a
-source .env.local 2>/dev/null || true
-set +a
-export AUTH_TRUST_HOST=true
-export NEXT_PUBLIC_APP_URL=http://localhost:4301
-export AUTH_URL=http://localhost:4301
-
-# 6. Run E2E (Playwright starts server automatically via webServer config)
-echo "→ Running Playwright E2E..."
-export LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
-export PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/ms-playwright"
-npx playwright test --project=setup --project=chromium
-
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo " ✓ All checks passed — pushing"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

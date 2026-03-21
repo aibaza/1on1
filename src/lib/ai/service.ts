@@ -3,30 +3,17 @@ import { generateText, generateObject, Output } from "ai";
 import { reasonValidationResultSchema, type ReasonValidationResult } from "./schemas/correction";
 import type { ModelMessage } from "ai";
 import { models } from "./models";
-import { summarySchema, type AISummary } from "./schemas/summary";
-import {
-  managerAddendumSchema,
-  type AIManagerAddendum,
-} from "./schemas/addendum";
-import {
-  actionSuggestionsSchema,
-  type AIActionSuggestions,
-} from "./schemas/action-items";
+import { unifiedAISchema, type UnifiedAIOutput } from "./schemas/unified";
 import {
   templateChatResponseSchema,
   type ChatTurnResponse,
 } from "./schemas/template-chat";
 import type { SessionContext } from "./context";
 import type { TemplateExport } from "../templates/export-schema";
-import { buildBaseSystem } from "./prompts/base";
 import {
-  buildSummarySystemPrompt,
-  buildSummaryUserPrompt,
-} from "./prompts/summary";
-import {
-  buildActionSuggestionsSystemPrompt,
-  buildActionSuggestionsUserPrompt,
-} from "./prompts/action-items";
+  buildUnifiedSystemPrompt,
+  buildUnifiedUserPrompt,
+} from "./prompts/unified";
 import { buildTemplateEditorSystemPrompt } from "./prompts/template-editor";
 
 /** Map language codes to full language names */
@@ -55,185 +42,38 @@ export function withLanguageInstruction(
 }
 
 /**
- * Generate a structured session summary from session context.
+ * Generate unified session analysis in a single LLM call.
  *
- * Uses the shared content (answers, shared notes, talking points) to produce
- * a summary visible to both manager and report. Private notes are excluded.
+ * Replaces the previous 3-call pipeline (generateSummary + generateManagerAddendum + generateActionSuggestions).
+ * Produces metrics, public summary, and manager addendum in one structured output.
  */
-export async function generateSummary(
+export async function generateUnifiedOutput(
   context: SessionContext,
   language?: string
-): Promise<AISummary> {
+): Promise<UnifiedAIOutput> {
   try {
     const { output } = await generateText({
-      model: models.summary,
-      output: Output.object({ schema: summarySchema }),
-      system: buildSummarySystemPrompt(language),
-      prompt: buildSummaryUserPrompt(context),
+      model: models.unified,
+      output: Output.object({ schema: unifiedAISchema }),
+      system: buildUnifiedSystemPrompt(language),
+      prompt: buildUnifiedUserPrompt(context),
     });
 
     if (!output) {
-      throw new Error("AI SDK returned null output for summary generation");
+      throw new Error("AI SDK returned null output for unified generation");
     }
 
     return output;
   } catch (error) {
-    console.error("[AI Service] Summary generation failed:", error);
+    console.error("[AI Service] Unified generation failed:", error);
     Sentry.captureException(error, {
-      tags: { ai_operation: "generateSummary", model: "summary" },
+      tags: { ai_operation: "generateUnifiedOutput", model: "unified" },
       extra: {
         sessionId: context.sessionId,
         tenantId: context.tenantId,
         sessionNumber: context.sessionNumber,
         answersCount: context.answers.length,
-        language,
-        anthropicKeyPresent: !!process.env.ANTHROPIC_API_KEY,
-      },
-    });
-    throw error;
-  }
-}
-
-/**
- * Generate a manager-only addendum with sentiment analysis and coaching suggestions.
- *
- * Uses private notes (decrypted) in addition to shared content to provide
- * deeper insights visible only to the manager.
- */
-export async function generateManagerAddendum(
-  context: SessionContext,
-  language?: string
-): Promise<AIManagerAddendum> {
-  try {
-    const systemPrompt = buildBaseSystem(language) + `Confidential manager-only addendum. NOT visible to the report.
-
-- Sentiment: 1 sentence
-- Patterns: a few words each, only if real
-- Coaching: 1 sentence each, only what matters
-- ATTRIBUTION: In a 1:1, the manager records answers about the report's experience. Any unnamed subject ("I", "we", or no subject at all) refers to the REPORT, not the manager. Only attribute something to the manager if the answer explicitly names the manager.`;
-
-    const parts: string[] = [];
-    parts.push(
-      `## Session Information`,
-      `Session #${context.sessionNumber} between ${context.managerName} (manager) and ${context.reportName} (report)`,
-      `Date: ${context.scheduledAt.toISOString().split("T")[0]}`,
-      ""
-    );
-
-    // Include answers summary
-    if (context.answers.length > 0) {
-      parts.push(`## Session Answers`);
-      for (const answer of context.answers) {
-        if (answer.skipped) continue;
-        const value =
-          answer.answerNumeric ??
-          answer.answerText ??
-          (answer.answerJson ? JSON.stringify(answer.answerJson) : null);
-        if (value) {
-          parts.push(`- **${answer.questionText}** (${answer.sectionName}): ${value}`);
-        }
-      }
-      parts.push("");
-    }
-
-    // Include manager's private notes
-    if (context.privateNoteTexts.length > 0) {
-      parts.push(`## Manager's Private Notes (confidential)`);
-      for (const note of context.privateNoteTexts) {
-        parts.push(`- ${note}`);
-      }
-      parts.push("");
-    }
-
-    // Previous session trends with full answers
-    if (context.previousSessions.length > 0) {
-      parts.push(`## Previous Sessions`);
-      for (const prev of context.previousSessions) {
-        const score = prev.sessionScore ? ` — score: ${prev.sessionScore}` : "";
-        parts.push(
-          `Session #${prev.sessionNumber} (${prev.scheduledAt.toISOString().split("T")[0]})${score}`
-        );
-        for (const answer of prev.answers) {
-          if (answer.skipped) continue;
-          const value =
-            answer.answerNumeric ??
-            answer.answerText ??
-            (answer.answerJson ? JSON.stringify(answer.answerJson) : null);
-          if (value) {
-            parts.push(`  - [${answer.sectionName}] ${answer.questionText}: ${value}`);
-          }
-        }
-      }
-      parts.push("");
-    }
-
-    parts.push(`Generate a brief addendum proportional to the data above.`);
-
-    const { output } = await generateText({
-      model: models.managerAddendum,
-      output: Output.object({ schema: managerAddendumSchema }),
-      system: systemPrompt,
-      prompt: parts.join("\n"),
-    });
-
-    if (!output) {
-      throw new Error("AI SDK returned null output for addendum generation");
-    }
-
-    return output;
-  } catch (error) {
-    console.error("[AI Service] Manager addendum generation failed:", error);
-    Sentry.captureException(error, {
-      tags: { ai_operation: "generateManagerAddendum", model: "managerAddendum" },
-      extra: {
-        sessionId: context.sessionId,
-        tenantId: context.tenantId,
-        sessionNumber: context.sessionNumber,
-        language,
-        anthropicKeyPresent: !!process.env.ANTHROPIC_API_KEY,
-      },
-    });
-    throw error;
-  }
-}
-
-/**
- * Generate action item suggestions based on session content and AI summary.
- *
- * Takes the already-generated summary as input to avoid redundant analysis
- * and ensure suggestions align with identified follow-up items.
- */
-export async function generateActionSuggestions(
-  context: SessionContext,
-  summary: AISummary,
-  language?: string
-): Promise<AIActionSuggestions> {
-  try {
-    const { output } = await generateText({
-      model: models.actionSuggestions,
-      output: Output.object({ schema: actionSuggestionsSchema }),
-      system: buildActionSuggestionsSystemPrompt(language),
-      prompt: buildActionSuggestionsUserPrompt(context, summary),
-    });
-
-    if (!output) {
-      throw new Error(
-        "AI SDK returned null output for action suggestions generation"
-      );
-    }
-
-    return output;
-  } catch (error) {
-    console.error(
-      "[AI Service] Action suggestions generation failed:",
-      error
-    );
-    Sentry.captureException(error, {
-      tags: { ai_operation: "generateActionSuggestions", model: "actionSuggestions" },
-      extra: {
-        sessionId: context.sessionId,
-        tenantId: context.tenantId,
-        sessionNumber: context.sessionNumber,
+        previousSessionsCount: context.previousSessions.length,
         language,
         anthropicKeyPresent: !!process.env.ANTHROPIC_API_KEY,
       },
