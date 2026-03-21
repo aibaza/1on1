@@ -3,11 +3,14 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { toast } from "sonner";
 import { useTranslations, useFormatter } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StarRating } from "@/components/ui/star-rating";
 import { ChevronRight } from "lucide-react";
+import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
+import { hashSeriesColor } from "@/lib/chart-colors";
 
 interface EditorialSeriesCardProps {
   series: {
@@ -28,6 +31,7 @@ interface EditorialSeriesCardProps {
     } | null;
     latestSummary: { blurb: string; sentiment: string } | null;
     assessmentHistory: number[];
+    questionHistories: { questionText: string; scoreWeight: number; values: number[] }[];
   };
   currentUserId: string;
   showManagerName?: boolean;
@@ -47,6 +51,29 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
   const isInProgress = series.latestSession?.status === "in_progress";
   const isOverdue = series.nextSessionAt && new Date(series.nextSessionAt).getTime() < Date.now();
   const isPrefillReady = false; // TODO: wire when prefill feature ships
+
+  // Build sparkline chart data from assessment history + question histories
+  const { chartData, sparkDomain } = useMemo(() => {
+    const hist = series.assessmentHistory;
+    const qh = series.questionHistories;
+    const len = Math.max(hist.length, ...qh.map((q) => q.values.length));
+    if (len < 2) return { chartData: [], sparkDomain: [0, 5] as [number, number] };
+
+    const allValues = [...hist, ...qh.flatMap((q) => q.values)];
+    const minVal = Math.max(0, Math.min(...allValues) - 0.5);
+    const maxVal = Math.min(5, Math.max(...allValues) + 0.5);
+
+    const data = Array.from({ length: len }, (_, i) => {
+      const point: Record<string, number | undefined> = { index: i };
+      if (i < hist.length) point.main = hist[i];
+      qh.forEach((q, qi) => {
+        if (i < q.values.length) point[`q${qi}`] = q.values[i];
+      });
+      return point;
+    });
+
+    return { chartData: data, sparkDomain: [minVal, maxVal] as [number, number] };
+  }, [series.assessmentHistory, series.questionHistories]);
 
   // Start session mutation
   const startMutation = useMutation({
@@ -132,18 +159,57 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
         </p>
       </div>
 
-      {/* Sparkline gradient wave */}
-      {series.assessmentHistory.length >= 2 && (
-        <div
-          className="h-10 w-full mb-6 opacity-60 group-hover:opacity-100 transition-opacity"
-          style={{
-            background: "linear-gradient(90deg, var(--color-success, #71d7cd) 0%, var(--primary) 100%)",
-            maskImage: `url("data:image/svg+xml,%3Csvg width='200' height='40' viewBox='0 0 200 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30C20 30 30 10 50 15C70 20 80 35 100 25C120 15 130 5 150 10C170 15 180 35 200 30V40H0V30Z' fill='black'/%3E%3C/svg%3E")`,
-            WebkitMaskImage: `url("data:image/svg+xml,%3Csvg width='200' height='40' viewBox='0 0 200 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30C20 30 30 10 50 15C70 20 80 35 100 25C120 15 130 5 150 10C170 15 180 35 200 30V40H0V30Z' fill='black'/%3E%3C/svg%3E")`,
-            maskSize: "cover",
-            WebkitMaskSize: "cover",
-          }}
-        />
+      {/* Recharts sparkline */}
+      {chartData.length >= 2 && (
+        <div className="h-12 w-full mb-4 opacity-60 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+              <defs>
+                <linearGradient id={`sparkGrad-${series.id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
+                </linearGradient>
+                {series.questionHistories.map((q, qi) => {
+                  const color = hashSeriesColor(q.questionText);
+                  return (
+                    <linearGradient key={`qg-${qi}`} id={`sparkGrad-q-${series.id}-${qi}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={color} stopOpacity={0.3} />
+                      <stop offset="100%" stopColor={color} stopOpacity={0} />
+                    </linearGradient>
+                  );
+                })}
+              </defs>
+              <YAxis domain={sparkDomain} hide />
+              {series.questionHistories.map((q, qi) => {
+                const color = hashSeriesColor(q.questionText);
+                const opacity = ((q.scoreWeight - 0.5) / 1.5) * 0.18 + 0.02;
+                return (
+                  <Area
+                    key={`q${qi}`}
+                    type="monotone"
+                    dataKey={`q${qi}`}
+                    stroke={color}
+                    strokeWidth={1.5}
+                    fill={`url(#sparkGrad-q-${series.id}-${qi})`}
+                    opacity={opacity}
+                    isAnimationActive={false}
+                    connectNulls
+                  />
+                );
+              })}
+              <Area
+                type="monotone"
+                dataKey="main"
+                stroke="var(--chart-1)"
+                strokeWidth={2}
+                fill={`url(#sparkGrad-${series.id})`}
+                opacity={0.35}
+                isAnimationActive={false}
+                connectNulls
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       )}
 
       {/* Footer: Date + Action */}
