@@ -236,6 +236,22 @@ const SNAPSHOT_GRACE_S2_SCORE_ID = '55555555-0043-4000-a000-000000000043';
 const SNAPSHOT_GRACE_S2_WELLBEING_ID = '55555555-0044-4000-a000-000000000044';
 const SNAPSHOT_GRACE_S2_CHECKIN_ID = '55555555-0045-4000-a000-000000000045';
 
+// Alice's Series and Sessions (Alice manages Bob and Carol)
+const SERIES_ALICE_BOB_ID = 'ffffffff-0010-4000-a000-000000000010';
+const SERIES_ALICE_CAROL_ID = 'ffffffff-0011-4000-a000-000000000011';
+const SESSION_ALICE_BOB_1_ID = '99999999-0010-4000-9000-000000000010';
+const SESSION_ALICE_BOB_2_ID = '99999999-0011-4000-9000-000000000011';
+const SESSION_ALICE_BOB_3_ID = '99999999-0012-4000-9000-000000000012';
+const SESSION_ALICE_CAROL_1_ID = '99999999-0013-4000-9000-000000000013';
+const SESSION_ALICE_CAROL_2_ID = '99999999-0014-4000-9000-000000000014';
+const SESSION_ALICE_BOB_UPCOMING_ID = '99999999-0015-4000-9000-000000000015';
+const SESSION_ALICE_CAROL_UPCOMING_ID = '99999999-0016-4000-9000-000000000016';
+const ACTION_ALICE_1_ID = '88888888-0010-4000-8000-000000000010';
+const ACTION_ALICE_2_ID = '88888888-0011-4000-8000-000000000011';
+const ACTION_ALICE_3_ID = '88888888-0012-4000-8000-000000000012';
+const ACTION_ALICE_4_ID = '88888888-0013-4000-8000-000000000013';
+const ACTION_ALICE_OVERDUE_ID = '88888888-0014-4000-8000-000000000014';
+
 // Acme Private Note
 const PRIVATE_NOTE_ID = '77777777-0001-4000-a000-000000000001';
 
@@ -450,6 +466,7 @@ async function seedUsers() {
       jobTitle: 'Engineering Manager',
       passwordHash: TEST_PASSWORD_HASH,
       isActive: true,
+      managerId: ALICE_ID,
     },
     {
       id: CAROL_ID,
@@ -459,6 +476,7 @@ async function seedUsers() {
       lastName: 'Williams',
       role: 'manager' as const,
       jobTitle: 'Product Manager',
+      managerId: ALICE_ID,
       isActive: true,
     },
     {
@@ -2356,6 +2374,489 @@ async function seedAnswerHistory() {
     .onConflictDoNothing();
 }
 
+async function seedAliceData() {
+  console.log('  Seeding Alice leadership data (series, sessions, AI, actions)...');
+
+  const now = new Date();
+  const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+  const threeWeeksAgo = new Date(now.getTime() - 21 * 24 * 60 * 60 * 1000);
+  const fourWeeksAgo = new Date(now.getTime() - 28 * 24 * 60 * 60 * 1000);
+  const inTwoDays = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+  const inFiveDays = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
+  const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+
+  // --- Series: Alice → Bob, Alice → Carol ---
+  const series = [
+    {
+      id: SERIES_ALICE_BOB_ID,
+      tenantId: ACME_TENANT_ID,
+      managerId: ALICE_ID,
+      reportId: BOB_ID,
+      cadence: 'biweekly' as const,
+      defaultTemplateId: WEEKLY_TEMPLATE_ID,
+      preferredDay: 'tue' as const,
+      preferredTime: '10:00',
+      status: 'active' as const,
+      nextSessionAt: inTwoDays,
+    },
+    {
+      id: SERIES_ALICE_CAROL_ID,
+      tenantId: ACME_TENANT_ID,
+      managerId: ALICE_ID,
+      reportId: CAROL_ID,
+      cadence: 'biweekly' as const,
+      defaultTemplateId: WEEKLY_TEMPLATE_ID,
+      preferredDay: 'thu' as const,
+      preferredTime: '14:00',
+      status: 'active' as const,
+      nextSessionAt: inFiveDays,
+    },
+  ];
+
+  for (const s of series) {
+    await db
+      .insert(schema.meetingSeries)
+      .values(s)
+      .onConflictDoUpdate({
+        target: schema.meetingSeries.id,
+        set: {
+          cadence: sql`excluded.cadence`,
+          defaultTemplateId: sql`excluded.default_template_id`,
+          preferredDay: sql`excluded.preferred_day`,
+          preferredTime: sql`excluded.preferred_time`,
+          status: sql`excluded.status`,
+          nextSessionAt: sql`excluded.next_session_at`,
+          updatedAt: sql`now()`,
+        },
+      });
+  }
+
+  // --- AI Summary templates ---
+  const aiSummaryBob1 = {
+    cardBlurb: 'Solid quarter for team delivery. Bob flagged hiring bottleneck as primary concern.',
+    keyTakeaways: [
+      'Team velocity improved 15% after sprint restructure',
+      'Hiring pipeline needs acceleration — 2 open reqs stalled',
+      'Bob interested in cross-team mentoring program',
+      'Sprint retro format working well',
+    ],
+    discussionHighlights: [
+      { category: 'Wellbeing', summary: 'Bob reports good energy levels despite heavy workload. Gym routine helping with stress management.' },
+      { category: 'Performance', summary: 'Successfully shipped 3 features this sprint. Code review turnaround improved from 48h to 12h average.' },
+      { category: 'Check In', summary: 'Discussed upcoming architecture review. Bob prepared technical proposal for microservices migration.' },
+    ],
+    followUpItems: [
+      'Review hiring pipeline for senior engineer role',
+      'Connect Bob with mentoring program coordinator',
+      'Schedule architecture review for next sprint',
+    ],
+    overallSentiment: 'positive' as const,
+  };
+
+  const aiSummaryBob2 = {
+    cardBlurb: 'Excellent progress on team initiatives. Architecture proposal well-received by stakeholders.',
+    keyTakeaways: [
+      'Architecture proposal approved by CTO',
+      'New hire starting next month — onboarding plan needed',
+      'Team morale high after successful launch',
+      'Bob considering tech lead certification',
+    ],
+    discussionHighlights: [
+      { category: 'Wellbeing', summary: 'Feeling energized after architecture win. Some concern about upcoming deadline pressure.' },
+      { category: 'Performance', summary: 'Led successful Q2 feature launch. Received positive feedback from product team.' },
+      { category: 'Check In', summary: 'Discussed leadership development. Bob wants to improve his public speaking for upcoming conference.' },
+    ],
+    followUpItems: [
+      'Prepare new hire onboarding checklist',
+      'Discuss conference talk proposal',
+      'Review Q3 OKRs together',
+    ],
+    overallSentiment: 'positive' as const,
+  };
+
+  const aiSummaryBob3 = {
+    cardBlurb: 'Mixed session — strong delivery but signs of burnout starting. Need to address workload balance.',
+    keyTakeaways: [
+      'Sprint delivery on track but Bob working late frequently',
+      'Delegation skills improving — junior devs taking more ownership',
+      'Need to revisit workload distribution',
+      'Conference abstract submitted successfully',
+    ],
+    discussionHighlights: [
+      { category: 'Wellbeing', summary: 'Working late 3 nights this week. Skipping lunches. Needs better boundaries.' },
+      { category: 'Performance', summary: 'Shipping consistently but at personal cost. Quality remains high.' },
+      { category: 'Check In', summary: 'Flagged that Dave is ready for more responsibility. Wants to delegate API ownership.' },
+    ],
+    followUpItems: [
+      'Discuss workload reduction strategies',
+      'Review Dave delegation plan',
+      'Check on work-life balance next session',
+    ],
+    overallSentiment: 'mixed' as const,
+  };
+
+  const aiSummaryCarol1 = {
+    cardBlurb: 'Product roadmap alignment session. Carol driving strong cross-functional collaboration.',
+    keyTakeaways: [
+      'Product roadmap finalized for Q3',
+      'User research insights shaping feature priorities',
+      'Carol mentoring two junior PMs effectively',
+      'Stakeholder communication improving',
+    ],
+    discussionHighlights: [
+      { category: 'Wellbeing', summary: 'Carol feeling confident and motivated. Good work-life balance maintained.' },
+      { category: 'Performance', summary: 'Led 3 successful user research sessions this month. Insights directly informed roadmap.' },
+      { category: 'Check In', summary: 'Discussed expanding user research program. Carol proposed a quarterly research sprint format.' },
+    ],
+    followUpItems: [
+      'Review quarterly research sprint proposal',
+      'Introduce Carol to UX lead at partner company',
+      'Discuss PM career ladder progression',
+    ],
+    overallSentiment: 'positive' as const,
+  };
+
+  const aiSummaryCarol2 = {
+    cardBlurb: 'Carol flagged team capacity concerns ahead of Q4 push. Research program gaining traction.',
+    keyTakeaways: [
+      'Research sprint format approved and funded',
+      'Team capacity tight for Q4 scope',
+      'Frank needs more support on technical specs',
+      'Grace exceeding expectations on user research',
+    ],
+    discussionHighlights: [
+      { category: 'Wellbeing', summary: 'Some stress about Q4 timeline. Concerned about team being stretched too thin.' },
+      { category: 'Performance', summary: 'Research program generating valuable insights. Stakeholder buy-in increasing.' },
+      { category: 'Check In', summary: 'Discussed Frank performance concerns. Carol working on a development plan for him.' },
+    ],
+    followUpItems: [
+      'Review Q4 scope and capacity plan',
+      'Check on Frank development progress',
+      'Schedule stakeholder presentation for research findings',
+    ],
+    overallSentiment: 'mixed' as const,
+  };
+
+  const addendumBob = {
+    sentimentAnalysis: 'Bob remains highly engaged and productive. Watch for early burnout signals — increased late hours and skipped breaks.',
+    patterns: ['Consistent high delivery', 'Growing leadership confidence', 'Work-life balance declining'],
+    coachingSuggestions: [
+      'Help Bob establish firm boundaries on working hours',
+      'Encourage more delegation to Dave who is ready for ownership',
+      'Support conference speaking as a growth opportunity',
+    ],
+    followUpPriority: 'medium' as const,
+  };
+
+  const addendumCarol = {
+    sentimentAnalysis: 'Carol demonstrates strong product intuition and team care. Her proactive mentoring of junior PMs is a strength.',
+    patterns: ['Research-driven decision making', 'Strong mentoring instinct', 'Capacity planning awareness'],
+    coachingSuggestions: [
+      'Support Carol in pushing back on over-scoped Q4 plans',
+      'Create visibility for her research program with exec team',
+      'Discuss path to Senior PM or Head of Product',
+    ],
+    followUpPriority: 'low' as const,
+  };
+
+  // --- Completed sessions for Alice's series ---
+  const aliceSessions = [
+    {
+      id: SESSION_ALICE_BOB_1_ID,
+      seriesId: SERIES_ALICE_BOB_ID,
+      tenantId: ACME_TENANT_ID,
+      templateId: WEEKLY_TEMPLATE_ID,
+      sessionNumber: 1,
+      scheduledAt: fourWeeksAgo,
+      startedAt: fourWeeksAgo,
+      completedAt: new Date(fourWeeksAgo.getTime() + 35 * 60 * 1000),
+      status: 'completed' as const,
+      sharedNotes: { general: 'Discussed team velocity improvements and hiring challenges. Bob is positive about sprint restructure.' },
+      durationMinutes: 35,
+      sessionScore: '4.00',
+      aiSummary: aiSummaryBob1,
+      aiManagerAddendum: addendumBob,
+      aiStatus: 'completed' as const,
+      aiAssessmentScore: 4,
+    },
+    {
+      id: SESSION_ALICE_BOB_2_ID,
+      seriesId: SERIES_ALICE_BOB_ID,
+      tenantId: ACME_TENANT_ID,
+      templateId: WEEKLY_TEMPLATE_ID,
+      sessionNumber: 2,
+      scheduledAt: twoWeeksAgo,
+      startedAt: twoWeeksAgo,
+      completedAt: new Date(twoWeeksAgo.getTime() + 40 * 60 * 1000),
+      status: 'completed' as const,
+      sharedNotes: { general: 'Architecture proposal success. Discussed leadership growth and conference talk plans.' },
+      durationMinutes: 40,
+      sessionScore: '4.50',
+      aiSummary: aiSummaryBob2,
+      aiManagerAddendum: addendumBob,
+      aiStatus: 'completed' as const,
+      aiAssessmentScore: 5,
+    },
+    {
+      id: SESSION_ALICE_BOB_3_ID,
+      seriesId: SERIES_ALICE_BOB_ID,
+      tenantId: ACME_TENANT_ID,
+      templateId: WEEKLY_TEMPLATE_ID,
+      sessionNumber: 3,
+      scheduledAt: threeDaysAgo,
+      startedAt: threeDaysAgo,
+      completedAt: new Date(threeDaysAgo.getTime() + 30 * 60 * 1000),
+      status: 'completed' as const,
+      sharedNotes: { general: 'Warning signs on work-life balance. Bob working late frequently. Need to address delegation.' },
+      durationMinutes: 30,
+      sessionScore: '3.50',
+      aiSummary: aiSummaryBob3,
+      aiManagerAddendum: addendumBob,
+      aiStatus: 'completed' as const,
+      aiAssessmentScore: 4,
+    },
+    {
+      id: SESSION_ALICE_CAROL_1_ID,
+      seriesId: SERIES_ALICE_CAROL_ID,
+      tenantId: ACME_TENANT_ID,
+      templateId: WEEKLY_TEMPLATE_ID,
+      sessionNumber: 1,
+      scheduledAt: threeWeeksAgo,
+      startedAt: threeWeeksAgo,
+      completedAt: new Date(threeWeeksAgo.getTime() + 45 * 60 * 1000),
+      status: 'completed' as const,
+      sharedNotes: { general: 'Q3 roadmap alignment. Carol research program is gaining executive support.' },
+      durationMinutes: 45,
+      sessionScore: '4.25',
+      aiSummary: aiSummaryCarol1,
+      aiManagerAddendum: addendumCarol,
+      aiStatus: 'completed' as const,
+      aiAssessmentScore: 4,
+    },
+    {
+      id: SESSION_ALICE_CAROL_2_ID,
+      seriesId: SERIES_ALICE_CAROL_ID,
+      tenantId: ACME_TENANT_ID,
+      templateId: WEEKLY_TEMPLATE_ID,
+      sessionNumber: 2,
+      scheduledAt: oneWeekAgo,
+      startedAt: oneWeekAgo,
+      completedAt: new Date(oneWeekAgo.getTime() + 35 * 60 * 1000),
+      status: 'completed' as const,
+      sharedNotes: { general: 'Capacity concerns for Q4. Frank needs development support. Grace excelling.' },
+      durationMinutes: 35,
+      sessionScore: '3.75',
+      aiSummary: aiSummaryCarol2,
+      aiManagerAddendum: addendumCarol,
+      aiStatus: 'completed' as const,
+      aiAssessmentScore: 4,
+    },
+    // Upcoming sessions (scheduled, not started)
+    {
+      id: SESSION_ALICE_BOB_UPCOMING_ID,
+      seriesId: SERIES_ALICE_BOB_ID,
+      tenantId: ACME_TENANT_ID,
+      templateId: WEEKLY_TEMPLATE_ID,
+      sessionNumber: 4,
+      scheduledAt: inTwoDays,
+      status: 'scheduled' as const,
+    },
+    {
+      id: SESSION_ALICE_CAROL_UPCOMING_ID,
+      seriesId: SERIES_ALICE_CAROL_ID,
+      tenantId: ACME_TENANT_ID,
+      templateId: WEEKLY_TEMPLATE_ID,
+      sessionNumber: 3,
+      scheduledAt: inFiveDays,
+      status: 'scheduled' as const,
+    },
+  ];
+
+  for (const s of aliceSessions) {
+    await db
+      .insert(schema.sessions)
+      .values(s)
+      .onConflictDoUpdate({
+        target: schema.sessions.id,
+        set: {
+          sessionNumber: sql`excluded.session_number`,
+          scheduledAt: sql`excluded.scheduled_at`,
+          startedAt: sql`excluded.started_at`,
+          completedAt: sql`excluded.completed_at`,
+          status: sql`excluded.status`,
+          sharedNotes: sql`excluded.shared_notes`,
+          durationMinutes: sql`excluded.duration_minutes`,
+          sessionScore: sql`excluded.session_score`,
+          aiSummary: sql`excluded.ai_summary`,
+          aiManagerAddendum: sql`excluded.ai_manager_addendum`,
+          aiStatus: sql`excluded.ai_status`,
+          aiAssessmentScore: sql`excluded.ai_assessment_score`,
+          updatedAt: sql`now()`,
+        },
+      });
+  }
+
+  // --- Action items for Alice's sessions ---
+  const aliceActions = [
+    {
+      id: ACTION_ALICE_1_ID,
+      sessionId: SESSION_ALICE_BOB_2_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: BOB_ID,
+      createdById: ALICE_ID,
+      title: 'Prepare new hire onboarding checklist',
+      description: 'Create detailed onboarding plan for the senior engineer starting next month.',
+      category: 'check_in',
+      dueDate: inFiveDays.toISOString().split('T')[0],
+      status: 'open' as const,
+    },
+    {
+      id: ACTION_ALICE_2_ID,
+      sessionId: SESSION_ALICE_BOB_3_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: ALICE_ID,
+      createdById: ALICE_ID,
+      title: 'Discuss workload reduction plan with Bob',
+      description: 'Review current sprint commitments and identify tasks to delegate to Dave.',
+      category: 'wellbeing',
+      dueDate: inTwoDays.toISOString().split('T')[0],
+      status: 'in_progress' as const,
+    },
+    {
+      id: ACTION_ALICE_3_ID,
+      sessionId: SESSION_ALICE_CAROL_1_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: CAROL_ID,
+      createdById: ALICE_ID,
+      title: 'Draft quarterly research sprint proposal',
+      description: 'Formalize the research sprint format with budget and timeline.',
+      category: 'performance',
+      dueDate: lastWeek.toISOString().split('T')[0],
+      status: 'completed' as const,
+      completedAt: threeDaysAgo,
+    },
+    {
+      id: ACTION_ALICE_4_ID,
+      sessionId: SESSION_ALICE_CAROL_2_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: CAROL_ID,
+      createdById: ALICE_ID,
+      title: 'Review Q4 scope and capacity plan',
+      description: 'Assess whether current team size can handle Q4 feature scope.',
+      category: 'performance',
+      dueDate: inTwoDays.toISOString().split('T')[0],
+      status: 'open' as const,
+    },
+    {
+      id: ACTION_ALICE_OVERDUE_ID,
+      sessionId: SESSION_ALICE_BOB_1_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: BOB_ID,
+      createdById: ALICE_ID,
+      title: 'Accelerate senior engineer hiring pipeline',
+      description: 'Follow up with recruiting on the two stalled senior engineer requisitions.',
+      category: 'check_in',
+      dueDate: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      status: 'open' as const,
+    },
+  ];
+
+  for (const a of aliceActions) {
+    await db
+      .insert(schema.actionItems)
+      .values(a)
+      .onConflictDoUpdate({
+        target: schema.actionItems.id,
+        set: {
+          title: sql`excluded.title`,
+          description: sql`excluded.description`,
+          category: sql`excluded.category`,
+          dueDate: sql`excluded.due_date`,
+          status: sql`excluded.status`,
+          completedAt: sql`excluded.completed_at`,
+        },
+      });
+  }
+
+  // --- Also add AI summaries to existing Bob<->Dave sessions ---
+  const existingSessionAI = [
+    {
+      id: SESSION_1_ID,
+      aiSummary: {
+        cardBlurb: 'Good first session. Dave settling in well and eager to contribute.',
+        keyTakeaways: ['Dave adapting quickly to codebase', 'Needs staging access', 'Sprint priorities aligned'],
+        discussionHighlights: [{ category: 'Check In', summary: 'First 1:1. Dave positive about team culture and project scope.' }],
+        followUpItems: ['Set up staging access', 'Pair Dave with senior on first feature'],
+        overallSentiment: 'positive' as const,
+      },
+      aiStatus: 'completed' as const,
+      aiAssessmentScore: 4,
+    },
+    {
+      id: SESSION_2_ID,
+      aiSummary: {
+        cardBlurb: 'API refactor progressing well. Dave raised valid concerns about test coverage gaps.',
+        keyTakeaways: ['API refactor on track', 'Test coverage needs improvement', 'Dave showing initiative'],
+        discussionHighlights: [{ category: 'Performance', summary: 'Good progress on API refactor. Dave identified critical test gaps proactively.' }],
+        followUpItems: ['Review test coverage strategy', 'Set up CI parallelization'],
+        overallSentiment: 'positive' as const,
+      },
+      aiStatus: 'completed' as const,
+      aiAssessmentScore: 4,
+    },
+    {
+      id: SESSION_3_ID,
+      aiSummary: {
+        cardBlurb: 'Career growth discussion. Dave interested in tech lead path and feature ownership.',
+        keyTakeaways: ['Dave wants tech lead growth path', 'Feature project leadership interest', 'Strong technical foundation'],
+        discussionHighlights: [{ category: 'Check In', summary: 'Dave expressed desire to lead next feature project. Discussed tech lead expectations.' }],
+        followUpItems: ['Share tech lead expectations doc', 'Identify feature for Dave to lead'],
+        overallSentiment: 'positive' as const,
+      },
+      aiStatus: 'completed' as const,
+      aiAssessmentScore: 4,
+    },
+    {
+      id: SESSION_EVE_1_ID,
+      aiSummary: {
+        cardBlurb: 'Eve ramping up on frontend. Good foundation but needs more component library experience.',
+        keyTakeaways: ['Frontend ramp-up progressing', 'Component library guidance needed', 'Positive attitude'],
+        discussionHighlights: [{ category: 'Performance', summary: 'Eve making steady progress on frontend work. Discussed component library patterns.' }],
+        followUpItems: ['Share component library docs', 'Pair Eve with senior frontend dev'],
+        overallSentiment: 'positive' as const,
+      },
+      aiStatus: 'completed' as const,
+      aiAssessmentScore: 4,
+    },
+    {
+      id: SESSION_EVE_2_ID,
+      aiSummary: {
+        cardBlurb: 'Dashboard redesign going well. Eve keen on accessibility testing — strong growth signal.',
+        keyTakeaways: ['Dashboard redesign on schedule', 'Accessibility interest — growth area', 'Increasing confidence'],
+        discussionHighlights: [{ category: 'Performance', summary: 'Great progress on dashboard. Eve proactively exploring accessibility testing.' }],
+        followUpItems: ['Set up accessibility testing tools', 'Review dashboard with design team'],
+        overallSentiment: 'positive' as const,
+      },
+      aiStatus: 'completed' as const,
+      aiAssessmentScore: 4,
+    },
+  ];
+
+  for (const s of existingSessionAI) {
+    await db
+      .execute(sql`
+        UPDATE session
+        SET ai_summary = ${JSON.stringify(s.aiSummary)}::jsonb,
+            ai_status = ${s.aiStatus},
+            ai_assessment_score = ${s.aiAssessmentScore},
+            updated_at = now()
+        WHERE id = ${s.id}
+      `);
+  }
+}
+
 async function seed() {
   console.log('Seeding database...\n');
 
@@ -2372,6 +2873,7 @@ async function seed() {
   await seedPrivateNotes();
   await seedNotifications();
   await seedTechvibe();
+  await seedAliceData();
 
   console.log('\nSeed complete!');
   console.log(`  Acme Corp      (${ACME_TENANT_ID}): 7 users, 2 teams, 2 templates, 4 series, 9 sessions`);
