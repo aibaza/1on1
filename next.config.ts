@@ -24,3 +24,4 @@ export default withSentryConfig(withNextIntl(nextConfig), {
   silent: !process.env.CI,
 });
 // Development preview environment
+
