@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Unified AI pipeline: single LLM call (Sonnet 4.5) replaces 3-call chain (summary + addendum + actions)
+- Company "Internal Manifesto" textarea in organization settings (max 2000 chars)
+- Team description included as AI context for session analysis
+- Full session history sent to AI (tiered: recent 5 with full answers, older with summaries only)
+- `objectiveRating` (1-5 stars) replaces `assessmentScore` (1-100) in AI output
+
+### Changed
+- AI assessment score scale migrated from 1-100 to 1-5 (data migration included)
+- Sparkline data normalized to 1-5 scale (removed x20 multiplier)
+- Pre-push hook simplified to typecheck only (E2E tests run manually on demand)
+- Playwright webServer config uses standalone server instead of dev server
+
+### Removed
+- Old AI prompt files (`prompts/summary.ts`, `prompts/action-items.ts`)
+- Separate `generateSummary`, `generateManagerAddendum`, `generateActionSuggestions` functions
+- GitHub Actions E2E workflow (disabled, manual trigger only)
+
 ## [1.6.3] - 2026-03-20
 
 ### Added
