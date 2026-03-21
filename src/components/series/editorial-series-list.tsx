@@ -157,11 +157,54 @@ function EditorialManagerSections({
               {t("sections.myOneOnOnes")}
             </h3>
           </div>
-          <EditorialSeriesGrid
-            items={myOneOnOnes}
-            currentUserId={currentUserId}
-            showManagerName
-          />
+          {/* Featured wide card layout for My 1:1s */}
+          <div className="space-y-4">
+            {myOneOnOnes.map((series) => {
+              const managerName = `${series.manager.firstName} ${series.manager.lastName}`;
+              return (
+                <div key={series.id} className="bg-muted p-1 rounded-2xl">
+                  <div className="bg-card rounded-xl p-8 flex flex-col lg:flex-row items-center gap-8 border border-card">
+                    <div className="flex items-center gap-6 flex-1">
+                      <div className="relative">
+                        <div className="w-20 h-20 rounded-full overflow-hidden ring-4 ring-muted">
+                          {series.report.avatarUrl ? (
+                            <img src={series.report.avatarUrl} alt={managerName} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+                              {managerName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="text-2xl font-extrabold font-headline text-foreground mb-1">{managerName}</h4>
+                        <p className="text-muted-foreground font-medium flex items-center gap-2">
+                          {series.cadence} · <span className="text-primary">Direct Manager</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row items-center gap-6 w-full lg:w-auto">
+                      <div className="text-center sm:text-right">
+                        <p className="text-sm font-medium text-muted-foreground mb-1">Next Sync</p>
+                        <p className="text-lg font-bold text-foreground">
+                          {series.nextSessionAt
+                            ? new Date(series.nextSessionAt).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })
+                            : "Scheduled"}
+                        </p>
+                      </div>
+                      <a
+                        href={`/sessions/${series.id}`}
+                        className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all flex items-center gap-2 text-white hover:opacity-90 active:scale-95"
+                        style={{ background: "var(--color-success, #004c47)" }}
+                      >
+                        Pre-fill now
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
