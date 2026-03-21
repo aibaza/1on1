@@ -37,8 +37,7 @@ bun run typecheck                    # tsc --noEmit
 bun run test                         # Vitest unit tests
 bun run test:watch                   # Vitest in watch mode
 
-# Database (Drizzle)
-docker compose up -d                 # Start local PostgreSQL
+# Database (Drizzle — uses Neon dev DB, no local PostgreSQL)
 bunx drizzle-kit generate            # Generate migration from schema changes
 bunx drizzle-kit migrate             # Apply migrations
 bunx drizzle-kit studio              # Open Drizzle Studio (DB browser)

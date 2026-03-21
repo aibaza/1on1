@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Removed
+- Local Docker infrastructure (Dockerfile, Dockerfile.prebuilt, docker-compose.yml, init-db.sh)
+- UAT rebuild scripts (rebuild-uat.sh, quick-deploy.sh) — replaced by Vercel dev preview on `develop` branch
+
 ## [1.7.0] - 2026-03-21
 
 ### Added

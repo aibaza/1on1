@@ -123,8 +123,8 @@ All milestones v1.0–v1.7.0 archived. Next milestone: v1.8 UI/UX Review + Repor
 - **Package manager**: Bun (not npm)
 - **Tech stack**: Next.js 16 + TypeScript + Drizzle ORM + PostgreSQL 16
 - **UI framework**: shadcn/ui + Tailwind CSS 4
-- **Deployment**: Vercel (production), Docker Compose (local, port 4300)
-- **Test URL**: `https://1on1.surmont.co/` → reverse proxy to `localhost:4300`
+- **Deployment**: Vercel (production on `main`, dev preview on `develop` with separate Neon DB)
+- **Development branch**: `develop` — all work happens here, merge to `main` for releases only
 - **Multi-tenancy**: Every table with tenant data includes `tenant_id`, enforced by PostgreSQL RLS
 - **Private notes**: Encrypted at rest with AES-256-GCM, per-tenant keys via HKDF
 - **Language**: English for all code, comments, docs, and commits (AGPL v3)
@@ -135,8 +135,7 @@ All milestones v1.0–v1.7.0 archived. Next milestone: v1.8 UI/UX Review + Repor
 |----------|-----------|---------|
 | AI is core, not v3 add-on | AI context layer is the primary differentiator | ✓ Good — AI pipeline ships in v1 |
 | Bun over npm | Faster installs, better DX, native TypeScript support | ✓ Good |
-| Port 4300 for test env | Avoids conflicts with other local projects | ✓ Good |
-| Blue-green local deploy | Stable test environment always available | ✓ Good |
+| Vercel dev preview over Docker | Matches prod runtime, no local rebuild needed | ✓ Good — replaced Docker in v1.8 |
 | Google Calendar first | Most common calendar; Outlook deferred to v2 | — Pending (deferred entirely from v1) |
 | Monolith-first | Single Next.js app — no microservices | ✓ Good |
 | Design-first per-phase | Mockups within phase plans, not separate phase | ✓ Good — faster iteration |
