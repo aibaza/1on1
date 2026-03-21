@@ -82,9 +82,29 @@ export interface EditorialSessionSummaryProps {
 }
 
 function getCategoryScore(cat: SummaryCategory): number | null {
+  // Try numeric answers first (rating questions)
   const nums = Object.values(cat.answers).filter((a) => a.answerNumeric != null);
-  if (nums.length === 0) return null;
-  return nums.reduce((s, a) => s + (a.answerNumeric ?? 0), 0) / nums.length;
+  if (nums.length > 0) {
+    return nums.reduce((s, a) => s + (a.answerNumeric ?? 0), 0) / nums.length;
+  }
+
+  // Try mood answers (map to 1-5 scale)
+  const moodMap: Record<string, number> = { very_bad: 1, bad: 2, okay: 3, good: 4, great: 5 };
+  const moods = Object.values(cat.answers)
+    .map((a) => {
+      const val = (a.answerJson as { value?: string })?.value;
+      return val ? moodMap[val] : null;
+    })
+    .filter((v): v is number => v != null);
+  if (moods.length > 0) {
+    return moods.reduce((s, v) => s + v, 0) / moods.length;
+  }
+
+  return null;
+}
+
+function getCategoryAnswerCount(cat: SummaryCategory): number {
+  return Object.values(cat.answers).filter((a) => !a.skipped && (a.answerText || a.answerNumeric != null || a.answerJson)).length;
 }
 
 export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
@@ -106,10 +126,15 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
   const allActionItems = categories.flatMap((c) => c.actionItems);
   const allPrivateNotes = categories.flatMap((c) => c.privateNotes);
 
-  const categoryScores = categories.map((cat) => ({
-    name: cat.name,
-    score: getCategoryScore(cat),
-  })).sort((a, b) => (a.score ?? 0) - (b.score ?? 0));
+  // Build category data with scores and AI highlights
+  const categoryData = categories.map((cat) => {
+    const score = getCategoryScore(cat);
+    const answerCount = getCategoryAnswerCount(cat);
+    const highlight = aiSummary?.discussionHighlights?.find(
+      (h) => h.category.toLowerCase() === cat.name.toLowerCase()
+    );
+    return { name: cat.name, score, answerCount, highlight: highlight?.summary ?? null };
+  });
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -215,21 +240,36 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
           )}
         </div>
 
-        {/* Category Scores Sidebar */}
+        {/* Category Sidebar */}
         <div className="col-span-12 lg:col-span-4 space-y-4">
           <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-2 mb-2">Category Performance</h3>
-          {categoryScores.map((cat) => {
-            const pct = cat.score ? (cat.score / 5) * 100 : 0;
-            const color = cat.score && cat.score >= 4 ? "var(--color-success)" : cat.score && cat.score >= 3 ? "var(--primary)" : "var(--destructive)";
+          {categoryData.map((cat) => {
+            const hasScore = cat.score !== null;
+            const pct = hasScore ? (cat.score! / 5) * 100 : 0;
+            const color = hasScore
+              ? cat.score! >= 4 ? "var(--color-success)" : cat.score! >= 3 ? "var(--primary)" : "var(--destructive)"
+              : "var(--primary)";
             return (
               <div key={cat.name} className="bg-card rounded-xl p-5 shadow-sm border-l-4" style={{ borderLeftColor: color }}>
-                <div className="flex justify-between items-start mb-3">
-                  <h4 className="font-bold text-foreground text-sm">{cat.name}</h4>
-                  <div className="text-xl font-black" style={{ color }}>{cat.score?.toFixed(1) ?? "—"}</div>
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h4 className="font-bold text-foreground text-sm">{cat.name}</h4>
+                    <p className="text-[10px] text-muted-foreground">{cat.answerCount} answers</p>
+                  </div>
+                  {hasScore ? (
+                    <div className="text-xl font-black" style={{ color }}>{cat.score!.toFixed(1)}</div>
+                  ) : (
+                    <div className="text-xs font-bold text-muted-foreground bg-muted px-2 py-1 rounded">Text</div>
+                  )}
                 </div>
-                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: color }} />
-                </div>
+                {hasScore && (
+                  <div className="h-1.5 bg-muted rounded-full overflow-hidden mb-2">
+                    <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: color }} />
+                  </div>
+                )}
+                {cat.highlight && (
+                  <p className="text-[11px] text-muted-foreground leading-relaxed mt-2 line-clamp-2">{cat.highlight}</p>
+                )}
               </div>
             );
           })}
