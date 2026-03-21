@@ -1,0 +1,187 @@
+/*
+ * Editorial Design System — Material Design 3 token overrides
+ * Scoped under [data-design="editorial"] so they only apply when the feature gate is active.
+ * This file is imported alongside globals.css and does NOT re-import Tailwind or shadcn.
+ */
+
+/* ===== Light Mode ===== */
+[data-design="editorial"] {
+  /* Primary */
+  --primary: #29407d;
+  --primary-foreground: #ffffff;
+
+  /* Surface hierarchy (M3) */
+  --background: #f8fafb;
+  --foreground: #191c1d;
+  --card: #ffffff;
+  --card-foreground: #191c1d;
+  --popover: #ffffff;
+  --popover-foreground: #191c1d;
+
+  /* Secondary */
+  --secondary: #f2f4f5;
+  --secondary-foreground: #191c1d;
+
+  /* Muted */
+  --muted: #eceeef;
+  --muted-foreground: #454652;
+
+  /* Accent */
+  --accent: #eceeef;
+  --accent-foreground: #191c1d;
+
+  /* Destructive */
+  --destructive: #ba1a1a;
+
+  /* Border / Input / Ring */
+  --border: #c5c5d4;
+  --input: #c5c5d4;
+  --ring: #29407d;
+
+  /* Charts */
+  --chart-1: #29407d;
+  --chart-2: #425797;
+  --chart-3: #505f7c;
+  --chart-4: #004c47;
+  --chart-5: #71d7cd;
+
+  /* Sidebar */
+  --sidebar: #eceeef;
+  --sidebar-foreground: #191c1d;
+  --sidebar-primary: #29407d;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ffffff;
+  --sidebar-accent-foreground: #29407d;
+  --sidebar-border: #c5c5d4;
+  --sidebar-ring: #29407d;
+
+  /* Semantic */
+  --color-success: #004c47;
+  --color-warning: #f59e0b;
+  --color-danger: #ba1a1a;
+
+  /* Logo */
+  --logo-color: #29407d;
+
+  /* Editorial-specific tokens (not in classic) */
+  --editorial-primary-container: #425797;
+  --editorial-tertiary: #004c47;
+  --editorial-tertiary-container: #00665f;
+  --editorial-on-tertiary-container: #7ee4d9;
+  --editorial-tertiary-fixed-dim: #71d7cd;
+  --editorial-secondary-container: #cbdafd;
+  --editorial-on-secondary-container: #505f7d;
+  --editorial-surface-container: #eceeef;
+  --editorial-surface-container-low: #f2f4f5;
+  --editorial-surface-container-lowest: #ffffff;
+  --editorial-surface-container-high: #e6e8e9;
+  --editorial-outline-variant: #c5c5d4;
+  --editorial-outline: #757684;
+  --editorial-on-surface-variant: #454652;
+  --editorial-error-container: #ffdad6;
+  --editorial-primary-fixed: #dbe1ff;
+  --editorial-primary-fixed-dim: #b4c5ff;
+
+  /* Font override */
+  --font-sans: var(--font-inter);
+  --font-headline: var(--font-manrope);
+
+  /* Radius — slightly less rounded than classic */
+  --radius: 0.5rem;
+}
+
+/* ===== Dark Mode ===== */
+[data-design="editorial"].dark,
+.dark [data-design="editorial"] {
+  --primary: #b4c5ff;
+  --primary-foreground: #00174b;
+
+  --background: #191c1d;
+  --foreground: #e1e3e4;
+  --card: #2e3132;
+  --card-foreground: #e1e3e4;
+  --popover: #2e3132;
+  --popover-foreground: #e1e3e4;
+
+  --secondary: #384763;
+  --secondary-foreground: #d7e3ff;
+
+  --muted: #2e3132;
+  --muted-foreground: #c5c5d4;
+
+  --accent: #384763;
+  --accent-foreground: #d7e3ff;
+
+  --destructive: #ffdad6;
+
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #b4c5ff;
+
+  --chart-1: #b4c5ff;
+  --chart-2: #71d7cd;
+  --chart-3: #cbdafd;
+  --chart-4: #7ee4d9;
+  --chart-5: #8ef4e9;
+
+  --sidebar: #2e3132;
+  --sidebar-foreground: #e1e3e4;
+  --sidebar-primary: #b4c5ff;
+  --sidebar-primary-foreground: #00174b;
+  --sidebar-accent: #384763;
+  --sidebar-accent-foreground: #d7e3ff;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #b4c5ff;
+
+  --color-success: #71d7cd;
+  --color-warning: #fbbf24;
+  --color-danger: #ffdad6;
+
+  --logo-color: #b4c5ff;
+
+  --editorial-primary-container: #2d4381;
+  --editorial-tertiary: #71d7cd;
+  --editorial-tertiary-container: #00504a;
+  --editorial-on-tertiary-container: #8ef4e9;
+  --editorial-tertiary-fixed-dim: #71d7cd;
+  --editorial-secondary-container: #384763;
+  --editorial-on-secondary-container: #d7e3ff;
+  --editorial-surface-container: #2e3132;
+  --editorial-surface-container-low: #252728;
+  --editorial-surface-container-lowest: #191c1d;
+  --editorial-surface-container-high: #3a3d3e;
+  --editorial-outline-variant: #454652;
+  --editorial-outline: #c5c5d4;
+  --editorial-on-surface-variant: #c5c5d4;
+  --editorial-error-container: #93000a;
+  --editorial-primary-fixed: #dbe1ff;
+  --editorial-primary-fixed-dim: #b4c5ff;
+}
+
+/* ===== Editorial Typography ===== */
+[data-design="editorial"] body {
+  font-family: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-design="editorial"] h1,
+[data-design="editorial"] h2,
+[data-design="editorial"] h3,
+[data-design="editorial"] h4,
+[data-design="editorial"] .font-headline {
+  font-family: var(--font-manrope), 'Manrope', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ===== Editorial-specific utilities ===== */
+[data-design="editorial"] .editorial-gradient {
+  background: linear-gradient(135deg, #29407d 0%, #425797 100%);
+}
+
+[data-design="editorial"] .glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.dark [data-design="editorial"] .glass-panel {
+  background: rgba(25, 28, 29, 0.7);
+}

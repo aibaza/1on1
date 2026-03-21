@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ro"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Editorial Connection - Admin Sessions</title>
+    <!-- Google Fonts: Manrope & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#29407d",
+                        "primary-container": "#425797",
+                        "on-surface": "#191c1d",
+                        "on-surface-variant": "#454652",
+                        "outline-variant": "#c5c5d4",
+                        "surface": "#f8fafb",
+                        "surface-container": "#eceeef",
+                        "surface-container-low": "#f2f4f5",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "success": "#00665f",
+                        "secondary": "#505f7c",
+                        "secondary-container": "#cbdafd"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafb;
+        }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+
+        .nav-link-active {
+            background-color: #ffffff;
+            color: #29407d !important;
+            font-weight: 700;
+        }
+
+        .card-refined {
+            background-color: #ffffff;
+            border: 1px solid rgba(197, 197, 212, 0.3);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        .card-refined:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            border-color: rgba(197, 197, 212, 0.6);
+            transform: translateY(-2px);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c5c5d4; border-radius: 10px; }
+
+        .sparkline-container {
+            position: relative;
+            height: 60px;
+            width: calc(100% + 3rem);
+            margin-left: -1.5rem;
+            margin-right: -1.5rem;
+            background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.03));
+        }
+    </style>
+</head>
+<body class="text-on-surface antialiased bg-surface">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#eceeef] flex flex-col py-6 z-50">
+    <div class="px-6 mb-8">
+        <div class="flex items-center gap-3">
+            <h1 class="text-xl font-bold font-headline tracking-tighter text-primary">Editorial Connection</h1>
+        </div>
+        <p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mt-1">Admin Console</p>
+    </div>
+    <nav class="flex-1 space-y-1">
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary mx-2 transition-all rounded-lg" href="#">
+            <span class="material-symbols-outlined">grid_view</span>
+            <span class="text-sm font-semibold font-headline">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 bg-white text-primary rounded-lg mx-2 font-bold shadow-sm" href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+            <span class="text-sm font-semibold font-headline">Sessions</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary mx-2 transition-all rounded-lg" href="#">
+            <span class="material-symbols-outlined">person</span>
+            <span class="text-sm font-semibold font-headline">Managers</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary mx-2 transition-all rounded-lg" href="#">
+            <span class="material-symbols-outlined">insights</span>
+            <span class="text-sm font-semibold font-headline">Analytics</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary mx-2 transition-all rounded-lg" href="#">
+            <span class="material-symbols-outlined">settings</span>
+            <span class="text-sm font-semibold font-headline">Settings</span>
+        </a>
+    </nav>
+    <div class="px-4 mt-auto">
+        <button class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-3.5 rounded-xl text-sm font-bold font-headline shadow-md hover:shadow-lg transition-all active:scale-95">
+            Schedule Session
+        </button>
+    </div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-surface/80 backdrop-blur-xl flex justify-between items-center h-16 px-8 ml-64 shadow-sm">
+    <div class="flex items-center flex-1">
+        <div class="relative w-full max-w-md group">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+            <input class="w-full pl-12 pr-4 py-2.5 bg-surface-container-low border-none rounded-full text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 font-body transition-all" placeholder="Search records..." type="text"/>
+        </div>
+    </div>
+    <div class="flex items-center gap-6">
+        <button class="text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 transition-all">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 transition-all">
+            <span class="material-symbols-outlined">help_outline</span>
+        </button>
+        <div class="flex items-center gap-3 pl-6 border-l border-outline-variant">
+            <div class="text-right hidden sm:block">
+                <p class="text-xs font-bold text-on-surface font-headline">Alex Ionescu</p>
+                <p class="text-[10px] text-on-surface-variant font-medium">Administrator</p>
+            </div>
+            <img alt="Admin User Profile" class="w-8 h-8 rounded-full object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtcrYiJO2EkdC8VhAaJrQFJuVREcx9frnnGqVznm4CtOofzoaPQGeoFEMHuinRiuGtrX2O5K46tvFpVmZ2J7Rv_jnT5-ZZ4isAEKKJiONzzo4DW5b_uA3ZakOwrlhbfD6S_emIemXyDYMYkRpr8_mMC1bIJChoe8tPKuWGGmDYzmbTVOQBzMcw-q3bxM08xyQdHr6sIj8Iiy5szH2ilZyQclmjpWRt4A5Fw-mDegjIpbMzW9QZZ146-dnAE4gnHfNrFcP14g2fYgRx"/>
+        </div>
+    </div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-24 pb-20 px-10 min-h-screen bg-surface">
+    <!-- Header Section -->
+    <section class="flex justify-between items-end mb-16">
+        <div>
+            <h2 class="text-3xl font-extrabold font-headline text-on-surface tracking-tight mb-2">Session Overview</h2>
+            <p class="text-on-surface-variant text-base font-medium max-w-xl leading-relaxed">Manage structured 1:1 engagement cycles and historical records.</p>
+        </div>
+        <button class="bg-primary text-white px-8 py-3 rounded-xl text-sm font-bold font-headline shadow-md hover:bg-primary-container transition-all active:scale-95">
+            Create Series
+        </button>
+    </section>
+    <!-- Session Content -->
+    <div class="space-y-16">
+        <!-- Manager Group: Ciprian Dobrea -->
+        <section class="bg-surface-container-low/50 p-8 rounded-2xl">
+            <div class="flex items-center gap-4 mb-8">
+                <h3 class="font-headline font-extrabold text-xl text-primary">Ciprian Dobrea</h3>
+                <span class="text-xs font-bold text-on-surface-variant bg-surface-container px-3 py-1 rounded-full uppercase tracking-wider">Head of Operations</span>
+                <span class="ml-auto text-xs font-bold text-on-surface-variant uppercase tracking-widest">3 Sessions</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Session Card 1 -->
+                <div class="card-refined p-6 rounded-2xl flex flex-col">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <img alt="Employee" class="w-12 h-12 rounded-xl object-cover border border-outline-variant/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiSBvC0DeA105pkPqb0zSJ704ftiyC8GkWch_EDTRDzWRwCkMJVc1HKa3YoNwj8_ixv_AGDzbOLh9mnbrwxH8IM961oysiBVhx5k7q1A6n5cPxuMphdfEVoYJ3NVgRQ15-_QMyTz70WZQX7zBNbHQuTyKEmgICkYPQyYWnDHvoyhfEdH0kmAZXgY2KipaiQBvVuJKapTGMNSc6WyyLCQRb-kCAbBfKfAkCnSRFKNG6RGAwOPp2Sjd_0DLo8lBfG5YIyM-ZVuPte2WH"/>
+                            <div>
+                                <h4 class="font-bold text-sm text-on-surface">Maria Turcan</h4>
+                                <div class="flex text-primary/30 scale-75 -ml-3.5 origin-left">
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined">star</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-success bg-success/10 px-2 py-0.5 rounded-md">Active</span>
+                    </div>
+                    <div class="mb-4 flex-1">
+                        <p class="text-xs text-on-surface-variant font-medium leading-relaxed italic text-balance">"Excellent progress on Q1 objectives. Management training suggested for upcoming cycle."</p>
+                    </div>
+                    <!-- New Visual Sparkline Style -->
+                    <div class="sparkline-container mt-auto">
+                        <svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 40">
+                            <defs>
+                                <lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#059669;stop-opacity:0.2"></stop>
+                                    <stop offset="100%" style="stop-color:#29407d;stop-opacity:0.05"></stop>
+                                </lineargradient>
+                            </defs>
+                            <!-- Secondary layered wave -->
+                            <path d="M0,40 L0,32 Q15,25 30,30 Q45,35 60,25 Q75,15 90,28 Q100,35 100,32 L100,40 Z" fill="rgba(148, 163, 184, 0.05)"></path>
+                            <!-- Primary wave with gradient -->
+                            <path d="M0,40 L0,25 Q20,15 40,28 Q60,40 80,18 Q100,5 100,20 L100,40 Z" fill="url(#grad1)"></path>
+                            <!-- Clean stroke lines -->
+                            <path d="M0,32 Q15,25 30,30 Q45,35 60,25 Q75,15 90,28 Q100,35" fill="none" stroke="rgba(148, 163, 184, 0.2)" stroke-width="0.75"></path>
+                            <path d="M0,25 Q20,15 40,28 Q60,40 80,18 Q100,5" fill="none" stroke="#29407d" stroke-linecap="round" stroke-width="1.5"></path>
+                        </svg>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-outline-variant/30 relative z-10">
+                        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">30 MAR</span>
+                        <button class="text-xs font-bold text-primary hover:underline transition-all flex items-center gap-1">Start <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+                    </div>
+                </div>
+                <!-- Session Card 2 -->
+                <div class="card-refined p-6 rounded-2xl flex flex-col">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <img alt="Employee" class="w-12 h-12 rounded-xl object-cover border border-outline-variant/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhelTh_TRhPbLfYW4Bo9KuxrXp4fPGo8qkqHhQdxd6Pr4zJ2OE9knpcy5-tOzwLBDifcvAv253XIqImGd_NiaDsroJtoS_OPIE4_NKqRbuFABfgM-GYTJFzBU4YRoD3Uq8XMfO1wyiAsCAmoIRHJhgGIKaW3YRWHUz5TZIXIpxP9cPI2Lqa6RiG03yeGqS-JrwtV4Vfq3-5BPpKbGhbJpowHEtiDuKF5WLNcynTv1LRehgh3Ap-1Xnr719-4GrYTw4l58MYNzgNQ7W"/>
+                            <div>
+                                <h4 class="font-bold text-sm text-on-surface">Mich Corneliu</h4>
+                                <div class="flex text-primary/30 scale-75 -ml-3.5 origin-left">
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined">star</span>
+                                    <span class="material-symbols-outlined">star</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-secondary bg-secondary-container/30 px-2 py-0.5 rounded-md">Upcoming</span>
+                    </div>
+                    <div class="mb-4 flex-1">
+                        <p class="text-xs text-on-surface-variant font-medium leading-relaxed">Performance review preparation. Reviewing technical contributions for the past semester.</p>
+                    </div>
+                    <div class="sparkline-container mt-auto">
+                        <svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 40">
+                            <path d="M0,40 L0,35 Q25,30 50,35 Q75,40 100,30 L100,40 Z" fill="rgba(148, 163, 184, 0.05)"></path>
+                            <path d="M0,40 L0,20 Q33,10 66,25 Q85,35 100,15 L100,40 Z" fill="url(#grad1)"></path>
+                            <path d="M0,35 Q25,30 50,35 Q75,40 100,30" fill="none" stroke="rgba(148, 163, 184, 0.2)" stroke-width="0.75"></path>
+                            <path d="M0,20 Q33,10 66,25 Q85,35 100,15" fill="none" stroke="#29407d" stroke-linecap="round" stroke-width="1.5"></path>
+                        </svg>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-outline-variant/30 relative z-10">
+                        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">01 APR</span>
+                        <button class="text-xs font-bold text-on-surface hover:text-primary transition-all">Details</button>
+                    </div>
+                </div>
+                <!-- Session Card 3: Empty State Slot -->
+                <div class="border-2 border-dashed border-outline-variant/50 rounded-2xl flex flex-col items-center justify-center p-6 text-on-surface-variant hover:border-primary/50 hover:bg-surface-container transition-all cursor-pointer group">
+                    <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center mb-3 group-hover:bg-primary/10 transition-colors">
+                        <span class="material-symbols-outlined text-xl text-on-surface-variant group-hover:text-primary transition-colors">add</span>
+                    </div>
+                    <p class="text-xs font-bold uppercase tracking-widest">New Session</p>
+                </div>
+            </div>
+        </section>
+        <!-- Manager Group: Aurel Filip -->
+        <section class="bg-surface-container-low/50 p-8 rounded-2xl">
+            <div class="flex items-center gap-4 mb-8">
+                <h3 class="font-headline font-extrabold text-xl text-primary">Aurel Filip</h3>
+                <span class="text-xs font-bold text-on-surface-variant bg-surface-container px-3 py-1 rounded-full uppercase tracking-wider">Lead Developer</span>
+                <span class="ml-auto text-xs font-bold text-on-surface-variant uppercase tracking-widest">2 Sessions</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Session Card 4 -->
+                <div class="card-refined p-6 rounded-2xl flex flex-col border-l-4 border-l-error">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <img alt="Employee" class="w-12 h-12 rounded-xl object-cover border border-outline-variant/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzgTRG8Ahn8aK_Fne2Kv-cGT6tM_pGPXps-ba_J2dfCEDZQQj2Lq8fTEBj7FRf4dk5-qptP_QFDlA_Y73ctwgwZuFQtN27dbmiKEyre6goUyybcvz0Dq5524vh-K9a3ZFB1uFJmYzsLKe8QIJdPVExVY2JXYwsU2IuExHam-r4mfFH-WZlWmxTFU70KzEERZ6DwVce13m9di7UfY5ups8OOdJ12xUUWtWWG6XCSZemLElfKKxqerDZT1vm1dMusTu2lOxPC6_hBhqQ"/>
+                            <div>
+                                <h4 class="font-bold text-sm text-on-surface">Elena Popa</h4>
+                                <div class="flex text-primary/30 scale-75 -ml-3.5 origin-left">
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-bold uppercase tracking-widest text-error bg-error/10 px-2 py-0.5 rounded-md">Missing Summary</span>
+                    </div>
+                    <div class="mb-4 flex-1">
+                        <p class="text-xs text-on-surface-variant font-medium leading-relaxed">Session completed but requires final documentation and approval from direct lead.</p>
+                    </div>
+                    <div class="sparkline-container mt-auto">
+                        <svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 40">
+                            <path d="M0,40 L0,30 Q30,20 60,35 Q80,45 100,30 L100,40 Z" fill="rgba(148, 163, 184, 0.05)"></path>
+                            <path d="M0,40 L0,15 Q25,5 50,20 Q75,35 100,10 L100,40 Z" fill="url(#grad1)"></path>
+                            <path d="M0,30 Q30,20 60,35 Q80,45 100,30" fill="none" stroke="rgba(148, 163, 184, 0.2)" stroke-width="0.75"></path>
+                            <path d="M0,15 Q25,5 50,20 Q75,35 100,10" fill="none" stroke="#29407d" stroke-linecap="round" stroke-width="1.5"></path>
+                        </svg>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-outline-variant/30 relative z-10">
+                        <span class="text-[10px] font-bold text-error uppercase tracking-wider">Overdue</span>
+                        <button class="bg-primary text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-primary-container transition-all shadow-sm">Complete</button>
+                    </div>
+                </div>
+                <!-- Session Card 5 -->
+                <div class="card-refined p-6 rounded-2xl flex flex-col">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-primary/5 border border-primary/20 flex items-center justify-center text-primary font-bold text-sm uppercase">DS</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-on-surface">Dan Stanciu</h4>
+                                <div class="flex text-primary/30 scale-75 -ml-3.5 origin-left">
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined">star</span>
+                                    <span class="material-symbols-outlined">star</span>
+                                    <span class="material-symbols-outlined">star</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-success bg-success/10 px-2 py-0.5 rounded-md">Active</span>
+                    </div>
+                    <div class="mb-4 flex-1">
+                        <p class="text-xs text-on-surface-variant font-medium leading-relaxed">New project onboarding focused. Establishing milestones for the integration phase.</p>
+                    </div>
+                    <div class="sparkline-container mt-auto">
+                        <svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 40">
+                            <path d="M0,40 L0,38 Q50,32 100,38 L100,40 Z" fill="rgba(148, 163, 184, 0.05)"></path>
+                            <path d="M0,40 L0,22 Q20,18 40,30 Q60,42 80,15 Q100,5 100,18 L100,40 Z" fill="url(#grad1)"></path>
+                            <path d="M0,38 Q50,32 100,38" fill="none" stroke="rgba(148, 163, 184, 0.2)" stroke-width="0.75"></path>
+                            <path d="M0,22 Q20,18 40,30 Q60,42 80,15 Q100,5" fill="none" stroke="#29407d" stroke-linecap="round" stroke-width="1.5"></path>
+                        </svg>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-outline-variant/30 relative z-10">
+                        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">TODAY, 14:00</span>
+                        <button class="text-xs font-bold text-primary hover:underline transition-all flex items-center gap-1">Start <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Manager Group: Emilia Mintean -->
+        <section class="bg-surface-container-low/50 p-8 rounded-2xl">
+            <div class="flex items-center gap-4 mb-8">
+                <h3 class="font-headline font-extrabold text-xl text-primary">Emilia Mintean</h3>
+                <span class="text-xs font-bold text-on-surface-variant bg-surface-container px-3 py-1 rounded-full uppercase tracking-wider">People &amp; Culture</span>
+                <span class="ml-auto text-xs font-bold text-on-surface-variant uppercase tracking-widest">0 Active</span>
+            </div>
+            <div class="bg-surface-container-lowest rounded-2xl p-16 flex flex-col items-center text-center max-w-2xl mx-auto border border-outline-variant/30 shadow-sm">
+                <div class="w-16 h-16 bg-surface-container rounded-full flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-3xl text-on-surface-variant">calendar_today</span>
+                </div>
+                <h4 class="font-headline font-bold text-xl text-on-surface mb-3">No active sessions</h4>
+                <p class="text-sm font-medium text-on-surface-variant mb-10 leading-relaxed max-w-sm">No sessions are currently scheduled for this manager's direct reports. Consider planning the next engagement cycle.</p>
+                <button class="border-2 border-primary text-primary px-10 py-3 rounded-xl text-xs font-bold font-headline uppercase tracking-widest hover:bg-primary hover:text-white transition-all active:scale-95">
+                    Schedule Series
+                </button>
+            </div>
+        </section>
+    </div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-10 right-10 w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all z-50 group">
+    <span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform" style="font-variation-settings: 'FILL' 1;">chat_bubble_outline</span>
+</button>
+</body></html>

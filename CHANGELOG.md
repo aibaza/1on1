@@ -6,7 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Editorial design feature gate: toggle between Classic and Editorial (Beta) UI from user menu
+- Cookie-based design preference (`DESIGN_PREF`) persists across sessions including logout
+- `globals-v2.css` with Material Design 3 color tokens scoped under `[data-design="editorial"]`
+- Manrope (headlines) + Inter (body) fonts loaded alongside Geist for editorial mode
+- Editorial login page: split-layout with visual panel and gradient branding
+- `data-design` attribute on `<html>` for CSS scoping (similar to `data-color-theme`)
+
+### Changed
+- Login page split into `classic-login.tsx` and `editorial-login.tsx` with server-side routing
+
 ### Removed
+- Google and Microsoft OAuth buttons from login page (will be re-added later)
 - Local Docker infrastructure (Dockerfile, Dockerfile.prebuilt, docker-compose.yml, init-db.sh)
 - UAT rebuild scripts (rebuild-uat.sh, quick-deploy.sh) — replaced by Vercel dev preview on `develop` branch
 

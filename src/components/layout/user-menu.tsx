@@ -2,7 +2,8 @@
 
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import { LogOut, Globe, Check } from "lucide-react";
+import { LogOut, Globe, Check, Paintbrush } from "lucide-react";
+import { DESIGN_PREF_COOKIE, type DesignPreference } from "@/lib/design-preference";
 import { logoutAction } from "@/lib/auth/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,11 @@ const LANGUAGES = [
   { code: "ro" as const, label: "Rom\u00e2n\u0103" },
 ] as const;
 
+const DESIGNS = [
+  { code: "classic" as DesignPreference, label: "Classic" },
+  { code: "editorial" as DesignPreference, label: "Editorial (Beta)" },
+] as const;
+
 function getInitials(name?: string | null): string {
   if (!name) return "?";
   return name
@@ -37,6 +43,14 @@ export function UserMenu() {
   const user = session?.user;
   // useLocale reads the actual rendered locale (source of truth)
   const currentLang = useLocale();
+
+  // Read design preference from cookie (client-side)
+  const currentDesign: DesignPreference =
+    (typeof document !== "undefined" &&
+      document.cookie
+        .split("; ")
+        .find((c) => c.startsWith(`${DESIGN_PREF_COOKIE}=`))
+        ?.split("=")[1] as DesignPreference) || "classic";
 
   async function switchLanguage(lang: "en" | "ro") {
     if (lang === currentLang) return;
@@ -100,6 +114,27 @@ export function UserMenu() {
           >
             <span className="flex-1">{lang.label}</span>
             {currentLang === lang.code && (
+              <Check className="h-4 w-4 text-primary" />
+            )}
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Paintbrush className="h-3.5 w-3.5" />
+          Design
+        </DropdownMenuLabel>
+        {DESIGNS.map((design) => (
+          <DropdownMenuItem
+            key={design.code}
+            onClick={() => {
+              if (design.code === currentDesign) return;
+              document.cookie = `${DESIGN_PREF_COOKIE}=${design.code};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+              window.location.reload();
+            }}
+            className="cursor-pointer"
+          >
+            <span className="flex-1">{design.label}</span>
+            {currentDesign === design.code && (
               <Check className="h-4 w-4 text-primary" />
             )}
           </DropdownMenuItem>
