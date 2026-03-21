@@ -227,3 +227,47 @@
   padding: 2rem;
   border-radius: 1rem;
 }
+
+/* ===== Editorial Table Upgrades ===== */
+/* Enhanced table styling for People page and similar data tables */
+
+[data-design="editorial"] table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+[data-design="editorial"] table thead tr {
+  background: rgba(242, 244, 245, 0.5);
+}
+
+[data-design="editorial"] table thead th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--editorial-outline, #757684);
+  padding: 1rem 1.5rem;
+}
+
+[data-design="editorial"] table tbody td {
+  padding: 1.25rem 1.5rem;
+}
+
+[data-design="editorial"] table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+[data-design="editorial"] table tbody tr:hover {
+  background: var(--editorial-surface-container-low, #f2f4f5);
+}
+
+/* Deactivated row styling */
+[data-design="editorial"] table tbody tr[data-deactivated="true"] {
+  opacity: 0.6;
+  filter: grayscale(0.5);
+}
+
+[data-design="editorial"] table tbody tr[data-deactivated="true"]:hover {
+  opacity: 1;
+  filter: grayscale(0);
+}
