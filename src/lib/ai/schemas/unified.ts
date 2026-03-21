@@ -15,10 +15,8 @@ export const unifiedAISchema = z.object({
       .describe("2-5 key takeaways, each max 10 words"),
     objectiveRating: z
       .number()
-      .min(1)
-      .max(5)
       .describe(
-        "Session health rating 1-5 stars. 1 = critical issues, urgent intervention needed; 2 = significant concerns, follow-up required; 3 = average, mixed signals; 4 = good, engaged and progressing; 5 = excellent, high energy and strong rapport. Base it on mood, blockers, growth trajectory, and engagement quality."
+        "Session health rating on a 1-5 star scale (integer only, no decimals). 1 = critical issues, urgent intervention needed; 2 = significant concerns, follow-up required; 3 = average, mixed signals; 4 = good, engaged and progressing; 5 = excellent, high energy and strong rapport. Base it on mood, blockers, growth trajectory, and engagement quality."
       ),
   }),
 
