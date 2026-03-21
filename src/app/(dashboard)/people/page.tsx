@@ -8,6 +8,7 @@ import { PeopleTabs } from "@/components/people/people-tabs";
 import { PeopleTable } from "@/components/people/people-table";
 import { InviteButton } from "@/components/people/invite-button";
 import { EditorialPeopleHeader } from "./editorial-people-header";
+import { TeamStructure } from "@/components/people/team-structure";
 import { getDesignPreference } from "@/lib/design-preference.server";
 import type { UserRow } from "@/components/people/people-table-columns";
 
@@ -168,6 +169,10 @@ export default async function PeoplePage() {
           availableTeams={data.teams}
         />
       </PeopleTabs>
+
+      {isEditorial && (session.user.role === "admin" || session.user.role === "manager") && (
+        <TeamStructure users={data.users} />
+      )}
     </div>
   );
 }
