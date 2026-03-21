@@ -393,7 +393,7 @@ export function EditorialDashboard({
                 return (
                   <Link
                     key={s.id}
-                    href={`/sessions/${s.seriesId}/summary`}
+                    href={`/sessions/${s.id}/summary`}
                     className="bg-card p-6 rounded-2xl shadow-sm border-l-4 hover:shadow-md transition-shadow block"
                     style={{ borderLeftColor: sentimentColor }}
                   >
