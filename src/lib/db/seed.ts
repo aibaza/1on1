@@ -1196,7 +1196,7 @@ async function seedSessions() {
       status: 'completed' as const,
       sharedNotes: { general: 'First 1:1 session. Dave is settling in well. Discussed project priorities for the sprint.' },
       durationMinutes: 30,
-      sessionScore: '7.50',
+      sessionScore: '3.75',
     },
     {
       id: SESSION_2_ID,
@@ -1210,7 +1210,7 @@ async function seedSessions() {
       status: 'completed' as const,
       sharedNotes: { general: 'Good progress on the API refactor. Dave raised concerns about test coverage.' },
       durationMinutes: 25,
-      sessionScore: '8.00',
+      sessionScore: '4.00',
     },
     {
       id: SESSION_3_ID,
@@ -1224,7 +1224,7 @@ async function seedSessions() {
       status: 'completed' as const,
       sharedNotes: { general: 'Discussed career growth. Dave interested in leading the next feature project.' },
       durationMinutes: 35,
-      sessionScore: '8.50',
+      sessionScore: '4.25',
     },
     // Eve sessions (Bob <-> Eve)
     {
@@ -1239,7 +1239,7 @@ async function seedSessions() {
       status: 'completed' as const,
       sharedNotes: { general: 'Eve is ramping up well on the frontend. Discussed component library choices.' },
       durationMinutes: 25,
-      sessionScore: '7.00',
+      sessionScore: '3.50',
     },
     {
       id: SESSION_EVE_2_ID,
@@ -1253,7 +1253,7 @@ async function seedSessions() {
       status: 'completed' as const,
       sharedNotes: { general: 'Great progress on the dashboard redesign. Eve wants to explore accessibility testing.' },
       durationMinutes: 30,
-      sessionScore: '8.00',
+      sessionScore: '4.00',
     },
     // Frank sessions (Carol <-> Frank) — use weekly template for numeric data
     {
@@ -1268,7 +1268,7 @@ async function seedSessions() {
       status: 'completed' as const,
       sharedNotes: { general: 'First monthly check-in. Frank settling into the product team nicely.' },
       durationMinutes: 40,
-      sessionScore: '6.50',
+      sessionScore: '3.25',
     },
     {
       id: SESSION_FRANK_2_ID,
@@ -1282,7 +1282,7 @@ async function seedSessions() {
       status: 'completed' as const,
       sharedNotes: { general: 'Frank raised concerns about deadline pressure. Discussed prioritization strategies.' },
       durationMinutes: 45,
-      sessionScore: '7.50',
+      sessionScore: '3.75',
     },
     // Grace sessions (Carol <-> Grace)
     {
@@ -1297,7 +1297,7 @@ async function seedSessions() {
       status: 'completed' as const,
       sharedNotes: { general: 'Grace is doing great work on user research. Discussed synthesis methods.' },
       durationMinutes: 30,
-      sessionScore: '8.00',
+      sessionScore: '4.00',
     },
     {
       id: SESSION_GRACE_2_ID,
@@ -1311,7 +1311,7 @@ async function seedSessions() {
       status: 'completed' as const,
       sharedNotes: { general: 'Grace presented usability findings. Excellent stakeholder communication.' },
       durationMinutes: 25,
-      sessionScore: '8.50',
+      sessionScore: '4.25',
     },
   ];
 
@@ -1995,25 +1995,25 @@ async function seedTechvibe() {
   // --------------------------------------------------------------------------
   const tvSessions = [
     // Elena ↔ Ciprian (Ciprian is report)
-    { id: TV_S_EC_1, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: fourWeeksAgo,  startedAt: fourWeeksAgo,  completedAt: new Date(fourWeeksAgo.getTime()  + 30*60*1000), status: 'completed' as const, sessionScore: '7.00', durationMinutes: 30 },
-    { id: TV_S_EC_2, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '8.00', durationMinutes: 30 },
-    { id: TV_S_EC_3, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 3, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '7.50', durationMinutes: 30 },
+    { id: TV_S_EC_1, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: fourWeeksAgo,  startedAt: fourWeeksAgo,  completedAt: new Date(fourWeeksAgo.getTime()  + 30*60*1000), status: 'completed' as const, sessionScore: '3.50', durationMinutes: 30 },
+    { id: TV_S_EC_2, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '4.00', durationMinutes: 30 },
+    { id: TV_S_EC_3, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 3, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '3.75', durationMinutes: 30 },
     { id: TV_S_EC_4, seriesId: TV_SERIES_EC_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 4, scheduledAt: now,            startedAt: now,           status: 'in_progress' as const },
     // Ciprian ↔ Andrei
-    { id: TV_S_CA_1, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: fourWeeksAgo,  startedAt: fourWeeksAgo,  completedAt: new Date(fourWeeksAgo.getTime()  + 30*60*1000), status: 'completed' as const, sessionScore: '6.50', durationMinutes: 30 },
-    { id: TV_S_CA_2, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '7.00', durationMinutes: 30 },
-    { id: TV_S_CA_3, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 3, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '8.00', durationMinutes: 30 },
+    { id: TV_S_CA_1, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: fourWeeksAgo,  startedAt: fourWeeksAgo,  completedAt: new Date(fourWeeksAgo.getTime()  + 30*60*1000), status: 'completed' as const, sessionScore: '3.25', durationMinutes: 30 },
+    { id: TV_S_CA_2, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '3.50', durationMinutes: 30 },
+    { id: TV_S_CA_3, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 3, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '4.00', durationMinutes: 30 },
     { id: TV_S_CA_4, seriesId: TV_SERIES_CA_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 4, scheduledAt: now,            startedAt: now,           status: 'in_progress' as const },
     // Ciprian ↔ Maria
-    { id: TV_S_CM_1, seriesId: TV_SERIES_CM_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '8.00', durationMinutes: 30 },
-    { id: TV_S_CM_2, seriesId: TV_SERIES_CM_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '7.50', durationMinutes: 30 },
+    { id: TV_S_CM_1, seriesId: TV_SERIES_CM_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '4.00', durationMinutes: 30 },
+    { id: TV_S_CM_2, seriesId: TV_SERIES_CM_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '3.75', durationMinutes: 30 },
     { id: TV_S_CM_3, seriesId: TV_SERIES_CM_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 3, scheduledAt: now,            startedAt: now,           status: 'in_progress' as const },
     // Radu ↔ Ioana
-    { id: TV_S_RI_1, seriesId: TV_SERIES_RI_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '7.00', durationMinutes: 30 },
-    { id: TV_S_RI_2, seriesId: TV_SERIES_RI_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: oneWeekAgo,    startedAt: oneWeekAgo,    completedAt: new Date(oneWeekAgo.getTime()    + 30*60*1000), status: 'completed' as const, sessionScore: '8.00', durationMinutes: 30 },
+    { id: TV_S_RI_1, seriesId: TV_SERIES_RI_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 1, scheduledAt: threeWeeksAgo, startedAt: threeWeeksAgo, completedAt: new Date(threeWeeksAgo.getTime() + 30*60*1000), status: 'completed' as const, sessionScore: '3.50', durationMinutes: 30 },
+    { id: TV_S_RI_2, seriesId: TV_SERIES_RI_ID, tenantId: TV_TENANT_ID, templateId: TV_CHECKIN_TEMPLATE_ID, sessionNumber: 2, scheduledAt: oneWeekAgo,    startedAt: oneWeekAgo,    completedAt: new Date(oneWeekAgo.getTime()    + 30*60*1000), status: 'completed' as const, sessionScore: '4.00', durationMinutes: 30 },
     // Radu ↔ Alexandru
-    { id: TV_S_RA_1, seriesId: TV_SERIES_RA_ID, tenantId: TV_TENANT_ID, templateId: TV_RETRO_TEMPLATE_ID,   sessionNumber: 1, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '6.00', durationMinutes: 30 },
-    { id: TV_S_RA_2, seriesId: TV_SERIES_RA_ID, tenantId: TV_TENANT_ID, templateId: TV_RETRO_TEMPLATE_ID,   sessionNumber: 2, scheduledAt: oneWeekAgo,    startedAt: oneWeekAgo,    completedAt: new Date(oneWeekAgo.getTime()    + 30*60*1000), status: 'completed' as const, sessionScore: '7.00', durationMinutes: 30 },
+    { id: TV_S_RA_1, seriesId: TV_SERIES_RA_ID, tenantId: TV_TENANT_ID, templateId: TV_RETRO_TEMPLATE_ID,   sessionNumber: 1, scheduledAt: twoWeeksAgo,   startedAt: twoWeeksAgo,   completedAt: new Date(twoWeeksAgo.getTime()   + 30*60*1000), status: 'completed' as const, sessionScore: '3.00', durationMinutes: 30 },
+    { id: TV_S_RA_2, seriesId: TV_SERIES_RA_ID, tenantId: TV_TENANT_ID, templateId: TV_RETRO_TEMPLATE_ID,   sessionNumber: 2, scheduledAt: oneWeekAgo,    startedAt: oneWeekAgo,    completedAt: new Date(oneWeekAgo.getTime()    + 30*60*1000), status: 'completed' as const, sessionScore: '3.50', durationMinutes: 30 },
   ];
 
   for (const s of tvSessions) {
