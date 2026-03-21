@@ -41,6 +41,7 @@ export default async function CompanySettingsPage() {
     defaultDurationMinutes?: number;
     preferredLanguage?: string;
     colorTheme?: string;
+    companyContext?: string;
   };
 
   return (

@@ -394,6 +394,7 @@ async function seedTenants() {
           defaultCadence: 'biweekly',
           defaultDurationMinutes: 30,
           preferredLanguage: 'en',
+          companyContext: 'Acme Corp is a mid-size SaaS company (120 employees) building developer tools. We value transparency, async-first communication, and continuous learning. Currently scaling from Series A to Series B, with a focus on product-led growth. Engineering culture emphasizes code review, pair programming, and blameless post-mortems. We run quarterly OKRs and monthly retrospectives at the team level.',
         },
       },
       {
@@ -572,14 +573,14 @@ async function seedTeams() {
         id: ENGINEERING_TEAM_ID,
         tenantId: ACME_TENANT_ID,
         name: 'Engineering',
-        description: 'Backend and frontend engineering team',
+        description: 'Full-stack engineering team responsible for the core platform. Currently focused on API performance, migrating to microservices, and improving CI/CD pipeline. Team values: ship fast, measure everything, refactor when it hurts. Weekly standups, bi-weekly sprints, monthly tech debt days.',
         managerId: BOB_ID,
       },
       {
         id: PRODUCT_TEAM_ID,
         tenantId: ACME_TENANT_ID,
         name: 'Product',
-        description: 'Product design and research team',
+        description: 'Product design and user research team driving the roadmap. Focused on user onboarding improvements and enterprise feature requests. Team culture emphasizes user interviews, data-driven decisions, and cross-functional collaboration with engineering.',
         managerId: CAROL_ID,
       },
     ])
