@@ -404,8 +404,19 @@ export function EditorialDashboard({
                           {format.dateTime(new Date(s.completedAt), { month: "short", day: "numeric" })} · Session #{s.sessionNumber}
                         </div>
                       </div>
-                      <div className="flex flex-col items-end">
+                      <div className="flex flex-col items-end gap-1">
                         <StarRating score={s.sessionScore ?? 0} size="sm" />
+                        {s.sentiment && (
+                          <span
+                            className="px-2 py-0.5 text-[10px] font-bold rounded uppercase"
+                            style={{
+                              background: s.sentiment === "positive" ? "rgba(0, 76, 71, 0.08)" : s.sentiment === "concerning" ? "rgba(186, 26, 26, 0.08)" : "rgba(245, 158, 11, 0.08)",
+                              color: s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : "#d97706",
+                            }}
+                          >
+                            {s.sentiment} sentiment
+                          </span>
+                        )}
                       </div>
                     </div>
                     {s.aiSummarySnippet && (
