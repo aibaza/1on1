@@ -56,7 +56,9 @@ export default async function DashboardLayout({
           <TooltipProvider delayDuration={300}>
             {isEditorial ? (
               <div className="min-h-screen">
-                <ImpersonationBanner />
+                <div className="relative z-[60]">
+                  <ImpersonationBanner />
+                </div>
                 <SideNav />
                 <div className="ml-64">
                   <EditorialTopBar />
