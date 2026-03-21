@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { SeriesCard } from "./series-card";
+import { EditorialSeriesCard } from "./editorial-series-card";
 import { Plus, CalendarDays, ChevronDown, ChevronRight, Archive } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -49,7 +49,7 @@ function EditorialSeriesGrid({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {items.map((s) => (
         <div key={s.id} className={muted ? "opacity-50" : undefined}>
-          <SeriesCard
+          <EditorialSeriesCard
             series={s}
             currentUserId={currentUserId}
             showManagerName={showManagerName}
