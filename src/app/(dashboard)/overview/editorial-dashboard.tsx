@@ -13,6 +13,10 @@ import {
   ChevronRight,
   CircleAlert,
   CalendarPlus,
+  TrendingDown,
+  Play,
+  ListChecks,
+  Calendar,
 } from "lucide-react";
 import { useTranslations, useFormatter } from "next-intl";
 import type { QuickStats, StatsTrends, OverdueGroup, RecentSession } from "@/lib/queries/dashboard";
@@ -121,7 +125,7 @@ export function EditorialDashboard({
 
   // Attention cards: derive from data
   const attentionCards = useMemo(() => {
-    const cards: Array<{ type: "score" | "cadence"; title: string; subtitle: string; color: string }> = [];
+    const cards: Array<{ type: "score" | "cadence"; title: string; subtitle: string; color: string; seriesId: string }> = [];
 
     // Check for score drops
     for (const series of upcoming) {
@@ -135,6 +139,7 @@ export function EditorialDashboard({
             title: `${name}'s score dropped ${Math.abs(delta).toFixed(1)} points`,
             subtitle: "Consider a focused check-in",
             color: "error",
+            seriesId: series.id,
           });
         }
       }
@@ -151,6 +156,7 @@ export function EditorialDashboard({
             title: `${daysSince} days since last sync with ${name}`,
             subtitle: "Drifting past recommended cadence",
             color: "amber",
+            seriesId: series.id,
           });
         }
       }
@@ -224,7 +230,10 @@ export function EditorialDashboard({
         </div>
 
         {nextSession ? (
-          <div className="bg-primary text-primary-foreground p-6 rounded-xl shadow-lg relative overflow-hidden">
+          <Link
+            href={nextSession.latestSession?.status === "in_progress" ? `/wizard/${nextSession.latestSession.id}` : `/sessions/${nextSession.id}`}
+            className="bg-primary text-primary-foreground p-6 rounded-xl shadow-lg relative overflow-hidden group hover:shadow-xl transition-all block"
+          >
             <div className="absolute -right-4 -bottom-4 opacity-10">
               <Clock className="h-24 w-24" />
             </div>
@@ -233,13 +242,18 @@ export function EditorialDashboard({
               <div className="text-xl font-bold mb-1">
                 {nextSession.report.firstName} {nextSession.report.lastName}
               </div>
-              <div className="text-sm opacity-80">
-                {nextSession.nextSessionAt
-                  ? format.relativeTime(new Date(nextSession.nextSessionAt))
-                  : "Scheduled"}
+              <div className="flex items-center justify-between">
+                <div className="text-sm opacity-80">
+                  {nextSession.nextSessionAt
+                    ? format.relativeTime(new Date(nextSession.nextSessionAt))
+                    : "Scheduled"}
+                </div>
+                <div className="flex items-center gap-1 text-xs font-bold opacity-60 group-hover:opacity-100 transition-opacity">
+                  <Play className="h-3 w-3 fill-current" /> Start
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         ) : (
           <div className="bg-muted p-6 rounded-xl border border-border/50 flex flex-col items-center justify-center text-center">
             <CalendarPlus className="h-8 w-8 text-muted-foreground mb-2" />
@@ -259,23 +273,23 @@ export function EditorialDashboard({
             {attentionCards.map((card, i) => (
               <div
                 key={i}
-                className="p-5 rounded-xl flex items-center justify-between border"
+                className="p-5 rounded-xl flex items-center justify-between border group transition-all hover:shadow-md"
                 style={{
                   background: card.color === "error"
-                    ? "var(--editorial-error-container, #ffdad6)30"
+                    ? "rgba(255, 218, 214, 0.2)"
                     : "#fff8e1",
                   borderColor: card.color === "error"
-                    ? "var(--destructive)15"
-                    : "#fbbf2440",
+                    ? "rgba(186, 26, 26, 0.1)"
+                    : "rgba(251, 191, 36, 0.25)",
                 }}
               >
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center"
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
                     style={{
-                      background: card.color === "error" ? "var(--destructive)10" : "#fef3c7",
+                      background: card.color === "error" ? "rgba(186, 26, 26, 0.08)" : "#fef3c7",
                     }}>
                     {card.type === "score"
-                      ? <TrendingUp className="h-5 w-5 text-destructive rotate-180" />
+                      ? <TrendingDown className="h-5 w-5 text-destructive" />
                       : <CalendarClock className="h-5 w-5 text-amber-600" />}
                   </div>
                   <div>
@@ -283,6 +297,17 @@ export function EditorialDashboard({
                     <p className="text-muted-foreground text-xs">{card.subtitle}</p>
                   </div>
                 </div>
+                <Link
+                  href={`/sessions/${card.seriesId}`}
+                  className="px-4 py-2 rounded-lg text-xs font-bold shadow-sm opacity-70 group-hover:opacity-100 transition-all shrink-0 ml-4"
+                  style={{
+                    background: card.color === "error" ? "white" : "rgb(217, 119, 6)",
+                    color: card.color === "error" ? "var(--destructive)" : "white",
+                    border: card.color === "error" ? "1px solid rgba(186, 26, 26, 0.15)" : "none",
+                  }}
+                >
+                  {card.type === "score" ? "Review" : "Schedule"}
+                </Link>
               </div>
             ))}
           </div>
@@ -400,7 +425,7 @@ export function EditorialDashboard({
           {/* Action Items */}
           <section className="bg-muted rounded-2xl p-6">
             <h3 className="text-lg font-bold mb-6 flex items-center font-headline">
-              <AlertTriangle className="mr-2 h-4 w-4" />
+              <ListChecks className="mr-2 h-4 w-4" />
               Action Items
             </h3>
             <div className="space-y-6">
@@ -409,16 +434,54 @@ export function EditorialDashboard({
                   <div className="text-[10px] uppercase font-black text-destructive mb-3 tracking-widest">Overdue</div>
                   <div className="space-y-3">
                     {overdue.flatMap((g) =>
-                      g.items.slice(0, 2).map((item) => (
-                        <div key={item.id} className="bg-card p-3 rounded-xl shadow-sm border border-destructive/5 group cursor-pointer hover:border-destructive/20 transition-all">
-                          <p className="text-sm font-semibold text-foreground">{item.title}</p>
-                          <p className="text-[10px] text-muted-foreground">{g.reportName} · {item.daysOverdue}d overdue</p>
-                        </div>
+                      g.items.map((item) => (
+                        <Link
+                          key={item.id}
+                          href="/action-items"
+                          className="bg-card p-3 rounded-xl shadow-sm border border-destructive/5 group cursor-pointer hover:border-destructive/20 hover:shadow-md transition-all block"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                              <p className="text-[10px] text-muted-foreground">{g.reportName} · {item.daysOverdue}d overdue</p>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-0.5" />
+                          </div>
+                        </Link>
                       ))
-                    ).slice(0, 3)}
+                    ).slice(0, 4)}
                   </div>
                 </div>
               )}
+              {/* This Week */}
+              <div>
+                <div className="text-[10px] uppercase font-black text-primary mb-3 tracking-widest">This Week</div>
+                <div className="space-y-3">
+                  {upcoming.slice(0, 2).map((series) => {
+                    const name = `${series.report.firstName} ${series.report.lastName}`;
+                    return (
+                      <Link
+                        key={series.id}
+                        href={`/sessions/${series.id}`}
+                        className="bg-card p-3 rounded-xl shadow-sm border border-border/10 group cursor-pointer hover:border-primary/20 hover:shadow-md transition-all block"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="text-sm font-semibold text-foreground">Prepare for session with {name}</p>
+                            <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {series.nextSessionAt
+                                ? format.dateTime(new Date(series.nextSessionAt), { weekday: "short", month: "short", day: "numeric" })
+                                : "Scheduled"}
+                            </p>
+                          </div>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-0.5" />
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
               <Link href="/action-items" className="text-primary text-xs font-bold hover:underline flex items-center gap-1">
                 View all <ChevronRight className="h-3 w-3" />
               </Link>
@@ -452,15 +515,23 @@ export function EditorialDashboard({
                   }
                 }
 
+                const isOverdue = series.nextSessionAt && new Date(series.nextSessionAt).getTime() < Date.now();
                 return (
-                  <div key={series.id} className="flex items-center justify-between p-2">
+                  <div key={series.id} className="flex items-center justify-between p-2 group rounded-lg hover:bg-muted/50 transition-colors">
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: dotColor }} />
                       <span className="text-sm font-medium text-foreground">{name}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground" style={{ color: dotColor === "var(--destructive)" ? dotColor : undefined }}>
-                      {timeLabel}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground" style={{ color: dotColor === "var(--destructive)" ? dotColor : undefined }}>
+                        {timeLabel}
+                      </span>
+                      {isOverdue && (
+                        <Link href={`/sessions/${series.id}`} className="text-[10px] font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                          Schedule
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 );
               })}
