@@ -19,6 +19,8 @@ import {
 import { eq, and, asc, inArray, sql, desc } from "drizzle-orm";
 import { decryptNote, type EncryptedPayload } from "@/lib/encryption/private-notes";
 import { SessionSummaryView } from "@/components/session/session-summary-view";
+import { EditorialSessionSummary } from "@/components/session/editorial-session-summary";
+import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function SessionSummaryPage({
   params,
@@ -474,8 +476,11 @@ export default async function SessionSummaryPage({
     notFound();
   }
 
+  const designPref = await getDesignPreference();
+  const SummaryComponent = designPref === "editorial" ? EditorialSessionSummary : SessionSummaryView;
+
   return (
-    <SessionSummaryView
+    <SummaryComponent
       sessionId={data.sessionId}
       sessionNumber={data.sessionNumber}
       scheduledAt={data.scheduledAt}
