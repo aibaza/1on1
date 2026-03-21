@@ -240,39 +240,51 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
           )}
         </div>
 
-        {/* Category Sidebar */}
+        {/* Sidebar: AI Score + Category Highlights */}
         <div className="col-span-12 lg:col-span-4 space-y-4">
-          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-2 mb-2">Category Performance</h3>
-          {categoryData.map((cat) => {
-            const hasScore = cat.score !== null;
-            const pct = hasScore ? (cat.score! / 5) * 100 : 0;
-            const color = hasScore
-              ? cat.score! >= 4 ? "var(--color-success)" : cat.score! >= 3 ? "var(--primary)" : "var(--destructive)"
-              : "var(--primary)";
-            return (
-              <div key={cat.name} className="bg-card rounded-xl p-5 shadow-sm border-l-4" style={{ borderLeftColor: color }}>
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h4 className="font-bold text-foreground text-sm">{cat.name}</h4>
-                    <p className="text-[10px] text-muted-foreground">{cat.answerCount} answers</p>
-                  </div>
-                  {hasScore ? (
-                    <div className="text-xl font-black" style={{ color }}>{cat.score!.toFixed(1)}</div>
-                  ) : (
-                    <div className="text-xs font-bold text-muted-foreground bg-muted px-2 py-1 rounded">Text</div>
-                  )}
+          {/* AI Assessment Score — hero card */}
+          {sessionScore !== null && (
+            <div className="bg-card rounded-xl p-6 shadow-sm border border-border/50">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">AI Assessment</h3>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="text-5xl font-black text-foreground tabular-nums">{sessionScore.toFixed(1)}</div>
+                <div className="flex-1">
+                  <StarRating score={sessionScore} size="md" />
+                  <p className="text-xs text-muted-foreground mt-1">out of 5.0</p>
                 </div>
-                {hasScore && (
-                  <div className="h-1.5 bg-muted rounded-full overflow-hidden mb-2">
-                    <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: color }} />
-                  </div>
-                )}
-                {cat.highlight && (
-                  <p className="text-[11px] text-muted-foreground leading-relaxed mt-2 line-clamp-2">{cat.highlight}</p>
-                )}
               </div>
-            );
-          })}
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all"
+                  style={{
+                    width: `${(sessionScore / 5) * 100}%`,
+                    backgroundColor: sessionScore >= 4 ? "var(--color-success)" : sessionScore >= 3 ? "var(--primary)" : "var(--destructive)",
+                  }}
+                />
+              </div>
+              {aiSummary?.overallSentiment && (
+                <p className="text-xs text-muted-foreground mt-3 capitalize">
+                  Sentiment: <span className="font-semibold text-foreground">{aiSummary.overallSentiment}</span>
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Category Highlights */}
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-2">Category Highlights</h3>
+          {categoryData.map((cat) => (
+            <div key={cat.name} className="bg-card rounded-xl p-5 shadow-sm border-l-4 border-primary/30">
+              <div className="flex justify-between items-start mb-2">
+                <h4 className="font-bold text-foreground text-sm">{cat.name}</h4>
+                <span className="text-[10px] text-muted-foreground">{cat.answerCount} answers</span>
+              </div>
+              {cat.highlight ? (
+                <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-3">{cat.highlight}</p>
+              ) : (
+                <p className="text-[11px] text-muted-foreground italic">No AI highlights for this category.</p>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
