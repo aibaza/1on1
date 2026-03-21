@@ -6,18 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-03-21
+
 ### Added
 - Unified AI pipeline: single LLM call (Sonnet 4.5) replaces 3-call chain (summary + addendum + actions)
 - Company "Internal Manifesto" textarea in organization settings (max 2000 chars)
 - Team description included as AI context for session analysis
 - Full session history sent to AI (tiered: recent 5 with full answers, older with summaries only)
 - `objectiveRating` (1-5 stars) replaces `assessmentScore` (1-100) in AI output
+- Vercel Web Analytics
+- Development preview environment (`develop` branch → separate Neon DB)
+- `scripts/quick-deploy.sh` for fast local Docker rebuilds (~3s)
 
 ### Changed
 - AI assessment score scale migrated from 1-100 to 1-5 (data migration included)
 - Sparkline data normalized to 1-5 scale (removed x20 multiplier)
+- Vercel serverless functions moved to Frankfurt (fra1) — eliminates transatlantic DB round-trip
 - Pre-push hook simplified to typecheck only (E2E tests run manually on demand)
-- Playwright webServer config uses standalone server instead of dev server
+- Seed data session scores corrected to 1-5 scale
+
+### Fixed
+- 3 pre-existing E2E test failures (UUID mismatch, regex too broad)
+- Anthropic API schema error (removed unsupported min/max on number types)
 
 ### Removed
 - Old AI prompt files (`prompts/summary.ts`, `prompts/action-items.ts`)
