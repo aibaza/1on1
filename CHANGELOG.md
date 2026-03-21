@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Editorial glass-morphism top bar (backdrop-blur, minimal — replaces TopNav in editorial mode)
 - Dashboard layout conditionally renders side nav + editorial top bar vs classic TopNav
 - Editorial people page header (larger typography, member count badge)
+- Editorial dashboard: welcome with AI insight pill, meeting streak ring, 4-column quick stats (incl. next session countdown), attention needed cards, 2-column layout (upcoming sessions + recent insights | action items + team cadence)
 - `data-design` attribute on `<html>` for CSS scoping (similar to `data-color-theme`)
 
 ### Changed

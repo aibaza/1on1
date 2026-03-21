@@ -1,0 +1,476 @@
+"use client";
+
+import { useMemo } from "react";
+import Link from "next/link";
+import {
+  Layers,
+  TrendingUp,
+  AlertTriangle,
+  Clock,
+  Zap,
+  CalendarClock,
+  Star,
+  ChevronRight,
+  CircleAlert,
+  CalendarPlus,
+} from "lucide-react";
+import { useTranslations, useFormatter } from "next-intl";
+import type { QuickStats, StatsTrends, OverdueGroup, RecentSession } from "@/lib/queries/dashboard";
+import type { SeriesCardData } from "@/lib/queries/series";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { StarRating } from "@/components/ui/star-rating";
+
+interface EditorialDashboardProps {
+  user: {
+    name?: string | null;
+    role: string;
+  };
+  tenantName: string | null;
+  stats: QuickStats;
+  trends: StatsTrends;
+  upcoming: SeriesCardData[];
+  overdue: OverdueGroup[];
+  recent: RecentSession[];
+}
+
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
+
+function getInitials(name: string): string {
+  return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+}
+
+function MiniBarChart({ data, color = "var(--primary)" }: { data: number[]; color?: string }) {
+  const max = Math.max(...data, 1);
+  return (
+    <div className="h-8 w-20 flex items-end space-x-1">
+      {data.slice(-4).map((v, i) => (
+        <div
+          key={i}
+          className="w-3 rounded-sm transition-all"
+          style={{
+            height: `${Math.max((v / max) * 100, 10)}%`,
+            backgroundColor: color,
+            opacity: 0.2 + (i / data.length) * 0.8,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function MeetingStreak({ count }: { count: number }) {
+  const circumference = 2 * Math.PI * 24;
+  const progress = Math.min(count / 15, 1); // 15 = full ring
+
+  return (
+    <div className="bg-card p-4 rounded-xl shadow-sm border border-border/50 flex items-center space-x-4">
+      <div className="relative flex items-center justify-center">
+        <svg className="w-14 h-14 -rotate-90">
+          <circle cx="28" cy="28" r="24" fill="transparent" stroke="currentColor" strokeWidth="4" className="text-muted" />
+          <circle
+            cx="28" cy="28" r="24" fill="transparent" stroke="var(--color-success, #004c47)" strokeWidth="4"
+            strokeDasharray={circumference} strokeDashoffset={circumference * (1 - progress)}
+            strokeLinecap="round"
+          />
+        </svg>
+        <Zap className="absolute h-5 w-5" style={{ color: "var(--color-success, #004c47)" }} />
+      </div>
+      <div>
+        <div className="text-2xl font-bold text-foreground">{count}</div>
+        <div className="text-xs text-muted-foreground font-medium">Sessions on time</div>
+      </div>
+    </div>
+  );
+}
+
+export function EditorialDashboard({
+  user,
+  tenantName,
+  stats,
+  trends,
+  upcoming,
+  overdue,
+  recent,
+}: EditorialDashboardProps) {
+  const t = useTranslations("dashboard");
+  const format = useFormatter();
+
+  const firstName = user.name?.split(" ")[0] ?? "there";
+  const totalOverdue = overdue.reduce((sum, g) => sum + g.items.length, 0);
+
+  // Find the nearest upcoming session
+  const nextSession = useMemo(() => {
+    if (upcoming.length === 0) return null;
+    const sorted = [...upcoming].sort((a, b) =>
+      (a.nextSessionAt ?? "").localeCompare(b.nextSessionAt ?? "")
+    );
+    return sorted[0];
+  }, [upcoming]);
+
+  // AI insight: use most recent session's snippet or a generic message
+  const aiInsight = recent[0]?.aiSummarySnippet
+    ? `Recent insight: ${recent[0].aiSummarySnippet}`
+    : stats.avgScore
+      ? `Your team's average score is ${stats.avgScore.toFixed(1)} this month`
+      : "Welcome to your dashboard";
+
+  // Attention cards: derive from data
+  const attentionCards = useMemo(() => {
+    const cards: Array<{ type: "score" | "cadence"; title: string; subtitle: string; color: string }> = [];
+
+    // Check for score drops
+    for (const series of upcoming) {
+      const hist = series.assessmentHistory;
+      if (hist.length >= 2) {
+        const delta = hist[hist.length - 1] - hist[hist.length - 2];
+        if (delta <= -0.7) {
+          const name = `${series.report.firstName} ${series.report.lastName}`;
+          cards.push({
+            type: "score",
+            title: `${name}'s score dropped ${Math.abs(delta).toFixed(1)} points`,
+            subtitle: "Consider a focused check-in",
+            color: "error",
+          });
+        }
+      }
+    }
+
+    // Check for cadence gaps
+    for (const series of upcoming) {
+      if (series.nextSessionAt) {
+        const daysSince = Math.floor((Date.now() - new Date(series.nextSessionAt).getTime()) / (1000 * 60 * 60 * 24));
+        if (daysSince > 14) {
+          const name = `${series.report.firstName} ${series.report.lastName}`;
+          cards.push({
+            type: "cadence",
+            title: `${daysSince} days since last sync with ${name}`,
+            subtitle: "Drifting past recommended cadence",
+            color: "amber",
+          });
+        }
+      }
+    }
+
+    return cards.slice(0, 2);
+  }, [upcoming]);
+
+  return (
+    <div className="space-y-10 max-w-7xl mx-auto">
+      {/* 1. Welcome Header */}
+      <section className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <p className="text-muted-foreground font-medium mb-1">
+            {format.dateTime(new Date(), { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+          </p>
+          <h2 className="text-4xl font-extrabold text-foreground tracking-tight font-headline">
+            {getGreeting()}, {firstName}
+          </h2>
+          <div className="mt-4 inline-flex items-center px-4 py-2 rounded-full border"
+            style={{ background: "var(--color-success, #004c47)10", borderColor: "var(--color-success, #004c47)20", color: "var(--color-success, #004c47)" }}>
+            <Star className="h-4 w-4 mr-2 fill-current" />
+            <span className="text-sm font-semibold">{aiInsight}</span>
+          </div>
+        </div>
+        <MeetingStreak count={stats.sessionsThisMonth} />
+      </section>
+
+      {/* 2. Quick Stats */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-card p-6 rounded-xl shadow-sm border border-border/50 hover:shadow-md transition-shadow">
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-muted-foreground text-sm font-semibold">Active Series</span>
+            <Layers className="h-5 w-5 text-primary" />
+          </div>
+          <div className="flex items-end justify-between">
+            <div className="text-3xl font-extrabold text-foreground tabular-nums">{stats.totalReports}</div>
+            <MiniBarChart data={trends.reportsHistory} />
+          </div>
+        </div>
+
+        <div className="bg-card p-6 rounded-xl shadow-sm border border-border/50 hover:shadow-md transition-shadow">
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-muted-foreground text-sm font-semibold">Avg Score</span>
+            {stats.avgScore && (
+              <span className="text-xs font-bold" style={{ color: "var(--color-success)" }}>
+                <TrendingUp className="h-3 w-3 inline mr-0.5" />
+                {trends.scoresHistory.length >= 2
+                  ? `${(trends.scoresHistory[trends.scoresHistory.length - 1] - trends.scoresHistory[trends.scoresHistory.length - 2]).toFixed(1)}`
+                  : "—"}
+              </span>
+            )}
+          </div>
+          <div className="flex items-end justify-between">
+            <div className="text-3xl font-extrabold text-foreground tabular-nums">
+              {stats.avgScore?.toFixed(1) ?? "—"}
+            </div>
+            <MiniBarChart data={trends.scoresHistory} color="var(--color-success, #004c47)" />
+          </div>
+        </div>
+
+        <div className="bg-card p-6 rounded-xl shadow-sm border border-border/50 hover:shadow-md transition-shadow">
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-muted-foreground text-sm font-semibold">Overdue Actions</span>
+            {totalOverdue > 0 && <AlertTriangle className="h-5 w-5 text-destructive" />}
+          </div>
+          <div className="flex items-end justify-between">
+            <div className="text-3xl font-extrabold text-foreground tabular-nums">{totalOverdue}</div>
+            <MiniBarChart data={[totalOverdue, Math.max(totalOverdue - 1, 0), Math.max(totalOverdue - 2, 0), totalOverdue]} color="var(--destructive)" />
+          </div>
+        </div>
+
+        {nextSession ? (
+          <div className="bg-primary text-primary-foreground p-6 rounded-xl shadow-lg relative overflow-hidden">
+            <div className="absolute -right-4 -bottom-4 opacity-10">
+              <Clock className="h-24 w-24" />
+            </div>
+            <div className="relative z-10">
+              <div className="text-xs font-bold uppercase tracking-wider opacity-80 mb-2">Next Session</div>
+              <div className="text-xl font-bold mb-1">
+                {nextSession.report.firstName} {nextSession.report.lastName}
+              </div>
+              <div className="text-sm opacity-80">
+                {nextSession.nextSessionAt
+                  ? format.relativeTime(new Date(nextSession.nextSessionAt))
+                  : "Scheduled"}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-muted p-6 rounded-xl border border-border/50 flex flex-col items-center justify-center text-center">
+            <CalendarPlus className="h-8 w-8 text-muted-foreground mb-2" />
+            <span className="text-sm font-medium text-muted-foreground">No upcoming sessions</span>
+          </div>
+        )}
+      </section>
+
+      {/* 3. Attention Needed */}
+      {attentionCards.length > 0 && (
+        <section className="space-y-4">
+          <h3 className="text-xl font-bold text-foreground flex items-center font-headline">
+            <CircleAlert className="mr-2 h-5 w-5 text-destructive" />
+            Attention Needed
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {attentionCards.map((card, i) => (
+              <div
+                key={i}
+                className="p-5 rounded-xl flex items-center justify-between border"
+                style={{
+                  background: card.color === "error"
+                    ? "var(--editorial-error-container, #ffdad6)30"
+                    : "#fff8e1",
+                  borderColor: card.color === "error"
+                    ? "var(--destructive)15"
+                    : "#fbbf2440",
+                }}
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center"
+                    style={{
+                      background: card.color === "error" ? "var(--destructive)10" : "#fef3c7",
+                    }}>
+                    {card.type === "score"
+                      ? <TrendingUp className="h-5 w-5 text-destructive rotate-180" />
+                      : <CalendarClock className="h-5 w-5 text-amber-600" />}
+                  </div>
+                  <div>
+                    <p className="text-foreground font-semibold text-sm">{card.title}</p>
+                    <p className="text-muted-foreground text-xs">{card.subtitle}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 4. Main Grid: Left (upcoming + recent) | Right (actions + cadence) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column */}
+        <div className="lg:col-span-8 space-y-10">
+          {/* Upcoming Sessions */}
+          <section className="bg-card rounded-2xl p-8 shadow-sm border border-border/50">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold font-headline">{t("upcomingSessions")}</h3>
+              <Link href="/sessions" className="text-primary font-bold text-sm hover:underline">
+                View All
+              </Link>
+            </div>
+            <div className="space-y-4">
+              {upcoming.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <CalendarPlus className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm font-medium">No upcoming sessions</p>
+                </div>
+              ) : (
+                upcoming.map((series, idx) => {
+                  const reportName = `${series.report.firstName} ${series.report.lastName}`;
+                  const isNext = idx === 0;
+                  return (
+                    <div
+                      key={series.id}
+                      className={`flex items-center justify-between p-4 rounded-xl transition-colors group ${
+                        isNext
+                          ? "bg-primary/5 border border-primary/10"
+                          : "bg-background hover:bg-muted"
+                      }`}
+                    >
+                      <div className="flex items-center space-x-4">
+                        <Avatar className={`h-12 w-12 ${!isNext ? "grayscale group-hover:grayscale-0 transition-all" : ""}`}>
+                          <AvatarImage src={series.report.avatarUrl ?? undefined} alt={reportName} />
+                          <AvatarFallback>{getInitials(reportName)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-bold text-foreground">
+                            {reportName}
+                            {isNext && (
+                              <span className="ml-2 px-2 py-0.5 bg-primary text-primary-foreground text-[10px] rounded uppercase font-bold tracking-wider">
+                                Next
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-muted-foreground text-xs font-medium">
+                            {series.nextSessionAt
+                              ? format.dateTime(new Date(series.nextSessionAt), { month: "short", day: "numeric", hour: "numeric", minute: "numeric" })
+                              : "Scheduled"}{" "}
+                            · {series.cadence}
+                          </div>
+                        </div>
+                      </div>
+                      {isNext ? (
+                        <Link
+                          href={series.latestSession?.status === "in_progress" ? `/wizard/${series.latestSession.id}` : `/sessions?series=${series.id}`}
+                          className="px-6 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-bold shadow-md hover:opacity-90 transition-opacity"
+                        >
+                          {series.latestSession?.status === "in_progress" ? "Resume" : "Start"}
+                        </Link>
+                      ) : (
+                        <ChevronRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </section>
+
+          {/* Recent Insights */}
+          <section className="space-y-6">
+            <h3 className="text-xl font-bold font-headline">{t("recentSessions")}</h3>
+            <div className="grid gap-4">
+              {recent.slice(0, 3).map((s) => {
+                const sentimentColor = s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : "#f59e0b";
+                return (
+                  <Link
+                    key={s.id}
+                    href={`/sessions/${s.seriesId}/summary`}
+                    className="bg-card p-6 rounded-2xl shadow-sm border-l-4 hover:shadow-md transition-shadow block"
+                    style={{ borderLeftColor: sentimentColor }}
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <div className="font-bold text-foreground">{s.reportName}</div>
+                        <div className="text-xs text-muted-foreground font-medium">
+                          {format.dateTime(new Date(s.completedAt), { month: "short", day: "numeric" })} · Session #{s.sessionNumber}
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <StarRating score={s.sessionScore ?? 0} size="sm" />
+                      </div>
+                    </div>
+                    {s.aiSummarySnippet && (
+                      <p className="text-sm text-muted-foreground italic leading-relaxed line-clamp-2 border-l-2 border-muted pl-4">
+                        &ldquo;{s.aiSummarySnippet}&rdquo;
+                      </p>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+
+        {/* Right Column */}
+        <div className="lg:col-span-4 space-y-8">
+          {/* Action Items */}
+          <section className="bg-muted rounded-2xl p-6">
+            <h3 className="text-lg font-bold mb-6 flex items-center font-headline">
+              <AlertTriangle className="mr-2 h-4 w-4" />
+              Action Items
+            </h3>
+            <div className="space-y-6">
+              {totalOverdue > 0 && (
+                <div>
+                  <div className="text-[10px] uppercase font-black text-destructive mb-3 tracking-widest">Overdue</div>
+                  <div className="space-y-3">
+                    {overdue.flatMap((g) =>
+                      g.items.slice(0, 2).map((item) => (
+                        <div key={item.id} className="bg-card p-3 rounded-xl shadow-sm border border-destructive/5 group cursor-pointer hover:border-destructive/20 transition-all">
+                          <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                          <p className="text-[10px] text-muted-foreground">{g.reportName} · {item.daysOverdue}d overdue</p>
+                        </div>
+                      ))
+                    ).slice(0, 3)}
+                  </div>
+                </div>
+              )}
+              <Link href="/action-items" className="text-primary text-xs font-bold hover:underline flex items-center gap-1">
+                View all <ChevronRight className="h-3 w-3" />
+              </Link>
+            </div>
+          </section>
+
+          {/* Team Cadence */}
+          <section className="bg-card rounded-2xl p-6 shadow-sm border border-border/50">
+            <h3 className="text-lg font-bold mb-6 font-headline">Team Cadence</h3>
+            <div className="space-y-4">
+              {upcoming.map((series) => {
+                const name = `${series.report.firstName} ${series.report.lastName}`;
+                let dotColor = "var(--color-success)";
+                let timeLabel = "On track";
+
+                if (series.nextSessionAt) {
+                  const diff = new Date(series.nextSessionAt).getTime() - Date.now();
+                  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                  if (days < 0) {
+                    dotColor = "var(--destructive)";
+                    timeLabel = `${Math.abs(days)} days overdue`;
+                  } else if (days <= 2) {
+                    dotColor = "var(--color-success)";
+                    timeLabel = days === 0 ? "Today" : days === 1 ? "Tomorrow" : `In ${days} days`;
+                  } else if (days <= 7) {
+                    dotColor = "var(--color-warning, #f59e0b)";
+                    timeLabel = `In ${days} days`;
+                  } else {
+                    dotColor = "var(--color-success)";
+                    timeLabel = `In ${days} days`;
+                  }
+                }
+
+                return (
+                  <div key={series.id} className="flex items-center justify-between p-2">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: dotColor }} />
+                      <span className="text-sm font-medium text-foreground">{name}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground" style={{ color: dotColor === "var(--destructive)" ? dotColor : undefined }}>
+                      {timeLabel}
+                    </span>
+                  </div>
+                );
+              })}
+              {upcoming.length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-4">No active series</p>
+              )}
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+}

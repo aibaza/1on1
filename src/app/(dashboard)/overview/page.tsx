@@ -17,6 +17,8 @@ import {
 } from "@/lib/queries/dashboard";
 import { getSeriesCardData } from "@/lib/queries/series";
 import { getTranslations } from "next-intl/server";
+import { getDesignPreference } from "@/lib/design-preference.server";
+import { EditorialDashboard } from "./editorial-dashboard";
 
 export default async function OverviewPage() {
   const session = await auth();
@@ -47,6 +49,25 @@ export default async function OverviewPage() {
       return { upcoming, overdue, stats, recent, trends };
     }),
   ]);
+
+  const designPref = await getDesignPreference();
+
+  if (designPref === "editorial") {
+    return (
+      <>
+        {!user.emailVerified && <EmailVerificationBanner />}
+        <EditorialDashboard
+          user={{ name: user.name, role: user.role }}
+          tenantName={tenant?.name ?? null}
+          stats={dashboardData.stats}
+          trends={dashboardData.trends}
+          upcoming={dashboardData.upcoming}
+          overdue={dashboardData.overdue}
+          recent={dashboardData.recent}
+        />
+      </>
+    );
+  }
 
   return (
     <div>
