@@ -4,9 +4,9 @@
 
 Implementation follows a phase-based roadmap managed via the [GSD workflow](https://github.com/cyanheads/claude-gsd). Each phase delivers a coherent, verifiable capability. Phases execute sequentially with some parallelization opportunities after Phase 5.
 
-**Total phases**: 28 (10 v1.0 + 4 v1.1 + 3 v1.2 + 5 v1.3 + 4 v1.4 + 1 v1.5 + 1 v1.6 pending)
-**Completed**: 27/28
-**Current**: v1.6 Low-Priority Polish (Phase 23 — planning)
+**Total phases**: 29 across 7 milestones (+ v1.7.0 non-phase work)
+**Completed**: 29/29
+**Latest release**: v1.7.0 (2026-03-21) — all milestones archived
 
 ## Phase Summary
 
@@ -52,7 +52,7 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 | [[Phase-21]] | Content & Data Display | Analytics stat cards, score badges, collapsible sections, heatmap threshold | Complete | Phase 19 |
 | [[Phase-22]] | Safety, Errors & Inputs | Danger zone, 404 pages, date picker consistency | Complete | Phase 19 |
 
-### Milestone v1.4 — Session Corrections & Accountability (Shipped 2026-03-16)
+### Milestone v1.4 — Session Corrections & Accountability (Shipped 2026-03-13)
 
 | Phase | Name | Focus | Status | Dependencies |
 |-------|------|-------|--------|--------------|
@@ -61,17 +61,30 @@ Implementation follows a phase-based roadmap managed via the [GSD workflow](http
 | [[Phase-26]] | Email Notification & i18n | Correction email template EN+RO, session-level deduplication sender | Complete | Phase 25 |
 | [[Phase-27]] | UI Integration | Correction dialog, Amended badge, correction history panel wired into session detail | Complete | Phase 26 |
 
-### Milestone v1.5 — Playwright E2E Test Suite (Shipped 2026-03-16)
+### Milestone v1.5 — Playwright E2E Test Suite (Shipped 2026-03-13)
 
 | Phase | Name | Focus | Status | Dependencies |
 |-------|------|-------|--------|--------------|
 | [[Phase-28]] | Playwright E2E Test Suite | Auth setup, full flow coverage, RBAC assertions, corrections specs, CI pipeline | Complete | Phase 27 |
 
-### Milestone v1.6 — Low-Priority Polish (Planned)
+### Milestone v1.6 — Polish + Versioning (Shipped 2026-03-20)
 
 | Phase | Name | Focus | Status | Dependencies |
 |-------|------|-------|--------|--------------|
-| [[Phase-23]] | Low-Priority Polish | 9 small text/visual/layout tweaks | Next | Phase 19 |
+| [[Phase-23]] | Low-Priority Polish | 9 small text/visual/layout tweaks | Complete | Phase 19 |
+| [[Phase-24]] | Sessions Access Control & Talking Points | Role-based series filtering, AgendaSheet component | Complete | Phase 23 |
+| [[Phase-29]] | Template Versioning & Answer Remapping | Snapshot-on-publish, version history UI, diff, restore | Complete | Phase 24 |
+
+### v1.7.0 — Unified AI + Infrastructure (Released 2026-03-21)
+
+No GSD phases — work done outside the phase system:
+- Unified AI pipeline (3 calls → 1 Sonnet call)
+- Company "Internal Manifesto" + team context for AI
+- SessionListItem shared component + sentiment borders
+- Vercel Web Analytics
+- Vercel serverless moved to Frankfurt (fra1)
+- Dev preview environment (develop branch + separate Neon DB)
+- AI assessment score migrated from 1-100 to 1-5
 
 ## Execution Order
 
@@ -90,8 +103,6 @@ Phase 1 (Foundation)
                           Phase 6 + 7 ──► Phase 8 (Dashboard & Analytics)
                           Phase 8 + 9 ──► Phase 10 (Polish)
 ```
-
-Phases 6, 7, and 9 all depend only on Phase 5 and can execute in parallel. Phase 8 requires both 6 and 7. Phase 10 requires 8 and 9.
 
 ### v1.1 Phases
 
@@ -113,8 +124,6 @@ Phase 14 (v1.1 complete)
         └── Phase 17 (AI Generator & DIY Kit)
 ```
 
-Phases 16 and 17 both depend only on Phase 15 and can execute in parallel.
-
 ### v1.3 Phases
 
 ```
@@ -125,8 +134,6 @@ Phase 17 (v1.2 complete)
               ├── Phase 21 (Content & Data Display)
               └── Phase 22 (Safety, Errors & Inputs)
 ```
-
-Phases 20, 21, and 22 all depend only on Phase 19 and can execute in parallel.
 
 ### v1.4 Phases
 
@@ -150,9 +157,9 @@ Phase 27 (v1.4 complete)
 ```
 Phase 19 (Design System, v1.3)
   └── Phase 23 (Low-Priority Polish)
+        └── Phase 24 (Sessions Access Control & Talking Points)
+              └── Phase 29 (Template Versioning & Answer Remapping)
 ```
-
-Note: Phase 23 depends on Phase 19 (uses EmptyState and design system conventions). Scheduled for v1.6 after v1.3–v1.5 were shipped.
 
 ## Conventions
 

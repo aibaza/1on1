@@ -1,29 +1,84 @@
 # Milestones
 
-## v1.5 Playwright E2E Test Suite (Shipped: 2026-03-16)
+## v1.7.0 Unified AI + Infrastructure (Released: 2026-03-21)
 
-**Phases completed:** 10 phases, 36 plans, 10 tasks
+**Work done outside GSD phase system.**
+**Git tag:** v1.7.0
+
+**Delivered:** Unified AI pipeline (3 calls → 1 Sonnet call), company context for AI (Internal Manifesto + team descriptions), shared SessionListItem component with sentiment borders, Vercel Web Analytics, Frankfurt serverless region, dev preview environment, and AI score migration to 1-5 scale.
 
 **Key accomplishments:**
-- (none recorded)
+1. Unified AI pipeline: single `analyzeSession` call replaces `generateSummary` + `generateManagerAddendum` + `generateActionSuggestions`
+2. Company "Internal Manifesto" textarea in org settings — fed to AI as company context
+3. Team description included in AI context for session analysis
+4. Full session history sent to AI (tiered: recent 5 full, older summaries only)
+5. `objectiveRating` (1-5 stars) replaces `assessmentScore` (1-100)
+6. `SessionListItem` shared component — unified session row with sentiment color borders
+7. Vercel Web Analytics integration
+8. Vercel serverless moved to Frankfurt (fra1) — eliminates transatlantic DB round-trip
+9. Dev preview environment (`develop` branch + separate Neon DB)
+10. Quick deploy script + simplified pre-push hook (typecheck only)
 
 ---
 
-## v1.4 Session Corrections & Accountability (Shipped: 2026-03-16)
+## v1.6 Polish + Versioning (Shipped: 2026-03-20)
 
-**Phases completed:** 10 phases, 36 plans, 10 tasks
+**Phases completed:** 3 phases (23, 24, 29), 8 plans
+
+**Delivered:** Low-priority UI polish (9 visual/copy tweaks), role-based sessions access control with talking points, and template versioning with snapshot-on-publish, version history UI, diff, and restore.
 
 **Key accomplishments:**
-- (none recorded)
+1. Registration placeholder, audit log casing, forgot-password centering, active badge, action items divider, dark mode team cards, empty series link, mobile history search
+2. Role-based series filtering (admin/manager/member views), talking points status gate relaxation
+3. AgendaSheet component for pre-meeting talking points
+4. Template versioning: `template_version` table with JSONB snapshots on publish
+5. Version history UI: read-only preview, change list diff, restore capability
+
+---
+
+## v1.5 Playwright E2E Test Suite (Shipped: 2026-03-13)
+
+**Phases completed:** 1 phase (28), 6 plans
+
+**Delivered:** Full Playwright E2E test suite with multi-role auth setup, flow coverage across sessions/templates/people/analytics, RBAC assertions, correction specs, and GitHub Actions CI pipeline.
+
+**Key accomplishments:**
+1. Multi-role fixture system (admin/manager/member) with persistent auth state
+2. Full flow E2E specs: session wizard, template CRUD, people management, analytics
+3. RBAC boundary assertions — role isolation verified end-to-end
+4. Correction flow E2E with amended badge verification
+5. GitHub Actions CI workflow with Docker PostgreSQL service
+
+---
+
+## v1.4 Session Corrections & Accountability (Shipped: 2026-03-13)
+
+**Phases completed:** 4 phases (24-27), 12 plans
+
+**Delivered:** Manager can amend answers in completed sessions with append-only audit history, AI-validated correction reasons, atomic writes, email notifications with 5-minute deduplication.
+
+**Key accomplishments:**
+1. `session_answer_history` append-only table with RLS and direct `tenant_id`
+2. AI reason validation via Claude Haiku (advisory-only — never blocks submission)
+3. Atomic correction: history insert + answer update + audit log in single transaction
+4. Correction email template (EN+RO) with session-level 5-minute deduplication
+5. Correction dialog UI, Amended badge, correction history panel in session detail
 
 ---
 
 ## v1.3 UI/UX Improvements (Shipped: 2026-03-16)
 
-**Phases completed:** 10 phases, 36 plans, 10 tasks
+**Phases completed:** 5 phases (18-22), 18 plans
+
+**Delivered:** Design system consistency (badge semantics, sentence-case, EmptyState component), mobile responsiveness (44px touch targets, responsive columns, overflow menus), content display improvements (score badges, collapsible sections, analytics stats), and safety patterns (Danger Zone, shared DatePicker, contextual 404).
 
 **Key accomplishments:**
-- (none recorded)
+1. Badge semantic system: status/type/info variants with consistent styling
+2. EmptyState shared component used across all empty views
+3. Mobile-first responsive tables with column priority hiding
+4. Collapsible wizard sections with answer counts
+5. Danger Zone pattern with AlertDialog for destructive actions
+6. Shared DatePicker component for consistent date input across history/audit pages
 
 ---
 
