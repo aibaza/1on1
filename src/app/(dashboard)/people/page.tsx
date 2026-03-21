@@ -7,6 +7,8 @@ import { getTranslations } from "next-intl/server";
 import { PeopleTabs } from "@/components/people/people-tabs";
 import { PeopleTable } from "@/components/people/people-table";
 import { InviteButton } from "@/components/people/invite-button";
+import { EditorialPeopleHeader } from "./editorial-people-header";
+import { getDesignPreference } from "@/lib/design-preference.server";
 import type { UserRow } from "@/components/people/people-table-columns";
 
 export default async function PeoplePage() {
@@ -138,15 +140,25 @@ export default async function PeoplePage() {
     }
   );
 
+  const designPref = await getDesignPreference();
+  const isEditorial = designPref === "editorial";
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">{t("description")}</p>
+    <div className={isEditorial ? "space-y-8" : "space-y-6"}>
+      {isEditorial ? (
+        <EditorialPeopleHeader
+          memberCount={data.users.length}
+          isAdmin={session.user.role === "admin"}
+        />
+      ) : (
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("description")}</p>
+          </div>
+          {session.user.role === "admin" && <InviteButton />}
         </div>
-        {session.user.role === "admin" && <InviteButton />}
-      </div>
+      )}
 
       <PeopleTabs>
         <PeopleTable

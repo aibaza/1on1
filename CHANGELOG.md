@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `globals-v2.css` with Material Design 3 color tokens scoped under `[data-design="editorial"]`
 - Manrope (headlines) + Inter (body) fonts loaded alongside Geist for editorial mode
 - Editorial login page: split-layout with visual panel and gradient branding
+- Editorial side navigation component (w-64 fixed sidebar with role-based nav items)
+- Editorial glass-morphism top bar (backdrop-blur, minimal — replaces TopNav in editorial mode)
+- Dashboard layout conditionally renders side nav + editorial top bar vs classic TopNav
+- Editorial people page header (larger typography, member count badge)
 - `data-design` attribute on `<html>` for CSS scoping (similar to `data-color-theme`)
 
 ### Changed
