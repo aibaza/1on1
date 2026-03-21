@@ -17,6 +17,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Dashboard layout conditionally renders side nav + editorial top bar vs classic TopNav
 - Editorial people page header (larger typography, member count badge)
 - Editorial dashboard: welcome with AI insight pill, meeting streak ring, 4-column quick stats (incl. next session countdown), attention needed cards, 2-column layout (upcoming sessions + recent insights | action items + team cadence)
+- Editorial sessions page with enhanced admin/manager/member group styling and dashed new-session cards
+- Editorial page header CSS upgrades: all dashboard pages get 4xl extrabold Manrope headers in editorial mode
+- Editorial card hover lift effect (translateY -2px + shadow) on all shadcn Card components
+- `EditorialPageHeader` shared component for pages needing custom editorial headers
 - `data-design` attribute on `<html>` for CSS scoping (similar to `data-color-theme`)
 
 ### Changed

@@ -185,3 +185,45 @@
 .dark [data-design="editorial"] .glass-panel {
   background: rgba(25, 28, 29, 0.7);
 }
+
+/* ===== Editorial Page Header Upgrades ===== */
+/* Automatically upgrades standard page headers when editorial mode is active */
+
+[data-design="editorial"] main h1.text-2xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  font-family: var(--font-manrope), 'Manrope', ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-design="editorial"] main h1.text-2xl + p {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  margin-top: 0.5rem;
+}
+
+/* Editorial card hover lift effect */
+[data-design="editorial"] [data-slot="card"]:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-design="editorial"] [data-slot="card"] {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Editorial gradient buttons */
+[data-design="editorial"] .editorial-gradient-btn {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%);
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(41, 64, 125, 0.2);
+}
+
+/* Editorial section panels (for grouped views) */
+[data-design="editorial"] .editorial-section {
+  background: var(--editorial-surface-container-low, #f2f4f5);
+  padding: 2rem;
+  border-radius: 1rem;
+}
