@@ -5,6 +5,8 @@ import { isSeriesParticipant } from "@/lib/auth/rbac";
 import { meetingSeries, sessions, users } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { SeriesDetail } from "@/components/series/series-detail";
+import { EditorialSeriesDetail } from "@/components/series/editorial-series-detail";
+import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function SeriesDetailPage({
   params,
@@ -79,6 +81,9 @@ export default async function SeriesDetailPage({
           .orderBy(desc(sessions.sessionNumber)),
       ]);
 
+      // Find latest completed session for AI summary
+      const latestCompleted = sessionHistory.find((s) => s.status === "completed");
+
       return {
         id: series.id,
         cadence: series.cadence,
@@ -91,19 +96,20 @@ export default async function SeriesDetailPage({
         nextSessionAt: series.nextSessionAt?.toISOString() ?? null,
         createdAt: series.createdAt.toISOString(),
         updatedAt: series.updatedAt.toISOString(),
+        managerId: series.managerId,
+        reportId: series.reportId,
         manager: managerRows[0] ?? null,
         report: reportRows[0] ?? null,
+        latestAiSummary: latestCompleted?.aiSummary ?? null,
+        latestSessionScore: latestCompleted?.sessionScore ? Number(latestCompleted.sessionScore) : null,
+        latestSessionNumber: latestCompleted?.sessionNumber ?? null,
         sessions: sessionHistory.map((s) => {
           let aiSnippet: string | null = null;
           let sentiment: string | null = null;
           if (s.aiSummary && typeof s.aiSummary === "object") {
-            const summary = s.aiSummary as { keyTakeaways?: string[]; overallSentiment?: string };
-            if (summary.keyTakeaways?.[0]) {
-              aiSnippet = summary.keyTakeaways[0];
-            }
-            if (summary.overallSentiment) {
-              sentiment = summary.overallSentiment;
-            }
+            const summary = s.aiSummary as { cardBlurb?: string; keyTakeaways?: string[]; overallSentiment?: string };
+            aiSnippet = summary.cardBlurb ?? summary.keyTakeaways?.[0] ?? null;
+            sentiment = summary.overallSentiment ?? null;
           }
           return {
             id: s.id,
@@ -122,6 +128,17 @@ export default async function SeriesDetailPage({
   );
 
   if (!seriesData) notFound();
+
+  const designPref = await getDesignPreference();
+
+  if (designPref === "editorial") {
+    return (
+      <EditorialSeriesDetail
+        series={seriesData}
+        currentUserId={session.user.id}
+      />
+    );
+  }
 
   return (
     <div className="mx-auto max-w-3xl">
