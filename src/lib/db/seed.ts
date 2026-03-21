@@ -251,6 +251,12 @@ const ACTION_ALICE_2_ID = '88888888-0011-4000-8000-000000000011';
 const ACTION_ALICE_3_ID = '88888888-0012-4000-8000-000000000012';
 const ACTION_ALICE_4_ID = '88888888-0013-4000-8000-000000000013';
 const ACTION_ALICE_OVERDUE_ID = '88888888-0014-4000-8000-000000000014';
+const ACTION_ALICE_OWN_1_ID = '88888888-0015-4000-8000-000000000015';
+const ACTION_ALICE_OWN_2_ID = '88888888-0016-4000-8000-000000000016';
+const ACTION_ALICE_OWN_3_ID = '88888888-0017-4000-8000-000000000017';
+const ACTION_ALICE_OWN_OVERDUE_1_ID = '88888888-0018-4000-8000-000000000018';
+const ACTION_ALICE_OWN_OVERDUE_2_ID = '88888888-0019-4000-8000-000000000019';
+const ACTION_ALICE_OWN_OVERDUE_3_ID = '88888888-0020-4000-8000-000000000020';
 
 // Acme Private Note
 const PRIVATE_NOTE_ID = '77777777-0001-4000-a000-000000000001';
@@ -2759,6 +2765,81 @@ async function seedAliceData() {
       description: 'Follow up with recruiting on the two stalled senior engineer requisitions.',
       category: 'check_in',
       dueDate: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      status: 'open' as const,
+    },
+    // Actions assigned TO Alice
+    {
+      id: ACTION_ALICE_OWN_1_ID,
+      sessionId: SESSION_ALICE_BOB_3_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: ALICE_ID,
+      createdById: ALICE_ID,
+      title: 'Schedule skip-level meetings with Dave and Eve',
+      description: 'Set up monthly skip-level 1:1s to get direct signal from Bob team members.',
+      category: 'check_in',
+      dueDate: inFiveDays.toISOString().split('T')[0],
+      status: 'open' as const,
+    },
+    {
+      id: ACTION_ALICE_OWN_2_ID,
+      sessionId: SESSION_ALICE_CAROL_2_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: ALICE_ID,
+      createdById: ALICE_ID,
+      title: 'Present research program ROI to executive team',
+      description: 'Prepare deck showing impact of Carol research sprints on product decisions.',
+      category: 'performance',
+      dueDate: inTwoDays.toISOString().split('T')[0],
+      status: 'open' as const,
+    },
+    {
+      id: ACTION_ALICE_OWN_3_ID,
+      sessionId: SESSION_ALICE_BOB_2_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: ALICE_ID,
+      createdById: ALICE_ID,
+      title: 'Review Bob conference talk abstract',
+      description: 'Provide feedback on the conference submission before deadline.',
+      category: 'performance',
+      dueDate: lastWeek.toISOString().split('T')[0],
+      status: 'completed' as const,
+      completedAt: new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000),
+    },
+    // Overdue actions assigned to Alice
+    {
+      id: ACTION_ALICE_OWN_OVERDUE_1_ID,
+      sessionId: SESSION_ALICE_BOB_1_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: ALICE_ID,
+      createdById: ALICE_ID,
+      title: 'Finalize engineering headcount plan for Q4',
+      description: 'Budget approval needed — finance waiting on headcount numbers from engineering leadership.',
+      category: 'performance',
+      dueDate: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      status: 'open' as const,
+    },
+    {
+      id: ACTION_ALICE_OWN_OVERDUE_2_ID,
+      sessionId: SESSION_ALICE_CAROL_1_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: ALICE_ID,
+      createdById: ALICE_ID,
+      title: 'Share PM career ladder with Carol',
+      description: 'Carol asked about Senior PM path. Need to share the updated career framework document.',
+      category: 'check_in',
+      dueDate: new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      status: 'open' as const,
+    },
+    {
+      id: ACTION_ALICE_OWN_OVERDUE_3_ID,
+      sessionId: SESSION_ALICE_BOB_2_ID,
+      tenantId: ACME_TENANT_ID,
+      assigneeId: ALICE_ID,
+      createdById: ALICE_ID,
+      title: 'Set up mentoring program coordinator intro for Bob',
+      description: 'Bob wants to join the cross-team mentoring program. Needs intro to program coordinator.',
+      category: 'check_in',
+      dueDate: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       status: 'open' as const,
     },
   ];
