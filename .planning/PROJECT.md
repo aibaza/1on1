@@ -59,20 +59,22 @@ The AI context layer that makes every meeting smarter than the last — knowing 
 - ✓ Vercel Web Analytics — v1.7
 - ✓ Dev preview environment (develop branch + separate Neon DB) — v1.7
 
-### Future
+### Future (prioritized)
 
-- AI personal profiles built from accumulated session data (pgvector embeddings)
-- AI live suggestions during active sessions (streaming, low latency)
-- AI-generated growth narratives ("Over Q1, Alex improved communication by 23%...")
-- AI anomaly detection with proactive alerts
-- Google Calendar integration for scheduling meetings
-- Outlook/O365 calendar sync
-- Magic link passwordless login
-- Overdue action item email notifications
-- Slack/Teams integration (reminders, nudges, quick updates)
-- PDF export with organization branding for performance reviews
-- SSO (SAML 2.0, OIDC) for enterprise organizations
-- System template library (pre-built questionnaires)
+1. **Complete UI/UX review** — full audit and polish pass before adding major features
+2. **Report pre-fill** — person being reviewed pre-fills the questionnaire 24h before due time; auto-invited via email when prefill opens; manager reviews everything and only manager can complete the session
+3. **AI personal profiles** — pgvector embeddings built from accumulated session data; integrated with sessions and continuously updated/maintained as new sessions complete
+4. **AI growth narratives & behavioral metrics** — research and define a core set of behavioral metrics (involvement, results, communication, etc.); AI grades these automatically from session text answers; metrics can grow or shrink over time (personal vectors); foundation for text-only-question grading
+5. **AI anomaly detection** — proactive alerts when metrics deviate significantly from baseline
+6. **Google Workspace integration** — Google OAuth restricted to workspace accounts; Google Calendar access for scheduling; suggest free common slots for both manager and report; deeper than just calendar sync
+7. **Google Tasks integration** — action items maintained as Google Workspace Tasks (replaces simple "overdue email" concept); bidirectional sync
+8. **Analytics everywhere** — surface relevant trends to dashboards, personal cards, series views — not just dedicated report pages; make data visible always, in context
+9. **SMART Objectives** — integration and automatic tracking (needs research on how to implement)
+10. **AI live suggestions** — streaming suggestions during active sessions (low latency)
+11. **PDF export** — organization-branded reports for performance reviews
+12. **SSO (SAML 2.0, OIDC)** — enterprise authentication
+13. **System template library** — pre-built questionnaire templates
+14. **Outlook/O365 calendar sync** — after Google Workspace proves the pattern
 
 ### Out of Scope
 
