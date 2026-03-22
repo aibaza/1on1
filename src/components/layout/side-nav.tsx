@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -118,10 +118,13 @@ export function SideNav() {
     return () => window.removeEventListener("resize", handleResize);
   }, [userToggled]);
 
+  const [, startTransition] = useTransition();
   const toggleCollapse = useCallback(() => {
     setUserToggled(true);
-    setCollapsed((prev) => !prev);
-  }, []);
+    startTransition(() => {
+      setCollapsed((prev) => !prev);
+    });
+  }, [startTransition]);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -145,11 +148,13 @@ export function SideNav() {
 
   const sidebarWidth = collapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED;
 
+  // Update CSS variable imperatively to avoid style tag re-injection
+  useEffect(() => {
+    document.documentElement.style.setProperty("--sidebar-width", `${sidebarWidth}px`);
+  }, [sidebarWidth]);
+
   return (
     <>
-      {/* CSS variable for layout consumers */}
-      <style>{`:root { --sidebar-width: ${sidebarWidth}px; }`}</style>
-
       {/* Desktop sidebar */}
       <aside
         className="h-screen fixed left-0 top-0 bg-[var(--sidebar)] hidden md:flex flex-col py-6 z-50 transition-[width] duration-300 ease-in-out"
