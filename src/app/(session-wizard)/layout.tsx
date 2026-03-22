@@ -17,7 +17,7 @@ export default async function WizardLayout({
   return (
     <SessionProvider session={session}>
       <QueryProvider>
-        <div className="flex min-h-screen flex-col">{children}</div>
+        <div className="flex min-h-screen flex-col bg-[var(--background)]">{children}</div>
         <Toaster />
       </QueryProvider>
     </SessionProvider>

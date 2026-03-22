@@ -840,7 +840,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         </div>
 
         {/* Right: context sidebar */}
-        <div className="hidden lg:block w-[300px] shrink-0 overflow-y-auto p-6 border-l border-border/20 bg-[var(--editorial-surface-container-low,var(--muted))]/30">
+        <div className="hidden lg:block w-80 shrink-0 overflow-y-auto p-8 border-l border-border/10 bg-[var(--editorial-surface-container-low,var(--muted))]/30 space-y-8 pb-28">
           <FloatingContextWidgets
             currentStep={state.currentStep}
             currentCategory={currentSection?.name ?? null}

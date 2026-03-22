@@ -331,6 +331,29 @@
   }
 }
 
+/* ===== Editorial Wizard Context Sidebar ===== */
+/* Cards in the wizard right sidebar */
+[data-design="editorial"] .w-80 [data-slot="card"] {
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+/* Context heading */
+[data-design="editorial"] .w-80 h4 {
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--editorial-outline, #757684);
+}
+
+/* Accordion items in sidebar */
+[data-design="editorial"] .w-80 [data-slot="card"] + [data-slot="card"] {
+  margin-top: 0.75rem;
+}
+
 /* ===== Editorial Template Editor Upgrades ===== */
 /* Title upgrade */
 [data-design="editorial"] .mx-auto.max-w-3xl h1.text-2xl {
