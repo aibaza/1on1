@@ -118,10 +118,10 @@ export function EditorialDashboard({
 
   // AI insight: use most recent session's snippet or a generic message
   const aiInsight = recent[0]?.aiSummarySnippet
-    ? `Recent insight: ${recent[0].aiSummarySnippet}`
+    ? t("editorial.recentInsight", { text: recent[0].aiSummarySnippet })
     : stats.avgScore
-      ? `Your team's average score is ${stats.avgScore.toFixed(1)} this month`
-      : "Welcome to your dashboard";
+      ? t("editorial.avgScoreInsight", { score: stats.avgScore.toFixed(1) })
+      : t("editorial.welcomeFallback");
 
   // Attention cards: derive from data
   const attentionCards = useMemo(() => {
@@ -136,8 +136,8 @@ export function EditorialDashboard({
           const name = `${series.report.firstName} ${series.report.lastName}`;
           cards.push({
             type: "score",
-            title: `${name}'s score dropped ${Math.abs(delta).toFixed(1)} points`,
-            subtitle: "Consider a focused check-in",
+            title: t("editorial.scoreDropped", { name, delta: Math.abs(delta).toFixed(1) }),
+            subtitle: t("editorial.considerCheckin"),
             color: "error",
             seriesId: series.id,
           });
@@ -153,8 +153,8 @@ export function EditorialDashboard({
           const name = `${series.report.firstName} ${series.report.lastName}`;
           cards.push({
             type: "cadence",
-            title: `${daysSince} days since last sync with ${name}`,
-            subtitle: "Drifting past recommended cadence",
+            title: t("editorial.cadenceDrift", { days: daysSince, name }),
+            subtitle: t("editorial.driftingCadence"),
             color: "amber",
             seriesId: series.id,
           });

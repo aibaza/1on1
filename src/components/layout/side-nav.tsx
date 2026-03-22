@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { Logo, LogoIcon } from "@/components/logo";
 import {
   Tooltip,
   TooltipContent,
@@ -159,16 +160,18 @@ export function SideNav() {
           {collapsed ? (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="/overview" className="text-xl font-bold font-headline tracking-tighter text-primary">
-                  1
+                <Link href="/overview">
+                  <LogoIcon className="h-7" />
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={8}>1on1 — {t("meetingManagement")}</TooltipContent>
             </Tooltip>
           ) : (
             <div>
-              <h2 className="text-xl font-bold font-headline tracking-tighter text-primary">1on1</h2>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
+              <Link href="/overview">
+                <Logo className="h-7" />
+              </Link>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1.5">
                 {t("meetingManagement")}
               </p>
             </div>
@@ -285,7 +288,7 @@ export function SideNav() {
             </button>
             {/* Mobile always expanded */}
             <div className="mb-8 px-6">
-              <h2 className="text-xl font-bold font-headline tracking-tighter text-primary">1on1</h2>
+              <Logo className="h-7" />
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
                 {t("meetingManagement")}
               </p>

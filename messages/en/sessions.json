@@ -151,7 +151,9 @@
       "nextStep": "Next step",
       "wizardSteps": "Wizard steps",
       "loadError": "Failed to load session",
-      "exitWizard": "Exit wizard"
+      "exitWizard": "Exit wizard",
+      "category": "Category",
+      "discussion": "Discussion"
     },
     "recap": {
       "title": "Session Recap",

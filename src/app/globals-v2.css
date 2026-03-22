@@ -60,8 +60,8 @@
   --color-warning: #f59e0b;
   --color-danger: #ba1a1a;
 
-  /* Logo */
-  --logo-color: #29407d;
+  /* Logo — keep the original green accent, not primary blue */
+  --logo-color: oklch(0.45 0.07 145);
 
   /* Editorial-specific tokens (not in classic) */
   --editorial-primary-container: #425797;
@@ -137,7 +137,7 @@
   --color-warning: #fbbf24;
   --color-danger: #ffdad6;
 
-  --logo-color: #b4c5ff;
+  --logo-color: oklch(0.72 0.07 145);
 
   --editorial-primary-container: #2d4381;
   --editorial-tertiary: #71d7cd;

@@ -61,7 +61,14 @@
       "inDays": "In {count} days",
       "noActiveSeries": "No active series",
       "resume": "Resume",
-      "sessionsOnTime": "Sessions on time"
+      "sessionsOnTime": "Sessions on time",
+      "recentInsight": "Recent insight: {text}",
+      "avgScoreInsight": "Your team's average score is {score} this month",
+      "welcomeFallback": "Welcome to your dashboard",
+      "scoreDropped": "{name}'s score dropped {delta} points",
+      "considerCheckin": "Consider a focused check-in",
+      "cadenceDrift": "{days} days since last sync with {name}",
+      "driftingCadence": "Drifting past recommended cadence"
     }
   }
 }

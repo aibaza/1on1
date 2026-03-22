@@ -113,7 +113,7 @@ export function CategoryStep({
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--editorial-tertiary, var(--color-success))" }}>
-              Category
+              {t("category")}
             </span>
             <div className="h-px w-8" style={{ backgroundColor: "var(--editorial-tertiary-fixed-dim, var(--color-success))" }} />
           </div>
@@ -170,7 +170,7 @@ export function CategoryStep({
         {/* Divider between questions and discussion tools */}
         <div className="flex items-center gap-3 py-4">
           <div className="h-px flex-1 bg-[var(--editorial-outline-variant,var(--border))]/30" />
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Discussion</span>
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t("discussion")}</span>
           <div className="h-px flex-1 bg-[var(--editorial-outline-variant,var(--border))]/30" />
         </div>
 

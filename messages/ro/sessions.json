@@ -151,7 +151,9 @@
       "nextStep": "Pasul următor",
       "wizardSteps": "Pași asistent",
       "loadError": "Sesiunea nu a putut fi încărcată",
-      "exitWizard": "Ieși din wizard"
+      "exitWizard": "Ieși din wizard",
+      "category": "Categorie",
+      "discussion": "Discuție"
     },
     "recap": {
       "title": "Recapitulare sesiune",

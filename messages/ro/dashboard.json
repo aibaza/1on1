@@ -61,7 +61,14 @@
       "inDays": "În {count} zile",
       "noActiveSeries": "Nicio serie activă",
       "resume": "Continuă",
-      "sessionsOnTime": "Sesiuni la timp"
+      "sessionsOnTime": "Sesiuni la timp",
+      "recentInsight": "Perspectivă recentă: {text}",
+      "avgScoreInsight": "Scorul mediu al echipei tale este {score} luna aceasta",
+      "welcomeFallback": "Bine ai venit pe tabloul de bord",
+      "scoreDropped": "Scorul lui {name} a scăzut cu {delta} puncte",
+      "considerCheckin": "Consideră o discuție focalizată",
+      "cadenceDrift": "{days} zile de la ultima sincronizare cu {name}",
+      "driftingCadence": "Depășește cadența recomandată"
     }
   }
 }
