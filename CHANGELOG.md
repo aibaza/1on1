@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Editorial people page: card-based layout replacing table, grouped by role (Leadership/Managers/Members), person cards with avatar, email, manager, teams, status dot, role badge, hover lift effect, pill filters for role/team/status
 - Editorial design feature gate: toggle between Classic and Editorial (Beta) UI from user menu
 - Cookie-based design preference (`DESIGN_PREF`) persists across sessions including logout
 - `globals-v2.css` with Material Design 3 color tokens scoped under `[data-design="editorial"]`

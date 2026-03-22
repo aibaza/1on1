@@ -6,6 +6,7 @@ import { eq, and, gt, isNull, sql } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { PeopleTabs } from "@/components/people/people-tabs";
 import { PeopleTable } from "@/components/people/people-table";
+import { EditorialPeopleList } from "@/components/people/editorial-people-list";
 import { InviteButton } from "@/components/people/invite-button";
 import { EditorialPeopleHeader } from "./editorial-people-header";
 import { TeamStructure } from "@/components/people/team-structure";
@@ -161,17 +162,27 @@ export default async function PeoplePage() {
         </div>
       )}
 
-      <PeopleTabs>
-        <PeopleTable
-          initialData={data.users}
-          currentUserRole={session.user.role}
-          currentUserId={session.user.id}
-          availableTeams={data.teams}
-        />
-      </PeopleTabs>
-
-      {isEditorial && (session.user.role === "admin" || session.user.role === "manager") && (
-        <TeamStructure users={data.users} />
+      {isEditorial ? (
+        <>
+          <EditorialPeopleList
+            initialData={data.users}
+            currentUserRole={session.user.role}
+            currentUserId={session.user.id}
+            availableTeams={data.teams}
+          />
+          {(session.user.role === "admin" || session.user.role === "manager") && (
+            <TeamStructure users={data.users} />
+          )}
+        </>
+      ) : (
+        <PeopleTabs>
+          <PeopleTable
+            initialData={data.users}
+            currentUserRole={session.user.role}
+            currentUserId={session.user.id}
+            availableTeams={data.teams}
+          />
+        </PeopleTabs>
       )}
     </div>
   );
