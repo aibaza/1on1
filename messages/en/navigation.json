@@ -16,6 +16,11 @@
     "navigation": "Navigation",
     "language": "Language",
     "searchPlaceholder": "Search...",
-    "theme": "Theme"
+    "theme": "Theme",
+    "meetingManagement": "Meeting Management",
+    "scheduleMeeting": "Schedule 1:1",
+    "support": "Support",
+    "collapse": "Collapse",
+    "searchRecords": "Search records..."
   }
 }

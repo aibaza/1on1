@@ -196,7 +196,7 @@ export function EditorialPeopleList({
                     : "bg-[var(--editorial-surface-container,var(--muted))] text-muted-foreground hover:bg-[var(--editorial-surface-container-high,var(--accent))]"
                 }`}
               >
-                {role === "all" ? "All" : role === "admin" ? "Admins" : role === "manager" ? "Managers" : "Members"}
+                {role === "all" ? t("table.allRoles") : t(`table.${role}`)}
               </button>
             ))}
           </div>
@@ -235,7 +235,7 @@ export function EditorialPeopleList({
         {selectedIds.size > 0 && (
           <div className="bg-[var(--editorial-primary-fixed,var(--accent))] text-foreground px-6 py-3 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <span className="text-sm font-bold">{selectedIds.size} member{selectedIds.size !== 1 ? "s" : ""} selected</span>
+              <span className="text-sm font-bold">{selectedIds.size === 1 ? t("editorial.membersSelected", { count: selectedIds.size }) : t("editorial.membersSelectedPlural", { count: selectedIds.size })}</span>
               <div className="h-4 w-px bg-foreground/20" />
 
               {/* Change role — inline picker */}
@@ -245,7 +245,7 @@ export function EditorialPeopleList({
                   type="button"
                   onClick={() => { setBulkRolePicker((v) => !v); setConfirmDeactivate(false); }}
                 >
-                  <Shield className="h-3.5 w-3.5" /> Change role
+                  <Shield className="h-3.5 w-3.5" /> {t("editorial.changeRole")}
                 </button>
                 {bulkRolePicker && (
                   <div className="absolute top-full left-0 mt-2 bg-card rounded-xl shadow-xl border border-[var(--editorial-outline-variant,var(--border))]/50 p-2 z-10 min-w-[140px]">
@@ -271,7 +271,7 @@ export function EditorialPeopleList({
                   type="button"
                   onClick={() => { setConfirmDeactivate((v) => !v); setBulkRolePicker(false); }}
                 >
-                  <UserX className="h-3.5 w-3.5" /> Deactivate
+                  <UserX className="h-3.5 w-3.5" /> {t("actions.deactivate")}
                 </button>
                 {confirmDeactivate && (
                   <div className="absolute top-full left-0 mt-2 bg-card rounded-xl shadow-xl border border-destructive/20 p-4 z-10 min-w-[220px]">
@@ -304,7 +304,7 @@ export function EditorialPeopleList({
               onClick={() => { setSelectedIds(new Set()); setBulkRolePicker(false); setConfirmDeactivate(false); }}
               className="text-xs font-bold hover:underline"
             >
-              Clear selection
+              {t("editorial.clearSelection")}
             </button>
           </div>
         )}
@@ -324,12 +324,12 @@ export function EditorialPeopleList({
                     />
                   </th>
                 )}
-                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Member</th>
-                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Role</th>
-                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden lg:table-cell">Team</th>
-                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden lg:table-cell">Reports to</th>
-                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden md:table-cell">Status</th>
-                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden xl:table-cell">Joined</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t("table.name")}</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t("table.role")}</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden lg:table-cell">{t("table.teams")}</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden lg:table-cell">{t("table.manager")}</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden md:table-cell">{t("table.status")}</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden xl:table-cell">{t("editorial.joined")}</th>
                 <th className="px-6 py-4 w-12" />
               </tr>
             </thead>
@@ -409,7 +409,7 @@ export function EditorialPeopleList({
                       </td>
                       {/* Status */}
                       <td className="px-6 py-5 hidden md:table-cell">
-                        <StatusIndicator status={user.status} />
+                        <StatusIndicator status={user.status} label={user.status === "active" ? t("table.active") : user.status === "pending" ? t("editorial.invited") : t("table.deactivated")} />
                       </td>
                       {/* Joined */}
                       <td className="px-6 py-5 hidden xl:table-cell">
@@ -441,7 +441,7 @@ export function EditorialPeopleList({
         {filtered.length > PAGE_SIZE && (
           <div className="px-6 py-4 flex items-center justify-between bg-[var(--editorial-surface-container-low,var(--muted))]/30">
             <p className="text-xs text-muted-foreground font-medium">
-              Showing {page * PAGE_SIZE + 1} to {Math.min((page + 1) * PAGE_SIZE, filtered.length)} of {filtered.length} members
+              {t("editorial.showingMembers", { from: page * PAGE_SIZE + 1, to: Math.min((page + 1) * PAGE_SIZE, filtered.length), total: filtered.length })}
             </p>
             <div className="flex items-center gap-1">
               <button
@@ -505,7 +505,7 @@ function RolePill({ role }: { role: string }) {
   );
 }
 
-function StatusIndicator({ status }: { status: string }) {
+function StatusIndicator({ status, label }: { status: string; label: string }) {
   const dotColor =
     status === "active"
       ? "bg-[var(--editorial-tertiary,var(--color-success))]"
@@ -518,8 +518,6 @@ function StatusIndicator({ status }: { status: string }) {
       : status === "pending"
         ? "text-[var(--editorial-primary-container,var(--primary))]"
         : "text-muted-foreground";
-  const label =
-    status === "active" ? "Active" : status === "pending" ? "Invited" : "Deactivated";
 
   return (
     <div className="flex items-center gap-1.5">

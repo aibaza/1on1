@@ -2,6 +2,7 @@
 
 import { Bell, HelpCircle, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
 
@@ -12,6 +13,7 @@ function getInitials(name?: string | null): string {
 
 export function EditorialTopBar() {
   const { data: session } = useSession();
+  const t = useTranslations("navigation");
   const user = session?.user;
   const userRole = user?.role ?? "member";
 
@@ -23,7 +25,7 @@ export function EditorialTopBar() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search records..."
+            placeholder={t("searchRecords")}
             className="w-full pl-12 pr-4 py-2.5 bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-full text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all placeholder:text-muted-foreground/60 font-body"
           />
         </div>

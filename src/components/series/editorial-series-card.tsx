@@ -191,7 +191,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
   };
 
   return (
-    <div className={`group relative bg-card rounded-2xl p-6 flex flex-col overflow-hidden border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05)] hover:-translate-y-0.5 hover:border-[var(--editorial-outline-variant,var(--border))]/80 ${sentimentClass} ${isOverdue ? "border-l-4 border-l-[var(--color-warning,#f59e0b)]" : ""}`}>
+    <div className={`group relative bg-card rounded-2xl p-6 flex flex-col h-full overflow-hidden border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05)] hover:-translate-y-0.5 hover:border-[var(--editorial-outline-variant,var(--border))]/80 ${sentimentClass} ${isOverdue ? "border-l-4 border-l-[var(--color-warning,#f59e0b)]" : ""}`}>
       {/* Clickable overlay */}
       <Link href={`/sessions/${series.id}`} className="absolute inset-0 z-0" />
 
@@ -248,7 +248,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
           {/* Status badge */}
           {isOverdue ? (
             <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--color-warning,#f59e0b)] bg-[var(--color-warning,#f59e0b)]/10 px-2 py-0.5 rounded-md">
-              Overdue
+              {t("editorial.overdue")}
             </span>
           ) : series.status !== "active" ? (
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-[var(--editorial-surface-container,var(--muted))] px-2 py-0.5 rounded-md">
@@ -256,7 +256,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
             </span>
           ) : (
             <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-success)] bg-[var(--color-success)]/10 px-2 py-0.5 rounded-md">
-              Active
+              {t("editorial.active")}
             </span>
           )}
         </div>
@@ -356,7 +356,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
           </button>
         ) : (
           <span className="text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 relative z-10">
-            Details <ChevronRight className="h-3.5 w-3.5" />
+            {t("editorial.details")} <ChevronRight className="h-3.5 w-3.5" />
           </span>
         )}
       </div>

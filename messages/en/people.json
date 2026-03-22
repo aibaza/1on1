@@ -97,6 +97,24 @@
       "saving": "Saving...",
       "saveChanges": "Save Changes",
       "updated": "Profile updated"
+    },
+    "editorial": {
+      "description": "Manage your organization's team members and reporting lines",
+      "members": "{count} members",
+      "leadership": "Leadership",
+      "managers": "Managers",
+      "teamMembers": "Team Members",
+      "person": "{count} person",
+      "people": "{count} people",
+      "reportsTo": "Reports to",
+      "joined": "Joined",
+      "viewProfile": "View Profile",
+      "membersSelected": "{count} member selected",
+      "membersSelectedPlural": "{count} members selected",
+      "changeRole": "Change role",
+      "clearSelection": "Clear selection",
+      "showingMembers": "Showing {from} to {to} of {total} members",
+      "invited": "Invited"
     }
   }
 }

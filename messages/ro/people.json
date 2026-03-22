@@ -97,6 +97,24 @@
       "saving": "Se salvează...",
       "saveChanges": "Salvează modificările",
       "updated": "Profil actualizat"
+    },
+    "editorial": {
+      "description": "Gestionează membrii echipei și liniile de raportare",
+      "members": "{count} membri",
+      "leadership": "Conducere",
+      "managers": "Manageri",
+      "teamMembers": "Membri echipă",
+      "person": "{count} persoană",
+      "people": "{count} persoane",
+      "reportsTo": "Raportează către",
+      "joined": "Înregistrat",
+      "viewProfile": "Vezi profil",
+      "membersSelected": "{count} membru selectat",
+      "membersSelectedPlural": "{count} membri selectați",
+      "changeRole": "Schimbă rolul",
+      "clearSelection": "Anulează selecția",
+      "showingMembers": "Se afișează {from}-{to} din {total} membri",
+      "invited": "Invitat"
     }
   }
 }

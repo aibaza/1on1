@@ -163,13 +163,13 @@ export function SideNav() {
                   1
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={8}>1on1 — Meeting Management</TooltipContent>
+              <TooltipContent side="right" sideOffset={8}>1on1 — {t("meetingManagement")}</TooltipContent>
             </Tooltip>
           ) : (
             <div>
               <h2 className="text-xl font-bold font-headline tracking-tighter text-primary">1on1</h2>
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
-                Meeting Management
+                {t("meetingManagement")}
               </p>
             </div>
           )}
@@ -195,7 +195,7 @@ export function SideNav() {
                   <CalendarPlus className="h-5 w-5" />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={8}>Schedule 1:1</TooltipContent>
+              <TooltipContent side="right" sideOffset={8}>{t("scheduleMeeting")}</TooltipContent>
             </Tooltip>
           ) : (
             <Link
@@ -204,7 +204,7 @@ export function SideNav() {
               style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
             >
               <CalendarPlus className="h-4 w-4 inline-block mr-2 -mt-0.5" />
-              Schedule 1:1
+              {t("scheduleMeeting")}
             </Link>
           )}
         </div>
@@ -227,7 +227,7 @@ export function SideNav() {
                   <HelpCircle className="h-5 w-5 shrink-0" />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={8}>Support</TooltipContent>
+              <TooltipContent side="right" sideOffset={8}>{t("support")}</TooltipContent>
             </Tooltip>
           ) : (
             <Link
@@ -235,7 +235,7 @@ export function SideNav() {
               className="flex items-center gap-3 px-4 py-3 rounded-lg font-headline font-semibold text-sm text-muted-foreground hover:text-primary transition-all"
             >
               <HelpCircle className="h-5 w-5 shrink-0" />
-              <span>Support</span>
+              <span>{t("support")}</span>
             </Link>
           )}
 
@@ -252,7 +252,7 @@ export function SideNav() {
             {collapsed
               ? <PanelLeftOpen className="h-4 w-4 shrink-0" />
               : <PanelLeftClose className="h-4 w-4 shrink-0" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse</span>}
+            {!collapsed && <span className="text-xs font-medium">{t("collapse")}</span>}
           </button>
         </div>
       </aside>
@@ -287,7 +287,7 @@ export function SideNav() {
             <div className="mb-8 px-6">
               <h2 className="text-xl font-bold font-headline tracking-tighter text-primary">1on1</h2>
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
-                Meeting Management
+                {t("meetingManagement")}
               </p>
             </div>
             <nav className="flex-1 space-y-1 px-2">
@@ -303,7 +303,7 @@ export function SideNav() {
                 style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
               >
                 <CalendarPlus className="h-4 w-4 inline-block mr-2 -mt-0.5" />
-                Schedule 1:1
+                {t("scheduleMeeting")}
               </Link>
             </div>
             <div className="px-2 mt-auto pt-4 border-t border-[var(--editorial-outline-variant,var(--border))]/20 space-y-1">
@@ -315,7 +315,7 @@ export function SideNav() {
                 className="flex items-center gap-3 px-4 py-3 rounded-lg font-headline font-semibold text-sm text-muted-foreground hover:text-primary transition-all"
               >
                 <HelpCircle className="h-5 w-5 shrink-0" />
-                <span>Support</span>
+                <span>{t("support")}</span>
               </Link>
             </div>
           </aside>

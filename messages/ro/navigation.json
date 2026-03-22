@@ -16,6 +16,11 @@
     "navigation": "Navigare",
     "language": "Limbă",
     "searchPlaceholder": "Caută...",
-    "theme": "Temă"
+    "theme": "Temă",
+    "meetingManagement": "Management întâlniri",
+    "scheduleMeeting": "Programează 1:1",
+    "support": "Asistență",
+    "collapse": "Restrânge",
+    "searchRecords": "Caută înregistrări..."
   }
 }
