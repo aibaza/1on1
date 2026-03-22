@@ -72,7 +72,7 @@ function MeetingStreak({ count }: { count: number }) {
   const progress = Math.min(count / 15, 1); // 15 = full ring
 
   return (
-    <div className="bg-card p-4 rounded-xl shadow-sm border border-border/50 flex items-center space-x-4">
+    <div className="bg-card p-5 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex items-center space-x-4">
       <div className="relative flex items-center justify-center">
         <svg className="w-14 h-14 -rotate-90">
           <circle cx="28" cy="28" r="24" fill="transparent" stroke="currentColor" strokeWidth="4" className="text-muted" />
@@ -85,7 +85,7 @@ function MeetingStreak({ count }: { count: number }) {
         <Zap className="absolute h-5 w-5" style={{ color: "var(--color-success, #004c47)" }} />
       </div>
       <div>
-        <div className="text-2xl font-bold text-foreground">{count}</div>
+        <div className="text-2xl font-extrabold text-foreground">{count}</div>
         <div className="text-xs text-muted-foreground font-medium">Sessions on time</div>
       </div>
     </div>
@@ -187,52 +187,53 @@ export function EditorialDashboard({
 
       {/* 2. Quick Stats */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-card p-6 rounded-xl shadow-sm border border-border/50 hover:shadow-md transition-shadow">
-          <div className="flex justify-between items-start mb-4">
-            <span className="text-muted-foreground text-sm font-semibold">Active Series</span>
-            <Layers className="h-5 w-5 text-primary" />
+        <div className="bg-card p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">Active Series</span>
+            <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">{stats.totalReports}</div>
           </div>
-          <div className="flex items-end justify-between">
-            <div className="text-3xl font-extrabold text-foreground tabular-nums">{stats.totalReports}</div>
+          <div className="mt-6">
             <MiniBarChart data={trends.reportsHistory} />
           </div>
         </div>
 
-        <div className="bg-card p-6 rounded-xl shadow-sm border border-border/50 hover:shadow-md transition-shadow">
-          <div className="flex justify-between items-start mb-4">
-            <span className="text-muted-foreground text-sm font-semibold">Avg Score</span>
-            {stats.avgScore && (
-              <span className="text-xs font-bold" style={{ color: "var(--color-success)" }}>
-                <TrendingUp className="h-3 w-3 inline mr-0.5" />
-                {trends.scoresHistory.length >= 2
-                  ? `${(trends.scoresHistory[trends.scoresHistory.length - 1] - trends.scoresHistory[trends.scoresHistory.length - 2]).toFixed(1)}`
-                  : "—"}
-              </span>
-            )}
-          </div>
-          <div className="flex items-end justify-between">
-            <div className="text-3xl font-extrabold text-foreground tabular-nums">
+        <div className="bg-card p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">Avg Score</span>
+            <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">
               {stats.avgScore?.toFixed(1) ?? "—"}
             </div>
-            <MiniBarChart data={trends.scoresHistory} color="var(--color-success, #004c47)" />
+          </div>
+          <div className="mt-6 flex items-center gap-2" style={{ color: "var(--color-success)" }}>
+            {stats.avgScore && trends.scoresHistory.length >= 2 && (
+              <>
+                <TrendingUp className="h-4 w-4" />
+                <span className="text-sm font-semibold">
+                  {(trends.scoresHistory[trends.scoresHistory.length - 1] - trends.scoresHistory[trends.scoresHistory.length - 2]) > 0 ? "+" : ""}
+                  {(trends.scoresHistory[trends.scoresHistory.length - 1] - trends.scoresHistory[trends.scoresHistory.length - 2]).toFixed(1)} from last period
+                </span>
+              </>
+            )}
           </div>
         </div>
 
-        <div className="bg-card p-6 rounded-xl shadow-sm border border-border/50 hover:shadow-md transition-shadow">
-          <div className="flex justify-between items-start mb-4">
-            <span className="text-muted-foreground text-sm font-semibold">Overdue Actions</span>
-            {totalOverdue > 0 && <AlertTriangle className="h-5 w-5 text-destructive" />}
+        <div className="bg-card p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">Overdue Actions</span>
+            <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">{totalOverdue}</div>
           </div>
-          <div className="flex items-end justify-between">
-            <div className="text-3xl font-extrabold text-foreground tabular-nums">{totalOverdue}</div>
-            <MiniBarChart data={[totalOverdue, Math.max(totalOverdue - 1, 0), Math.max(totalOverdue - 2, 0), totalOverdue]} color="var(--destructive)" />
-          </div>
+          {totalOverdue > 0 && (
+            <div className="mt-6 w-full bg-[var(--editorial-surface-container,var(--muted))] rounded-full h-2">
+              <div className="bg-destructive h-2 rounded-full" style={{ width: `${Math.min(totalOverdue * 20, 100)}%` }} />
+            </div>
+          )}
         </div>
 
         {nextSession ? (
           <Link
             href={nextSession.latestSession?.status === "in_progress" ? `/wizard/${nextSession.latestSession.id}` : `/sessions/${nextSession.id}`}
-            className="bg-primary text-primary-foreground p-6 rounded-xl shadow-lg relative overflow-hidden group hover:shadow-xl transition-all block"
+            className="text-white p-6 rounded-xl shadow-lg relative overflow-hidden group hover:shadow-xl transition-all block"
+            style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
           >
             <div className="absolute -right-4 -bottom-4 opacity-10">
               <Clock className="h-24 w-24" />
@@ -276,21 +277,23 @@ export function EditorialDashboard({
                 className="p-5 rounded-xl flex items-center justify-between border group transition-all hover:shadow-md"
                 style={{
                   background: card.color === "error"
-                    ? "rgba(255, 218, 214, 0.2)"
-                    : "#fff8e1",
+                    ? "color-mix(in srgb, var(--destructive) 8%, transparent)"
+                    : "color-mix(in srgb, var(--color-warning) 8%, transparent)",
                   borderColor: card.color === "error"
-                    ? "rgba(186, 26, 26, 0.1)"
-                    : "rgba(251, 191, 36, 0.25)",
+                    ? "color-mix(in srgb, var(--destructive) 15%, transparent)"
+                    : "color-mix(in srgb, var(--color-warning) 20%, transparent)",
                 }}
               >
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
                     style={{
-                      background: card.color === "error" ? "rgba(186, 26, 26, 0.08)" : "#fef3c7",
+                      background: card.color === "error"
+                        ? "color-mix(in srgb, var(--destructive) 10%, transparent)"
+                        : "color-mix(in srgb, var(--color-warning) 12%, transparent)",
                     }}>
                     {card.type === "score"
                       ? <TrendingDown className="h-5 w-5 text-destructive" />
-                      : <CalendarClock className="h-5 w-5 text-amber-600" />}
+                      : <CalendarClock className="h-5 w-5 text-[var(--color-warning)]" />}
                   </div>
                   <div>
                     <p className="text-foreground font-semibold text-sm">{card.title}</p>
@@ -301,9 +304,9 @@ export function EditorialDashboard({
                   href={`/sessions/${card.seriesId}`}
                   className="px-4 py-2 rounded-lg text-xs font-bold shadow-sm opacity-70 group-hover:opacity-100 transition-all shrink-0 ml-4"
                   style={{
-                    background: card.color === "error" ? "white" : "rgb(217, 119, 6)",
+                    background: card.color === "error" ? "var(--card)" : "var(--color-warning)",
                     color: card.color === "error" ? "var(--destructive)" : "white",
-                    border: card.color === "error" ? "1px solid rgba(186, 26, 26, 0.15)" : "none",
+                    border: card.color === "error" ? "1px solid color-mix(in srgb, var(--destructive) 15%, transparent)" : "none",
                   }}
                 >
                   {card.type === "score" ? "Review" : "Schedule"}
@@ -319,7 +322,7 @@ export function EditorialDashboard({
         {/* Left Column */}
         <div className="lg:col-span-8 space-y-10">
           {/* Upcoming Sessions */}
-          <section className="bg-card rounded-2xl p-8 shadow-sm border border-border/50">
+          <section className="bg-card rounded-2xl p-8 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold font-headline">{t("upcomingSessions")}</h3>
               <Link href="/sessions" className="text-primary font-bold text-sm hover:underline">
@@ -389,12 +392,12 @@ export function EditorialDashboard({
             <h3 className="text-xl font-bold font-headline">{t("recentSessions")}</h3>
             <div className="grid gap-4">
               {recent.slice(0, 3).map((s) => {
-                const sentimentColor = s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : "#f59e0b";
+                const sentimentColor = s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : "var(--color-warning, #f59e0b)";
                 return (
                   <Link
                     key={s.id}
                     href={`/sessions/${s.id}/summary`}
-                    className="bg-card p-6 rounded-2xl shadow-sm border-l-4 hover:shadow-md transition-shadow block"
+                    className="bg-card p-6 rounded-r-2xl rounded-l-sm border border-[var(--editorial-outline-variant,var(--border))]/50 border-l-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 block"
                     style={{ borderLeftColor: sentimentColor }}
                   >
                     <div className="flex justify-between items-start mb-3">
@@ -500,7 +503,7 @@ export function EditorialDashboard({
           </section>
 
           {/* Team Cadence */}
-          <section className="bg-card rounded-2xl p-6 shadow-sm border border-border/50">
+          <section className="bg-card rounded-2xl p-6 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
             <h3 className="text-lg font-bold mb-6 font-headline">Team Cadence</h3>
             <div className="space-y-4">
               {upcoming.map((series) => {

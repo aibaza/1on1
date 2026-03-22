@@ -194,7 +194,7 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
       {/* Bento Grid: AI Summary + Category Scores */}
       <div className="grid grid-cols-12 gap-6 mb-10">
         {/* AI Summary Hero */}
-        <div className="col-span-12 lg:col-span-8 bg-card rounded-xl p-8 shadow-sm border border-border/50 relative overflow-hidden">
+        <div className="col-span-12 lg:col-span-8 bg-card rounded-xl p-8 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4">
             <div className="flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-lg">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
@@ -256,7 +256,7 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
         <div className="col-span-12 lg:col-span-4 space-y-4">
           {/* AI Assessment Score — hero card */}
           {sessionScore !== null && (
-            <div className="bg-card rounded-xl p-6 shadow-sm border border-border/50">
+            <div className="bg-card rounded-xl p-6 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">AI Assessment</h3>
               <div className="flex items-center gap-4 mb-4">
                 <div className="text-5xl font-black text-foreground tabular-nums">{sessionScore.toFixed(1)}</div>
@@ -423,10 +423,10 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
       {sessionHistory && sessionHistory.length > 1 && (
         <section className="mb-10">
           <h3 className="text-xl font-bold text-foreground mb-6 px-2 font-headline">Session History</h3>
-          <div className="bg-card rounded-2xl shadow-sm border border-border/50 overflow-hidden divide-y divide-border/50">
+          <div className="bg-card rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden divide-y divide-[var(--editorial-outline-variant,var(--border))]/50">
             {sessionHistory.map((s) => {
               const isActive = s.id === sessionId;
-              const sentimentColor = s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : s.sentiment === "mixed" ? "#f59e0b" : "transparent";
+              const sentimentColor = s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : s.sentiment === "mixed" ? "var(--color-warning, #f59e0b)" : "transparent";
               return (
                 <Link
                   key={s.id}

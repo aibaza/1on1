@@ -60,10 +60,10 @@ function EditorialSeriesGrid({
       {!muted && (
         <Link
           href="/sessions/new"
-          className="border-2 border-dashed border-muted-foreground/20 rounded-2xl flex flex-col items-center justify-center p-6 text-muted-foreground hover:border-primary/50 hover:bg-muted transition-all cursor-pointer group min-h-[280px]"
+          className="border-2 border-dashed border-[var(--editorial-outline-variant,var(--border))]/50 rounded-2xl flex flex-col items-center justify-center p-6 text-muted-foreground hover:border-primary/50 hover:bg-[var(--editorial-surface-container,var(--muted))] transition-all cursor-pointer group min-h-[280px]"
         >
-          <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors">
-            <Plus className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+          <div className="w-10 h-10 rounded-full bg-[var(--editorial-surface-container,var(--muted))] flex items-center justify-center mb-3 group-hover:bg-primary/10 transition-colors">
+            <Plus className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
           </div>
           <p className="text-xs font-bold uppercase tracking-widest">New Session</p>
         </Link>
@@ -97,21 +97,21 @@ function EditorialAdminGrouped({
   });
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-16">
       {sortedGroups.map(([managerId, items]) => {
         const manager = items[0].manager;
         const managerName = `${manager.firstName} ${manager.lastName}`;
         return (
-          <section key={managerId} className="bg-muted/50 p-8 rounded-2xl">
+          <section key={managerId} className="bg-[var(--editorial-surface-container-low,var(--muted))]/80 p-8 rounded-2xl">
             <div className="flex items-center gap-4 mb-8">
               <h3 className="font-headline font-extrabold text-xl text-primary">
                 {managerName}
-                {managerId === currentUserId && (
-                  <span className="ml-2 font-normal text-muted-foreground text-sm">
-                    {t("sections.youSuffix")}
-                  </span>
-                )}
               </h3>
+              {managerId === currentUserId && (
+                <span className="text-xs font-bold text-muted-foreground bg-[var(--editorial-surface-container,var(--muted))] px-3 py-1 rounded-full uppercase tracking-wider">
+                  {t("sections.youSuffix")}
+                </span>
+              )}
               <span className="ml-auto text-xs font-bold text-muted-foreground uppercase tracking-widest">
                 {items.length} {items.length === 1 ? "Series" : "Series"}
               </span>

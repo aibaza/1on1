@@ -26,14 +26,14 @@ export function StarRating({ score, size = "md", className }: StarRatingProps) {
           return <Star key={i} className={cn(cls, "text-muted-foreground/25")} />;
         }
         if (i < fullStars) {
-          return <Star key={i} className={cn(cls, "fill-amber-400 text-amber-400")} />;
+          return <Star key={i} className={cn(cls, "fill-[var(--color-warning,#f59e0b)] text-[var(--color-warning,#f59e0b)]")} />;
         }
         if (i === fullStars && hasHalf) {
           return (
             <span key={i} className={cn("relative inline-flex shrink-0", cls)}>
               <Star className={cn("absolute", cls, "text-muted-foreground/25")} />
               <span className="absolute inset-0 overflow-hidden" style={{ width: "50%" }}>
-                <Star className={cn(cls, "fill-amber-400 text-amber-400")} />
+                <Star className={cn(cls, "fill-[var(--color-warning,#f59e0b)] text-[var(--color-warning,#f59e0b)]")} />
               </span>
             </span>
           );

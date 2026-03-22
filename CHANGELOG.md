@@ -25,6 +25,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 - Login page split into `classic-login.tsx` and `editorial-login.tsx` with server-side routing
+- Editorial SideNav: uses `bg-[var(--sidebar)]` semantic token, removed border-r, nav items use `font-headline` with py-3
+- Editorial TopBar: semantic background colors, user profile section with name/role/avatar, wider search, aria-labels
+- Editorial series cards: rounded-2xl, card-refined hover effect (translateY + shadow), text-[10px] uppercase badges, template-matching sparkline container
+- Editorial dashboard stats: Material Design 3 card styling with p-8, uppercase tracking-widest labels, 4xl primary numbers
+- Editorial session summary + series detail: consistent card borders using editorial outline-variant token
+- Editorial people header: matches template spacing and typography
+- Editorial sessions page header: 3xl font-extrabold with max-w-xl description
+- Star rating component: uses `var(--color-warning)` token instead of hardcoded amber-400
+- Dashboard attention cards: use CSS variable tokens instead of hardcoded colors for dark mode compatibility
+- Dashboard recent sessions: rounded-r-2xl/rounded-l-sm to prevent border-l vs rounded corner conflict
+- Admin grouped sections: increased background opacity from /50 to /80 for better visual separation
+- Focus ring opacity increased from /20 to /40 for accessibility compliance
+- Mobile responsive sidebar: hidden below md breakpoint with hamburger drawer, animated slide-in
+- Top bar width: responsive w-full md:w-[calc(100%-16rem)]
+- Dashboard layout: responsive padding px-4 md:px-10 and pt-20 md:pt-24
+
+### Added (continued)
+- Mobile sidebar drawer with backdrop blur overlay and slide-in-left animation
+- `globals-v2.css`: scrollbar styling, text selection colors, mobile drawer keyframe animation
+- Editorial page header `eyebrow` prop for Material Design 3 section labels with accent line
 
 ### Removed
 - Google and Microsoft OAuth buttons from login page (will be re-added later)

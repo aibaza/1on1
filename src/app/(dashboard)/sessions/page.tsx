@@ -31,11 +31,11 @@ export default async function SessionsPage() {
 
   return (
     <div className={isEditorial ? "space-y-8" : "space-y-6"}>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         {isEditorial ? (
           <div>
-            <h1 className="text-4xl font-extrabold tracking-tight font-headline">{t("title")}</h1>
-            <p className="text-muted-foreground text-lg mt-2">{t("description")}</p>
+            <h1 className="text-3xl font-extrabold tracking-tight font-headline">{t("title")}</h1>
+            <p className="text-muted-foreground text-base font-medium mt-2 max-w-xl leading-relaxed">{t("description")}</p>
           </div>
         ) : (
           <div>
@@ -47,7 +47,7 @@ export default async function SessionsPage() {
           isEditorial ? (
             <Link
               href="/sessions/new"
-              className="inline-flex items-center px-6 py-3 rounded-xl font-bold text-sm text-white shadow-md hover:opacity-90 transition-opacity"
+              className="inline-flex items-center px-8 py-3 rounded-xl font-bold font-headline text-sm text-white shadow-md hover:shadow-lg transition-all active:scale-95"
               style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
             >
               <Plus className="mr-2 h-4 w-4" />

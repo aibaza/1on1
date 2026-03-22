@@ -228,6 +228,33 @@
   border-radius: 1rem;
 }
 
+/* ===== Editorial Mobile Drawer Animation ===== */
+@keyframes slide-in-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+[data-design="editorial"] .animate-slide-in-left {
+  animation: slide-in-left 0.25s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ===== Editorial Scrollbar ===== */
+[data-design="editorial"] ::-webkit-scrollbar {
+  width: 6px;
+}
+[data-design="editorial"] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-design="editorial"] ::-webkit-scrollbar-thumb {
+  background: var(--editorial-outline-variant, #c5c5d4);
+  border-radius: 10px;
+}
+
+/* ===== Editorial Selection ===== */
+[data-design="editorial"] ::selection {
+  background: var(--editorial-secondary-container, #cbdafd);
+  color: var(--editorial-on-secondary-container, #505f7d);
+}
+
 /* ===== Editorial Table Upgrades ===== */
 /* Enhanced table styling for People page and similar data tables */
 
@@ -259,6 +286,36 @@
 
 [data-design="editorial"] table tbody tr:hover {
   background: var(--editorial-surface-container-low, #f2f4f5);
+}
+
+/* ===== Editorial Badge Upgrades ===== */
+/* Auto-upgrade shadcn Badge components in editorial mode */
+[data-design="editorial"] [data-slot="badge"] {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 0.375rem;
+  padding: 0.125rem 0.5rem;
+}
+
+/* ===== Editorial Section Header Upgrades ===== */
+[data-design="editorial"] main h2 {
+  font-family: var(--font-manrope), 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+}
+
+[data-design="editorial"] main h3 {
+  font-family: var(--font-manrope), 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+}
+
+/* ===== Editorial Button Upgrades ===== */
+/* Primary buttons get the gradient treatment */
+[data-design="editorial"] button[data-slot="button"].bg-primary,
+[data-design="editorial"] [data-slot="button"][class*="bg-primary"] {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%) !important;
+  box-shadow: 0 4px 6px -1px rgba(41, 64, 125, 0.15);
 }
 
 /* Deactivated row styling */

@@ -1,35 +1,54 @@
 "use client";
 
 import { Bell, HelpCircle, Search } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
 
+function getInitials(name?: string | null): string {
+  if (!name) return "?";
+  return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+}
+
 export function EditorialTopBar() {
+  const { data: session } = useSession();
+  const user = session?.user;
+  const userRole = user?.role ?? "member";
+
   return (
-    <header className="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl flex justify-between items-center h-16 px-8 shadow-sm border-b border-slate-200/50 dark:border-slate-800/50">
+    <header className="fixed top-0 right-0 w-full md:w-[calc(100%-16rem)] z-40 bg-[var(--background)]/80 backdrop-blur-xl flex justify-between items-center h-16 px-4 md:px-8 shadow-sm">
       {/* Search */}
       <div className="flex items-center flex-1">
-        <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="relative w-full max-w-md group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search..."
-            className="w-full pl-10 pr-4 py-2 bg-muted border-none rounded-full text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-muted-foreground"
+            placeholder="Search records..."
+            className="w-full pl-12 pr-4 py-2.5 bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-full text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all placeholder:text-muted-foreground/60 font-body"
           />
         </div>
       </div>
 
       {/* Right actions */}
-      <div className="flex items-center gap-2">
-        <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full transition-colors">
+      <div className="flex items-center gap-4">
+        <button aria-label="Notifications" className="p-2 text-muted-foreground hover:text-foreground hover:bg-[var(--editorial-surface-container-high,var(--muted))] rounded-full transition-all">
           <Bell className="h-5 w-5" />
         </button>
-        <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full transition-colors">
+        <button aria-label="Help" className="p-2 text-muted-foreground hover:text-foreground hover:bg-[var(--editorial-surface-container-high,var(--muted))] rounded-full transition-all">
           <HelpCircle className="h-5 w-5" />
         </button>
-        <div className="h-6 w-px bg-border mx-1" />
         <ThemeToggle />
-        <UserMenu />
+
+        {/* User profile section */}
+        <div className="flex items-center gap-3 pl-4 border-l border-[var(--editorial-outline-variant,var(--border))]">
+          {user && (
+            <div className="text-right hidden sm:block">
+              <p className="text-xs font-bold text-foreground font-headline">{user.name}</p>
+              <p className="text-[10px] text-muted-foreground font-medium capitalize">{userRole}</p>
+            </div>
+          )}
+          <UserMenu />
+        </div>
       </div>
     </header>
   );

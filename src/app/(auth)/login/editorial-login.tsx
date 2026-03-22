@@ -104,16 +104,19 @@ export function EditorialLogin() {
         <div className="max-w-md w-full mx-auto">
           {/* Brand anchor */}
           <div className="mb-12">
-            <h2 className="font-headline text-2xl font-bold" style={{ color: "#29407d" }}>
+            <h2 className="font-headline text-xl font-bold tracking-tighter" style={{ color: "var(--primary, #29407d)" }}>
               1on1
             </h2>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] mt-1">
+              Meeting Management
+            </p>
           </div>
 
           <div className="mb-10">
-            <h3 className="font-headline text-3xl font-bold text-[var(--foreground)] mb-2">
+            <h3 className="font-headline text-3xl font-extrabold text-[var(--foreground)] tracking-tight mb-2">
               {t("login.title")}
             </h3>
-            <p className="text-[var(--muted-foreground)]">
+            <p className="text-[var(--muted-foreground)] font-medium">
               {t("login.description")}
             </p>
           </div>
@@ -139,7 +142,7 @@ export function EditorialLogin() {
                 required
                 autoComplete="email"
                 autoFocus
-                className="w-full rounded-xl px-4 py-3 text-[var(--foreground)] transition-all placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:outline-none"
+                className="w-full rounded-xl px-4 py-3 text-[var(--foreground)] transition-all placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-primary/40 focus:outline-none"
                 style={{
                   background: "var(--editorial-surface-container-low, #f2f4f5)",
                   border: "none",
@@ -168,7 +171,7 @@ export function EditorialLogin() {
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
-                  className="w-full rounded-xl px-4 py-3 text-[var(--foreground)] transition-all placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:outline-none"
+                  className="w-full rounded-xl px-4 py-3 text-[var(--foreground)] transition-all placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-primary/40 focus:outline-none"
                   style={{
                     background: "var(--editorial-surface-container-low, #f2f4f5)",
                     border: "none",
@@ -177,6 +180,7 @@ export function EditorialLogin() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -187,9 +191,9 @@ export function EditorialLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full font-headline font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 group active:scale-[0.98] disabled:opacity-60"
+              className="w-full font-headline font-bold py-4 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group active:scale-95 disabled:opacity-60"
               style={{
-                background: "linear-gradient(135deg, #29407d 0%, #425797 100%)",
+                background: "linear-gradient(135deg, var(--primary, #29407d) 0%, var(--editorial-primary-container, #425797) 100%)",
                 color: "#ffffff",
               }}
             >

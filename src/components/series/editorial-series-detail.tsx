@@ -169,7 +169,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
       {/* Bento Grid: AI Summary + Score */}
       <div className="grid grid-cols-12 gap-6 mb-10">
         {/* AI Summary from latest session */}
-        <div className="col-span-12 lg:col-span-8 bg-card rounded-xl p-8 shadow-sm border border-border/50 relative overflow-hidden">
+        <div className="col-span-12 lg:col-span-8 bg-card rounded-xl p-8 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4">
             <div className="flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-lg">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
@@ -215,7 +215,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
         {/* Score + Sentiment sidebar */}
         <div className="col-span-12 lg:col-span-4 space-y-4">
           {series.latestSessionScore !== null && (
-            <div className="bg-card rounded-xl p-6 shadow-sm border border-border/50">
+            <div className="bg-card rounded-xl p-6 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">AI Assessment</h3>
               <div className="flex items-center gap-4 mb-4">
                 <div className="text-5xl font-black text-foreground tabular-nums">{series.latestSessionScore.toFixed(1)}</div>
@@ -243,7 +243,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
 
           {/* Follow-up items */}
           {aiSummary?.followUpItems && aiSummary.followUpItems.length > 0 && (
-            <div className="bg-card rounded-xl p-6 shadow-sm border border-border/50">
+            <div className="bg-card rounded-xl p-6 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 Next Session Nudges
@@ -264,7 +264,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
       {/* Session History */}
       <section className="mb-10">
         <h3 className="text-xl font-bold text-foreground mb-6 px-2 font-headline">Session History</h3>
-        <div className="bg-card rounded-2xl shadow-sm border border-border/50 overflow-hidden divide-y divide-border/50">
+        <div className="bg-card rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden divide-y divide-[var(--editorial-outline-variant,var(--border))]/50">
           {series.sessions.length === 0 ? (
             <div className="p-8 text-center text-muted-foreground">
               <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
@@ -273,7 +273,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
           ) : (
             series.sessions.map((s) => {
               const isCompleted = s.status === "completed";
-              const sentimentColor = s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : s.sentiment === "mixed" ? "#f59e0b" : "transparent";
+              const sentimentColor = s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : s.sentiment === "mixed" ? "var(--color-warning, #f59e0b)" : "transparent";
               return (
                 <Link
                   key={s.id}

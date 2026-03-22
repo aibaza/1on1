@@ -7,8 +7,7 @@ import { useMemo } from "react";
 import { toast } from "sonner";
 import { useTranslations, useFormatter } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { StarRating } from "@/components/ui/star-rating";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Star } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
 import { hashSeriesColor } from "@/lib/chart-colors";
 
@@ -39,6 +38,16 @@ interface EditorialSeriesCardProps {
 
 function getInitials(first: string, last: string): string {
   return `${first?.[0] ?? ""}${last?.[0] ?? ""}`.toUpperCase();
+}
+
+function StarIcon({ filled, className }: { filled: boolean; className?: string }) {
+  return (
+    <Star
+      className={className}
+      fill={filled ? "currentColor" : "none"}
+      strokeWidth={filled ? 0 : 1.5}
+    />
+  );
 }
 
 export function EditorialSeriesCard({ series, currentUserId, showManagerName }: EditorialSeriesCardProps) {
@@ -100,8 +109,8 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
 
   return (
     <div
-      className={`group bg-card rounded-xl p-6 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(41,64,125,0.06)] flex flex-col relative overflow-hidden ${
-        isOverdue ? "border-l-4 border-amber-400 shadow-[inset_0_0_0_1px_rgba(251,191,36,0.1)]" : ""
+      className={`group bg-card rounded-2xl p-6 flex flex-col relative overflow-hidden border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05)] hover:border-[var(--editorial-outline-variant,var(--border))]/60 hover:-translate-y-0.5 ${
+        isOverdue ? "border-l-4 border-l-amber-400" : ""
       }`}
     >
       {/* Prefill ready ribbon */}
@@ -112,45 +121,50 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
       )}
 
       {/* Header: Avatar + Name + Status */}
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-muted group-hover:border-primary transition-colors">
-            <Avatar className="w-full h-full">
-              <AvatarImage src={series.report.avatarUrl ?? undefined} alt={reportName} />
-              <AvatarFallback className="text-sm">{getInitials(series.report.firstName, series.report.lastName)}</AvatarFallback>
+      <div className="flex justify-between items-start mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl overflow-hidden border border-[var(--editorial-outline-variant,var(--border))]/50">
+            <Avatar className="w-full h-full rounded-xl">
+              <AvatarImage src={series.report.avatarUrl ?? undefined} alt={reportName} className="rounded-xl" />
+              <AvatarFallback className="text-sm rounded-xl">{getInitials(series.report.firstName, series.report.lastName)}</AvatarFallback>
             </Avatar>
           </div>
           <div>
-            <h4 className="font-bold text-lg text-foreground">{reportName}</h4>
-            <p className="text-muted-foreground text-sm font-medium">
-              {showManagerName
-                ? `${series.manager.firstName} ${series.manager.lastName}`
-                : series.cadence}
-            </p>
+            <h4 className="font-bold text-sm text-foreground">{reportName}</h4>
+            {score !== null && (
+              <div className="flex text-primary/30 scale-75 -ml-3.5 origin-left">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <StarIcon key={i} className="h-5 w-5" filled={i <= Math.round(score)} />
+                ))}
+              </div>
+            )}
+            {score === null && (
+              <p className="text-muted-foreground text-xs font-medium">
+                {showManagerName
+                  ? `${series.manager.firstName} ${series.manager.lastName}`
+                  : series.cadence}
+              </p>
+            )}
           </div>
         </div>
         {isOverdue ? (
-          <span className="bg-destructive/10 text-destructive px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider animate-pulse">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-destructive bg-destructive/10 px-2 py-0.5 rounded-md">
             Overdue
           </span>
         ) : (
-          <span className="bg-accent text-accent-foreground px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+          <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md ${
+            series.status === "active"
+              ? "text-[var(--color-success)] bg-[var(--color-success)]/10"
+              : "text-muted-foreground bg-muted"
+          }`}>
             {series.status === "active" ? "Active" : series.status}
           </span>
         )}
       </div>
 
-      {/* Star rating */}
-      {score !== null && (
-        <div className="flex items-center gap-1 mb-4">
-          <StarRating score={score} size="sm" />
-          <span className="text-xs font-bold text-muted-foreground ml-1">{score.toFixed(1)}</span>
-        </div>
-      )}
-
       {/* AI Summary blurb */}
-      <div className="bg-muted p-4 rounded-lg mb-6 flex-1">
-        <p className="text-sm text-muted-foreground italic leading-relaxed line-clamp-3">
+      <div className="mb-4 flex-1">
+        <p className="text-xs text-muted-foreground font-medium leading-relaxed italic text-balance line-clamp-3">
           {series.latestSummary?.blurb
             ? `"${series.latestSummary.blurb}"`
             : series.latestSession
@@ -161,7 +175,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
 
       {/* Recharts sparkline */}
       {chartData.length >= 2 && (
-        <div className="h-12 w-full mb-4 opacity-60 group-hover:opacity-100 transition-opacity pointer-events-none">
+        <div className="relative h-[60px] mt-auto -mx-6 mb-0 pointer-events-none" style={{ background: "linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.03))" }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
               <defs>
@@ -213,14 +227,16 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
       )}
 
       {/* Footer: Date + Action */}
-      <div className="flex items-center justify-between pt-4 border-t border-border/50">
+      <div className="flex items-center justify-between pt-4 border-t border-[var(--editorial-outline-variant,var(--border))]/50 relative z-10">
         {isOverdue ? (
-          <span className="text-sm font-bold text-destructive">
-            Missed: {series.nextSessionAt ? format.dateTime(new Date(series.nextSessionAt), { month: "short", day: "numeric" }) : ""}
+          <span className="text-[10px] font-bold text-destructive uppercase tracking-wider">
+            Overdue
           </span>
         ) : (
-          <span className="text-sm font-medium text-muted-foreground">
-            Next: {series.nextSessionAt ? format.dateTime(new Date(series.nextSessionAt), { month: "short", day: "numeric" }) : "TBD"}
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+            {series.nextSessionAt
+              ? format.dateTime(new Date(series.nextSessionAt), { day: "2-digit", month: "short" }).toUpperCase()
+              : "TBD"}
           </span>
         )}
 
@@ -228,41 +244,39 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
           isOverdue ? (
             <button
               onClick={handleAction}
-              className="bg-amber-500 text-white px-5 py-2 rounded-lg font-bold text-sm shadow-sm hover:bg-amber-600 active:scale-95 transition-all"
+              className="bg-primary text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-[var(--editorial-primary-container,var(--primary))] transition-all shadow-sm"
             >
-              Reschedule
+              Complete
             </button>
           ) : isInProgress ? (
             <button
               onClick={handleAction}
-              className="bg-primary text-primary-foreground px-5 py-2 rounded-lg font-bold text-sm shadow-sm hover:opacity-90 active:scale-95 transition-all"
+              className="text-xs font-bold text-primary hover:underline transition-all flex items-center gap-1"
             >
-              Resume
+              Resume <ChevronRight className="h-3.5 w-3.5" />
             </button>
           ) : series.latestSession ? (
             <button
               onClick={handleAction}
               disabled={startMutation.isPending}
-              className="bg-primary text-primary-foreground px-5 py-2 rounded-lg font-bold text-sm shadow-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+              className="text-xs font-bold text-primary hover:underline transition-all flex items-center gap-1 disabled:opacity-50"
             >
-              Start
+              Start <ChevronRight className="h-3.5 w-3.5" />
             </button>
           ) : (
             <Link
               href={`/sessions/${series.id}`}
-              className="text-primary font-bold text-sm hover:underline flex items-center gap-1 group/btn"
+              className="text-xs font-bold text-foreground hover:text-primary transition-all"
             >
               Details
-              <ChevronRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
             </Link>
           )
         ) : (
           <Link
             href={`/sessions/${series.id}`}
-            className="text-primary font-bold text-sm hover:underline flex items-center gap-1 group/btn"
+            className="text-xs font-bold text-foreground hover:text-primary transition-all"
           >
             Details
-            <ChevronRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
           </Link>
         )}
       </div>
