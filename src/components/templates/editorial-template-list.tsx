@@ -204,7 +204,7 @@ export function EditorialTemplateList({
                   </div>
                   <span className={`px-3 py-1 text-[11px] font-bold rounded-full uppercase tracking-wider ${
                     template.isPublished
-                      ? "bg-[var(--editorial-tertiary-container,var(--color-success))]/20 text-[var(--editorial-on-tertiary-container,var(--color-success))]"
+                      ? "bg-[var(--editorial-tertiary,var(--color-success))]/15 text-[var(--editorial-tertiary,var(--color-success))]"
                       : "bg-[var(--editorial-surface-container-high,var(--accent))] text-muted-foreground"
                   }`}>
                     {template.isPublished ? t("published") : t("draft")}
