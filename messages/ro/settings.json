@@ -90,7 +90,12 @@
         "roleChange": "Schimbare rol",
         "managerChange": "Schimbare manager",
         "leadChange": "Schimbare lider"
-      }
+      },
+      "actionType": "Tip acțiune",
+      "dateRange": "Interval de date",
+      "exportCsv": "Exportă CSV",
+      "retentionTitle": "Politica de retenție",
+      "retentionDesc": "Jurnalul de audit este păstrat timp de 730 de zile conform configurației organizației tale. Pentru exporturi de conformitate care depășesc această perioadă, contactează echipa de suport."
     }
   }
 }

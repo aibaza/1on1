@@ -90,7 +90,12 @@
         "roleChange": "Role Change",
         "managerChange": "Manager Change",
         "leadChange": "Lead Change"
-      }
+      },
+      "actionType": "Action Type",
+      "dateRange": "Date Range",
+      "exportCsv": "Export CSV",
+      "retentionTitle": "Retention Policy",
+      "retentionDesc": "Audit logs are retained for 730 days per your organization's current configuration. For compliance exports exceeding this window, please contact the Support Team."
     }
   }
 }

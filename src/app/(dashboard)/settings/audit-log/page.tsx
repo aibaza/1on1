@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
 import { AuditLogClient } from "./audit-log-client";
+import { EditorialAuditLog } from "./editorial-audit-log";
 import { getTranslations } from "next-intl/server";
 import { getDesignPreference } from "@/lib/design-preference.server";
 
@@ -49,7 +50,7 @@ export default async function AuditLogPage() {
         )}
       </div>
 
-      <AuditLogClient />
+      {isEditorial ? <EditorialAuditLog /> : <AuditLogClient />}
     </div>
   );
 }
