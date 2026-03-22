@@ -123,7 +123,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
                   <Calendar className="h-4 w-4" />{series.cadence}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Hash className="h-4 w-4" />{completedSessions.length} sessions
+                  <Hash className="h-4 w-4" />{t("editorial.sessions", { count: completedSessions.length })}
                 </span>
                 {series.nextSessionAt && (
                   <span className="flex items-center gap-1">
@@ -185,7 +185,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
           <div className="absolute top-0 right-0 p-4">
             <div className="flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-lg">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Latest Session AI Summary</span>
+              <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{t("editorial.latestAiSummary")}</span>
             </div>
           </div>
 
@@ -207,7 +207,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
 
               {aiSummary.keyTakeaways && aiSummary.keyTakeaways.length > 0 && (
                 <div>
-                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Key Takeaways</h4>
+                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">{t("editorial.keyTakeaways")}</h4>
                   <ul className="space-y-3">
                     {aiSummary.keyTakeaways.map((item, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm">
@@ -220,7 +220,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
               )}
             </div>
           ) : (
-            <p className="text-muted-foreground italic">No completed sessions yet — start your first 1:1 to see AI insights here.</p>
+            <p className="text-muted-foreground italic">{t("editorial.noCompletedSessions")}</p>
           )}
         </div>
 
@@ -228,12 +228,12 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
         <div className="col-span-12 lg:col-span-4 space-y-4">
           {series.latestSessionScore !== null && (
             <div className="bg-card rounded-xl p-6 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">AI Assessment</h3>
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">{t("editorial.aiAssessment")}</h3>
               <div className="flex items-center gap-4 mb-4">
                 <div className="text-5xl font-black text-foreground tabular-nums">{series.latestSessionScore.toFixed(1)}</div>
                 <div className="flex-1">
                   <StarRating score={series.latestSessionScore} size="md" />
-                  <p className="text-xs text-muted-foreground mt-1">out of 5.0</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t("editorial.outOf5")}</p>
                 </div>
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -247,7 +247,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
               </div>
               {aiSummary?.overallSentiment && (
                 <p className="text-xs text-muted-foreground mt-3 capitalize">
-                  Sentiment: <span className="font-semibold text-foreground">{aiSummary.overallSentiment}</span>
+                  {t("editorial.sentimentLabel")}: <span className="font-semibold text-foreground">{aiSummary.overallSentiment}</span>
                 </p>
               )}
             </div>
@@ -258,7 +258,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
             <div className="bg-card rounded-xl p-6 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
-                Next Session Nudges
+                {t("editorial.nextSessionNudges")}
               </h3>
               <div className="space-y-3">
                 {aiSummary.followUpItems.map((item, i) => (
@@ -275,12 +275,12 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
 
       {/* Session History */}
       <section className="mb-10">
-        <h3 className="text-xl font-bold text-foreground mb-6 px-2 font-headline">Session History</h3>
+        <h3 className="text-xl font-bold text-foreground mb-6 px-2 font-headline">{t("editorial.sessionHistory")}</h3>
         <div className="bg-card rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden divide-y divide-[var(--editorial-outline-variant,var(--border))]/50">
           {series.sessions.length === 0 ? (
             <div className="p-8 text-center text-muted-foreground">
               <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm font-medium">No sessions yet</p>
+              <p className="text-sm font-medium">{t("editorial.noSessions")}</p>
             </div>
           ) : (
             series.sessions.map((s) => {

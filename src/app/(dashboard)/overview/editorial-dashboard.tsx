@@ -37,11 +37,11 @@ interface EditorialDashboardProps {
   recent: RecentSession[];
 }
 
-function getGreeting(): string {
+function getGreetingKey(): "goodMorning" | "goodAfternoon" | "goodEvening" {
   const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
+  if (hour < 12) return "goodMorning";
+  if (hour < 18) return "goodAfternoon";
+  return "goodEvening";
 }
 
 function getInitials(name: string): string {
@@ -174,7 +174,7 @@ export function EditorialDashboard({
             {format.dateTime(new Date(), { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
           </p>
           <h2 className="text-4xl font-extrabold text-foreground tracking-tight font-headline">
-            {getGreeting()}, {firstName}
+            {t(`editorial.${getGreetingKey()}`)}, {firstName}
           </h2>
           <div className="mt-4 inline-flex items-center px-4 py-2 rounded-full border"
             style={{ background: "var(--color-success, #004c47)10", borderColor: "var(--color-success, #004c47)20", color: "var(--color-success, #004c47)" }}>
@@ -189,7 +189,7 @@ export function EditorialDashboard({
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-card p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
           <div>
-            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">Active Series</span>
+            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{t("editorial.activeSeries")}</span>
             <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">{stats.totalReports}</div>
           </div>
           <div className="mt-6">
@@ -199,7 +199,7 @@ export function EditorialDashboard({
 
         <div className="bg-card p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
           <div>
-            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">Avg Score</span>
+            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{t("editorial.avgScore")}</span>
             <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">
               {stats.avgScore?.toFixed(1) ?? "—"}
             </div>
@@ -219,7 +219,7 @@ export function EditorialDashboard({
 
         <div className="bg-card p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
           <div>
-            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">Overdue Actions</span>
+            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{t("editorial.overdueActions")}</span>
             <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">{totalOverdue}</div>
           </div>
           {totalOverdue > 0 && (
@@ -239,7 +239,7 @@ export function EditorialDashboard({
               <Clock className="h-24 w-24" />
             </div>
             <div className="relative z-10">
-              <div className="text-xs font-bold uppercase tracking-wider opacity-80 mb-2">Next Session</div>
+              <div className="text-xs font-bold uppercase tracking-wider opacity-80 mb-2">{t("editorial.nextSession")}</div>
               <div className="text-xl font-bold mb-1">
                 {nextSession.report.firstName} {nextSession.report.lastName}
               </div>
@@ -247,7 +247,7 @@ export function EditorialDashboard({
                 <div className="text-sm opacity-80">
                   {nextSession.nextSessionAt
                     ? format.relativeTime(new Date(nextSession.nextSessionAt))
-                    : "Scheduled"}
+                    : t("editorial.scheduled")}
                 </div>
                 <div className="flex items-center gap-1 text-xs font-bold opacity-60 group-hover:opacity-100 transition-opacity">
                   <Play className="h-3 w-3 fill-current" /> Start
@@ -258,7 +258,7 @@ export function EditorialDashboard({
         ) : (
           <div className="bg-muted p-6 rounded-xl border border-border/50 flex flex-col items-center justify-center text-center">
             <CalendarPlus className="h-8 w-8 text-muted-foreground mb-2" />
-            <span className="text-sm font-medium text-muted-foreground">No upcoming sessions</span>
+            <span className="text-sm font-medium text-muted-foreground">{t("editorial.noUpcoming")}</span>
           </div>
         )}
       </section>
@@ -268,7 +268,7 @@ export function EditorialDashboard({
         <section className="space-y-4">
           <h3 className="text-xl font-bold text-foreground flex items-center font-headline">
             <CircleAlert className="mr-2 h-5 w-5 text-destructive" />
-            Attention Needed
+            {t("editorial.attentionNeeded")}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {attentionCards.map((card, i) => (
@@ -309,7 +309,7 @@ export function EditorialDashboard({
                     border: card.color === "error" ? "1px solid color-mix(in srgb, var(--destructive) 15%, transparent)" : "none",
                   }}
                 >
-                  {card.type === "score" ? "Review" : "Schedule"}
+                  {card.type === "score" ? t("editorial.review") : t("editorial.schedule")}
                 </Link>
               </div>
             ))}
@@ -326,14 +326,14 @@ export function EditorialDashboard({
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold font-headline">{t("upcomingSessions")}</h3>
               <Link href="/sessions" className="text-primary font-bold text-sm hover:underline">
-                View All
+                {t("editorial.viewAll")}
               </Link>
             </div>
             <div className="space-y-4">
               {upcoming.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <CalendarPlus className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm font-medium">No upcoming sessions</p>
+                  <p className="text-sm font-medium">{t("editorial.noUpcoming")}</p>
                 </div>
               ) : (
                 upcoming.map((series, idx) => {
@@ -365,7 +365,7 @@ export function EditorialDashboard({
                           <div className="text-muted-foreground text-xs font-medium">
                             {series.nextSessionAt
                               ? format.dateTime(new Date(series.nextSessionAt), { month: "short", day: "numeric", hour: "numeric", minute: "numeric" })
-                              : "Scheduled"}{" "}
+                              : t("editorial.scheduled")}{" "}
                             · {series.cadence}
                           </div>
                         </div>
@@ -375,7 +375,7 @@ export function EditorialDashboard({
                           href={series.latestSession?.status === "in_progress" ? `/wizard/${series.latestSession.id}` : `/sessions?series=${series.id}`}
                           className="px-6 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-bold shadow-md hover:opacity-90 transition-opacity"
                         >
-                          {series.latestSession?.status === "in_progress" ? "Resume" : "Start"}
+                          {series.latestSession?.status === "in_progress" ? t("editorial.resume") : t("editorial.start")}
                         </Link>
                       ) : (
                         <ChevronRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -417,7 +417,7 @@ export function EditorialDashboard({
                               color: s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : "#d97706",
                             }}
                           >
-                            {s.sentiment} sentiment
+                            {s.sentiment} {t("editorial.sentiment")}
                           </span>
                         )}
                       </div>
@@ -440,12 +440,12 @@ export function EditorialDashboard({
           <section className="bg-muted rounded-2xl p-6">
             <h3 className="text-lg font-bold mb-6 flex items-center font-headline">
               <ListChecks className="mr-2 h-4 w-4" />
-              Action Items
+              {t("editorial.actionItems")}
             </h3>
             <div className="space-y-6">
               {totalOverdue > 0 && (
                 <div>
-                  <div className="text-[10px] uppercase font-black text-destructive mb-3 tracking-widest">Overdue</div>
+                  <div className="text-[10px] uppercase font-black text-destructive mb-3 tracking-widest">{t("editorial.overdueLabel")}</div>
                   <div className="space-y-3">
                     {overdue.flatMap((g) =>
                       g.items.map((item) => (
@@ -469,7 +469,7 @@ export function EditorialDashboard({
               )}
               {/* This Week */}
               <div>
-                <div className="text-[10px] uppercase font-black text-primary mb-3 tracking-widest">This Week</div>
+                <div className="text-[10px] uppercase font-black text-primary mb-3 tracking-widest">{t("editorial.thisWeek")}</div>
                 <div className="space-y-3">
                   {upcoming.slice(0, 2).map((series) => {
                     const name = `${series.report.firstName} ${series.report.lastName}`;
@@ -481,12 +481,12 @@ export function EditorialDashboard({
                       >
                         <div className="flex items-start justify-between">
                           <div>
-                            <p className="text-sm font-semibold text-foreground">Prepare for session with {name}</p>
+                            <p className="text-sm font-semibold text-foreground">{t("editorial.prepareForSession", { name })}</p>
                             <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
                               {series.nextSessionAt
                                 ? format.dateTime(new Date(series.nextSessionAt), { weekday: "short", month: "short", day: "numeric" })
-                                : "Scheduled"}
+                                : t("editorial.scheduled")}
                             </p>
                           </div>
                           <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-0.5" />
@@ -497,35 +497,35 @@ export function EditorialDashboard({
                 </div>
               </div>
               <Link href="/action-items" className="text-primary text-xs font-bold hover:underline flex items-center gap-1">
-                View all <ChevronRight className="h-3 w-3" />
+                {t("editorial.viewAllActions")} <ChevronRight className="h-3 w-3" />
               </Link>
             </div>
           </section>
 
           {/* Team Cadence */}
           <section className="bg-card rounded-2xl p-6 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-            <h3 className="text-lg font-bold mb-6 font-headline">Team Cadence</h3>
+            <h3 className="text-lg font-bold mb-6 font-headline">{t("editorial.teamCadence")}</h3>
             <div className="space-y-4">
               {upcoming.map((series) => {
                 const name = `${series.report.firstName} ${series.report.lastName}`;
                 let dotColor = "var(--color-success)";
-                let timeLabel = "On track";
+                let timeLabel = t("editorial.onTrack");
 
                 if (series.nextSessionAt) {
                   const diff = new Date(series.nextSessionAt).getTime() - Date.now();
                   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                   if (days < 0) {
                     dotColor = "var(--destructive)";
-                    timeLabel = `${Math.abs(days)} days overdue`;
+                    timeLabel = t("editorial.daysOverdue", { count: Math.abs(days) });
                   } else if (days <= 2) {
                     dotColor = "var(--color-success)";
-                    timeLabel = days === 0 ? "Today" : days === 1 ? "Tomorrow" : `In ${days} days`;
+                    timeLabel = days === 0 ? t("editorial.today") : days === 1 ? t("editorial.tomorrow") : t("editorial.inDays", { count: days });
                   } else if (days <= 7) {
                     dotColor = "var(--color-warning, #f59e0b)";
-                    timeLabel = `In ${days} days`;
+                    timeLabel = t("editorial.inDays", { count: days });
                   } else {
                     dotColor = "var(--color-success)";
-                    timeLabel = `In ${days} days`;
+                    timeLabel = t("editorial.inDays", { count: days });
                   }
                 }
 
@@ -550,7 +550,7 @@ export function EditorialDashboard({
                 );
               })}
               {upcoming.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-4">No active series</p>
+                <p className="text-sm text-muted-foreground text-center py-4">{t("editorial.noActiveSeries")}</p>
               )}
             </div>
           </section>

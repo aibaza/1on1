@@ -59,7 +59,9 @@
       "today": "Today",
       "tomorrow": "Tomorrow",
       "inDays": "In {count} days",
-      "noActiveSeries": "No active series"
+      "noActiveSeries": "No active series",
+      "resume": "Resume",
+      "sessionsOnTime": "Sessions on time"
     }
   }
 }

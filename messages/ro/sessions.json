@@ -360,7 +360,9 @@
       "archive": "Arhivează",
       "resume": "Continuă",
       "startSession": "Începe sesiunea",
-      "sessions": "{count} sesiuni"
+      "sessions": "{count} sesiuni",
+      "actionItems": "Acțiuni de urmat",
+      "privateNotes": "Note private"
     },
     "corrections": {
       "amendedBadge": "Modificat",

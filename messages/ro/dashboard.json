@@ -59,7 +59,9 @@
       "today": "Astăzi",
       "tomorrow": "Mâine",
       "inDays": "În {count} zile",
-      "noActiveSeries": "Nicio serie activă"
+      "noActiveSeries": "Nicio serie activă",
+      "resume": "Continuă",
+      "sessionsOnTime": "Sesiuni la timp"
     }
   }
 }

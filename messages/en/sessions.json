@@ -360,7 +360,9 @@
       "archive": "Archive",
       "resume": "Resume",
       "startSession": "Start Session",
-      "sessions": "{count} sessions"
+      "sessions": "{count} sessions",
+      "actionItems": "Action Items",
+      "privateNotes": "Private Notes"
     },
     "corrections": {
       "amendedBadge": "Amended",
