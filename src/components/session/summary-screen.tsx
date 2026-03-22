@@ -399,7 +399,26 @@ export function SummaryScreen({
           {isManager && (
             <Button
               size="lg"
-              onClick={() => completeSession.mutate()}
+              onClick={() => {
+                // Validate all required questions are answered
+                const unanswered: string[] = [];
+                for (const cat of categories) {
+                  for (const q of cat.questions) {
+                    if (!q.isRequired) continue;
+                    const a = answers.get(q.id);
+                    if (!a || (a.answerText === undefined && a.answerNumeric === undefined && a.answerJson === undefined)) {
+                      unanswered.push(q.questionText);
+                    }
+                  }
+                }
+                if (unanswered.length > 0) {
+                  toast.error(t("required"), {
+                    description: unanswered.slice(0, 3).join(", ") + (unanswered.length > 3 ? ` (+${unanswered.length - 3})` : ""),
+                  });
+                  return;
+                }
+                completeSession.mutate();
+              }}
               disabled={completeSession.isPending}
               className="gap-2"
             >

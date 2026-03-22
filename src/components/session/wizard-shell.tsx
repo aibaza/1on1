@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { WizardTopBar, type SaveStatus } from "./wizard-top-bar";
 import { WizardStepSidebar } from "./wizard-step-sidebar";
 import { WizardMobileCarousel } from "./wizard-mobile-carousel";
@@ -548,9 +549,47 @@ export function WizardShell({ sessionId }: WizardShellProps) {
     [state.currentStep]
   );
 
+  // Validate required questions for a category step
+  const validateCurrentStep = useCallback((): boolean => {
+    const stepIndex = state.currentStep;
+    // Recap (0) and Summary (last) don't need validation
+    if (stepIndex === 0 || stepIndex === totalSteps - 1) return true;
+
+    const sectionIndex = stepIndex - 1;
+    const section = state.sections[sectionIndex];
+    if (!section) return true;
+
+    const visibleQuestions = section.questions.filter((q) =>
+      evaluateCondition(q, state.answers)
+    );
+    const unansweredRequired = visibleQuestions.filter((q) => {
+      if (!q.isRequired) return false;
+      const answer = state.answers.get(q.id);
+      if (!answer) return true;
+      return (
+        answer.answerText === undefined &&
+        answer.answerNumeric === undefined &&
+        answer.answerJson === undefined
+      );
+    });
+
+    if (unansweredRequired.length > 0) {
+      toast.error(
+        t("wizard.requiredUnanswered", { count: unansweredRequired.length }),
+        { description: unansweredRequired.map((q) => q.questionText).slice(0, 3).join(", ") }
+      );
+      return false;
+    }
+    return true;
+  }, [state.currentStep, state.sections, state.answers, totalSteps, t]);
+
   const handleStepChange = useCallback(
-    (step: number) => navigateToStep(step),
-    [navigateToStep]
+    (step: number) => {
+      // Allow going backwards freely, validate when going forward
+      if (step > state.currentStep && !validateCurrentStep()) return;
+      navigateToStep(step);
+    },
+    [navigateToStep, state.currentStep, validateCurrentStep]
   );
 
   const handlePrev = useCallback(() => {
@@ -561,9 +600,10 @@ export function WizardShell({ sessionId }: WizardShellProps) {
 
   const handleNext = useCallback(() => {
     if (state.currentStep < totalSteps - 1) {
+      if (!validateCurrentStep()) return;
       navigateToStep(state.currentStep + 1);
     }
-  }, [state.currentStep, totalSteps, navigateToStep]);
+  }, [state.currentStep, totalSteps, navigateToStep, validateCurrentStep]);
 
   // Keyboard shortcuts: Left/Right arrow keys for navigation
   useEffect(() => {

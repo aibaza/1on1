@@ -153,6 +153,7 @@
       "loadError": "Failed to load session",
       "exitWizard": "Exit wizard",
       "sessionDate": "Session Date: {date}",
+      "requiredUnanswered": "{count} required question(s) not answered",
       "category": "Category",
       "discussion": "Discussion"
     },

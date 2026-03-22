@@ -153,6 +153,7 @@
       "loadError": "Sesiunea nu a putut fi încărcată",
       "exitWizard": "Ieși din wizard",
       "sessionDate": "Data sesiunii: {date}",
+      "requiredUnanswered": "{count} întrebare/întrebări obligatorii fără răspuns",
       "category": "Categorie",
       "discussion": "Discuție"
     },
