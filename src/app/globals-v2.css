@@ -331,6 +331,80 @@
   }
 }
 
+/* ===== Editorial Template Editor Upgrades ===== */
+/* Title upgrade */
+[data-design="editorial"] .mx-auto.max-w-3xl h1.text-2xl {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  font-family: var(--font-manrope), 'Manrope', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Section headers */
+[data-design="editorial"] .mx-auto.max-w-3xl h2.text-lg {
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-family: var(--font-manrope), 'Manrope', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Section cards */
+[data-design="editorial"] .mx-auto.max-w-3xl .rounded-lg.border {
+  border-radius: 1rem;
+  border-color: var(--editorial-outline-variant, var(--border));
+  border-width: 1px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+
+/* Question cards within sections */
+[data-design="editorial"] .mx-auto.max-w-3xl .rounded-lg.border .space-y-3 > div {
+  border-radius: 0.75rem;
+}
+
+/* Input fields */
+[data-design="editorial"] .mx-auto.max-w-3xl input[type="text"],
+[data-design="editorial"] .mx-auto.max-w-3xl textarea {
+  background: var(--editorial-surface-container-low, #f2f4f5);
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+[data-design="editorial"] .mx-auto.max-w-3xl input[type="text"]:focus,
+[data-design="editorial"] .mx-auto.max-w-3xl textarea:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+/* Label styling */
+[data-design="editorial"] .mx-auto.max-w-3xl label[for] {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--editorial-outline, #757684);
+}
+
+/* Add section/question buttons */
+[data-design="editorial"] .mx-auto.max-w-3xl .border-dashed {
+  border-radius: 1rem;
+  border-color: var(--editorial-outline-variant, var(--border));
+}
+
+/* Save button — gradient */
+[data-design="editorial"] .mx-auto.max-w-3xl form > div:last-child button[type="submit"] {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%) !important;
+  border-radius: 0.75rem;
+  font-family: var(--font-manrope), 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  box-shadow: 0 4px 6px -1px rgba(41, 64, 125, 0.15);
+}
+
+/* Separator styling */
+[data-design="editorial"] .mx-auto.max-w-3xl [data-slot="separator"] {
+  background: var(--editorial-outline-variant, var(--border));
+  opacity: 0.3;
+}
+
 /* Deactivated row styling */
 [data-design="editorial"] table tbody tr[data-deactivated="true"] {
   opacity: 0.6;
