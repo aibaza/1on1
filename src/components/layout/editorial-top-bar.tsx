@@ -16,7 +16,7 @@ export function EditorialTopBar() {
   const userRole = user?.role ?? "member";
 
   return (
-    <header className="fixed top-0 right-0 w-full md:w-[calc(100%-16rem)] z-40 bg-[var(--background)]/80 backdrop-blur-xl flex justify-between items-center h-16 px-4 md:px-8 shadow-sm">
+    <header className="fixed top-0 right-0 w-full md:w-[calc(100%-var(--sidebar-width,256px))] z-40 bg-[var(--background)]/80 backdrop-blur-xl flex justify-between items-center h-16 px-4 md:px-8 shadow-sm transition-[width] duration-300">
       {/* Search */}
       <div className="flex items-center flex-1">
         <div className="relative w-full max-w-md group">

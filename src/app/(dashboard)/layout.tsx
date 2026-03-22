@@ -60,7 +60,7 @@ export default async function DashboardLayout({
                   <ImpersonationBanner />
                 </div>
                 <SideNav />
-                <div className="md:ml-64">
+                <div className="md:ml-[var(--sidebar-width,256px)] transition-[margin] duration-300">
                   <EditorialTopBar />
                   <main className="pt-20 md:pt-24 pb-20 px-4 md:px-10">
                     <div className="max-w-7xl mx-auto animate-fade-in">{children}</div>
