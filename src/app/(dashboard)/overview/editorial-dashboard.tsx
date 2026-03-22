@@ -67,7 +67,7 @@ function MiniBarChart({ data, color = "var(--primary)" }: { data: number[]; colo
   );
 }
 
-function MeetingStreak({ count }: { count: number }) {
+function MeetingStreak({ count, label }: { count: number; label: string }) {
   const circumference = 2 * Math.PI * 24;
   const progress = Math.min(count / 15, 1); // 15 = full ring
 
@@ -86,7 +86,7 @@ function MeetingStreak({ count }: { count: number }) {
       </div>
       <div>
         <div className="text-2xl font-extrabold text-foreground">{count}</div>
-        <div className="text-xs text-muted-foreground font-medium">Sessions on time</div>
+        <div className="text-xs text-muted-foreground font-medium">{label}</div>
       </div>
     </div>
   );
@@ -182,7 +182,7 @@ export function EditorialDashboard({
             <span className="text-sm font-semibold">{aiInsight}</span>
           </div>
         </div>
-        <MeetingStreak count={stats.sessionsThisMonth} />
+        <MeetingStreak count={stats.sessionsThisMonth} label={t("editorial.sessionsOnTime")} />
       </section>
 
       {/* 2. Quick Stats */}
@@ -233,7 +233,7 @@ export function EditorialDashboard({
           <Link
             href={nextSession.latestSession?.status === "in_progress" ? `/wizard/${nextSession.latestSession.id}` : `/sessions/${nextSession.id}`}
             className="text-white p-6 rounded-xl shadow-lg relative overflow-hidden group hover:shadow-xl transition-all block"
-            style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
+            style={{ background: "linear-gradient(135deg, #29407d 0%, #425797 100%)" }}
           >
             <div className="absolute -right-4 -bottom-4 opacity-10">
               <Clock className="h-24 w-24" />

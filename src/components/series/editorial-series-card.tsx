@@ -217,7 +217,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
           </div>
           <div className="min-w-0">
             <h4 className="font-bold text-sm text-foreground truncate">{reportName}</h4>
-            <StarRating score={score} size="sm" />
+            {score !== null && <StarRating score={score} size="sm" />}
           </div>
         </div>
 
