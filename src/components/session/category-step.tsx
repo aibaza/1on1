@@ -125,8 +125,8 @@ export function CategoryStep({
           const answer = answers.get(question.id) ?? null;
 
           return (
-            <section key={question.id} className="mb-0">
-              <div className="flex items-center justify-between mb-4">
+            <section key={question.id} className="pb-10 border-b border-border/10 last:border-b-0 last:pb-0">
+              <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-foreground">
                   {question.questionText}
                 </h3>
