@@ -2,10 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
-import { Search, ChevronRight, Mail, Briefcase, Users, UserCircle } from "lucide-react";
+import { useTranslations, useFormatter } from "next-intl";
+import { Search, Filter, ArrowUpDown, MoreVertical, ChevronLeft, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { RoleSelect } from "./role-select";
 import { UserActionsMenu } from "./user-actions-menu";
 import { ProfileSheet } from "./profile-sheet";
 import type { UserRow } from "./people-table-columns";
@@ -22,37 +21,10 @@ function getInitials(first: string, last: string): string {
   return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
 }
 
-function StatusDot({ status }: { status: string }) {
-  const color =
-    status === "active"
-      ? "bg-[var(--color-success)]"
-      : status === "pending"
-        ? "bg-[var(--color-warning)]"
-        : "bg-muted-foreground/40";
-  return (
-    <span
-      className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-card ${color}`}
-      title={status}
-    />
-  );
-}
-
-function RoleBadge({ role }: { role: string }) {
-  const styles =
-    role === "admin"
-      ? "text-primary bg-primary/8"
-      : role === "manager"
-        ? "text-[var(--color-success)] bg-[var(--color-success)]/8"
-        : "text-muted-foreground bg-muted";
-  return (
-    <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md ${styles}`}>
-      {role}
-    </span>
-  );
-}
-
 type FilterRole = "all" | "admin" | "manager" | "member";
 type FilterStatus = "all" | "active" | "pending" | "deactivated";
+
+const PAGE_SIZE = 20;
 
 export function EditorialPeopleList({
   initialData,
@@ -61,11 +33,14 @@ export function EditorialPeopleList({
   availableTeams,
 }: EditorialPeopleListProps) {
   const t = useTranslations("people");
+  const format = useFormatter();
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<FilterRole>("all");
-  const [teamFilter, setTeamFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
+  const [teamFilter, setTeamFilter] = useState("all");
+  const [page, setPage] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const { data: users } = useQuery<UserRow[]>({
     queryKey: ["users"],
@@ -96,135 +71,290 @@ export function EditorialPeopleList({
     });
   }, [users, search, roleFilter, teamFilter, statusFilter]);
 
-  // Group by role for display
-  const admins = filtered.filter((u) => u.role === "admin");
-  const managers = filtered.filter((u) => u.role === "manager");
-  const members = filtered.filter((u) => u.role === "member");
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageData = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   const selectedUser = useMemo(
     () => (users ?? []).find((u) => u.id === selectedUserId) ?? null,
     [users, selectedUserId]
   );
 
-  const hasActiveFilters = roleFilter !== "all" || teamFilter !== "all" || statusFilter !== "all";
+  const allOnPageSelected = pageData.length > 0 && pageData.every((u) => selectedIds.has(u.id));
+
+  function toggleAll() {
+    if (allOnPageSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(pageData.map((u) => u.id)));
+    }
+  }
+
+  function toggleOne(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
   return (
     <div className="space-y-8">
-      {/* Search + Filters */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1 max-w-lg">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder={t("table.searchPlaceholder")}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-2.5 bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-full text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all placeholder:text-muted-foreground/60"
-          />
-        </div>
+      {/* Filter & Search Section */}
+      <div className="bg-card rounded-xl p-6 shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/50">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          {/* Search */}
+          <div className="lg:col-span-4 relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder={t("table.searchPlaceholder")}
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+              className="w-full pl-12 pr-4 py-3 bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm transition-all placeholder:text-muted-foreground/60"
+            />
+          </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Role filter pills */}
-          {(["all", "admin", "manager", "member"] as const).map((role) => (
-            <button
-              key={role}
-              type="button"
-              onClick={() => setRoleFilter(role)}
-              className={`px-4 py-2 text-xs font-bold rounded-full transition-all ${
-                roleFilter === role
-                  ? "bg-primary text-white shadow-sm"
-                  : "bg-[var(--editorial-surface-container,var(--muted))] text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {role === "all" ? t("table.allRoles") : t(`table.${role}`)}
-            </button>
-          ))}
+          {/* Role pills */}
+          <div className="lg:col-span-5 flex items-center gap-2 overflow-x-auto py-1">
+            {(["all", "admin", "manager", "member"] as const).map((role) => (
+              <button
+                key={role}
+                type="button"
+                onClick={() => { setRoleFilter(role); setPage(0); }}
+                className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${
+                  roleFilter === role
+                    ? "bg-primary text-white"
+                    : "bg-[var(--editorial-surface-container,var(--muted))] text-muted-foreground hover:bg-[var(--editorial-surface-container-high,var(--accent))]"
+                }`}
+              >
+                {role === "all" ? "All" : role === "admin" ? "Admins" : role === "manager" ? "Managers" : "Members"}
+              </button>
+            ))}
+          </div>
 
-          {/* Team filter */}
-          {availableTeams.length > 0 && (
+          {/* Filter & Sort */}
+          <div className="lg:col-span-3 flex items-center justify-end gap-2">
+            {availableTeams.length > 0 && (
+              <select
+                value={teamFilter}
+                onChange={(e) => { setTeamFilter(e.target.value); setPage(0); }}
+                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-[var(--editorial-surface-container,var(--muted))] rounded-lg border-none bg-transparent focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
+              >
+                <option value="all">{t("table.allTeams")}</option>
+                {availableTeams.map((team) => (
+                  <option key={team.id} value={team.id}>{team.name}</option>
+                ))}
+              </select>
+            )}
             <select
-              value={teamFilter}
-              onChange={(e) => setTeamFilter(e.target.value)}
-              className="px-3 py-2 text-xs font-bold rounded-full bg-[var(--editorial-surface-container,var(--muted))] text-muted-foreground border-none focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
+              value={statusFilter}
+              onChange={(e) => { setStatusFilter(e.target.value as FilterStatus); setPage(0); }}
+              className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-[var(--editorial-surface-container,var(--muted))] rounded-lg border-none bg-transparent focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
             >
-              <option value="all">{t("table.allTeams")}</option>
-              {availableTeams.map((team) => (
-                <option key={team.id} value={team.id}>{team.name}</option>
-              ))}
+              <option value="all">{t("table.allStatus")}</option>
+              <option value="active">{t("table.active")}</option>
+              <option value="pending">{t("table.pending")}</option>
+              <option value="deactivated">{t("table.deactivated")}</option>
             </select>
-          )}
+          </div>
+        </div>
+      </div>
 
-          {/* Status filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as FilterStatus)}
-            className="px-3 py-2 text-xs font-bold rounded-full bg-[var(--editorial-surface-container,var(--muted))] text-muted-foreground border-none focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
-          >
-            <option value="all">{t("table.allStatus")}</option>
-            <option value="active">{t("table.active")}</option>
-            <option value="pending">{t("table.pending")}</option>
-            <option value="deactivated">{t("table.deactivated")}</option>
-          </select>
-
-          {hasActiveFilters && (
+      {/* People Table */}
+      <div className="bg-card rounded-2xl overflow-hidden shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/50">
+        {/* Bulk actions bar */}
+        {selectedIds.size > 0 && (
+          <div className="bg-[var(--editorial-primary-fixed,var(--accent))] text-foreground px-6 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-bold">{selectedIds.size} member{selectedIds.size !== 1 ? "s" : ""} selected</span>
+              <div className="h-4 w-px bg-foreground/20" />
+              <button className="text-xs font-bold flex items-center gap-1 hover:underline" type="button">
+                Change role
+              </button>
+              <button className="text-xs font-bold flex items-center gap-1 hover:underline text-destructive" type="button">
+                Deactivate
+              </button>
+            </div>
             <button
               type="button"
-              onClick={() => { setRoleFilter("all"); setTeamFilter("all"); setStatusFilter("all"); }}
-              className="text-xs font-bold text-primary hover:underline"
+              onClick={() => setSelectedIds(new Set())}
+              className="text-xs font-bold hover:underline"
             >
-              Clear
+              Clear selection
             </button>
-          )}
-        </div>
-      </div>
+          </div>
+        )}
 
-      {/* Results count */}
-      <div className="flex items-center justify-between">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-          {filtered.length} {filtered.length === 1 ? "person" : "people"}
-        </p>
-      </div>
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-[var(--editorial-surface-container-low,var(--muted))]/50">
+                {isAdmin && (
+                  <th className="px-6 py-4 w-12">
+                    <input
+                      type="checkbox"
+                      checked={allOnPageSelected}
+                      onChange={toggleAll}
+                      className="rounded border-[var(--editorial-outline-variant,var(--border))] text-primary focus:ring-primary w-4 h-4"
+                    />
+                  </th>
+                )}
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Member</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Role</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden lg:table-cell">Team</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden lg:table-cell">Reports to</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden md:table-cell">Status</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-muted-foreground uppercase tracking-widest hidden xl:table-cell">Joined</th>
+                <th className="px-6 py-4 w-12" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--editorial-surface-container,var(--border))]/50">
+              {pageData.length === 0 ? (
+                <tr>
+                  <td colSpan={isAdmin ? 8 : 7} className="px-6 py-16 text-center text-muted-foreground">
+                    {t("table.noUsers")}
+                  </td>
+                </tr>
+              ) : (
+                pageData.map((user) => {
+                  const isDeactivated = user.status === "deactivated";
+                  const isChecked = selectedIds.has(user.id);
+                  return (
+                    <tr
+                      key={user.id}
+                      className={`group transition-all cursor-pointer ${
+                        isDeactivated
+                          ? "opacity-60 grayscale hover:grayscale-0 hover:opacity-100"
+                          : "hover:bg-[var(--editorial-surface-container-low,var(--muted))]"
+                      }`}
+                      onClick={() => setSelectedUserId(user.id)}
+                      data-deactivated={isDeactivated || undefined}
+                    >
+                      {isAdmin && (
+                        <td className="px-6 py-5" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => toggleOne(user.id)}
+                            className="rounded border-[var(--editorial-outline-variant,var(--border))] text-primary focus:ring-primary w-4 h-4"
+                          />
+                        </td>
+                      )}
+                      {/* Member */}
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={user.avatarUrl ?? undefined} alt={`${user.firstName} ${user.lastName}`} />
+                            <AvatarFallback className="text-xs font-bold">
+                              {getInitials(user.firstName, user.lastName)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <p className="text-sm font-bold text-foreground truncate">
+                              {user.firstName} {user.lastName}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      {/* Role */}
+                      <td className="px-6 py-5">
+                        <RolePill role={user.role} />
+                      </td>
+                      {/* Team */}
+                      <td className="px-6 py-5 hidden lg:table-cell">
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {user.teams.length > 0
+                            ? user.teams.map((t) => t.name).join(", ")
+                            : "—"}
+                        </span>
+                      </td>
+                      {/* Reports to */}
+                      <td className="px-6 py-5 hidden lg:table-cell">
+                        {user.managerName ? (
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-full bg-[var(--editorial-primary-container,var(--primary))] text-[8px] flex items-center justify-center text-white font-bold">
+                              {user.managerName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
+                            </div>
+                            <span className="text-xs text-foreground font-medium">{user.managerName}</span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground italic">—</span>
+                        )}
+                      </td>
+                      {/* Status */}
+                      <td className="px-6 py-5 hidden md:table-cell">
+                        <StatusIndicator status={user.status} />
+                      </td>
+                      {/* Joined */}
+                      <td className="px-6 py-5 hidden xl:table-cell">
+                        <span className="text-xs text-muted-foreground font-medium">
+                          {user.createdAt
+                            ? format.relativeTime(new Date(user.createdAt))
+                            : "—"}
+                        </span>
+                      </td>
+                      {/* Actions */}
+                      <td className="px-6 py-5 text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                          <UserActionsMenu
+                            user={user}
+                            currentUserRole={currentUserRole}
+                            currentUserId={currentUserId}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
 
-      {/* People cards by role group */}
-      {filtered.length === 0 ? (
-        <div className="text-center py-20">
-          <UserCircle className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
-          <p className="text-muted-foreground font-medium">{t("table.noUsers")}</p>
-        </div>
-      ) : (
-        <div className="space-y-12">
-          {admins.length > 0 && (
-            <PeopleGroup
-              label="Leadership"
-              users={admins}
-              isAdmin={isAdmin}
-              currentUserRole={currentUserRole}
-              currentUserId={currentUserId}
-              onSelect={setSelectedUserId}
-            />
-          )}
-          {managers.length > 0 && (
-            <PeopleGroup
-              label="Managers"
-              users={managers}
-              isAdmin={isAdmin}
-              currentUserRole={currentUserRole}
-              currentUserId={currentUserId}
-              onSelect={setSelectedUserId}
-            />
-          )}
-          {members.length > 0 && (
-            <PeopleGroup
-              label="Team Members"
-              users={members}
-              isAdmin={isAdmin}
-              currentUserRole={currentUserRole}
-              currentUserId={currentUserId}
-              onSelect={setSelectedUserId}
-            />
-          )}
-        </div>
-      )}
+        {/* Pagination */}
+        {filtered.length > PAGE_SIZE && (
+          <div className="px-6 py-4 flex items-center justify-between bg-[var(--editorial-surface-container-low,var(--muted))]/30">
+            <p className="text-xs text-muted-foreground font-medium">
+              Showing {page * PAGE_SIZE + 1} to {Math.min((page + 1) * PAGE_SIZE, filtered.length)} of {filtered.length} members
+            </p>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="p-1 rounded-lg hover:bg-[var(--editorial-surface-container,var(--muted))] text-muted-foreground disabled:opacity-30"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              {Array.from({ length: pageCount }, (_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setPage(i)}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
+                    page === i
+                      ? "bg-primary text-white"
+                      : "text-foreground hover:bg-[var(--editorial-surface-container,var(--muted))]"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
+                disabled={page >= pageCount - 1}
+                className="p-1 rounded-lg hover:bg-[var(--editorial-surface-container,var(--muted))] text-muted-foreground disabled:opacity-30"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Profile Sheet */}
       <ProfileSheet
@@ -238,149 +368,40 @@ export function EditorialPeopleList({
   );
 }
 
-function PeopleGroup({
-  label,
-  users,
-  isAdmin,
-  currentUserRole,
-  currentUserId,
-  onSelect,
-}: {
-  label: string;
-  users: UserRow[];
-  isAdmin: boolean;
-  currentUserRole: string;
-  currentUserId: string;
-  onSelect: (id: string) => void;
-}) {
+function RolePill({ role }: { role: string }) {
+  const styles =
+    role === "admin"
+      ? "bg-[var(--editorial-secondary-container,var(--accent))] text-[var(--editorial-on-secondary-container,var(--accent-foreground))]"
+      : role === "manager"
+        ? "bg-[var(--editorial-secondary-container,var(--accent))] text-[var(--editorial-on-secondary-container,var(--accent-foreground))]"
+        : "bg-[var(--editorial-surface-container-high,var(--muted))] text-muted-foreground";
   return (
-    <section>
-      <div className="flex items-center gap-3 mb-6">
-        <h3 className="text-lg font-extrabold font-headline text-foreground">{label}</h3>
-        <span className="text-[10px] font-bold text-muted-foreground bg-[var(--editorial-surface-container,var(--muted))] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-          {users.length}
-        </span>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
-        {users.map((user) => (
-          <PersonCard
-            key={user.id}
-            user={user}
-            isAdmin={isAdmin}
-            currentUserRole={currentUserRole}
-            currentUserId={currentUserId}
-            onClick={() => onSelect(user.id)}
-          />
-        ))}
-      </div>
-    </section>
+    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${styles}`}>
+      {role}
+    </span>
   );
 }
 
-function PersonCard({
-  user,
-  isAdmin,
-  currentUserRole,
-  currentUserId,
-  onClick,
-}: {
-  user: UserRow;
-  isAdmin: boolean;
-  currentUserRole: string;
-  currentUserId: string;
-  onClick: () => void;
-}) {
-  const isDeactivated = user.status === "deactivated";
+function StatusIndicator({ status }: { status: string }) {
+  const dotColor =
+    status === "active"
+      ? "bg-[var(--editorial-tertiary,var(--color-success))]"
+      : status === "pending"
+        ? "bg-[var(--editorial-primary-container,var(--primary))]"
+        : "bg-muted-foreground/40";
+  const textColor =
+    status === "active"
+      ? "text-[var(--editorial-tertiary,var(--color-success))]"
+      : status === "pending"
+        ? "text-[var(--editorial-primary-container,var(--primary))]"
+        : "text-muted-foreground";
+  const label =
+    status === "active" ? "Active" : status === "pending" ? "Invited" : "Deactivated";
 
   return (
-    <div
-      onClick={onClick}
-      className={`group bg-card rounded-2xl p-6 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300 cursor-pointer hover:shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05)] hover:-translate-y-0.5 hover:border-[var(--editorial-outline-variant,var(--border))]/80 ${
-        isDeactivated ? "opacity-50 hover:opacity-80" : ""
-      }`}
-      data-deactivated={isDeactivated || undefined}
-    >
-      {/* Top row: avatar + name + actions */}
-      <div className="flex items-start justify-between mb-5">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <Avatar className="h-12 w-12 rounded-xl">
-              <AvatarImage src={user.avatarUrl ?? undefined} alt={`${user.firstName} ${user.lastName}`} className="rounded-xl" />
-              <AvatarFallback className="rounded-xl text-sm font-bold">
-                {getInitials(user.firstName, user.lastName)}
-              </AvatarFallback>
-            </Avatar>
-            <StatusDot status={user.status} />
-          </div>
-          <div className="min-w-0">
-            <h4 className="font-bold text-foreground truncate">
-              {user.firstName} {user.lastName}
-              {user.id === currentUserId && (
-                <span className="ml-1.5 text-muted-foreground font-normal text-xs">(you)</span>
-              )}
-            </h4>
-            {user.jobTitle && (
-              <p className="text-xs text-muted-foreground font-medium truncate mt-0.5">
-                {user.jobTitle}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <RoleSelect
-            userId={user.id}
-            currentRole={user.role}
-            disabled={!isAdmin || user.status === "pending"}
-          />
-          <UserActionsMenu
-            user={user}
-            currentUserRole={currentUserRole}
-            currentUserId={currentUserId}
-          />
-        </div>
-      </div>
-
-      {/* Details grid */}
-      <div className="space-y-3">
-        {/* Email */}
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <Mail className="h-3.5 w-3.5 shrink-0" />
-          <span className="truncate">{user.email}</span>
-        </div>
-
-        {/* Manager */}
-        {user.managerName && (
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <Briefcase className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">Reports to <span className="font-semibold text-foreground">{user.managerName}</span></span>
-          </div>
-        )}
-
-        {/* Teams */}
-        {user.teams.length > 0 && (
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <Users className="h-3.5 w-3.5 shrink-0" />
-            <div className="flex flex-wrap gap-1.5">
-              {user.teams.map((team) => (
-                <span
-                  key={team.id}
-                  className="px-2 py-0.5 rounded-md bg-[var(--editorial-surface-container,var(--muted))] text-[10px] font-bold uppercase tracking-wider"
-                >
-                  {team.name}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Hover reveal: View Profile */}
-      <div className="mt-5 pt-4 border-t border-[var(--editorial-outline-variant,var(--border))]/30 flex items-center justify-between">
-        <RoleBadge role={user.role} />
-        <span className="text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-          View Profile <ChevronRight className="h-3.5 w-3.5" />
-        </span>
-      </div>
+    <div className="flex items-center gap-1.5">
+      <span className={`w-2 h-2 rounded-full ${dotColor}`} />
+      <span className={`text-xs font-bold ${textColor}`}>{label}</span>
     </div>
   );
 }
