@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Editorial sessions page: complete feature parity with classic — sentiment-based left border, agenda/talking points button with badge count, manager/report relationship badges, relative date formatting (Today/Tomorrow/in X days), schedule display (cadence + day + time), in-progress session status + template name, half-star rating support, tooltips on all interactive elements, AgendaSheet integration
 - Editorial wizard redesign: glassmorphic top bar, editorial step sidebar (bg-sidebar, rounded-lg, numbered indicators with success/primary colors), question cards with numbered circles and editorial borders, eyebrow category label, editorial divider between questions and discussion tools, gradient next button, editorial mobile carousel with gradient progress bar
 - Editorial settings page: section cards with icons (Building2, Clock, Globe, Palette, Brain), editorial inputs (borderless, rounded-xl), pill-style cadence selector, visual color theme picker, gradient save button, toast feedback
 - Editorial audit log page: editorial breadcrumb nav and page header typography
