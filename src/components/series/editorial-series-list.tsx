@@ -39,11 +39,13 @@ function EditorialSeriesGrid({
   currentUserId,
   muted = false,
   showManagerName = false,
+  t,
 }: {
   items: Series[];
   currentUserId: string;
   muted?: boolean;
   showManagerName?: boolean;
+  t: ReturnType<typeof useTranslations<"sessions">>;
 }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
@@ -65,7 +67,7 @@ function EditorialSeriesGrid({
           <div className="w-10 h-10 rounded-full bg-[var(--editorial-surface-container,var(--muted))] flex items-center justify-center mb-3 group-hover:bg-primary/10 transition-colors">
             <Plus className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
           </div>
-          <p className="text-xs font-bold uppercase tracking-widest">New Session</p>
+          <p className="text-xs font-bold uppercase tracking-widest">{t("editorial.newSession")}</p>
         </Link>
       )}
     </div>
@@ -113,10 +115,10 @@ function EditorialAdminGrouped({
                 </span>
               )}
               <span className="ml-auto text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                {items.length} {items.length === 1 ? "Series" : "Series"}
+                {t("editorial.sessions", { count: items.length })}
               </span>
             </div>
-            <EditorialSeriesGrid items={items} currentUserId={currentUserId} />
+            <EditorialSeriesGrid items={items} currentUserId={currentUserId} t={t} />
           </section>
         );
       })}
@@ -146,7 +148,7 @@ function EditorialManagerSections({
               {t("sections.myTeam")}
             </h3>
           </div>
-          <EditorialSeriesGrid items={myTeam} currentUserId={currentUserId} />
+          <EditorialSeriesGrid items={myTeam} currentUserId={currentUserId} t={t} />
         </div>
       )}
       {myOneOnOnes.length > 0 && (
@@ -179,17 +181,17 @@ function EditorialManagerSections({
                       <div>
                         <h4 className="text-2xl font-extrabold font-headline text-foreground mb-1">{managerName}</h4>
                         <p className="text-muted-foreground font-medium flex items-center gap-2">
-                          {series.cadence} · <span className="text-primary">Direct Manager</span>
+                          {series.cadence} · <span className="text-primary">{t("editorial.directManager")}</span>
                         </p>
                       </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-6 w-full lg:w-auto">
                       <div className="text-center sm:text-right">
-                        <p className="text-sm font-medium text-muted-foreground mb-1">Next Sync</p>
+                        <p className="text-sm font-medium text-muted-foreground mb-1">{t("editorial.nextSync")}</p>
                         <p className="text-lg font-bold text-foreground">
                           {series.nextSessionAt
                             ? new Date(series.nextSessionAt).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })
-                            : "Scheduled"}
+                            : t("editorial.scheduled")}
                         </p>
                       </div>
                       <a
@@ -197,7 +199,7 @@ function EditorialManagerSections({
                         className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all flex items-center gap-2 text-white hover:opacity-90 active:scale-95"
                         style={{ background: "var(--color-success, #004c47)" }}
                       >
-                        Pre-fill now
+                        {t("editorial.prefillNow")}
                       </a>
                     </div>
                   </div>
@@ -265,7 +267,7 @@ export function EditorialSeriesList({ initialSeries, currentUserId, userRole }: 
               t={t}
             />
           ) : (
-            <EditorialSeriesGrid items={activeSeries} currentUserId={currentUserId} />
+            <EditorialSeriesGrid items={activeSeries} currentUserId={currentUserId} t={t} />
           )}
         </>
       )}
@@ -282,7 +284,7 @@ export function EditorialSeriesList({ initialSeries, currentUserId, userRole }: 
             {t("series.showArchived", { count: archivedSeries.length })}
           </button>
           {archivedOpen && (
-            <EditorialSeriesGrid items={archivedSeries} currentUserId={currentUserId} muted />
+            <EditorialSeriesGrid items={archivedSeries} currentUserId={currentUserId} muted t={t} />
           )}
         </div>
       )}

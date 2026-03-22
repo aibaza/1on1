@@ -361,6 +361,7 @@
       "resume": "Resume",
       "startSession": "Start Session",
       "sessions": "{count} sessions",
+      "scheduled": "Scheduled",
       "actionItems": "Action Items",
       "privateNotes": "Private Notes"
     },

@@ -15,16 +15,15 @@ const sizeClasses = {
 };
 
 export function StarRating({ score, size = "md", className }: StarRatingProps) {
+  if (score === null) return null;
+
   const cls = sizeClasses[size];
-  const fullStars = score !== null ? Math.floor(score) : 0;
-  const hasHalf = score !== null && score - fullStars >= 0.5;
+  const fullStars = Math.floor(score);
+  const hasHalf = score - fullStars >= 0.5;
 
   return (
     <div className={cn("flex items-center gap-0.5", className)}>
       {Array.from({ length: 5 }, (_, i) => {
-        if (score === null) {
-          return <Star key={i} className={cn(cls, "text-muted-foreground/25")} />;
-        }
         if (i < fullStars) {
           return <Star key={i} className={cn(cls, "fill-[var(--color-warning,#f59e0b)] text-[var(--color-warning,#f59e0b)]")} />;
         }

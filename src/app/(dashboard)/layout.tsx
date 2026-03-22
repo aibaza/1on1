@@ -56,13 +56,16 @@ export default async function DashboardLayout({
           <TooltipProvider delayDuration={300}>
             {isEditorial ? (
               <div className="min-h-screen">
+                <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:text-sm focus:font-bold">
+                  Skip to content
+                </a>
                 <div className="relative z-[60]">
                   <ImpersonationBanner />
                 </div>
                 <SideNav />
                 <div className="md:ml-[var(--sidebar-width,256px)] transition-[margin] duration-300">
                   <EditorialTopBar />
-                  <main className="pt-20 md:pt-24 pb-20 px-4 md:px-10">
+                  <main id="main-content" className="pt-20 md:pt-24 pb-20 px-4 md:px-10">
                     <div className="max-w-7xl mx-auto animate-fade-in">{children}</div>
                   </main>
                 </div>

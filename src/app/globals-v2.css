@@ -318,6 +318,19 @@
   box-shadow: 0 4px 6px -1px rgba(41, 64, 125, 0.15);
 }
 
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  [data-design="editorial"] * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+  [data-design="editorial"] .animate-pulse,
+  [data-design="editorial"] .animate-slide-in-left,
+  [data-design="editorial"] .animate-fade-in {
+    animation: none !important;
+  }
+}
+
 /* Deactivated row styling */
 [data-design="editorial"] table tbody tr[data-deactivated="true"] {
   opacity: 0.6;

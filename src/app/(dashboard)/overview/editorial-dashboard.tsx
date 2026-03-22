@@ -187,7 +187,7 @@ export function EditorialDashboard({
 
       {/* 2. Quick Stats */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-card p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
+        <div className="bg-card p-6 md:p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
           <div>
             <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{t("editorial.activeSeries")}</span>
             <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">{stats.totalReports}</div>
@@ -197,7 +197,7 @@ export function EditorialDashboard({
           </div>
         </div>
 
-        <div className="bg-card p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
+        <div className="bg-card p-6 md:p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
           <div>
             <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{t("editorial.avgScore")}</span>
             <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">
@@ -217,7 +217,7 @@ export function EditorialDashboard({
           </div>
         </div>
 
-        <div className="bg-card p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
+        <div className="bg-card p-6 md:p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
           <div>
             <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{t("editorial.overdueActions")}</span>
             <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">{totalOverdue}</div>
@@ -239,12 +239,12 @@ export function EditorialDashboard({
               <Clock className="h-24 w-24" />
             </div>
             <div className="relative z-10">
-              <div className="text-xs font-bold uppercase tracking-wider opacity-80 mb-2">{t("editorial.nextSession")}</div>
+              <div className="text-xs font-bold uppercase tracking-wider mb-2">{t("editorial.nextSession")}</div>
               <div className="text-xl font-bold mb-1">
                 {nextSession.report.firstName} {nextSession.report.lastName}
               </div>
               <div className="flex items-center justify-between">
-                <div className="text-sm opacity-80">
+                <div className="text-sm">
                   {nextSession.nextSessionAt
                     ? format.relativeTime(new Date(nextSession.nextSessionAt))
                     : t("editorial.scheduled")}
