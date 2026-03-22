@@ -299,8 +299,8 @@ export async function GET(
             .where(inArray(sessionAnswers.sessionId, prevSessionIds));
         }
 
-        // Fetch open action items from the series
-        const openActionItems = await tx
+        // Fetch open action items from sessions in this series (single join query)
+        const filteredActionItems = await tx
           .select({
             id: actionItems.id,
             title: actionItems.title,
@@ -312,26 +312,17 @@ export async function GET(
             createdAt: actionItems.createdAt,
           })
           .from(actionItems)
+          .innerJoin(sessions, eq(actionItems.sessionId, sessions.id))
           .where(
             and(
               eq(actionItems.tenantId, session.user.tenantId),
+              eq(sessions.seriesId, sessionRecord.seriesId),
               or(
                 eq(actionItems.status, "open"),
                 eq(actionItems.status, "in_progress")
               )
             )
           );
-
-        // Filter action items to only those from sessions in this series
-        const allSeriesSessions = await tx
-          .select({ id: sessions.id })
-          .from(sessions)
-          .where(eq(sessions.seriesId, sessionRecord.seriesId));
-        const allSeriesSessionIds = new Set(allSeriesSessions.map((s) => s.id));
-
-        const filteredActionItems = openActionItems.filter((ai) =>
-          allSeriesSessionIds.has(ai.sessionId)
-        );
 
         // Group previous answers by session
         const prevAnswersBySession = new Map<string, typeof prevAnswers>();
