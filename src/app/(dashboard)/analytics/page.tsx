@@ -7,8 +7,10 @@ import { users, meetingSeries, sessions, actionItems, teams, teamMembers } from 
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Users } from "lucide-react";
+import { BarChart3, Users, TrendingUp } from "lucide-react";
 import { getTranslations, getFormatter } from "next-intl/server";
+import { getDesignPreference } from "@/lib/design-preference.server";
+import { StarRating } from "@/components/ui/star-rating";
 
 interface ReportSummary {
   userId: string;
@@ -199,79 +201,93 @@ export default async function AnalyticsPage() {
     },
   );
 
+  const designPref = await getDesignPreference();
+  const isEditorial = designPref === "editorial";
+
+  // Editorial stat card wrapper
+  const StatCard = ({ children }: { children: React.ReactNode }) =>
+    isEditorial ? (
+      <div className="bg-card p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+        {children}
+      </div>
+    ) : (
+      <Card><CardContent className="p-4">{children}</CardContent></Card>
+    );
+
+  // Editorial list card wrapper
+  const ListCard = ({ children, className }: { children: React.ReactNode; className?: string }) =>
+    isEditorial ? (
+      <div className={`bg-card rounded-2xl p-6 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4 ${className ?? ""}`}>
+        {children}
+      </div>
+    ) : (
+      <Card className={`transition-all duration-200 hover:bg-accent/30 hover:shadow-md ${className ?? ""}`}>
+        <CardContent className="flex items-center gap-4 p-4">{children}</CardContent>
+      </Card>
+    );
+
+  const labelCls = isEditorial ? "text-muted-foreground text-xs font-bold uppercase tracking-widest" : "text-xs text-muted-foreground";
+  const valueCls = isEditorial ? "mt-2 text-4xl font-extrabold text-primary tabular-nums" : "mt-1 text-2xl font-semibold tabular-nums";
+  const h2Cls = isEditorial ? "mb-6 text-xl font-extrabold font-headline" : "mb-3 text-lg font-medium";
+
   return (
-    <div className="space-y-6">
+    <div className={isEditorial ? "space-y-10" : "space-y-6"}>
+      {/* Page header */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className={isEditorial ? "text-3xl font-extrabold tracking-tight font-headline" : "text-2xl font-semibold tracking-tight"}>
+          {t("title")}
+        </h1>
+        <p className={isEditorial ? "text-muted-foreground text-base font-medium mt-2 max-w-xl leading-relaxed" : "text-sm text-muted-foreground"}>
           {t("description")}
         </p>
       </div>
 
       {/* Aggregate stats */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        {/* Sessions Completed */}
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground">{t("aggregate.sessionsCompleted")}</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums">
-              {aggregates.sessionsCompletedCount > 0
-                ? aggregates.sessionsCompletedCount
-                : t("aggregate.noData")}
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-6 sm:grid-cols-3">
+        <StatCard>
+          <p className={labelCls}>{t("aggregate.sessionsCompleted")}</p>
+          <p className={valueCls}>{aggregates.sessionsCompletedCount > 0 ? aggregates.sessionsCompletedCount : t("aggregate.noData")}</p>
+        </StatCard>
 
-        {/* Avg Score */}
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground">{t("aggregate.avgScore")}</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums">
-              {aggregates.avgScore !== null
-                ? format.number(aggregates.avgScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 })
-                : t("aggregate.noData")}
-            </p>
-            {aggregates.avgScore !== null && (
-              <p className="text-xs text-muted-foreground">out of 5</p>
-            )}
-          </CardContent>
-        </Card>
+        <StatCard>
+          <p className={labelCls}>{t("aggregate.avgScore")}</p>
+          <p className={valueCls}>
+            {aggregates.avgScore !== null ? format.number(aggregates.avgScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : t("aggregate.noData")}
+          </p>
+          {aggregates.avgScore !== null && (
+            isEditorial
+              ? <div className="mt-4"><StarRating score={aggregates.avgScore} size="sm" /></div>
+              : <p className="text-xs text-muted-foreground">out of 5</p>
+          )}
+        </StatCard>
 
-        {/* Action Item Rate */}
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground">{t("aggregate.actionItemRate")}</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums">
-              {aggregates.actionItemRate !== null
-                ? `${aggregates.actionItemRate}%`
-                : t("aggregate.noData")}
-            </p>
-          </CardContent>
-        </Card>
+        <StatCard>
+          <p className={labelCls}>{t("aggregate.actionItemRate")}</p>
+          <p className={valueCls}>{aggregates.actionItemRate !== null ? `${aggregates.actionItemRate}%` : t("aggregate.noData")}</p>
+          {aggregates.actionItemRate !== null && isEditorial && (
+            <div className="mt-4 w-full bg-[var(--editorial-surface-container,var(--muted))] rounded-full h-2">
+              <div className="bg-[var(--color-success)] h-2 rounded-full" style={{ width: `${aggregates.actionItemRate}%` }} />
+            </div>
+          )}
+        </StatCard>
       </div>
 
       {/* Team analytics section */}
       {teamsList.length > 0 && (
         <div>
-          <h2 className="mb-3 text-lg font-medium">{t("teamsSection")}</h2>
+          <h2 className={h2Cls}>{t("teamsSection")}</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {teamsList.map((team) => (
               <Link key={team.id} href={`/analytics/team/${team.id}`}>
-                <Card className="transition-all duration-200 hover:bg-accent/30 hover:shadow-md">
-                  <CardContent className="flex items-center gap-4 p-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-                      <Users className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">
-                        {team.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {t("memberCount", { count: team.memberCount })}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <ListCard>
+                  <div className={isEditorial ? "flex h-11 w-11 items-center justify-center rounded-xl bg-primary/8" : "flex h-10 w-10 items-center justify-center rounded-full bg-muted"}>
+                    <Users className={isEditorial ? "h-5 w-5 text-primary" : "h-5 w-5 text-muted-foreground"} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className={isEditorial ? "truncate text-sm font-bold" : "truncate text-sm font-medium"}>{team.name}</p>
+                    <p className="text-xs text-muted-foreground">{t("memberCount", { count: team.memberCount })}</p>
+                  </div>
+                </ListCard>
               </Link>
             ))}
           </div>
@@ -280,58 +296,47 @@ export default async function AnalyticsPage() {
 
       {/* Individual reports section */}
       <div>
-        {teamsList.length > 0 && (
-          <h2 className="mb-3 text-lg font-medium">{t("individualsSection")}</h2>
-        )}
+        {teamsList.length > 0 && <h2 className={h2Cls}>{t("individualsSection")}</h2>}
         {reports.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+          isEditorial ? (
+            <div className="bg-card rounded-2xl p-16 flex flex-col items-center text-center border border-[var(--editorial-outline-variant,var(--border))]/50">
               <BarChart3 className="mb-3 h-10 w-10 text-muted-foreground/50" />
-              <p className="text-sm text-muted-foreground">
-                {t("empty")}
-              </p>
-            </CardContent>
-          </Card>
+              <p className="text-sm text-muted-foreground">{t("empty")}</p>
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                <BarChart3 className="mb-3 h-10 w-10 text-muted-foreground/50" />
+                <p className="text-sm text-muted-foreground">{t("empty")}</p>
+              </CardContent>
+            </Card>
+          )
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {reports.map((report) => {
               const initials = `${report.firstName[0]}${report.lastName[0]}`;
               return (
-                <Link
-                  key={report.userId}
-                  href={`/analytics/individual/${report.userId}`}
-                >
-                  <Card className="transition-all duration-200 hover:bg-accent/30 hover:shadow-md">
-                    <CardContent className="flex items-center gap-4 p-4">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage
-                          src={report.avatarUrl ?? undefined}
-                          alt={`${report.firstName} ${report.lastName}`}
-                        />
-                        <AvatarFallback>{initials}</AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">
-                          {report.firstName} {report.lastName}
-                        </p>
-                        {report.jobTitle && (
-                          <p className="truncate text-xs text-muted-foreground">
-                            {report.jobTitle}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex flex-col items-end gap-1">
-                        {report.latestScore !== null && (
-                          <Badge variant="secondary" className="text-xs">
-                            {format.number(report.latestScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-                          </Badge>
-                        )}
-                        <span className="text-xs text-muted-foreground">
-                          {t("sessionCount", { count: report.sessionCount })}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                <Link key={report.userId} href={`/analytics/individual/${report.userId}`}>
+                  <ListCard>
+                    <Avatar className={isEditorial ? "h-11 w-11 rounded-xl" : "h-10 w-10"}>
+                      <AvatarImage src={report.avatarUrl ?? undefined} alt={`${report.firstName} ${report.lastName}`} className={isEditorial ? "rounded-xl" : undefined} />
+                      <AvatarFallback className={isEditorial ? "rounded-xl text-xs font-bold" : undefined}>{initials}</AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <p className={isEditorial ? "truncate text-sm font-bold" : "truncate text-sm font-medium"}>
+                        {report.firstName} {report.lastName}
+                      </p>
+                      {report.jobTitle && <p className="truncate text-xs text-muted-foreground">{report.jobTitle}</p>}
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      {report.latestScore !== null && (
+                        isEditorial
+                          ? <StarRating score={report.latestScore} size="sm" />
+                          : <Badge variant="secondary" className="text-xs">{format.number(report.latestScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 })}</Badge>
+                      )}
+                      <span className="text-xs text-muted-foreground">{t("sessionCount", { count: report.sessionCount })}</span>
+                    </div>
+                  </ListCard>
                 </Link>
               );
             })}
