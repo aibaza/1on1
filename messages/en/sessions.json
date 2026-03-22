@@ -152,6 +152,7 @@
       "wizardSteps": "Wizard steps",
       "loadError": "Failed to load session",
       "exitWizard": "Exit wizard",
+      "sessionDate": "Session Date: {date}",
       "category": "Category",
       "discussion": "Discussion"
     },

@@ -108,54 +108,40 @@ export function CategoryStep({
 
   return (
     <div ref={containerRef} className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
+      <div className="mx-auto max-w-3xl px-4 py-8">
         {/* Category header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--editorial-tertiary, var(--color-success))" }}>
-              {t("category")}
-            </span>
-            <div className="h-px w-8" style={{ backgroundColor: "var(--editorial-tertiary-fixed-dim, var(--color-success))" }} />
-          </div>
-          <h2 className="text-2xl font-extrabold tracking-tight font-headline">
+        <div className="mb-10">
+          <h2 className="text-4xl font-black tracking-tight font-headline">
             {categoryName}
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground font-medium">
+          <p className="mt-1 text-muted-foreground font-medium">
             {t("questionCount", { count: visibleQuestions.length })}
           </p>
         </div>
 
-        {/* Questions */}
+        {/* Questions — open layout, no card borders */}
+        <div className="space-y-12">
         {visibleQuestions.map((question, idx) => {
           const answer = answers.get(question.id) ?? null;
 
           return (
-            <div
-              key={question.id}
-              className="rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 bg-card p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all hover:shadow-md"
-            >
-              <div className="flex items-start gap-3 mb-4">
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/8 text-primary text-xs font-bold">
-                  {idx + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-foreground leading-snug">
-                    {question.questionText}
-                  </h3>
-                  {question.helpText && (
-                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                      {question.helpText}
-                    </p>
-                  )}
-                </div>
+            <section key={question.id} className="mb-0">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-foreground">
+                  {question.questionText}
+                </h3>
                 {question.isRequired && (
-                  <span className="shrink-0 text-[9px] font-bold uppercase tracking-widest text-destructive bg-destructive/8 px-2 py-0.5 rounded-md">
+                  <span className="shrink-0 text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-2 py-1 rounded">
                     {t("required")}
                   </span>
                 )}
               </div>
-
-              <div className="pl-10">
+              {question.helpText && (
+                <p className="text-sm text-muted-foreground italic mb-4">
+                  {question.helpText}
+                </p>
+              )}
+              <div>
                 <QuestionWidget
                   question={question}
                   value={answer}
@@ -163,21 +149,21 @@ export function CategoryStep({
                   disabled={disabled}
                 />
               </div>
-            </div>
+            </section>
           );
         })}
 
-        {/* Divider between questions and discussion tools */}
-        <div className="flex items-center gap-3 py-4">
-          <div className="h-px flex-1 bg-[var(--editorial-outline-variant,var(--border))]/30" />
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t("discussion")}</span>
-          <div className="h-px flex-1 bg-[var(--editorial-outline-variant,var(--border))]/30" />
         </div>
 
-        {/* Notes */}
-        <div className="space-y-3">
-          <SectionLabel icon={FileText} label={t("notes")} />
-          <NotesEditor
+        {/* Discussion Section */}
+        <div className="space-y-6 mt-16">
+          <h3 className="text-2xl font-black text-foreground font-headline border-b-2 border-border/30 pb-4">
+            {t("discussion")}
+          </h3>
+
+          {/* Notes */}
+          <div className="bg-card rounded-2xl shadow-sm overflow-hidden border border-border/20">
+            <NotesEditor
             sessionId={sessionId}
             category={categoryName}
             initialSharedContent={sharedNotesContent}
@@ -185,55 +171,60 @@ export function CategoryStep({
             readOnly={disabled}
             onSavingChange={onSavingChange}
           />
-        </div>
+          </div>
 
-        {/* Talking Points */}
-        <Collapsible open={talkingPointsOpen} onOpenChange={setTalkingPointsOpen}>
-          <CollapsibleTrigger className="flex w-full items-center justify-between rounded-sm px-0 py-0 hover:opacity-70 transition-opacity">
-            <SectionLabel
-              icon={MessageSquare}
-              label={t("talkingPoints")}
-              count={talkingPoints.length}
-            />
+          {/* Talking Points */}
+          <div className="bg-[var(--editorial-surface-container-low,var(--muted))] rounded-2xl p-6">
+            <Collapsible open={talkingPointsOpen} onOpenChange={setTalkingPointsOpen}>
+              <CollapsibleTrigger className="flex w-full items-center justify-between hover:opacity-70 transition-opacity">
+                <SectionLabel
+                  icon={MessageSquare}
+                  label={t("talkingPoints")}
+                  count={talkingPoints.length}
+                />
             <ChevronDown
               className={`size-3.5 text-muted-foreground transition-transform duration-200 ${talkingPointsOpen ? "" : "-rotate-90"}`}
             />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pt-2">
-            <TalkingPointList
-              sessionId={sessionId}
-              category={categoryName}
-              initialPoints={talkingPoints}
-              readOnly={disabled}
-              onSavingChange={onSavingChange}
-              sessionNumberMap={sessionNumberMap}
-            />
-          </CollapsibleContent>
-        </Collapsible>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-4">
+                <TalkingPointList
+                  sessionId={sessionId}
+                  category={categoryName}
+                  initialPoints={talkingPoints}
+                  readOnly={disabled}
+                  onSavingChange={onSavingChange}
+                  sessionNumberMap={sessionNumberMap}
+                />
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
 
-        {/* Action Items */}
-        <Collapsible open={actionItemsOpen} onOpenChange={setActionItemsOpen}>
-          <CollapsibleTrigger className="flex w-full items-center justify-between rounded-sm px-0 py-0 hover:opacity-70 transition-opacity">
-            <SectionLabel
-              icon={ListChecks}
-              label={t("actionItems")}
-              count={actionItems.length}
-            />
-            <ChevronDown
-              className={`size-3.5 text-muted-foreground transition-transform duration-200 ${actionItemsOpen ? "" : "-rotate-90"}`}
-            />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pt-2">
-            <ActionItemInline
-              sessionId={sessionId}
-              category={categoryName}
-              seriesParticipants={seriesParticipants}
-              initialItems={actionItems}
-              readOnly={disabled}
-              onSavingChange={onSavingChange}
-            />
-          </CollapsibleContent>
-        </Collapsible>
+          {/* Action Items */}
+          <div className="bg-[var(--editorial-surface-container-low,var(--muted))] rounded-2xl p-6">
+            <Collapsible open={actionItemsOpen} onOpenChange={setActionItemsOpen}>
+              <CollapsibleTrigger className="flex w-full items-center justify-between hover:opacity-70 transition-opacity">
+                <SectionLabel
+                  icon={ListChecks}
+                  label={t("actionItems")}
+                  count={actionItems.length}
+                />
+                <ChevronDown
+                  className={`size-3.5 text-muted-foreground transition-transform duration-200 ${actionItemsOpen ? "" : "-rotate-90"}`}
+                />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-4">
+                <ActionItemInline
+                  sessionId={sessionId}
+                  category={categoryName}
+                  seriesParticipants={seriesParticipants}
+                  initialItems={actionItems}
+                  readOnly={disabled}
+                  onSavingChange={onSavingChange}
+                />
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+        </div>
       </div>
     </div>
   );

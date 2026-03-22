@@ -26,55 +26,66 @@ export function WizardStepSidebar({
 
   return (
     <nav
-      className="hidden md:flex w-[220px] shrink-0 flex-col bg-[var(--sidebar,var(--muted))] overflow-y-auto"
+      className="hidden md:flex w-[240px] shrink-0 flex-col p-8 sticky top-20 h-[calc(100vh-10rem)] overflow-y-auto"
       aria-label={t("wizardSteps")}
     >
-      <div className="flex flex-col gap-1 p-4">
+      <div className="space-y-6">
         {steps.map((step, index) => {
           const isActive = index === currentStep;
           const isComplete = step.isComplete;
+          const isLast = index === steps.length - 1;
 
           return (
-            <button
-              key={index}
-              type="button"
-              onClick={() => onStepChange(index)}
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3.5 py-3 text-left transition-all font-headline text-sm",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
-                isActive
-                  ? "bg-card text-primary font-bold shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-card/50"
-              )}
-            >
-              {/* Step indicator */}
-              <span
-                className={cn(
-                  "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors",
-                  isComplete
-                    ? "bg-[var(--color-success)] text-white"
-                    : isActive
-                      ? "bg-primary text-white"
-                      : "bg-[var(--editorial-surface-container-high,var(--accent))] text-muted-foreground"
-                )}
+            <div key={index} className="relative">
+              <button
+                type="button"
+                onClick={() => onStepChange(index)}
+                className="flex items-center gap-4 w-full text-left group focus-visible:outline-none"
               >
-                {isComplete ? (
-                  <Check className="size-3.5" />
-                ) : (
-                  index + 1
-                )}
-              </span>
+                {/* Step circle */}
+                <div
+                  className={cn(
+                    "shrink-0 flex items-center justify-center rounded-full text-xs font-bold z-10 transition-all",
+                    isActive
+                      ? "w-10 h-10 bg-primary text-white ring-4 ring-primary/20"
+                      : isComplete
+                        ? "w-8 h-8 bg-primary text-white"
+                        : "w-8 h-8 bg-[var(--editorial-surface-container-highest,var(--accent))] text-muted-foreground"
+                  )}
+                >
+                  {isComplete ? <Check className="h-3.5 w-3.5" /> : index + 1}
+                </div>
 
-              {/* Step name + completion count */}
-              <div className="min-w-0 flex-1">
-                <p className="truncate leading-tight">{step.name}</p>
-                {step.total > 0 && (
-                  <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
-                    {t("answered", { answered: step.answered, total: step.total })}
-                  </p>
-                )}
-              </div>
-            </button>
+                {/* Step label */}
+                <div className="min-w-0">
+                  <span
+                    className={cn(
+                      "font-headline text-sm transition-colors",
+                      isActive
+                        ? "font-bold text-foreground"
+                        : "font-medium text-muted-foreground group-hover:text-foreground"
+                    )}
+                  >
+                    {step.name}
+                  </span>
+                  {step.total > 0 && isActive && (
+                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                      {t("answered", { answered: step.answered, total: step.total })}
+                    </p>
+                  )}
+                </div>
+              </button>
+
+              {/* Connector line */}
+              {!isLast && (
+                <div
+                  className={cn(
+                    "absolute w-0.5 bg-[var(--editorial-outline-variant,var(--border))]/30",
+                    isActive ? "left-5 top-10 h-6" : "left-4 top-8 h-6"
+                  )}
+                />
+              )}
+            </div>
           );
         })}
       </div>

@@ -152,6 +152,7 @@
       "wizardSteps": "Pași asistent",
       "loadError": "Sesiunea nu a putut fi încărcată",
       "exitWizard": "Ieși din wizard",
+      "sessionDate": "Data sesiunii: {date}",
       "category": "Categorie",
       "discussion": "Discuție"
     },

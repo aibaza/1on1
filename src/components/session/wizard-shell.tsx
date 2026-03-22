@@ -828,7 +828,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         />
 
         {/* Center: form content area */}
-        <div className="flex-1 overflow-y-auto relative">
+        <div className="flex-1 overflow-y-auto relative pb-24">
           <div
             className={cn(
               "transition-all duration-300 ease-in-out",
@@ -836,42 +836,11 @@ export function WizardShell({ sessionId }: WizardShellProps) {
             )}
           >
             {stepContent}
-
-            {/* Inline Prev/Next buttons below form content */}
-            {!isSummaryStep && (
-              <div className="max-w-2xl mx-auto px-4 pb-10">
-                <div className="flex items-center justify-between pt-6 border-t border-[var(--editorial-outline-variant,var(--border))]/30 mt-4">
-                  <button
-                    type="button"
-                    onClick={handlePrev}
-                    disabled={state.currentStep === 0}
-                    className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold bg-[var(--editorial-surface-container-low,var(--muted))] text-muted-foreground hover:text-foreground hover:bg-[var(--editorial-surface-container,var(--accent))] transition-all disabled:opacity-30"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                    {t("wizard.previous")}
-                  </button>
-
-                  <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-                    {t("wizard.stepOf", { current: state.currentStep + 1, total: totalSteps })}
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold text-white shadow-md hover:shadow-lg transition-all active:scale-95"
-                    style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
-                  >
-                    {isLastCategoryStep ? t("wizard.review") : t("wizard.next")}
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
-        {/* Right: floating context widgets (desktop only -- lg+ as column) */}
-        <div className="hidden lg:block w-[300px] shrink-0 overflow-y-auto p-5 bg-[var(--editorial-surface-container-low,var(--muted))]/30">
+        {/* Right: context sidebar */}
+        <div className="hidden lg:block w-[300px] shrink-0 overflow-y-auto p-6 border-l border-border/20 bg-[var(--editorial-surface-container-low,var(--muted))]/30">
           <FloatingContextWidgets
             currentStep={state.currentStep}
             currentCategory={currentSection?.name ?? null}
@@ -894,6 +863,50 @@ export function WizardShell({ sessionId }: WizardShellProps) {
           onQuestionHistoryOpen={handleQuestionHistoryOpen}
         />
       </div>
+
+      {/* Fixed bottom action bar (desktop) */}
+      {!isSummaryStep && (
+        <footer className="hidden md:flex fixed bottom-0 left-0 right-0 z-40 bg-[var(--background)]/80 backdrop-blur-xl border-t border-border/20">
+          <div className="max-w-4xl mx-auto w-full px-10 py-5 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={handlePrev}
+              disabled={state.currentStep === 0}
+              className="flex items-center gap-2 text-muted-foreground font-bold hover:text-primary transition-colors disabled:opacity-30"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              {t("wizard.previous")}
+            </button>
+
+            <div className="flex items-center gap-4">
+              <div className="flex gap-1.5">
+                {stepInfos.map((_, i) => (
+                  <div
+                    key={i}
+                    className={cn(
+                      "rounded-full transition-all",
+                      i === state.currentStep ? "w-5 h-1.5 bg-primary" : "w-1.5 h-1.5 bg-border"
+                    )}
+                  />
+                ))}
+              </div>
+              <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">
+                {t("wizard.stepOf", { current: state.currentStep + 1, total: totalSteps })}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleNext}
+              className="flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95"
+              style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)", boxShadow: "0 10px 25px -5px rgba(41, 64, 125, 0.25)" }}
+            >
+              {isLastCategoryStep ? t("wizard.review") : t("wizard.next")}
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </footer>
+      )}
 
       {/* Question history dialog */}
       {historyQuestion && (
