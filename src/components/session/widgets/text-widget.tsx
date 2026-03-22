@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useRef } from "react";
 
 interface TextWidgetProps {
@@ -24,14 +23,14 @@ export function TextWidget({ value, onChange, disabled }: TextWidgetProps) {
   }, [value]);
 
   return (
-    <Textarea
+    <textarea
       ref={textareaRef}
       value={value ?? ""}
       onChange={(e) => onChange({ answerText: e.target.value })}
       placeholder={t("typeResponse")}
       disabled={disabled}
-      className="min-h-[100px] resize-none"
-      rows={3}
+      className="w-full min-h-[120px] border-none focus:ring-0 text-foreground placeholder-muted-foreground/40 resize-none bg-transparent text-sm leading-relaxed disabled:opacity-50"
+      rows={4}
     />
   );
 }

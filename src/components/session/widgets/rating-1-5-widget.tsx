@@ -32,25 +32,22 @@ export function Rating15Widget({
             type="button"
             disabled={disabled}
             onClick={() => onChange({ answerNumeric: rating })}
-            className={cn(
-              "rounded-full p-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              "hover:text-amber-400 disabled:pointer-events-none disabled:opacity-50"
-            )}
+            className="transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-full disabled:pointer-events-none disabled:opacity-50"
             aria-label={`${rating} out of 5${labels[rating - 1] ? ` - ${labels[rating - 1]}` : ""}`}
           >
             <Star
               className={cn(
-                "h-8 w-8 transition-colors",
+                "h-10 w-10 transition-colors",
                 value != null && rating <= value
-                  ? "fill-amber-400 text-amber-400"
-                  : "text-muted-foreground/40"
+                  ? "fill-[var(--color-warning,#f59e0b)] text-[var(--color-warning,#f59e0b)]"
+                  : "text-[var(--editorial-surface-container-highest,var(--border))]"
               )}
             />
           </button>
         ))}
       </div>
       {value != null && labels[value - 1] && (
-        <p className="text-sm text-muted-foreground">{labels[value - 1]}</p>
+        <p className="text-sm text-muted-foreground italic">{labels[value - 1]}</p>
       )}
     </div>
   );

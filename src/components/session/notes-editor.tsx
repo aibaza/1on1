@@ -13,11 +13,9 @@ import {
   Link as LinkIcon,
   Lock,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import { useMutation } from "@tanstack/react-query";
-import { cn } from "@/lib/utils";
 
 interface NotesEditorProps {
   sessionId: string;
@@ -82,23 +80,21 @@ function EditorToolbar({
   ];
 
   return (
-    <div className="flex items-center gap-0.5 border-b px-1 py-1">
+    <div className="flex items-center gap-1 border-b border-border/20 px-2 py-2">
       {buttons.map(({ icon: Icon, action, active, label }) => (
-        <Button
+        <button
           key={label}
           type="button"
-          variant="ghost"
-          size="icon"
           className={cn(
-            "size-7",
+            "p-1.5 rounded transition-colors hover:bg-muted text-muted-foreground",
             active && "bg-muted text-foreground"
           )}
           onClick={action}
           disabled={disabled}
           title={label}
         >
-          <Icon className="size-3.5" />
-        </Button>
+          <Icon className="size-5" />
+        </button>
       ))}
     </div>
   );
@@ -249,40 +245,58 @@ export function NotesEditor({
   };
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="w-full">
-        <TabsTrigger value="shared" className="flex-1">
+    <div className="w-full">
+      {/* Tab bar */}
+      <div className="flex border-b border-border/20">
+        <button
+          type="button"
+          onClick={() => setActiveTab("shared")}
+          className={cn(
+            "px-6 py-3 text-sm font-bold transition-colors",
+            activeTab === "shared"
+              ? "text-primary border-b-2 border-primary"
+              : "text-muted-foreground hover:bg-muted/50"
+          )}
+        >
           {t("sharedNotes")}
-        </TabsTrigger>
-        <TabsTrigger value="private" className="flex-1">
-          <Lock className="mr-1.5 size-3" />
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("private")}
+          className={cn(
+            "px-6 py-3 text-sm font-medium transition-colors flex items-center gap-1.5",
+            activeTab === "private"
+              ? "text-primary border-b-2 border-primary font-bold"
+              : "text-muted-foreground hover:bg-muted/50"
+          )}
+        >
+          <Lock className="size-3" />
           {t("privateNotes")}
-        </TabsTrigger>
-      </TabsList>
+        </button>
+      </div>
 
-      <TabsContent value="shared">
-        <div className="rounded-md border">
+      {/* Editor content */}
+      {activeTab === "shared" && (
+        <div className="p-6">
           <EditorToolbar editor={sharedEditor} disabled={readOnly} labels={toolbarLabels} />
-          <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none p-3 min-h-[120px] [&_.tiptap]:outline-none [&_.tiptap]:min-h-[96px]">
+          <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none min-h-[120px] [&_.tiptap]:outline-none [&_.tiptap]:min-h-[96px] mt-2">
             <EditorContent editor={sharedEditor} />
           </div>
         </div>
-      </TabsContent>
+      )}
 
-      <TabsContent value="private">
-        <div className="space-y-2">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+      {activeTab === "private" && (
+        <div className="p-6">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3">
             <Lock className="size-3" />
             <span>{t("onlyYouCanSee")}</span>
           </div>
-          <div className="rounded-md border border-amber-200/50 bg-amber-50/30 dark:border-amber-900/30 dark:bg-amber-950/20">
-            <EditorToolbar editor={privateEditor} disabled={readOnly} labels={toolbarLabels} />
-            <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none p-3 min-h-[120px] [&_.tiptap]:outline-none [&_.tiptap]:min-h-[96px]">
-              <EditorContent editor={privateEditor} />
-            </div>
+          <EditorToolbar editor={privateEditor} disabled={readOnly} labels={toolbarLabels} />
+          <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none min-h-[120px] [&_.tiptap]:outline-none [&_.tiptap]:min-h-[96px] mt-2">
+            <EditorContent editor={privateEditor} />
           </div>
         </div>
-      </TabsContent>
-    </Tabs>
+      )}
+    </div>
   );
 }
