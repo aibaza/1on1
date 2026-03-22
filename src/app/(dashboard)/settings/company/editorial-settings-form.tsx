@@ -225,7 +225,7 @@ export function EditorialSettingsForm({ initialData }: EditorialSettingsFormProp
 
           <div>
             <FieldLabel>{t("meetingDefaults.cadence")}</FieldLabel>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="radiogroup" aria-label={t("meetingDefaults.cadence")}>
               {[
                 { value: "weekly", label: t("meetingDefaults.weekly") },
                 { value: "biweekly", label: t("meetingDefaults.biweekly") },
@@ -235,12 +235,15 @@ export function EditorialSettingsForm({ initialData }: EditorialSettingsFormProp
                 <button
                   key={option.value}
                   type="button"
+                  role="radio"
+                  aria-checked={cadence === option.value}
                   onClick={() => setCadence(option.value)}
                   className={`px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                     cadence === option.value
-                      ? "bg-primary text-white shadow-sm"
+                      ? "text-white shadow-sm"
                       : "bg-[var(--editorial-surface-container-low,var(--muted))] text-muted-foreground hover:bg-[var(--editorial-surface-container,var(--accent))] hover:text-foreground"
                   }`}
+                  style={cadence === option.value ? { background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" } : undefined}
                 >
                   {option.label}
                 </button>
@@ -280,20 +283,22 @@ export function EditorialSettingsForm({ initialData }: EditorialSettingsFormProp
 
       {/* Color Theme */}
       <SectionCard icon={Palette} title={t("theme.title")} description={t("theme.description")}>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="radiogroup" aria-label={t("theme.title")}>
           {THEME_PRESETS.map((preset) => (
             <button
               key={preset.id}
               type="button"
+              role="radio"
+              aria-checked={colorTheme === preset.id}
               onClick={() => setColorTheme(preset.id)}
               className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-all ${
                 colorTheme === preset.id
-                  ? "bg-primary/8 border-2 border-primary text-foreground font-bold"
+                  ? "bg-primary/15 border-2 border-primary text-foreground font-bold shadow-sm"
                   : "bg-[var(--editorial-surface-container-low,var(--muted))] border-2 border-transparent text-muted-foreground hover:bg-[var(--editorial-surface-container,var(--accent))] hover:text-foreground"
               }`}
             >
               <span
-                className="h-6 w-6 shrink-0 rounded-full shadow-sm border border-black/10"
+                className="h-8 w-8 shrink-0 rounded-full shadow-sm border border-black/10"
                 style={{ backgroundColor: preset.swatch }}
               />
               <span className="truncate">{preset.name}</span>
