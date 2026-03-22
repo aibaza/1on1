@@ -143,7 +143,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
                   className="px-5 py-2.5 rounded-xl font-bold text-sm text-white shadow-md hover:opacity-90 transition-all flex items-center gap-2"
                   style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
                 >
-                  <Play className="h-4 w-4 fill-current" /> Resume
+                  <Play className="h-4 w-4 fill-current" /> {t("editorial.resume")}
                 </button>
               ) : (
                 <button
@@ -152,14 +152,26 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
                   className="px-5 py-2.5 rounded-xl font-bold text-sm text-white shadow-md hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50"
                   style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
                 >
-                  <Play className="h-4 w-4 fill-current" /> Start Session
+                  <Play className="h-4 w-4 fill-current" /> {t("editorial.startSession")}
                 </button>
               )}
-              <button className="px-4 py-2.5 bg-muted text-foreground font-semibold rounded-xl hover:bg-accent transition-colors flex items-center gap-2 text-sm">
-                <Settings className="h-4 w-4" /> Edit
-              </button>
-              <button className="px-4 py-2.5 bg-muted text-muted-foreground font-semibold rounded-xl hover:bg-accent transition-colors flex items-center gap-2 text-sm">
-                <Archive className="h-4 w-4" /> Archive
+              <Link
+                href={`/sessions/${series.id}/edit`}
+                className="px-4 py-2.5 bg-muted text-foreground font-semibold rounded-xl hover:bg-accent transition-colors flex items-center gap-2 text-sm"
+              >
+                <Settings className="h-4 w-4" /> {t("editorial.edit")}
+              </Link>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!confirm(t("detail.archive") + "?")) return;
+                  const res = await fetch(`/api/series/${series.id}`, { method: "DELETE" });
+                  if (res.ok) { toast.success(t("detail.seriesArchived")); router.push("/sessions"); }
+                  else toast.error("Failed to archive");
+                }}
+                className="px-4 py-2.5 bg-muted text-muted-foreground font-semibold rounded-xl hover:bg-accent transition-colors flex items-center gap-2 text-sm"
+              >
+                <Archive className="h-4 w-4" /> {t("editorial.archive")}
               </button>
             </div>
           )}
