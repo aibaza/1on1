@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useMemo, useCallback } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations, useFormatter } from "next-intl";
-import { Search, Filter, ArrowUpDown, MoreVertical, ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
+import { Search, ChevronLeft, ChevronRight, Shield, UserX } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserActionsMenu } from "./user-actions-menu";
 import { ProfileSheet } from "./profile-sheet";
@@ -41,6 +42,9 @@ export function EditorialPeopleList({
   const [page, setPage] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkRolePicker, setBulkRolePicker] = useState(false);
+  const [confirmDeactivate, setConfirmDeactivate] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: users } = useQuery<UserRow[]>({
     queryKey: ["users"],
@@ -53,6 +57,70 @@ export function EditorialPeopleList({
   });
 
   const isAdmin = currentUserRole === "admin";
+
+  const bulkRoleMutation = useMutation({
+    mutationFn: async (newRole: string) => {
+      const ids = [...selectedIds];
+      const results = await Promise.allSettled(
+        ids.map((id) =>
+          fetch(`/api/users/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ role: newRole }),
+          }).then((res) => {
+            if (!res.ok) throw new Error(`Failed for user ${id}`);
+            return res.json();
+          })
+        )
+      );
+      const succeeded = results.filter((r) => r.status === "fulfilled").length;
+      const failed = results.filter((r) => r.status === "rejected").length;
+      return { succeeded, failed };
+    },
+    onSuccess: ({ succeeded, failed }) => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      setSelectedIds(new Set());
+      setBulkRolePicker(false);
+      if (failed === 0) {
+        toast.success(`Role updated for ${succeeded} member${succeeded !== 1 ? "s" : ""}`);
+      } else {
+        toast.warning(`${succeeded} updated, ${failed} failed`);
+      }
+    },
+    onError: () => {
+      toast.error("Failed to update roles");
+    },
+  });
+
+  const bulkDeactivateMutation = useMutation({
+    mutationFn: async () => {
+      const ids = [...selectedIds].filter((id) => id !== currentUserId);
+      const results = await Promise.allSettled(
+        ids.map((id) =>
+          fetch(`/api/users/${id}`, { method: "DELETE" }).then((res) => {
+            if (!res.ok) throw new Error(`Failed for user ${id}`);
+            return res.json();
+          })
+        )
+      );
+      const succeeded = results.filter((r) => r.status === "fulfilled").length;
+      const failed = results.filter((r) => r.status === "rejected").length;
+      return { succeeded, failed };
+    },
+    onSuccess: ({ succeeded, failed }) => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      setSelectedIds(new Set());
+      setConfirmDeactivate(false);
+      if (failed === 0) {
+        toast.success(`${succeeded} member${succeeded !== 1 ? "s" : ""} deactivated`);
+      } else {
+        toast.warning(`${succeeded} deactivated, ${failed} failed`);
+      }
+    },
+    onError: () => {
+      toast.error("Failed to deactivate members");
+    },
+  });
 
   const filtered = useMemo(() => {
     return (users ?? []).filter((u) => {
@@ -169,16 +237,71 @@ export function EditorialPeopleList({
             <div className="flex items-center gap-4">
               <span className="text-sm font-bold">{selectedIds.size} member{selectedIds.size !== 1 ? "s" : ""} selected</span>
               <div className="h-4 w-px bg-foreground/20" />
-              <button className="text-xs font-bold flex items-center gap-1 hover:underline" type="button">
-                Change role
-              </button>
-              <button className="text-xs font-bold flex items-center gap-1 hover:underline text-destructive" type="button">
-                Deactivate
-              </button>
+
+              {/* Change role — inline picker */}
+              <div className="relative">
+                <button
+                  className="text-xs font-bold flex items-center gap-1 hover:underline"
+                  type="button"
+                  onClick={() => { setBulkRolePicker((v) => !v); setConfirmDeactivate(false); }}
+                >
+                  <Shield className="h-3.5 w-3.5" /> Change role
+                </button>
+                {bulkRolePicker && (
+                  <div className="absolute top-full left-0 mt-2 bg-card rounded-xl shadow-xl border border-[var(--editorial-outline-variant,var(--border))]/50 p-2 z-10 min-w-[140px]">
+                    {(["admin", "manager", "member"] as const).map((role) => (
+                      <button
+                        key={role}
+                        type="button"
+                        disabled={bulkRoleMutation.isPending}
+                        onClick={() => bulkRoleMutation.mutate(role)}
+                        className="w-full text-left px-3 py-2 text-xs font-bold capitalize rounded-lg hover:bg-[var(--editorial-surface-container,var(--muted))] transition-colors disabled:opacity-50"
+                      >
+                        {role}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Deactivate — with confirmation */}
+              <div className="relative">
+                <button
+                  className="text-xs font-bold flex items-center gap-1 hover:underline text-destructive"
+                  type="button"
+                  onClick={() => { setConfirmDeactivate((v) => !v); setBulkRolePicker(false); }}
+                >
+                  <UserX className="h-3.5 w-3.5" /> Deactivate
+                </button>
+                {confirmDeactivate && (
+                  <div className="absolute top-full left-0 mt-2 bg-card rounded-xl shadow-xl border border-destructive/20 p-4 z-10 min-w-[220px]">
+                    <p className="text-xs text-muted-foreground mb-3">
+                      Deactivate {selectedIds.size} member{selectedIds.size !== 1 ? "s" : ""}? This will revoke their access.
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setConfirmDeactivate(false)}
+                        className="flex-1 px-3 py-1.5 text-xs font-bold rounded-lg bg-[var(--editorial-surface-container,var(--muted))] hover:bg-[var(--editorial-surface-container-high,var(--accent))] transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        disabled={bulkDeactivateMutation.isPending}
+                        onClick={() => bulkDeactivateMutation.mutate()}
+                        className="flex-1 px-3 py-1.5 text-xs font-bold rounded-lg bg-destructive text-white hover:opacity-90 transition-all disabled:opacity-50"
+                      >
+                        {bulkDeactivateMutation.isPending ? "..." : "Confirm"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
             <button
               type="button"
-              onClick={() => setSelectedIds(new Set())}
+              onClick={() => { setSelectedIds(new Set()); setBulkRolePicker(false); setConfirmDeactivate(false); }}
               className="text-xs font-bold hover:underline"
             >
               Clear selection
