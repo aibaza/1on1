@@ -9,6 +9,8 @@
     "published": "Published",
     "draft": "Draft",
     "questionsCount": "{count} questions",
+    "filterAll": "All",
+    "edit": "Edit",
     "create": {
       "title": "Create Template",
       "description": "Create a new questionnaire template for your 1:1 sessions.",
@@ -216,6 +218,9 @@
       "question": "Question"
     },
     "aiEditor": {
+      "intelligence": "Intelligence",
+      "title": "AI Template Generation",
+      "description": "Describe your meeting goals and let AI create a tailored template based on your team's specific needs.",
       "pageTitle": "AI Template Editor",
       "header": {
         "newTemplate": "New Template",

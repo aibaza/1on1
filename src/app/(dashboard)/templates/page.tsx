@@ -10,6 +10,7 @@ import {
 import { eq, and, sql } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { TemplateList } from "@/components/templates/template-list";
+import { EditorialTemplateList } from "@/components/templates/editorial-template-list";
 import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function TemplatesPage() {
@@ -103,11 +104,19 @@ export default async function TemplatesPage() {
         </p>
       </div>
 
-      <TemplateList
-        initialTemplates={templates}
-        currentUserRole={session.user.role}
-        contentLanguage={session.user.contentLanguage ?? "en"}
-      />
+      {isEditorial ? (
+        <EditorialTemplateList
+          initialTemplates={templates}
+          currentUserRole={session.user.role}
+          contentLanguage={session.user.contentLanguage ?? "en"}
+        />
+      ) : (
+        <TemplateList
+          initialTemplates={templates}
+          currentUserRole={session.user.role}
+          contentLanguage={session.user.contentLanguage ?? "en"}
+        />
+      )}
     </div>
   );
 }

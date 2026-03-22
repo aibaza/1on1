@@ -9,6 +9,8 @@
     "published": "Publicat",
     "draft": "Ciornă",
     "questionsCount": "{count} întrebări",
+    "filterAll": "Toate",
+    "edit": "Editează",
     "create": {
       "title": "Creează șablon",
       "description": "Creează un nou șablon de chestionar pentru sesiunile 1:1.",
@@ -216,6 +218,9 @@
       "question": "Intrebare"
     },
     "aiEditor": {
+      "intelligence": "Inteligență",
+      "title": "Generare șabloane cu AI",
+      "description": "Descrie obiectivele întâlnirii și lasă AI-ul să creeze un șablon personalizat pentru nevoile echipei tale.",
       "pageTitle": "Editor AI de Șabloane",
       "header": {
         "newTemplate": "Șablon Nou",
