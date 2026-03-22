@@ -8,8 +8,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { QuestionWidget, type AnswerValue } from "./question-widget";
 import { NotesEditor } from "./notes-editor";
 import { TalkingPointList, type TalkingPoint } from "./talking-point-list";
@@ -62,13 +60,13 @@ function SectionLabel({
   count?: number;
 }) {
   return (
-    <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+    <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest">
       <Icon className="size-3.5" />
       {label}
       {count !== undefined && count > 0 && (
-        <Badge variant="secondary" className="h-4 px-1.5 text-[10px] tabular-nums">
+        <span className="px-1.5 py-0.5 rounded-md bg-[var(--editorial-surface-container,var(--muted))] text-[10px] tabular-nums">
           {count}
-        </Badge>
+        </span>
       )}
     </div>
   );
@@ -77,7 +75,7 @@ function SectionLabel({
 /** Test helpers — exported for unit tests only, not for use in application code. */
 export const categoryStepTestHelpers = {
   getSectionLabelClassName: () =>
-    "flex items-center gap-1.5 text-xs font-medium text-muted-foreground",
+    "flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest",
 };
 
 export function CategoryStep({
@@ -113,41 +111,51 @@ export function CategoryStep({
       <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
         {/* Category header */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold tracking-tight">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--editorial-tertiary, var(--color-success))" }}>
+              Category
+            </span>
+            <div className="h-px w-8" style={{ backgroundColor: "var(--editorial-tertiary-fixed-dim, var(--color-success))" }} />
+          </div>
+          <h2 className="text-2xl font-extrabold tracking-tight font-headline">
             {categoryName}
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground font-medium">
             {t("questionCount", { count: visibleQuestions.length })}
           </p>
         </div>
 
         {/* Questions */}
-        {visibleQuestions.map((question) => {
+        {visibleQuestions.map((question, idx) => {
           const answer = answers.get(question.id) ?? null;
 
           return (
             <div
               key={question.id}
-              className="space-y-3 rounded-lg border bg-card p-6"
+              className="rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 bg-card p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all hover:shadow-md"
             >
-              <div className="flex items-start gap-2">
-                <h3 className="flex-1 font-medium leading-snug">
-                  {question.questionText}
-                </h3>
+              <div className="flex items-start gap-3 mb-4">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/8 text-primary text-xs font-bold">
+                  {idx + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-foreground leading-snug">
+                    {question.questionText}
+                  </h3>
+                  {question.helpText && (
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                      {question.helpText}
+                    </p>
+                  )}
+                </div>
                 {question.isRequired && (
-                  <Badge variant="secondary" className="shrink-0 text-xs">
+                  <span className="shrink-0 text-[9px] font-bold uppercase tracking-widest text-destructive bg-destructive/8 px-2 py-0.5 rounded-md">
                     {t("required")}
-                  </Badge>
+                  </span>
                 )}
               </div>
 
-              {question.helpText && (
-                <p className="text-sm text-muted-foreground">
-                  {question.helpText}
-                </p>
-              )}
-
-              <div className="pt-1">
+              <div className="pl-10">
                 <QuestionWidget
                   question={question}
                   value={answer}
@@ -160,7 +168,11 @@ export function CategoryStep({
         })}
 
         {/* Divider between questions and discussion tools */}
-        <Separator className="my-6" />
+        <div className="flex items-center gap-3 py-4">
+          <div className="h-px flex-1 bg-[var(--editorial-outline-variant,var(--border))]/30" />
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Discussion</span>
+          <div className="h-px flex-1 bg-[var(--editorial-outline-variant,var(--border))]/30" />
+        </div>
 
         {/* Notes */}
         <div className="space-y-3">

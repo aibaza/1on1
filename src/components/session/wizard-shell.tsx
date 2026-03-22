@@ -808,7 +808,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
       />
 
       {/* Mobile: full-height card carousel */}
-      <div className="flex md:hidden flex-1 overflow-hidden h-[calc(100vh-3.5rem)]">
+      <div className="flex md:hidden flex-1 overflow-hidden h-[calc(100vh-4rem)]">
         <WizardMobileCarousel
           steps={stepInfos}
           currentStep={state.currentStep}
@@ -819,7 +819,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
       </div>
 
       {/* Desktop: step sidebar | content | context widgets */}
-      <div className="hidden md:flex flex-1 overflow-hidden h-[calc(100vh-3.5rem)]">
+      <div className="hidden md:flex flex-1 overflow-hidden h-[calc(100vh-4rem)]">
         {/* Left: step sidebar */}
         <WizardStepSidebar
           steps={stepInfos}
@@ -839,32 +839,31 @@ export function WizardShell({ sessionId }: WizardShellProps) {
 
             {/* Inline Prev/Next buttons below form content */}
             {!isSummaryStep && (
-              <div className="max-w-3xl mx-auto px-4 pb-8">
-                <div className="flex items-center justify-between pt-6 border-t mt-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
+              <div className="max-w-2xl mx-auto px-4 pb-10">
+                <div className="flex items-center justify-between pt-6 border-t border-[var(--editorial-outline-variant,var(--border))]/30 mt-4">
+                  <button
+                    type="button"
                     onClick={handlePrev}
                     disabled={state.currentStep === 0}
-                    className="gap-1"
+                    className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold bg-[var(--editorial-surface-container-low,var(--muted))] text-muted-foreground hover:text-foreground hover:bg-[var(--editorial-surface-container,var(--accent))] transition-all disabled:opacity-30"
                   >
                     <ChevronLeft className="h-4 w-4" />
                     {t("wizard.previous")}
-                  </Button>
+                  </button>
 
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
                     {t("wizard.stepOf", { current: state.currentStep + 1, total: totalSteps })}
                   </span>
 
-                  <Button
-                    variant={isLastCategoryStep ? "default" : "outline"}
-                    size="sm"
+                  <button
+                    type="button"
                     onClick={handleNext}
-                    className="gap-1"
+                    className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold text-white shadow-md hover:shadow-lg transition-all active:scale-95"
+                    style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
                   >
                     {isLastCategoryStep ? t("wizard.review") : t("wizard.next")}
                     <ChevronRight className="h-4 w-4" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             )}
@@ -872,7 +871,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         </div>
 
         {/* Right: floating context widgets (desktop only -- lg+ as column) */}
-        <div className="hidden lg:block w-[280px] shrink-0 overflow-y-auto p-4">
+        <div className="hidden lg:block w-[300px] shrink-0 overflow-y-auto p-5 bg-[var(--editorial-surface-container-low,var(--muted))]/30">
           <FloatingContextWidgets
             currentStep={state.currentStep}
             currentCategory={currentSection?.name ?? null}

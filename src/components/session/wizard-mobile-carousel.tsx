@@ -70,7 +70,7 @@ export function WizardMobileCarousel({
       </div>
 
       {/* Bottom navigation bar — compact, fixed height */}
-      <div className="shrink-0 border-t bg-background/95 backdrop-blur-sm pb-[env(safe-area-inset-bottom)]">
+      <div className="shrink-0 border-t border-[var(--editorial-outline-variant,var(--border))]/30 bg-[var(--background)]/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
         {/* Step indicator dots + prev/next */}
         <div className="flex items-center gap-1 px-3 py-2">
           {/* Prev button */}
@@ -99,10 +99,10 @@ export function WizardMobileCarousel({
                     "shrink-0 flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] transition-all",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     isActive
-                      ? "bg-primary text-primary-foreground font-medium"
+                      ? "bg-primary text-white font-bold"
                       : isComplete
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:bg-muted"
+                        ? "bg-[var(--color-success)]/10 text-[var(--color-success)]"
+                        : "text-muted-foreground hover:bg-[var(--editorial-surface-container,var(--muted))]"
                   )}
                   aria-label={step.name}
                   aria-current={isActive ? "step" : undefined}
@@ -129,10 +129,10 @@ export function WizardMobileCarousel({
         </div>
 
         {/* Progress bar */}
-        <div className="h-0.5 bg-muted mx-3 mb-1 rounded-full overflow-hidden">
+        <div className="h-1 bg-[var(--editorial-surface-container,var(--muted))] mx-3 mb-1 rounded-full overflow-hidden">
           <div
-            className="h-full bg-primary rounded-full transition-all duration-300 ease-out"
-            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            className="h-full rounded-full transition-all duration-300 ease-out"
+            style={{ background: "linear-gradient(90deg, var(--primary), var(--editorial-primary-container, var(--primary)))", width: `${((currentStep + 1) / steps.length) * 100}%` }}
           />
         </div>
       </div>

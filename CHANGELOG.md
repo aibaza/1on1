@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Editorial wizard redesign: glassmorphic top bar, editorial step sidebar (bg-sidebar, rounded-lg, numbered indicators with success/primary colors), question cards with numbered circles and editorial borders, eyebrow category label, editorial divider between questions and discussion tools, gradient next button, editorial mobile carousel with gradient progress bar
 - Editorial settings page: section cards with icons (Building2, Clock, Globe, Palette, Brain), editorial inputs (borderless, rounded-xl), pill-style cadence selector, visual color theme picker, gradient save button, toast feedback
 - Editorial audit log page: editorial breadcrumb nav and page header typography
 - Editorial people page: card-based layout replacing table, grouped by role (Leadership/Managers/Members), person cards with avatar, email, manager, teams, status dot, role badge, hover lift effect, pill filters for role/team/status

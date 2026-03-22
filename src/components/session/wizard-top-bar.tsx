@@ -47,7 +47,6 @@ export function WizardTopBar({
   const router = useRouter();
 
   const handleExit = () => {
-    // Revert empty session to scheduled (fire-and-forget)
     if (!hasAnswers) {
       fetch(`/api/sessions/${sessionId}/revert`, { method: "POST" }).catch(() => {});
     }
@@ -61,14 +60,17 @@ export function WizardTopBar({
   });
 
   const exitButton = (
-    <Button variant="ghost" size="icon" className="h-8 w-8">
+    <button
+      type="button"
+      className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-[var(--editorial-surface-container,var(--muted))] transition-all"
+      aria-label={t("wizard.exitWizard")}
+    >
       <X className="h-4 w-4" />
-      <span className="sr-only">{t("wizard.exitWizard")}</span>
-    </Button>
+    </button>
   );
 
   return (
-    <div className="flex h-14 items-center justify-between border-b px-4">
+    <div className="flex h-16 items-center justify-between px-6 bg-[var(--background)]/80 backdrop-blur-xl shadow-sm">
       {/* Left: Exit button */}
       <div className="flex items-center">
         {hasUnsavedChanges ? (
@@ -96,33 +98,33 @@ export function WizardTopBar({
 
       {/* Center: Session info */}
       <div className="text-center">
-        <p className="text-sm font-medium">{reportName}</p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm font-bold font-headline text-foreground">{reportName}</p>
+        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
           Session #{sessionNumber} &middot; {formattedDate}
           {templateName && <> &middot; {templateName}</>}
         </p>
       </div>
 
       {/* Right: Save status + Theme toggle */}
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 text-xs font-medium">
           {saveStatus === "saving" && (
-            <>
+            <span className="flex items-center gap-1.5 text-muted-foreground">
               <Loader2 className="h-3 w-3 animate-spin" />
-              <span>{t("wizard.saving")}</span>
-            </>
+              {t("wizard.saving")}
+            </span>
           )}
           {saveStatus === "saved" && (
-            <>
-              <Check className="h-3 w-3 text-green-600 dark:text-green-400" />
-              <span>{t("wizard.saved")}</span>
-            </>
+            <span className="flex items-center gap-1.5 text-[var(--color-success)]">
+              <Check className="h-3 w-3" />
+              {t("wizard.saved")}
+            </span>
           )}
           {saveStatus === "error" && (
-            <>
-              <AlertCircle className="h-3 w-3 text-destructive" />
-              <span className="text-destructive">{t("wizard.errorSaving")}</span>
-            </>
+            <span className="flex items-center gap-1.5 text-destructive">
+              <AlertCircle className="h-3 w-3" />
+              {t("wizard.errorSaving")}
+            </span>
           )}
         </div>
         <ThemeToggle />
