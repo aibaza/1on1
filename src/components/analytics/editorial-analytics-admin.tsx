@@ -164,7 +164,7 @@ function MiniSparkBars({ values }: { values: number[] }) {
   if (values.length === 0) return null;
   const max = 5;
   return (
-    <div className="flex items-end gap-px h-10 w-full">
+    <div className="flex items-end gap-px h-10 w-full overflow-hidden">
       {values.map((v, i) => (
         <div
           key={i}
@@ -252,7 +252,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
             </span>
             <span className="text-muted-foreground text-sm">/5</span>
           </div>
-          <MiniSparkBars values={people.map((p) => p.avgScore).filter((s): s is number => s !== null).sort((a, b) => a - b)} />
+          <MiniSparkBars values={people.flatMap((p) => p.scoreHistory)} />
         </div>
 
         {/* Card 2 — Completion */}
