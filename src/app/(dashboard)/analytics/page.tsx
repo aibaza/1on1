@@ -12,6 +12,7 @@ import { BarChart3, Users, TrendingUp } from "lucide-react";
 import { getTranslations, getFormatter } from "next-intl/server";
 import { getDesignPreference } from "@/lib/design-preference.server";
 import { StarRating } from "@/components/ui/star-rating";
+import { EditorialAnalyticsDashboard } from "@/components/analytics/editorial-analytics-dashboard";
 
 interface ReportSummary {
   userId: string;
@@ -204,6 +205,10 @@ export default async function AnalyticsPage() {
 
   const designPref = await getDesignPreference();
   const isEditorial = designPref === "editorial";
+
+  if (isEditorial) {
+    return <EditorialAnalyticsDashboard currentUserRole={session.user.role} />;
+  }
 
   // Editorial stat card wrapper
   const StatCard = ({ children }: { children: React.ReactNode }) =>
