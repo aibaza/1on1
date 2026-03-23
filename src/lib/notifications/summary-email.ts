@@ -104,6 +104,7 @@ export async function sendPostSessionSummaryEmails(params: {
   const sessionActionItems = await adminDb
     .select({
       title: actionItems.title,
+      assigneeId: actionItems.assigneeId,
       assigneeFirstName: users.firstName,
       assigneeLastName: users.lastName,
       dueDate: actionItems.dueDate,
@@ -117,11 +118,13 @@ export async function sendPostSessionSummaryEmails(params: {
       )
     );
 
-  const actionItemsList = sessionActionItems.map((ai) => {
+  // Build action items with assignee ID for recipient-based separation
+  const actionItemsRaw = sessionActionItems.map((ai) => {
     const assigneeName = `${ai.assigneeFirstName} ${ai.assigneeLastName}`;
     return {
       title: ai.title,
       assigneeName,
+      assigneeId: ai.assigneeId,
       dueDate: ai.dueDate,
       assignedToLabel: t("emails.sessionSummary.assignedTo", { assigneeName }),
       dueLabel: ai.dueDate ? t("emails.sessionSummary.due", { dueDate: ai.dueDate }) : null,
@@ -159,10 +162,14 @@ export async function sendPostSessionSummaryEmails(params: {
   const baseLabels = {
     heading: t("emails.sessionSummary.heading", { sessionNumber: session.sessionNumber }),
     score: sessionScore !== null ? t("emails.sessionSummary.score", { score: sessionScore.toFixed(1) }) : "",
+    sessionScore: t("emails.sessionSummary.sessionScore"),
+    outOf: t("emails.sessionSummary.outOf"),
     keyTakeaways: t("emails.sessionSummary.keyTakeaways"),
     areasOfConcern: t("emails.sessionSummary.areasOfConcern"),
     aiPending: t("emails.sessionSummary.aiPending"),
     actionItems: t("emails.sessionSummary.actionItems"),
+    yourActionItems: t("emails.sessionSummary.yourActionItems"),
+    otherActionItems: "", // set per recipient below
     assignedTo: t("emails.sessionSummary.assignedTo", { assigneeName: "" }),
     due: t("emails.sessionSummary.due", { dueDate: "" }),
     managerInsights: t("emails.sessionSummary.managerInsights"),
@@ -170,20 +177,28 @@ export async function sendPostSessionSummaryEmails(params: {
     riskIndicators: t("emails.sessionSummary.riskIndicators"),
     button: t("emails.sessionSummary.button"),
     footer: t("emails.sessionSummary.footer"),
+    blocker: t("emails.sessionSummary.blocker"),
+    needsClarity: t("emails.sessionSummary.needsClarity"),
   };
 
-  const labels = {
+  const reportLabels = {
     ...baseLabels,
     greeting: t("emails.sessionSummary.greeting", { recipientName: report.firstName, otherPartyName: managerName }),
+    otherActionItems: t("emails.sessionSummary.assignedToOther", { name: managerName }),
   };
 
   const managerLabels = {
     ...baseLabels,
     greeting: t("emails.sessionSummary.greeting", { recipientName: manager.firstName, otherPartyName: reportName }),
+    otherActionItems: t("emails.sessionSummary.assignedToOther", { name: reportName }),
   };
 
   // Send report email (no addendum)
   try {
+    const reportActionItems = actionItemsRaw.map((ai) => ({
+      ...ai,
+      isAssignedToRecipient: ai.assigneeId === reportId,
+    }));
     const reportHtml = await render(
       SessionSummaryEmail({
         variant: "report",
@@ -192,9 +207,9 @@ export async function sendPostSessionSummaryEmails(params: {
         sessionNumber: session.sessionNumber,
         sessionScore,
         aiSummary,
-        actionItems: actionItemsList,
+        actionItems: reportActionItems,
         viewSessionUrl,
-        labels,
+        labels: reportLabels,
       })
     );
 
@@ -231,6 +246,10 @@ export async function sendPostSessionSummaryEmails(params: {
 
   // Send manager email (with addendum)
   try {
+    const managerActionItems = actionItemsRaw.map((ai) => ({
+      ...ai,
+      isAssignedToRecipient: ai.assigneeId === managerId,
+    }));
     const managerHtml = await render(
       SessionSummaryEmail({
         variant: "manager",
@@ -239,7 +258,7 @@ export async function sendPostSessionSummaryEmails(params: {
         sessionNumber: session.sessionNumber,
         sessionScore,
         aiSummary,
-        actionItems: actionItemsList,
+        actionItems: managerActionItems,
         viewSessionUrl,
         aiAddendum,
         labels: managerLabels,

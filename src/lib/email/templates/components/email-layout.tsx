@@ -11,7 +11,10 @@ import {
   body,
   container,
   section,
-  brand,
+  brandHeader,
+  brandText,
+  brandSubtext,
+  contentSection,
   hr,
   footer,
 } from "../../styles";
@@ -31,10 +34,21 @@ export function EmailLayout({
       <Body style={body}>
         <Container style={container}>
           <Section style={section}>
-            <Text style={brand}>1on1</Text>
-            {children}
-            <Hr style={hr} />
-            <Text style={footer}>{footerText}</Text>
+            {/* Branded header */}
+            <div style={brandHeader}>
+              <Text style={brandText}>1on1</Text>
+              <Text style={brandSubtext}>Meeting Management</Text>
+            </div>
+
+            {/* Content */}
+            <div style={contentSection}>
+              {children}
+            </div>
+
+            {/* Footer */}
+            <div style={{ padding: "24px 32px", borderTop: "1px solid #eceeef" }}>
+              <Text style={footer}>{footerText}</Text>
+            </div>
           </Section>
         </Container>
       </Body>

@@ -1,15 +1,19 @@
 import { Text, Button } from "@react-email/components";
 import { EmailLayout } from "./components/email-layout";
 import {
-  heading as headingStyle,
+  heading,
+  eyebrow,
   subheading,
-  paragraph as paragraphStyle,
+  paragraph,
   button as buttonStyle,
-  badge,
   listItem,
   metadataRow,
   card,
   divider,
+  scoreCard,
+  insightCard,
+  coachingCard,
+  bulletDot,
 } from "../styles";
 
 interface AiSummary {
@@ -22,8 +26,9 @@ interface ActionItem {
   title: string;
   assigneeName: string;
   dueDate: string | null;
-  assignedToLabel: string;   // pre-interpolated "Assigned to: Name"
-  dueLabel: string | null;   // pre-interpolated "Due: date" or null
+  assignedToLabel: string;
+  dueLabel: string | null;
+  isAssignedToRecipient: boolean;
 }
 
 interface AiAddendum {
@@ -33,20 +38,26 @@ interface AiAddendum {
 }
 
 interface SessionSummaryLabels {
-  heading: string;           // pre-interpolated by caller: "Session #N Summary"
-  greeting: string;          // pre-interpolated by caller: "Hi Name, here is the summary..."
-  score: string;             // pre-interpolated by caller: "Score: X / 5.0"
+  heading: string;
+  greeting: string;
+  score: string;
+  sessionScore: string;
+  outOf: string;
   keyTakeaways: string;
   areasOfConcern: string;
   aiPending: string;
   actionItems: string;
-  assignedTo: string;        // label prefix used by caller for assignedToLabel
-  due: string;               // label prefix used by caller for dueLabel
+  yourActionItems: string;
+  otherActionItems: string;
+  assignedTo: string;
+  due: string;
   managerInsights: string;
   coachingSuggestions: string;
   riskIndicators: string;
   button: string;
   footer: string;
+  blocker: string;
+  needsClarity: string;
 }
 
 interface SessionSummaryEmailProps {
@@ -59,7 +70,6 @@ interface SessionSummaryEmailProps {
   actionItems: ActionItem[];
   viewSessionUrl: string;
   aiAddendum?: AiAddendum | null;
-  // Translated labels
   labels: SessionSummaryLabels;
 }
 
@@ -72,97 +82,153 @@ export function SessionSummaryEmail({
   aiAddendum,
   labels,
 }: SessionSummaryEmailProps) {
+  const myItems = actionItems.filter((a) => a.isAssignedToRecipient);
+  const otherItems = actionItems.filter((a) => !a.isAssignedToRecipient);
+
   return (
     <EmailLayout footerText={labels.footer}>
-      <Text style={headingStyle}>{labels.heading}</Text>
-      <Text style={paragraphStyle}>{labels.greeting}</Text>
+      {/* Header */}
+      <Text style={eyebrow}>1on1 Intelligence</Text>
+      <Text style={heading}>{labels.heading}</Text>
+      <Text style={paragraph}>{labels.greeting}</Text>
 
+      {/* Session Score */}
       {sessionScore !== null && (
-        <Text style={{ ...badge, marginBottom: "24px" }}>
-          {labels.score}
-        </Text>
+        <div style={scoreCard}>
+          <Text style={{ ...metadataRow, marginBottom: "8px" }}>{labels.sessionScore}</Text>
+          <Text style={{ fontSize: "36px", fontWeight: "900", color: "#29407d", margin: "0", fontFamily: "'Manrope', sans-serif" }}>
+            {sessionScore.toFixed(1)} <span style={{ fontSize: "16px", color: "#c5c5d4" }}>{labels.outOf}</span>
+          </Text>
+        </div>
       )}
 
       {aiSummary ? (
         <>
+          {/* Key Takeaways */}
           <Text style={subheading}>{labels.keyTakeaways}</Text>
-          {aiSummary.keyTakeaways.map((takeaway, i) => (
-            <Text key={i} style={listItem}>
-              {takeaway}
-            </Text>
-          ))}
+          <div style={{ ...card, backgroundColor: "#ffffff", border: "1px solid #eceeef" }}>
+            {aiSummary.keyTakeaways.map((takeaway, i) => (
+              <Text key={i} style={{ ...listItem, marginBottom: "12px" }}>
+                <span style={bulletDot} />
+                {takeaway}
+              </Text>
+            ))}
+          </div>
 
+          {/* Areas of Concern */}
           {aiSummary.areasOfConcern.length > 0 && (
             <>
               <Text style={subheading}>{labels.areasOfConcern}</Text>
-              {aiSummary.areasOfConcern.map((concern, i) => (
-                <Text key={i} style={listItem}>
-                  {concern}
-                </Text>
-              ))}
+              <div style={{ ...card, backgroundColor: "#f2f4f5" }}>
+                {aiSummary.areasOfConcern.map((concern, i) => (
+                  <div key={i} style={{ backgroundColor: i === 0 ? "rgba(186,26,26,0.08)" : "#e6e8e9", borderRadius: "8px", padding: "12px 16px", marginBottom: "8px" }}>
+                    <Text style={{ fontSize: "10px", fontWeight: "700", textTransform: "uppercase" as const, letterSpacing: "0.05em", color: i === 0 ? "#93000a" : "#191c1d", marginBottom: "4px" }}>
+                      {i === 0 ? labels.blocker : labels.needsClarity}
+                    </Text>
+                    <Text style={{ fontSize: "14px", color: "#454652", margin: "0" }}>{concern}</Text>
+                  </div>
+                ))}
+              </div>
             </>
           )}
         </>
       ) : (
-        <Text style={{ ...paragraphStyle, fontStyle: "italic" }}>
+        <Text style={{ ...paragraph, fontStyle: "italic" }}>
           {labels.aiPending}
         </Text>
       )}
 
+      {/* Action Items — separated by recipient */}
       {actionItems.length > 0 && (
         <>
           <Text style={subheading}>{labels.actionItems}</Text>
-          {actionItems.map((item, i) => (
-            <div key={i} style={card}>
-              <Text style={{ ...listItem, marginBottom: "4px" }}>
-                {item.title}
-              </Text>
-              <Text style={metadataRow}>
-                {item.assignedToLabel}
-                {item.dueLabel ? ` | ${item.dueLabel}` : ""}
-              </Text>
-            </div>
-          ))}
+
+          {/* Your action items first */}
+          {myItems.length > 0 && (
+            <>
+              <Text style={{ ...metadataRow, fontWeight: "700", marginBottom: "12px" }}>{labels.yourActionItems}</Text>
+              {myItems.map((item, i) => (
+                <div key={i} style={card}>
+                  <Text style={{ fontSize: "15px", fontWeight: "700", color: "#191c1d", marginBottom: "4px" }}>
+                    {item.title}
+                  </Text>
+                  <Text style={metadataRow}>
+                    {item.dueLabel || ""}
+                  </Text>
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* Other person's action items */}
+          {otherItems.length > 0 && (
+            <>
+              <Text style={{ ...metadataRow, fontWeight: "700", marginBottom: "12px", marginTop: "16px" }}>{labels.otherActionItems}</Text>
+              {otherItems.map((item, i) => (
+                <div key={i} style={{ ...card, opacity: 0.7 }}>
+                  <Text style={{ fontSize: "15px", fontWeight: "700", color: "#191c1d", marginBottom: "4px" }}>
+                    {item.title}
+                  </Text>
+                  <Text style={metadataRow}>
+                    {item.assignedToLabel}{item.dueLabel ? ` · ${item.dueLabel}` : ""}
+                  </Text>
+                </div>
+              ))}
+            </>
+          )}
         </>
       )}
 
+      {/* Manager-only: Insights + Coaching */}
       {variant === "manager" && aiAddendum && (
         <>
           <div style={divider} />
-          <Text style={subheading}>{labels.managerInsights}</Text>
-          <Text style={paragraphStyle}>{aiAddendum.sentimentAnalysis}</Text>
 
+          {/* Manager Insights */}
+          <div style={insightCard}>
+            <Text style={{ fontSize: "20px", fontWeight: "700", color: "#ffffff", marginBottom: "16px", fontFamily: "'Manrope', sans-serif" }}>
+              {labels.managerInsights}
+            </Text>
+            <Text style={{ fontSize: "15px", lineHeight: "26px", color: "#c5d1ff", margin: "0" }}>
+              &ldquo;{aiAddendum.sentimentAnalysis}&rdquo;
+            </Text>
+          </div>
+
+          {/* Coaching Suggestions */}
           {aiAddendum.coachingSuggestions.length > 0 && (
-            <>
-              <Text style={{ ...metadataRow, fontWeight: "600" as const }}>
+            <div style={coachingCard}>
+              <Text style={{ fontSize: "20px", fontWeight: "700", color: "#004c47", marginBottom: "16px", fontFamily: "'Manrope', sans-serif" }}>
                 {labels.coachingSuggestions}
               </Text>
               {aiAddendum.coachingSuggestions.map((suggestion, i) => (
-                <Text key={i} style={listItem}>
+                <Text key={i} style={{ ...listItem, color: "#454652" }}>
+                  <span style={{ ...bulletDot, backgroundColor: "#004c47" }} />
                   {suggestion}
                 </Text>
               ))}
-            </>
+            </div>
           )}
 
+          {/* Risk Indicators */}
           {aiAddendum.riskIndicators.length > 0 && (
-            <>
-              <Text style={{ ...metadataRow, fontWeight: "600" as const }}>
+            <div style={{ ...card, backgroundColor: "#ffdad6", borderLeft: "4px solid #ba1a1a", marginTop: "12px" }}>
+              <Text style={{ fontSize: "12px", fontWeight: "700", color: "#93000a", textTransform: "uppercase" as const, letterSpacing: "0.05em", marginBottom: "8px" }}>
                 {labels.riskIndicators}
               </Text>
               {aiAddendum.riskIndicators.map((risk, i) => (
-                <Text key={i} style={listItem}>
-                  {risk}
-                </Text>
+                <Text key={i} style={{ ...listItem, color: "#93000a" }}>{risk}</Text>
               ))}
-            </>
+            </div>
           )}
         </>
       )}
 
-      <Button style={buttonStyle} href={viewSessionUrl}>
-        {labels.button}
-      </Button>
+      {/* CTA */}
+      <div style={{ textAlign: "center" as const, marginTop: "32px" }}>
+        <Button style={buttonStyle} href={viewSessionUrl}>
+          {labels.button}
+        </Button>
+      </div>
     </EmailLayout>
   );
 }
