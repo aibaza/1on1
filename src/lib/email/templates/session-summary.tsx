@@ -121,6 +121,23 @@ export function SessionSummaryEmail({
         </tr>
       </table>
 
+      {/* ════════════════ RISK INDICATORS (manager only, before takeaways) ════════════════ */}
+      {variant === "manager" && aiAddendum && aiAddendum.riskIndicators.length > 0 && (
+        <div style={{
+          backgroundColor: "#ffdad6", borderRadius: "12px", padding: "24px 32px",
+          borderLeft: "4px solid #ba1a1a", marginBottom: "32px",
+        }}>
+          <p style={{ fontFamily: F.inter, fontSize: "11px", fontWeight: 700, color: "#93000a", textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 12px 0" }}>
+            {labels.riskIndicators}
+          </p>
+          {aiAddendum.riskIndicators.map((risk, i) => (
+            <p key={i} style={{ fontFamily: F.inter, fontSize: "14px", color: "#93000a", lineHeight: "1.5", margin: "0 0 4px 0" }}>
+              {risk}
+            </p>
+          ))}
+        </div>
+      )}
+
       {aiSummary ? (
         <>
           {/* ════════════════ BENTO GRID: Takeaways + Concerns ════════════════ */}
@@ -264,10 +281,10 @@ export function SessionSummaryEmail({
         <table cellPadding="0" cellSpacing="0" width="100%" style={{ marginBottom: "48px" }}>
           <tr>
             {/* Manager Insights — gradient card */}
-            <td style={{ width: "50%", paddingRight: "12px", verticalAlign: "top" }}>
+            <td style={{ width: "50%", paddingRight: "12px", verticalAlign: "top", height: "1px" }}>
               <div style={{
                 background: "linear-gradient(135deg, #29407d 0%, #425797 100%)",
-                borderRadius: "12px", padding: "40px", color: "#ffffff", height: "100%",
+                borderRadius: "12px", padding: "40px", color: "#ffffff", height: "100%", minHeight: "280px",
               }}>
                 <p style={{ fontFamily: F.manrope, fontSize: "22px", fontWeight: 700, color: "#ffffff", margin: "0 0 20px 0" }}>
                   {labels.managerInsights}
@@ -285,10 +302,10 @@ export function SessionSummaryEmail({
               </div>
             </td>
             {/* Coaching Suggestions */}
-            <td style={{ width: "50%", paddingLeft: "12px", verticalAlign: "top" }}>
+            <td style={{ width: "50%", paddingLeft: "12px", verticalAlign: "top", height: "1px" }}>
               <div style={{
                 backgroundColor: "rgba(0,76,71,0.05)", border: "1px solid rgba(0,76,71,0.1)",
-                borderRadius: "12px", padding: "40px", height: "100%",
+                borderRadius: "12px", padding: "40px", height: "100%", minHeight: "280px",
               }}>
                 <p style={{ fontFamily: F.manrope, fontSize: "22px", fontWeight: 700, color: "#004c47", margin: "0 0 20px 0" }}>
                   {labels.coachingSuggestions}
@@ -313,22 +330,7 @@ export function SessionSummaryEmail({
         </table>
       )}
 
-      {/* Risk Indicators (if any) */}
-      {variant === "manager" && aiAddendum && aiAddendum.riskIndicators.length > 0 && (
-        <div style={{
-          backgroundColor: "#ffdad6", borderRadius: "12px", padding: "24px 32px",
-          borderLeft: "4px solid #ba1a1a", marginBottom: "48px",
-        }}>
-          <p style={{ fontFamily: F.inter, fontSize: "11px", fontWeight: 700, color: "#93000a", textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 12px 0" }}>
-            {labels.riskIndicators}
-          </p>
-          {aiAddendum.riskIndicators.map((risk, i) => (
-            <p key={i} style={{ fontFamily: F.inter, fontSize: "14px", color: "#93000a", lineHeight: "1.5", margin: "0 0 4px 0" }}>
-              {risk}
-            </p>
-          ))}
-        </div>
-      )}
+      {/* (Risk indicators rendered above key takeaways) */}
 
       {/* ════════════════ CTA ════════════════ */}
       <div style={{ textAlign: "center", padding: "24px 0 0 0" }}>
