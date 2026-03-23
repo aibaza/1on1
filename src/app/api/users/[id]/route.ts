@@ -234,32 +234,6 @@ export async function PATCH(request: Request, { params }: RouteContext) {
             };
           }
 
-          // Direct circular reference check: only prevent A↔B (A manages B AND B manages A)
-          if (data.managerId) {
-            // Verify the proposed manager exists in this tenant
-            const [proposedManager] = await tx
-              .select({ id: users.id, managerId: users.managerId })
-              .from(users)
-              .where(
-                and(
-                  eq(users.id, data.managerId),
-                  eq(users.tenantId, session.user.tenantId)
-                )
-              );
-
-            if (!proposedManager) {
-              return { error: "Manager not found", status: 404 };
-            }
-
-            // Only block direct loops: the proposed manager's manager is the target user
-            if (proposedManager.managerId === id) {
-              return {
-                error: "Cannot assign: this would create a direct circular management relationship",
-                status: 400,
-              };
-            }
-          }
-
           const previousManagerId = targetUser.managerId;
           const [updated] = await tx
             .update(users)
