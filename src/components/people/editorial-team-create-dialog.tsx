@@ -93,7 +93,7 @@ export function EditorialTeamCreateDialog({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) handleClose(); else onOpenChange(true); }}>
-      <DialogContent className="sm:max-w-xl p-0 gap-0 overflow-visible border-[var(--editorial-outline-variant,var(--border))]/10">
+      <DialogContent showCloseButton={false} className="sm:max-w-xl p-0 gap-0 overflow-visible border-[var(--editorial-outline-variant,var(--border))]/10">
         {/* Header */}
         <div className="px-8 pt-8 pb-6 flex justify-between items-start">
           <div>

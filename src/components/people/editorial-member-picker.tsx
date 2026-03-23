@@ -137,7 +137,7 @@ export function EditorialMemberPicker({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-card w-full max-w-xl rounded-xl shadow-2xl flex flex-col overflow-hidden max-h-[870px] p-0 gap-0">
+      <DialogContent showCloseButton={false} className="bg-card w-full max-w-xl rounded-xl shadow-2xl flex flex-col overflow-hidden max-h-[870px] p-0 gap-0">
         {/* Header */}
         <div className="px-8 py-8 border-b border-[var(--editorial-surface-container,var(--border))]">
           <div className="flex justify-between items-start mb-6">
