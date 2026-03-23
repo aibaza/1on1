@@ -17,7 +17,9 @@ import {
   X,
   Users,
   AlertTriangle,
+  Info,
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { getAvatarUrl } from "@/lib/avatar";
 import { EditorialMemberPicker } from "@/components/people/editorial-member-picker";
 import {
@@ -272,36 +274,51 @@ export function EditorialTeamDetail({
 
             {/* Inline-editable description */}
             {editingDescription ? (
-              <div className="flex items-start gap-3 max-w-2xl">
-                <textarea
-                  value={descriptionValue}
-                  onChange={(e) => setDescriptionValue(e.target.value)}
-                  rows={3}
-                  className="text-muted-foreground text-lg leading-relaxed max-w-2xl bg-transparent border-b-2 border-primary outline-none w-full resize-none"
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === "Escape") {
-                      setDescriptionValue(team.description ?? "");
-                      setEditingDescription(false);
-                    }
-                  }}
-                />
-                <div className="flex flex-col gap-1">
-                  <button
-                    onClick={handleSaveDescription}
-                    className="p-2 rounded-lg hover:bg-accent text-primary transition-colors"
-                  >
-                    <Check className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setDescriptionValue(team.description ?? "");
-                      setEditingDescription(false);
+              <div className="space-y-2 max-w-2xl">
+                <div className="flex items-start gap-3">
+                  <textarea
+                    value={descriptionValue}
+                    onChange={(e) => setDescriptionValue(e.target.value)}
+                    rows={3}
+                    className="text-muted-foreground text-lg leading-relaxed bg-transparent border-b-2 border-primary outline-none w-full resize-none"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") {
+                        setDescriptionValue(team.description ?? "");
+                        setEditingDescription(false);
+                      }
                     }}
-                    className="p-2 rounded-lg hover:bg-accent text-muted-foreground transition-colors"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
+                  />
+                  <div className="flex flex-col gap-1">
+                    <button
+                      onClick={handleSaveDescription}
+                      className="p-2 rounded-lg hover:bg-accent text-primary transition-colors"
+                    >
+                      <Check className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setDescriptionValue(team.description ?? "");
+                        setEditingDescription(false);
+                      }}
+                      className="p-2 rounded-lg hover:bg-accent text-muted-foreground transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span>{t("create.descriptionHint")}</span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button type="button" className="text-muted-foreground hover:text-foreground transition-colors">
+                        <Info className="h-3 w-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs text-xs leading-relaxed">
+                      {t("create.descriptionTooltip")}
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               </div>
             ) : (
