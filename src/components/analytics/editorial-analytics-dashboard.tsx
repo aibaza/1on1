@@ -42,12 +42,8 @@ export function EditorialAnalyticsDashboard({ currentUserRole }: EditorialAnalyt
     );
   }
 
-  if (currentUserRole === "admin") {
+  if (currentUserRole === "admin" || currentUserRole === "manager") {
     return <EditorialAnalyticsAdmin data={data} />;
-  }
-
-  if (currentUserRole === "manager") {
-    return <EditorialAnalyticsManager data={data} />;
   }
 
   return <EditorialAnalyticsMember data={data} />;

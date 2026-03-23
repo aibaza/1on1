@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations, useFormatter } from "next-intl";
 import Link from "next/link";
 import {
@@ -95,8 +95,8 @@ function scoreColor(score: number | null): string {
 
 function scoreBadgeColor(score: number | null): string {
   if (score === null) return "bg-muted text-muted-foreground";
-  if (score >= 4.0) return "bg-[var(--editorial-tertiary-container,theme(colors.emerald.100))] text-[var(--editorial-on-tertiary-container,theme(colors.emerald.800))] dark:bg-emerald-950/50 dark:text-emerald-300";
-  if (score >= 3.0) return "bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300";
+  if (score >= 3.5) return "bg-[var(--editorial-tertiary-container,theme(colors.emerald.100))] text-[var(--editorial-on-tertiary-container,theme(colors.emerald.800))] dark:bg-emerald-950/50 dark:text-emerald-300";
+  if (score >= 2.5) return "bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300";
   return "bg-red-100 text-red-800 dark:bg-red-950/50 dark:text-red-300";
 }
 
@@ -222,13 +222,15 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
 
   const sortedPeople = useMemo(() => {
     return [...people].sort((a, b) => {
-      if (a.avgScore === null && b.avgScore === null) return 0;
-      if (a.avgScore === null) return 1;
-      if (b.avgScore === null) return 1;
-      return a.avgScore - b.avgScore;
+      // Most recent session first, nulls (no session) last
+      if (!a.lastSessionDate && !b.lastSessionDate) return 0;
+      if (!a.lastSessionDate) return 1;
+      if (!b.lastSessionDate) return -1;
+      return b.lastSessionDate.localeCompare(a.lastSessionDate);
     });
   }, [people]);
 
+  const [peopleLimit, setPeopleLimit] = useState(20);
   const completedSessions = kpis.completedSessions ?? 0;
 
   // Build sparkline entries: all session scores chronologically, last 50 max
@@ -508,7 +510,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
                 </tr>
               </thead>
               <tbody>
-                {sortedPeople.slice(0, 10).map((person) => {
+                {sortedPeople.slice(0, peopleLimit).map((person) => {
                   const name = `${person.firstName} ${person.lastName}`;
                   const days = daysAgo(person.lastSessionDate);
                   const stale = days !== null && days > 30;
@@ -568,11 +570,14 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
               </tbody>
             </table>
           </div>
-          {people.length > 10 && (
-            <div className="px-6 py-3 border-t border-border/50">
-              <Link href="/people" className="text-sm font-medium text-primary hover:underline">
-                {t("viewAll")} ({people.length})
-              </Link>
+          {sortedPeople.length > peopleLimit && (
+            <div className="px-6 py-3 border-t border-border/50 text-center">
+              <button
+                onClick={() => setPeopleLimit((prev) => prev + 20)}
+                className="text-sm font-medium text-primary hover:underline"
+              >
+                {t("viewAll")} ({sortedPeople.length - peopleLimit} more)
+              </button>
             </div>
           )}
         </div>

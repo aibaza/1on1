@@ -615,9 +615,9 @@ export async function GET() {
           alerts.splice(7);
 
           // ---------------------------------------------------------------
-          // 5. Team summaries (admin only)
+          // 5. Team summaries (admin + manager)
           // ---------------------------------------------------------------
-          if (isAdmin(role)) {
+          if (role === "admin" || role === "manager") {
             const allTeams = await tx
               .select({
                 id: teams.id,
