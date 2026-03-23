@@ -440,7 +440,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
             {teams.map((team) => (
               <Link
                 key={team.id}
-                href={`/analytics/team/${team.id}`}
+                href={`/teams/${team.id}`}
                 className="bg-card rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10 p-5 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center justify-between mb-3">
