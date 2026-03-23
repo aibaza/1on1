@@ -139,7 +139,21 @@
       "noAlertCount": "0 alerte",
       "membersCount": "{count} membri",
       "aiInsightPositive": "Echipa ta performează bine în ansamblu. Concentrează-te pe menținerea impulsului cu majoritatea sănătoasă, abordând în paralel nevoile individuale.",
-      "aiInsightNegative": "Unii membri ai echipei necesită atenție. Ia în considerare programarea unor ședințe 1:1 dedicate cu cei care au scoruri mai mici, pentru a înțelege blocajele."
+      "aiInsightNegative": "Unii membri ai echipei necesită atenție. Ia în considerare programarea unor ședințe 1:1 dedicate cu cei care au scoruri mai mici, pentru a înțelege blocajele.",
+      "backToAnalytics": "Înapoi la analize",
+      "teamName": "Echipa {name}",
+      "directReportsCount": "{count} rapoarte directe",
+      "teamPerformanceRoster": "Performanța echipei",
+      "teamScoreHistory": "Istoric scor echipă",
+      "teamScoreHistoryDesc": "Metrici de sănătate în timp",
+      "goal": "Obiectiv ({value})",
+      "priorityAlerts": "Alerte prioritare",
+      "decliningScore": "Scor în scădere",
+      "lowActionRate": "Rată scăzută de acțiuni",
+      "criticalScore": "Scor critic",
+      "openActionsCount": "{count} acțiuni deschise",
+      "allOnTrack": "Toate sesiunile sunt pe drumul cel bun",
+      "completionVsAssignment": "Finalizare vs atribuire"
     },
     "aggregate": {
       "sessionsCompleted": "Sesiuni Finalizate",
