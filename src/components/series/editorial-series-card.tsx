@@ -27,7 +27,7 @@ interface EditorialSeriesCardProps {
     preferredDay: string | null;
     preferredTime: string | null;
     manager: { id: string; firstName: string; lastName: string };
-    report: { id: string; firstName: string; lastName: string; avatarUrl: string | null };
+    report: { id: string; firstName: string; lastName: string; avatarUrl: string | null; role: string };
     latestSession: {
       id: string;
       status: string;
@@ -201,7 +201,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
         <div className="flex items-center gap-3">
           <div className="relative">
             <Avatar className="h-11 w-11 rounded-xl">
-              <AvatarImage src={getAvatarUrl(reportName, series.report.avatarUrl)} alt={reportName} className="rounded-xl" />
+              <AvatarImage src={getAvatarUrl(reportName, series.report.avatarUrl, null, series.report.role)} alt={reportName} className="rounded-xl" />
               <AvatarFallback className="text-xs rounded-xl font-bold">{getInitials(series.report.firstName, series.report.lastName)}</AvatarFallback>
             </Avatar>
             {/* Relationship badge */}

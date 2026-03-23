@@ -85,7 +85,7 @@ export function createColumns({
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <Avatar size="sm">
-            <AvatarImage src={getAvatarUrl(`${row.original.firstName} ${row.original.lastName}`, row.original.avatarUrl)} />
+            <AvatarImage src={getAvatarUrl(`${row.original.firstName} ${row.original.lastName}`, row.original.avatarUrl, null, row.original.role)} />
             <AvatarFallback>
               {getInitials(row.original.firstName, row.original.lastName)}
             </AvatarFallback>

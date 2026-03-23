@@ -46,6 +46,7 @@ interface SeriesDetailData {
     firstName: string;
     lastName: string;
     avatarUrl: string | null;
+    role: string;
   } | null;
   sessions: Array<{
     id: string;
@@ -175,7 +176,7 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
           <Avatar className="h-14 w-14">
-            <AvatarImage src={getAvatarUrl(`${report?.firstName ?? ""} ${report?.lastName ?? ""}`.trim(), report?.avatarUrl)} />
+            <AvatarImage src={getAvatarUrl(`${report?.firstName ?? ""} ${report?.lastName ?? ""}`.trim(), report?.avatarUrl, null, report?.role)} />
             <AvatarFallback className="text-lg">{reportInitials}</AvatarFallback>
           </Avatar>
           <div>

@@ -67,6 +67,7 @@ interface HealthResponse {
     lastName: string;
     jobTitle: string | null;
     avatarUrl: string | null;
+    role: string;
     avgScore: number | null;
     trend: number;
     lastSessionDate: string | null;
@@ -518,7 +519,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <img
-                            src={getAvatarUrl(name, person.avatarUrl)}
+                            src={getAvatarUrl(name, person.avatarUrl, null, person.role)}
                             alt={name}
                             className="w-8 h-8 rounded-full object-cover shrink-0"
                           />

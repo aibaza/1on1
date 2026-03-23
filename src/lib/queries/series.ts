@@ -15,12 +15,14 @@ export interface SeriesCardData {
     id: string;
     firstName: string;
     lastName: string;
+    role: string;
   };
   report: {
     id: string;
     firstName: string;
     lastName: string;
     avatarUrl: string | null;
+    role: string;
   };
   latestSession: {
     id: string;
@@ -127,6 +129,7 @@ export async function getSeriesCardData(
       firstName: users.firstName,
       lastName: users.lastName,
       avatarUrl: users.avatarUrl,
+      role: users.role,
     })
     .from(users)
     .where(sql`${users.id} IN ${reportIds}`);
@@ -140,6 +143,7 @@ export async function getSeriesCardData(
       id: users.id,
       firstName: users.firstName,
       lastName: users.lastName,
+      role: users.role,
     })
     .from(users)
     .where(sql`${users.id} IN ${managerIds}`);
@@ -302,12 +306,14 @@ export async function getSeriesCardData(
         id: s.managerId,
         firstName: managerMap.get(s.managerId)?.firstName ?? "",
         lastName: managerMap.get(s.managerId)?.lastName ?? "",
+        role: managerMap.get(s.managerId)?.role ?? "manager",
       },
       report: {
         id: s.reportId,
         firstName: report?.firstName ?? "",
         lastName: report?.lastName ?? "",
         avatarUrl: report?.avatarUrl ?? null,
+        role: report?.role ?? "member",
       },
       latestSession: latest
         ? {

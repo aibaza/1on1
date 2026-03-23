@@ -32,6 +32,7 @@ interface PersonSummary {
   lastName: string;
   jobTitle: string | null;
   avatarUrl: string | null;
+  role: string;
   avgScore: number | null;
   trend: number;
   lastSessionDate: string | null;
@@ -328,6 +329,7 @@ export async function GET() {
                     lastName: users.lastName,
                     jobTitle: users.jobTitle,
                     avatarUrl: users.avatarUrl,
+                    role: users.role,
                   })
                   .from(users)
                   .where(inArray(users.id, reportIds))
@@ -511,6 +513,7 @@ export async function GET() {
               lastName: u.lastName,
               jobTitle: u.jobTitle,
               avatarUrl: u.avatarUrl,
+              role: u.role,
               avgScore: round2(personAvg),
               trend: round2(personTrend) ?? 0,
               lastSessionDate: lastSession?.completedAt?.toISOString() ?? null,

@@ -133,7 +133,7 @@ export default async function UserProfilePage({
       {/* Profile header */}
       <div className="flex items-start gap-6">
         <Avatar className="h-20 w-20 text-xl">
-          <AvatarImage src={getAvatarUrl(`${data.firstName} ${data.lastName}`, data.avatarUrl)} />
+          <AvatarImage src={getAvatarUrl(`${data.firstName} ${data.lastName}`, data.avatarUrl, null, data.role)} />
           <AvatarFallback className="text-xl">
             {getInitials(data.firstName, data.lastName)}
           </AvatarFallback>

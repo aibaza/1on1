@@ -51,6 +51,7 @@ export default async function SeriesDetailPage({
             firstName: users.firstName,
             lastName: users.lastName,
             avatarUrl: users.avatarUrl,
+            role: users.role,
           })
           .from(users)
           .where(eq(users.id, series.managerId))
@@ -61,6 +62,7 @@ export default async function SeriesDetailPage({
             firstName: users.firstName,
             lastName: users.lastName,
             avatarUrl: users.avatarUrl,
+            role: users.role,
           })
           .from(users)
           .where(eq(users.id, series.reportId))

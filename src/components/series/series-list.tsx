@@ -29,6 +29,7 @@ interface Series {
     firstName: string;
     lastName: string;
     avatarUrl: string | null;
+    role: string;
   };
   latestSession: {
     id: string;

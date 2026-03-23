@@ -62,7 +62,7 @@ export function ProfileSheet({ user, open, onOpenChange }: ProfileSheetProps) {
         <SheetHeader className="text-left">
           <div className="flex items-center gap-4">
             <Avatar size="lg">
-              <AvatarImage src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl)} />
+              <AvatarImage src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl, null, user.role)} />
               <AvatarFallback>
                 {getInitials(user.firstName, user.lastName)}
               </AvatarFallback>

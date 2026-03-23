@@ -370,7 +370,7 @@ export function EditorialPeopleList({
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl)} alt={`${user.firstName} ${user.lastName}`} />
+                            <AvatarImage src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl, null, user.role)} alt={`${user.firstName} ${user.lastName}`} />
                             <AvatarFallback className="text-xs font-bold">
                               {getInitials(user.firstName, user.lastName)}
                             </AvatarFallback>

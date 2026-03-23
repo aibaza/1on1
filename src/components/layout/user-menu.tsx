@@ -80,7 +80,7 @@ export function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.name ? getAvatarUrl(user.name, user.image) : undefined} alt={user?.name ?? "User"} />
+            <AvatarImage src={user?.name ? getAvatarUrl(user.name, user.image, null, user.role) : undefined} alt={user?.name ?? "User"} />
             <AvatarFallback className="text-xs">
               {getInitials(user?.name)}
             </AvatarFallback>
