@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -433,7 +434,7 @@ export function TeamDetailClient({
                         <div className="flex items-center gap-2">
                           <Avatar className="h-7 w-7">
                             <AvatarImage
-                              src={member.avatarUrl ?? undefined}
+                              src={getAvatarUrl(`${member.firstName} ${member.lastName}`, member.avatarUrl)}
                               alt={`${member.firstName} ${member.lastName}`}
                             />
                             <AvatarFallback className="text-xs">

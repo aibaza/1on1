@@ -22,6 +22,7 @@ import { useTranslations, useFormatter } from "next-intl";
 import type { QuickStats, StatsTrends, OverdueGroup, RecentSession } from "@/lib/queries/dashboard";
 import type { SeriesCardData } from "@/lib/queries/series";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { StarRating } from "@/components/ui/star-rating";
 
 interface EditorialDashboardProps {
@@ -350,7 +351,7 @@ export function EditorialDashboard({
                     >
                       <div className="flex items-center space-x-4">
                         <Avatar className={`h-12 w-12 ${!isNext ? "grayscale group-hover:grayscale-0 transition-all" : ""}`}>
-                          <AvatarImage src={series.report.avatarUrl ?? undefined} alt={reportName} />
+                          <AvatarImage src={getAvatarUrl(reportName, series.report.avatarUrl)} alt={reportName} />
                           <AvatarFallback>{getInitials(reportName)}</AvatarFallback>
                         </Avatar>
                         <div>

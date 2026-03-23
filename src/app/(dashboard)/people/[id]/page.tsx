@@ -5,6 +5,7 @@ import { withTenantContext } from "@/lib/db/tenant-context";
 import { users, teams, teamMembers } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
@@ -132,7 +133,7 @@ export default async function UserProfilePage({
       {/* Profile header */}
       <div className="flex items-start gap-6">
         <Avatar className="h-20 w-20 text-xl">
-          {data.avatarUrl && <AvatarImage src={data.avatarUrl} />}
+          <AvatarImage src={getAvatarUrl(`${data.firstName} ${data.lastName}`, data.avatarUrl)} />
           <AvatarFallback className="text-xl">
             {getInitials(data.firstName, data.lastName)}
           </AvatarFallback>

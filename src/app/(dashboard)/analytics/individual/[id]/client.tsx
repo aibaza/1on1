@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   PeriodSelector,
@@ -156,7 +157,7 @@ export function IndividualAnalyticsClient({
       <div className="flex items-center gap-4">
         <Avatar className="h-12 w-12">
           <AvatarImage
-            src={targetUser.avatarUrl ?? undefined}
+            src={getAvatarUrl(`${targetUser.firstName} ${targetUser.lastName}`, targetUser.avatarUrl)}
             alt={`${targetUser.firstName} ${targetUser.lastName}`}
           />
           <AvatarFallback>{initials}</AvatarFallback>
