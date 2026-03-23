@@ -1,0 +1,25 @@
+{
+  "account": {
+    "title": "My Account",
+    "description": "Manage your profile and security settings",
+    "avatar": {
+      "title": "Avatar",
+      "description": "Your avatar is visible to other members of your organization",
+      "regenerate": "Generate New Avatar",
+      "regenerating": "Generating...",
+      "regenerated": "Avatar updated!"
+    },
+    "password": {
+      "title": "Change Password",
+      "description": "Update your password to keep your account secure",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "submit": "Update Password",
+      "submitting": "Updating...",
+      "success": "Password updated successfully",
+      "mismatch": "Passwords do not match",
+      "tooShort": "Password must be at least 8 characters"
+    }
+  }
+}

@@ -2,7 +2,8 @@
 
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import { LogOut, Globe, Check, Paintbrush } from "lucide-react";
+import { LogOut, Globe, Check, Paintbrush, User } from "lucide-react";
+import Link from "next/link";
 import { DESIGN_PREF_COOKIE, type DesignPreference } from "@/lib/design-preference";
 import { logoutAction } from "@/lib/auth/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -102,6 +103,13 @@ export function UserMenu() {
             </p>
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/account" className="cursor-pointer">
+            <User className="mr-2 h-4 w-4" />
+            {t("account")}
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuLabel className="flex items-center gap-2 text-xs text-muted-foreground">
           <Globe className="h-3.5 w-3.5" />

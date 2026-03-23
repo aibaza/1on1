@@ -31,6 +31,7 @@ export default getRequestConfig(async () => {
     ...(await import(`../../messages/${locale}/validation.json`)).default,
     ...(await import(`../../messages/${locale}/admin.json`)).default,
     ...(await import(`../../messages/${locale}/spec.json`)).default,
+    ...(await import(`../../messages/${locale}/account.json`)).default,
   };
 
   return {

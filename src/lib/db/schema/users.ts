@@ -28,6 +28,7 @@ export const users = pgTable(
     role: userRoleEnum("role").notNull().default("member"),
     jobTitle: varchar("job_title", { length: 200 }),
     avatarUrl: varchar("avatar_url", { length: 500 }),
+    avatarSeed: varchar("avatar_seed", { length: 50 }),
     passwordHash: varchar("password_hash", { length: 255 }),
     managerId: uuid("manager_id"),
     isActive: boolean("is_active").notNull().default(true),

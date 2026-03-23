@@ -1,0 +1,25 @@
+{
+  "account": {
+    "title": "Contul meu",
+    "description": "Gestionează profilul și setările de securitate",
+    "avatar": {
+      "title": "Avatar",
+      "description": "Avatarul tău este vizibil celorlalți membri ai organizației",
+      "regenerate": "Generează avatar nou",
+      "regenerating": "Se generează...",
+      "regenerated": "Avatar actualizat!"
+    },
+    "password": {
+      "title": "Schimbă parola",
+      "description": "Actualizează parola pentru a-ți menține contul securizat",
+      "currentPassword": "Parola curentă",
+      "newPassword": "Parola nouă",
+      "confirmPassword": "Confirmă parola nouă",
+      "submit": "Actualizează parola",
+      "submitting": "Se actualizează...",
+      "success": "Parola a fost actualizată",
+      "mismatch": "Parolele nu se potrivesc",
+      "tooShort": "Parola trebuie să aibă cel puțin 8 caractere"
+    }
+  }
+}
