@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
   Select,
   SelectContent,
@@ -594,120 +595,106 @@ export function EditorialActionItemsPage({
         )}
       </div>
 
-      {/* Edit Drawer — Backdrop */}
-      <div
-        className={cn(
-          "fixed inset-0 z-[55] transition-all duration-300",
-          editItem
-            ? "bg-foreground/20 backdrop-blur-sm pointer-events-auto"
-            : "bg-transparent backdrop-blur-0 pointer-events-none"
-        )}
-        onClick={() => setEditItem(null)}
-      />
-
-      {/* Edit Drawer Panel */}
-      <div
-        className={cn(
-          "fixed inset-y-0 right-0 w-[420px] bg-card shadow-2xl z-[60] p-10 border-l border-[var(--editorial-outline-variant,var(--border))]/20 overflow-y-auto transition-transform duration-300 ease-in-out",
-          editItem ? "translate-x-0" : "translate-x-full"
-        )}
-      >
-        {editItem && (
-          <>
-          <div className="flex items-center justify-between mb-10">
-            <h3 className="text-2xl font-headline font-black text-foreground">
-              {t("edit.title")}
-            </h3>
-            <button
-              type="button"
-              className="p-2 hover:bg-accent rounded-full transition-colors"
-              onClick={() => setEditItem(null)}
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-          <form
-            className="space-y-8"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleEditSubmit();
-            }}
-          >
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                {t("edit.titleLabel")}
-              </label>
-              <input
-                className={inputClass}
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                placeholder={t("edit.titlePlaceholder")}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                {t("edit.descriptionLabel")}
-              </label>
-              <textarea
-                className={cn(inputClass, "resize-none")}
-                rows={4}
-                value={editDescription}
-                onChange={(e) => setEditDescription(e.target.value)}
-                placeholder={t("edit.descriptionPlaceholder")}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  {t("edit.assigneeLabel")}
-                </label>
-                <Select value={editAssigneeId} onValueChange={setEditAssigneeId}>
-                  <SelectTrigger className={inputClass}>
-                    <SelectValue placeholder={t("edit.assigneePlaceholder")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {editParticipants.map((p) => (
-                      <SelectItem key={p.id} value={p.id}>
-                        {p.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+      {/* Edit Drawer */}
+      <Sheet open={!!editItem} onOpenChange={(open) => !open && setEditItem(null)}>
+        <SheetContent side="right" className="sm:max-w-[420px] p-10 flex flex-col gap-0" showCloseButton={false}>
+          {editItem && (
+            <>
+              <div className="flex items-center justify-between mb-10">
+                <h3 className="text-2xl font-headline font-black text-foreground">
+                  {t("edit.title")}
+                </h3>
+                <button
+                  type="button"
+                  className="p-2 hover:bg-accent rounded-full transition-colors"
+                  onClick={() => setEditItem(null)}
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  {t("edit.dueDateLabel")}
-                </label>
-                <input
-                  type="date"
-                  className={inputClass}
-                  value={editDueDate}
-                  onChange={(e) => setEditDueDate(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                Session
-              </label>
-              <div className="bg-primary/5 p-4 rounded-xl flex items-center text-primary font-bold text-sm">
-                <Link2 className="h-4 w-4 mr-2" />
-                {t("sessionBadge", { number: editItem.sessionNumber })}
-              </div>
-            </div>
-            <div className="pt-10 flex space-x-4">
-              <button
-                type="submit"
-                disabled={!editTitle.trim() || editMutation.isPending}
-                className="flex-1 py-4 bg-gradient-to-br from-primary to-[var(--editorial-primary-container,var(--primary))] text-primary-foreground rounded-xl font-bold shadow-lg hover:opacity-90 transition-all disabled:opacity-50"
+              <form
+                className="space-y-8 flex-1 overflow-y-auto"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleEditSubmit();
+                }}
               >
-                {editMutation.isPending ? t("edit.saving") : t("edit.save")}
-              </button>
-            </div>
-          </form>
-          </>
-        )}
-      </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                    {t("edit.titleLabel")}
+                  </label>
+                  <input
+                    className={inputClass}
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    placeholder={t("edit.titlePlaceholder")}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                    {t("edit.descriptionLabel")}
+                  </label>
+                  <textarea
+                    className={cn(inputClass, "resize-none")}
+                    rows={4}
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    placeholder={t("edit.descriptionPlaceholder")}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                      {t("edit.assigneeLabel")}
+                    </label>
+                    <Select value={editAssigneeId} onValueChange={setEditAssigneeId}>
+                      <SelectTrigger className={inputClass}>
+                        <SelectValue placeholder={t("edit.assigneePlaceholder")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {editParticipants.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                      {t("edit.dueDateLabel")}
+                    </label>
+                    <input
+                      type="date"
+                      className={inputClass}
+                      value={editDueDate}
+                      onChange={(e) => setEditDueDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                    Session
+                  </label>
+                  <div className="bg-primary/5 p-4 rounded-xl flex items-center text-primary font-bold text-sm">
+                    <Link2 className="h-4 w-4 mr-2" />
+                    {t("sessionBadge", { number: editItem.sessionNumber })}
+                  </div>
+                </div>
+                <div className="pt-10 flex space-x-4">
+                  <button
+                    type="submit"
+                    disabled={!editTitle.trim() || editMutation.isPending}
+                    className="flex-1 py-4 bg-gradient-to-br from-primary to-[var(--editorial-primary-container,var(--primary))] text-primary-foreground rounded-xl font-bold shadow-lg hover:opacity-90 transition-all disabled:opacity-50"
+                  >
+                    {editMutation.isPending ? t("edit.saving") : t("edit.save")}
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </>
   );
 }
