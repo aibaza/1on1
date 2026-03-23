@@ -60,6 +60,7 @@ interface HealthResponse {
     activeSeries: number;
     staleSeries: number;
     totalSessions: number;
+    completedSessions: number;
   };
   distribution: {
     healthy: number;
@@ -213,7 +214,7 @@ export async function GET() {
         );
         const completionRate =
           countableCurrent.length > 0
-            ? round2(completedCurrent.length / countableCurrent.length)!
+            ? Math.round((completedCurrent.length / countableCurrent.length) * 100)
             : 0;
 
         // Action item rate (from visible series, excluding cancelled)
@@ -240,7 +241,7 @@ export async function GET() {
         );
         const actionItemRate =
           allActionItems.length > 0
-            ? round2(completedActions.length / allActionItems.length)!
+            ? Math.round((completedActions.length / allActionItems.length) * 100)
             : 0;
 
         // Active / stale series
@@ -299,7 +300,8 @@ export async function GET() {
           actionItemRate,
           activeSeries,
           staleSeries,
-          totalSessions: completedCurrent.length,
+          totalSessions: countableCurrent.length,
+          completedSessions: completedCurrent.length,
         };
 
         // ---------------------------------------------------------------
@@ -718,7 +720,7 @@ export async function GET() {
                 );
                 const teamCompletionRate =
                   teamCountable.length > 0
-                    ? teamCompleted.length / teamCountable.length
+                    ? Math.round((teamCompleted.length / teamCountable.length) * 100)
                     : 0;
 
                 teamSummaries.push({
@@ -896,6 +898,7 @@ function buildEmptyResponse(
       activeSeries: 0,
       staleSeries: 0,
       totalSessions: 0,
+      completedSessions: 0,
     },
     distribution:
       role === "admin" || role === "manager"

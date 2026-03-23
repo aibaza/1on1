@@ -36,6 +36,7 @@ interface HealthResponse {
     activeSeries: number;
     staleSeries: number;
     totalSessions: number;
+    completedSessions: number;
   };
   distribution: {
     healthy: number;
@@ -227,7 +228,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
     });
   }, [people]);
 
-  const completedSessions = Math.round((kpis.completionRate / 100) * kpis.totalSessions);
+  const completedSessions = kpis.completedSessions ?? 0;
 
   // Build sparkline entries: all session scores chronologically, last 50 max
   const sparkEntries = useMemo<SparkEntry[]>(() => {
