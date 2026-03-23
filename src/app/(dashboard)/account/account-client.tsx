@@ -25,6 +25,7 @@ export function AccountClient({ user }: AccountClientProps) {
   // Avatar state
   const [avatarSeed, setAvatarSeed] = useState(user.avatarSeed);
   const [regenerating, setRegenerating] = useState(false);
+  const [avatarFading, setAvatarFading] = useState(false);
 
   // Password state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -48,7 +49,11 @@ export function AccountClient({ user }: AccountClientProps) {
           img.onerror = () => resolve();
           img.src = newUrl;
         });
+        setAvatarFading(true);
+        await new Promise((r) => setTimeout(r, 200));
         setAvatarSeed(data.seed);
+        await new Promise((r) => setTimeout(r, 50));
+        setAvatarFading(false);
         toast.success(t("avatar.regenerated"));
       }
     } finally {
@@ -110,7 +115,7 @@ export function AccountClient({ user }: AccountClientProps) {
                   key={avatarSeed}
                   src={avatarUrl}
                   alt={fullName}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-opacity duration-300 ${avatarFading ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}
                 />
               </div>
               <div
