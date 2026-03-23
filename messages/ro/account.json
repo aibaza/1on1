@@ -1,25 +1,32 @@
 {
   "account": {
     "title": "Contul meu",
-    "description": "Gestionează profilul și setările de securitate",
+    "description": "Gestioneaza profilul si setarile de securitate",
     "avatar": {
       "title": "Avatar",
-      "description": "Avatarul tău este vizibil celorlalți membri ai organizației",
-      "regenerate": "Generează avatar nou",
-      "regenerating": "Se generează...",
+      "description": "Avatarul tau este vizibil celorlalti membri ai organizatiei",
+      "regenerate": "Regenereaza avatar",
+      "regenerating": "Se genereaza...",
       "regenerated": "Avatar actualizat!"
     },
+    "profile": {
+      "title": "Informatii personale",
+      "firstName": "Prenume",
+      "lastName": "Nume",
+      "email": "Adresa de email",
+      "verified": "Cont verificat"
+    },
     "password": {
-      "title": "Schimbă parola",
-      "description": "Actualizează parola pentru a-ți menține contul securizat",
-      "currentPassword": "Parola curentă",
-      "newPassword": "Parola nouă",
-      "confirmPassword": "Confirmă parola nouă",
-      "submit": "Actualizează parola",
-      "submitting": "Se actualizează...",
-      "success": "Parola a fost actualizată",
+      "title": "Securitate",
+      "description": "Actualizeaza parola pentru a-ti mentine contul securizat",
+      "currentPassword": "Parola curenta",
+      "newPassword": "Parola noua",
+      "confirmPassword": "Confirma parola noua",
+      "submit": "Schimba parola",
+      "submitting": "Se actualizeaza...",
+      "success": "Parola a fost actualizata",
       "mismatch": "Parolele nu se potrivesc",
-      "tooShort": "Parola trebuie să aibă cel puțin 8 caractere"
+      "tooShort": "Parola trebuie sa aiba cel putin 8 caractere"
     }
   }
 }

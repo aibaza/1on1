@@ -5,17 +5,24 @@
     "avatar": {
       "title": "Avatar",
       "description": "Your avatar is visible to other members of your organization",
-      "regenerate": "Generate New Avatar",
+      "regenerate": "Regenerate Avatar",
       "regenerating": "Generating...",
       "regenerated": "Avatar updated!"
     },
+    "profile": {
+      "title": "Personal Information",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email Address",
+      "verified": "Verified Account"
+    },
     "password": {
-      "title": "Change Password",
+      "title": "Security",
       "description": "Update your password to keep your account secure",
-      "currentPassword": "Current password",
-      "newPassword": "New password",
-      "confirmPassword": "Confirm new password",
-      "submit": "Update Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "submit": "Change Password",
       "submitting": "Updating...",
       "success": "Password updated successfully",
       "mismatch": "Passwords do not match",

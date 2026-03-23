@@ -24,6 +24,7 @@ export default async function AccountPage() {
           avatarUrl: users.avatarUrl,
           avatarSeed: users.avatarSeed,
           role: users.role,
+          emailVerified: users.emailVerified,
         })
         .from(users)
         .where(eq(users.id, session.user.id))
@@ -34,11 +35,15 @@ export default async function AccountPage() {
   if (!user) redirect("/login");
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 py-8 px-4">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight font-headline">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1">{t("description")}</p>
-      </div>
+    <div className="pb-12 px-4 md:px-12">
+      <header className="mb-12">
+        <h1 className="text-4xl font-headline font-extrabold text-foreground tracking-tight">
+          {t("title")}
+        </h1>
+        <p className="text-muted-foreground mt-2 text-lg">
+          {user.firstName} {user.lastName}
+        </p>
+      </header>
 
       <AccountClient
         user={{
@@ -48,6 +53,7 @@ export default async function AccountPage() {
           avatarUrl: user.avatarUrl,
           avatarSeed: user.avatarSeed,
           role: user.role,
+          emailVerified: !!user.emailVerified,
         }}
       />
     </div>
