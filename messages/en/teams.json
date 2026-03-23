@@ -37,6 +37,7 @@
       "namePlaceholder": "e.g. Engineering",
       "descriptionLabel": "Description",
       "descriptionPlaceholder": "What does this team do?",
+      "optional": "Optional",
       "teamLead": "Team Lead",
       "selectLead": "Select team lead...",
       "searchPlaceholder": "Search users...",

@@ -37,6 +37,7 @@
       "namePlaceholder": "ex. Inginerie",
       "descriptionLabel": "Descriere",
       "descriptionPlaceholder": "Ce face această echipă?",
+      "optional": "Opțional",
       "teamLead": "Lider echipă",
       "selectLead": "Selectează lider echipă...",
       "searchPlaceholder": "Caută utilizatori...",

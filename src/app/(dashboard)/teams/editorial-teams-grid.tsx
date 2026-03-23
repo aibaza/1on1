@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslations, useFormatter } from "next-intl";
 import { Plus, Users, Calendar, UserX } from "lucide-react";
 import { getAvatarUrl } from "@/lib/avatar";
-import { TeamCreateDialog } from "@/components/people/team-create-dialog";
+import { EditorialTeamCreateDialog } from "@/components/people/editorial-team-create-dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 
@@ -175,7 +175,7 @@ export function EditorialTeamsGrid({
 
       {/* Create team dialog */}
       {canCreate && (
-        <TeamCreateDialog
+        <EditorialTeamCreateDialog
           open={createOpen}
           onOpenChange={setCreateOpen}
           onSuccess={() => refetch()}
