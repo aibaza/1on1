@@ -3,14 +3,16 @@ import { notionists } from "@dicebear/collection";
 import { NextResponse } from "next/server";
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ seed: string }> }
 ) {
   const { seed } = await params;
+  const url = new URL(req.url);
+  const bg = url.searchParams.get("bg") || "transparent";
 
   const avatar = createAvatar(notionists, {
     seed: decodeURIComponent(seed),
-    backgroundColor: ["transparent"],
+    backgroundColor: [bg],
   });
 
   const svg = avatar.toString();
