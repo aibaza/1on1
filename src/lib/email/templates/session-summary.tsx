@@ -57,6 +57,8 @@ interface SessionSummaryEmailProps {
   aiAddendum?: AiAddendum | null;
   labels: SessionSummaryLabels;
   managerName?: string;
+  companyName?: string;
+  companyColor?: string;
 }
 
 const F = {
@@ -73,12 +75,14 @@ export function SessionSummaryEmail({
   aiAddendum,
   labels,
   managerName,
+  companyName,
+  companyColor,
 }: SessionSummaryEmailProps) {
   const myItems = actionItems.filter((a) => a.isAssignedToRecipient);
   const otherItems = actionItems.filter((a) => !a.isAssignedToRecipient);
 
   return (
-    <EmailLayout footerText={labels.footer}>
+    <EmailLayout footerText={labels.footer} companyName={companyName} companyColor={companyColor}>
       {/* ════════════════ HEADER SECTION ════════════════ */}
       <table cellPadding="0" cellSpacing="0" width="100%" style={{ marginBottom: "48px" }}>
         <tr>
@@ -122,8 +126,8 @@ export function SessionSummaryEmail({
           {/* ════════════════ BENTO GRID: Takeaways + Concerns ════════════════ */}
           <table cellPadding="0" cellSpacing="0" width="100%" style={{ marginBottom: "48px" }}>
             <tr>
-              {/* Key Takeaways — 2/3 width */}
-              <td style={{ verticalAlign: "top", width: "65%", paddingRight: "16px" }}>
+              {/* Key Takeaways — 58% width */}
+              <td style={{ verticalAlign: "top", width: "58%", paddingRight: "16px" }}>
                 <div style={{
                   backgroundColor: "#ffffff", border: "1px solid #eceeef",
                   padding: "40px", borderRadius: "12px", height: "100%",
@@ -147,11 +151,11 @@ export function SessionSummaryEmail({
                   ))}
                 </div>
               </td>
-              {/* Concerns — 1/3 width */}
+              {/* Concerns — 42% width */}
               {aiSummary.areasOfConcern.length > 0 && (
-                <td style={{ verticalAlign: "top", width: "35%" }}>
+                <td style={{ verticalAlign: "top", width: "42%" }}>
                   <div style={{
-                    backgroundColor: "#f2f4f5", padding: "40px", borderRadius: "12px", height: "100%",
+                    backgroundColor: "#f2f4f5", padding: "24px", borderRadius: "12px", height: "100%",
                   }}>
                     <p style={{ fontFamily: F.manrope, fontSize: "22px", fontWeight: 700, color: "#191c1d", letterSpacing: "-0.015em", margin: "0 0 24px 0" }}>
                       {labels.areasOfConcern}

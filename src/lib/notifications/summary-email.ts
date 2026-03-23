@@ -63,11 +63,19 @@ export async function sendPostSessionSummaryEmails(params: {
 
   // Resolve tenant content language for email translation
   const [tenantRow] = await adminDb
-    .select({ contentLanguage: tenants.contentLanguage })
+    .select({ contentLanguage: tenants.contentLanguage, name: tenants.name, settings: tenants.settings })
     .from(tenants)
     .where(eq(tenants.id, tenantId))
     .limit(1);
   const locale = tenantRow?.contentLanguage ?? "en";
+  const companyName = tenantRow?.name ?? undefined;
+  const tenantSettings = (tenantRow?.settings ?? {}) as { colorTheme?: string };
+  // Map color theme names to hex colors for email
+  const themeColorMap: Record<string, string> = {
+    neutral: "#0a0a0a", zinc: "#27272a", slate: "#1e293b", stone: "#292524",
+    blue: "#29407d", green: "#166534", yellow: "#854d0e", orange: "#c2410c",
+  };
+  const companyColor = themeColorMap[tenantSettings.colorTheme ?? ""] || "#29407d";
   const t = await createEmailTranslator(locale);
 
   const [manager] = await adminDb
@@ -210,6 +218,8 @@ export async function sendPostSessionSummaryEmails(params: {
         actionItems: reportActionItems,
         viewSessionUrl,
         labels: reportLabels,
+        companyName,
+        companyColor,
       })
     );
 
@@ -262,6 +272,9 @@ export async function sendPostSessionSummaryEmails(params: {
         viewSessionUrl,
         aiAddendum,
         labels: managerLabels,
+        managerName,
+        companyName,
+        companyColor,
       })
     );
 
