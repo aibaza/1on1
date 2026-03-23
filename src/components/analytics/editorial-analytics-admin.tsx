@@ -446,7 +446,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mb-3">
-                  {team.memberCount} members
+                  {t("membersCount", { count: team.memberCount })}
                 </p>
                 {/* Avatar stack */}
                 <div className="flex -space-x-2 mb-3">

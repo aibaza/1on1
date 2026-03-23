@@ -131,13 +131,7 @@ function daysAgo(dateStr: string | null): number | null {
   return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
 
-function relativeDateLabel(dateStr: string | null): string {
-  const days = daysAgo(dateStr);
-  if (days === null) return "\u2014";
-  if (days === 0) return "Today";
-  if (days === 1) return "1 day ago";
-  return `${days} days ago`;
-}
+// relativeDateLabel is defined inside the component (needs t() access)
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
@@ -163,6 +157,13 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
   const t = useTranslations("analytics.health");
 
   const { kpis, distribution, alerts, people } = data;
+
+  function relativeDateLabel(dateStr: string | null): string {
+    const days = daysAgo(dateStr);
+    if (days === null) return "\u2014";
+    if (days === 0) return t("today");
+    return t("daysAgo", { count: days });
+  }
 
   const sortedPeople = useMemo(() => {
     return [...people].sort((a, b) => {
@@ -294,8 +295,8 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
                 <Sparkles className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <p className="text-sm text-muted-foreground">
                   {healthyPct >= 70
-                    ? "Your team is performing well overall. Focus on maintaining momentum with the healthy majority while addressing individual needs."
-                    : "Some team members need attention. Consider scheduling focused 1:1s with reports showing lower scores to understand blockers."}
+                    ? t("aiInsightPositive")
+                    : t("aiInsightNegative")}
                 </p>
               </div>
             </div>

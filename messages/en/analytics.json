@@ -136,7 +136,10 @@
       "noAnalyticsYet": "No analytics yet",
       "noAnalyticsYetDesc": "Complete your first 1:1 session to start tracking growth.",
       "alertCount": "{count} Alerts",
-      "noAlertCount": "0 Alerts"
+      "noAlertCount": "0 Alerts",
+      "membersCount": "{count} members",
+      "aiInsightPositive": "Your team is performing well overall. Focus on maintaining momentum with the healthy majority while addressing individual needs.",
+      "aiInsightNegative": "Some team members need attention. Consider scheduling focused 1:1s with reports showing lower scores to understand blockers."
     },
     "aggregate": {
       "sessionsCompleted": "Sessions Completed",

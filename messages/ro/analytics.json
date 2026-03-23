@@ -136,7 +136,10 @@
       "noAnalyticsYet": "Încă nu sunt analize",
       "noAnalyticsYetDesc": "Finalizează prima sesiune 1:1 pentru a începe urmărirea creșterii.",
       "alertCount": "{count} alerte",
-      "noAlertCount": "0 alerte"
+      "noAlertCount": "0 alerte",
+      "membersCount": "{count} membri",
+      "aiInsightPositive": "Echipa ta performează bine în ansamblu. Concentrează-te pe menținerea impulsului cu majoritatea sănătoasă, abordând în paralel nevoile individuale.",
+      "aiInsightNegative": "Unii membri ai echipei necesită atenție. Ia în considerare programarea unor ședințe 1:1 dedicate cu cei care au scoruri mai mici, pentru a înțelege blocajele."
     },
     "aggregate": {
       "sessionsCompleted": "Sesiuni Finalizate",
