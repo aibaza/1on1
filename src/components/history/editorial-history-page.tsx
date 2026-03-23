@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
+import { getAvatarUrl } from "@/lib/avatar";
 
 // --- Types ---
 
@@ -29,6 +30,8 @@ interface HistorySession {
   seriesId: string;
   reportFirstName: string;
   reportLastName: string;
+  reportAvatarUrl: string | null;
+  reportRole: string;
   managerFirstName: string;
   managerLastName: string;
 }
@@ -243,6 +246,8 @@ export function EditorialHistoryPage({
       {
         seriesId: string;
         reportName: string;
+        reportAvatarUrl: string | null;
+        reportRole: string;
         managerName: string;
         sessions: HistorySession[];
       }
@@ -253,6 +258,8 @@ export function EditorialHistoryPage({
         groups.set(s.seriesId, {
           seriesId: s.seriesId,
           reportName: `${s.reportFirstName} ${s.reportLastName}`.trim(),
+          reportAvatarUrl: s.reportAvatarUrl,
+          reportRole: s.reportRole,
           managerName: `${s.managerFirstName} ${s.managerLastName}`.trim(),
           sessions: [],
         });
@@ -481,18 +488,25 @@ export function EditorialHistoryPage({
                 <section key={group.seriesId}>
                   {/* Group header */}
                   <div className="flex items-end justify-between mb-6 px-2">
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-1 block">
-                        {t("series")}
-                      </span>
-                      <h3 className="font-headline text-xl font-bold text-foreground">
-                        {group.reportName}
-                      </h3>
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={getAvatarUrl(group.reportName, group.reportAvatarUrl, null, group.reportRole)}
+                        alt={group.reportName}
+                        className="w-12 h-12 rounded-full object-cover shrink-0"
+                      />
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-1 block">
+                          {t("series")}
+                        </span>
+                        <h3 className="font-headline text-xl font-bold text-foreground">
+                          {group.reportName}
+                        </h3>
+                      </div>
                     </div>
                     {/* Score trend sparkline */}
                     <div className="flex flex-col items-end">
                       <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--editorial-tertiary,var(--color-success))] mb-1">
-                        Score Trend
+                        {t("scoreTrend")}
                       </span>
                       <div className="w-24 h-6 flex items-end gap-1">
                         {(allSeriesScores[group.seriesId] ?? []).map(
@@ -632,7 +646,7 @@ export function EditorialHistoryPage({
                             ) : (
                               <span className="text-xs font-medium text-muted-foreground/40 italic">
                                 {isInProgress
-                                  ? "Pending"
+                                  ? t("pending")
                                   : isStatic
                                     ? "--"
                                     : ""}

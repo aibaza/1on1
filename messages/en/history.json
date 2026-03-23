@@ -30,6 +30,8 @@
     "status_in_progress": "in progress",
     "status_scheduled": "scheduled",
     "status_cancelled": "cancelled",
-    "status_missed": "missed"
+    "status_missed": "missed",
+    "scoreTrend": "Score Trend",
+    "pending": "Pending"
   }
 }

@@ -30,6 +30,8 @@
     "status_in_progress": "în desfășurare",
     "status_scheduled": "programat",
     "status_cancelled": "anulat",
-    "status_missed": "ratat"
+    "status_missed": "ratat",
+    "scoreTrend": "Trend scor",
+    "pending": "În așteptare"
   }
 }

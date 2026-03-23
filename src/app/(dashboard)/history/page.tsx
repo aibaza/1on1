@@ -60,6 +60,8 @@ export default async function HistoryServerPage() {
               id: users.id,
               firstName: users.firstName,
               lastName: users.lastName,
+              avatarUrl: users.avatarUrl,
+              role: users.role,
             })
             .from(users)
             .where(inArray(users.id, allUserIds))
@@ -164,6 +166,8 @@ export default async function HistoryServerPage() {
           seriesId: s.seriesId,
           reportFirstName: report?.firstName ?? "",
           reportLastName: report?.lastName ?? "",
+          reportAvatarUrl: report?.avatarUrl ?? null,
+          reportRole: report?.role ?? "member",
           managerFirstName: manager?.firstName ?? "",
           managerLastName: manager?.lastName ?? "",
         };
