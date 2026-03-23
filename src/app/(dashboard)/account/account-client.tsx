@@ -41,6 +41,13 @@ export function AccountClient({ user }: AccountClientProps) {
       const res = await fetch("/api/user/avatar", { method: "POST" });
       const data = await res.json();
       if (res.ok) {
+        const newUrl = getAvatarUrl(fullName, user.avatarUrl, data.seed);
+        await new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+          img.src = newUrl;
+        });
         setAvatarSeed(data.seed);
         toast.success(t("avatar.regenerated"));
       }
