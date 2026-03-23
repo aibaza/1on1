@@ -9,12 +9,16 @@ import {
 } from "@/lib/db/schema";
 import { eq, and, or, desc, inArray } from "drizzle-orm";
 import { HistoryPage } from "@/components/history/history-page";
+import { EditorialHistoryPage } from "@/components/history/editorial-history-page";
 import { getTranslations } from "next-intl/server";
+import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function HistoryServerPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
   const t = await getTranslations("history");
+  const designPref = await getDesignPreference();
+  const isEditorial = designPref === "editorial";
 
   const data = await withTenantContext(
     session.user.tenantId,
@@ -174,6 +178,18 @@ export default async function HistoryServerPage() {
       };
     }
   );
+
+  if (isEditorial) {
+    return (
+      <EditorialHistoryPage
+        initialSessions={data.initialSessions}
+        initialSeriesScores={data.seriesScores}
+        initialHasMore={data.hasMore}
+        initialNextCursor={data.nextCursor}
+        seriesOptions={data.seriesOptions}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">

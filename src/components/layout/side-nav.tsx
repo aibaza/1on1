@@ -19,6 +19,7 @@ import {
   PanelLeftOpen,
   UsersRound,
   ListChecks,
+  History,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -137,6 +138,7 @@ export function SideNav() {
     { label: t("overview"), href: "/overview", icon: LayoutDashboard },
     { label: t("sessions"), href: "/sessions", icon: CalendarDays, matchAlso: ["/sessions"] },
     { label: t("actionItems"), href: "/action-items", icon: ListChecks },
+    { label: t("history"), href: "/history", icon: History },
     { label: t("analytics"), href: "/analytics", icon: BarChart3, matchAlso: ["/analytics"], minRole: "manager" },
     { label: t("templates"), href: "/templates", icon: FileText, minRole: "manager" },
   ];
