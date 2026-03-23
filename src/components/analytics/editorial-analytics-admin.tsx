@@ -440,7 +440,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
             {teams.map((team) => (
               <Link
                 key={team.id}
-                href={`/teams/${team.id}`}
+                href={`/analytics/team/${team.id}`}
                 className="bg-card rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10 p-5 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center justify-between mb-3">
@@ -516,7 +516,11 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
                   const stale = days !== null && days > 30;
 
                   return (
-                    <tr key={person.userId} className="border-b border-border/30 last:border-0 hover:bg-muted/30 transition-colors">
+                    <tr
+                      key={person.userId}
+                      className="border-b border-border/30 last:border-0 hover:bg-muted/30 transition-colors cursor-pointer"
+                      onClick={() => window.location.href = `/analytics/individual/${person.userId}`}
+                    >
                       {/* Member */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
