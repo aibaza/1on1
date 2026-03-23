@@ -248,12 +248,12 @@ export function ActionItemInline({
       {!readOnly && (
         <>
           {showForm ? (
-            <div className="space-y-2 rounded-md border border-dashed p-3">
+            <div className="space-y-2 rounded-xl bg-[var(--editorial-surface-container-low,var(--muted))]/50 p-3">
               <Input
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
                 placeholder={t("titlePlaceholder")}
-                className="h-8 text-sm"
+                className="h-9 text-sm bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg focus-visible:ring-1 focus-visible:ring-[var(--editorial-primary-container,var(--ring))]"
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
@@ -269,7 +269,7 @@ export function ActionItemInline({
 
               <div className="flex items-center gap-2">
                 <Select value={formAssignee} onValueChange={setFormAssignee}>
-                  <SelectTrigger className="h-8 flex-1 text-xs">
+                  <SelectTrigger className="h-9 flex-1 text-xs bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg">
                     <SelectValue placeholder={t("assignTo")} />
                   </SelectTrigger>
                   <SelectContent>
@@ -285,7 +285,7 @@ export function ActionItemInline({
                   type="date"
                   value={formDueDate}
                   onChange={(e) => setFormDueDate(e.target.value)}
-                  className="h-8 w-[140px] text-xs"
+                  className="h-9 w-[140px] text-xs bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg focus-visible:ring-1 focus-visible:ring-[var(--editorial-primary-container,var(--ring))]"
                   placeholder={t("dueDate")}
                 />
               </div>

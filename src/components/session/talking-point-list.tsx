@@ -247,7 +247,7 @@ export function TalkingPointList({
             onChange={(e) => setNewContent(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t("addPlaceholder")}
-            className="h-8 text-sm"
+            className="h-9 text-sm bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg focus-visible:ring-1 focus-visible:ring-[var(--editorial-primary-container,var(--ring))]"
           />
           <Button
             type="button"
