@@ -94,6 +94,7 @@ const baseLabels = {
   coachingSuggestions: "Coaching Suggestions",
   riskIndicators: "Risk Indicators",
   button: "View Full Session",
+  feedbackFrom: "Feedback from Ciprian Dobrea",
   footer: "This email was sent by 1on1 · © 2026 All rights reserved",
 };
 

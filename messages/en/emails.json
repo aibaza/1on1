@@ -41,6 +41,7 @@
       "managerInsights": "Manager Insights",
       "coachingSuggestions": "Coaching Suggestions",
       "riskIndicators": "Risk Indicators",
+      "feedbackFrom": "Feedback from {managerName}",
       "button": "View Full Session",
       "footer": "This email was sent by 1on1"
     },

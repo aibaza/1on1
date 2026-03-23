@@ -43,6 +43,7 @@ interface SessionSummaryLabels {
   footer: string;
   blocker: string;
   needsClarity: string;
+  feedbackFrom: string;
 }
 
 interface SessionSummaryEmailProps {
@@ -287,7 +288,7 @@ export function SessionSummaryEmail({
                 {managerName && (
                   <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "16px" }}>
                     <p style={{ fontFamily: F.inter, fontSize: "11px", fontWeight: 700, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0" }}>
-                      Feedback from {managerName}
+                      {labels.feedbackFrom}
                     </p>
                   </div>
                 )}

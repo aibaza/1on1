@@ -67,9 +67,9 @@ export async function sendPostSessionSummaryEmails(params: {
     .from(tenants)
     .where(eq(tenants.id, tenantId))
     .limit(1);
-  const locale = tenantRow?.contentLanguage ?? "en";
+  const tenantSettings = (tenantRow?.settings ?? {}) as { preferredLanguage?: string; colorTheme?: string };
+  const locale = tenantSettings.preferredLanguage || tenantRow?.contentLanguage || "en";
   const companyName = tenantRow?.name ?? undefined;
-  const tenantSettings = (tenantRow?.settings ?? {}) as { colorTheme?: string };
   // Map color theme names to hex colors for email
   const themeColorMap: Record<string, string> = {
     neutral: "#0a0a0a", zinc: "#27272a", slate: "#1e293b", stone: "#292524",
@@ -187,6 +187,7 @@ export async function sendPostSessionSummaryEmails(params: {
     footer: t("emails.sessionSummary.footer"),
     blocker: t("emails.sessionSummary.blocker"),
     needsClarity: t("emails.sessionSummary.needsClarity"),
+    feedbackFrom: "", // set per recipient below
   };
 
   const reportLabels = {
@@ -199,6 +200,7 @@ export async function sendPostSessionSummaryEmails(params: {
     ...baseLabels,
     greeting: t("emails.sessionSummary.greeting", { recipientName: manager.firstName, otherPartyName: reportName }),
     otherActionItems: t("emails.sessionSummary.assignedToOther", { name: reportName }),
+    feedbackFrom: t("emails.sessionSummary.feedbackFrom", { managerName }),
   };
 
   // Send report email (no addendum)

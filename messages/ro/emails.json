@@ -41,6 +41,7 @@
       "managerInsights": "Observații manager",
       "coachingSuggestions": "Sugestii de coaching",
       "riskIndicators": "Indicatori de risc",
+      "feedbackFrom": "Feedback de la {managerName}",
       "button": "Vezi ședința completă",
       "footer": "Acest email a fost trimis de 1on1"
     },
