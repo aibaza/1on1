@@ -166,7 +166,7 @@ export function SideNav() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link href="/overview">
-                  <LogoIcon className="h-7 w-10" />
+                  <Logo className="h-6 w-full max-w-[64px]" />
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={8}>1on1 — {t("meetingManagement")}</TooltipContent>
