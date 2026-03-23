@@ -115,6 +115,12 @@
       "clearSelection": "Anulează selecția",
       "showingMembers": "Se afișează {from}-{to} din {total} membri",
       "invited": "Invitat"
+    },
+    "teamStructure": {
+      "title": "Structura echipei",
+      "collapse": "Restrânge tot",
+      "expand": "Extinde tot",
+      "noManager": "Fără manager atribuit ({count})"
     }
   }
 }

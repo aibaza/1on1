@@ -171,7 +171,7 @@ export default async function PeoplePage() {
             availableTeams={data.teams}
           />
           {(session.user.role === "admin" || session.user.role === "manager") && (
-            <TeamStructure users={data.users} />
+            <TeamStructure users={data.users} currentUserId={session.user.id} currentUserRole={session.user.role} />
           )}
         </>
       ) : (

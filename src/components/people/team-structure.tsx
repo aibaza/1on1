@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronRight, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarUrl } from "@/lib/avatar";
 import type { UserRow } from "./people-table-columns";
 
 interface TeamStructureProps {
   users: UserRow[];
+  currentUserId: string;
+  currentUserRole: string;
 }
 
 interface ManagerNode {
@@ -19,19 +22,32 @@ function getInitials(first: string, last: string): string {
   return `${first?.[0] ?? ""}${last?.[0] ?? ""}`.toUpperCase() || "?";
 }
 
-function buildTree(users: UserRow[]): { roots: ManagerNode[]; unassigned: UserRow[] } {
+function buildTree(
+  users: UserRow[],
+  currentUserId: string,
+  currentUserRole: string
+): { roots: ManagerNode[]; unassigned: UserRow[] } {
   const activeUsers = users.filter((u) => u.status !== "deactivated");
   const byId = new Map(activeUsers.map((u) => [u.id, u]));
 
   // Find managers (users who have at least one report)
   const managerIds = new Set(activeUsers.filter((u) => u.managerId).map((u) => u.managerId!));
-  const roots: ManagerNode[] = [];
+  const allRoots: ManagerNode[] = [];
 
   for (const managerId of managerIds) {
     const manager = byId.get(managerId);
     if (!manager) continue;
     const reports = activeUsers.filter((u) => u.managerId === managerId);
-    roots.push({ user: manager, reports });
+    allRoots.push({ user: manager, reports });
+  }
+
+  // For managers: show only their own tree node
+  // For admins: show all trees
+  let roots: ManagerNode[];
+  if (currentUserRole === "admin") {
+    roots = allRoots;
+  } else {
+    roots = allRoots.filter((node) => node.user.id === currentUserId);
   }
 
   // Sort: admins first, then by name
@@ -41,37 +57,45 @@ function buildTree(users: UserRow[]): { roots: ManagerNode[]; unassigned: UserRo
     return `${a.user.lastName} ${a.user.firstName}`.localeCompare(`${b.user.lastName} ${b.user.firstName}`);
   });
 
-  // Users without a manager who aren't a manager themselves
-  const allManagedOrManagers = new Set([...managerIds, ...activeUsers.filter((u) => u.managerId).map((u) => u.id)]);
-  const unassigned = activeUsers.filter((u) => !allManagedOrManagers.has(u.id));
+  // Users without a manager who aren't a manager themselves (admin view only)
+  let unassigned: UserRow[] = [];
+  if (currentUserRole === "admin") {
+    const allManagedOrManagers = new Set([...managerIds, ...activeUsers.filter((u) => u.managerId).map((u) => u.id)]);
+    unassigned = activeUsers.filter((u) => !allManagedOrManagers.has(u.id));
+  }
 
   return { roots, unassigned };
 }
 
-function RoleBadge({ role }: { role: string }) {
+function RoleBadge({ user }: { user: UserRow }) {
+  const t = useTranslations("people.table");
+  const label = user.jobTitle
+    ? user.jobTitle
+    : user.role === "admin" ? t("admin") : user.role === "manager" ? t("manager") : t("member");
   return (
     <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-      {role === "admin" ? "Director, Admin" : role === "manager" ? "Manager" : "Member"}
+      {label}
     </span>
   );
 }
 
-export function TeamStructure({ users }: TeamStructureProps) {
+export function TeamStructure({ users, currentUserId, currentUserRole }: TeamStructureProps) {
+  const t = useTranslations("people.teamStructure");
   const [expanded, setExpanded] = useState(true);
-  const { roots, unassigned } = buildTree(users);
+  const { roots, unassigned } = buildTree(users, currentUserId, currentUserRole);
 
   if (roots.length === 0) return null;
 
   return (
     <section className="mt-12 bg-muted/50 rounded-2xl p-8">
       <div className="flex items-center justify-between mb-8">
-        <h3 className="text-xl font-extrabold text-foreground font-headline">Team Structure</h3>
+        <h3 className="text-xl font-extrabold text-foreground font-headline">{t("title")}</h3>
         <button
           onClick={() => setExpanded((v) => !v)}
           className="text-primary font-bold text-xs flex items-center gap-1 hover:underline"
         >
           {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          {expanded ? "Collapse All" : "Expand All"}
+          {expanded ? t("collapse") : t("expand")}
         </button>
       </div>
 
@@ -88,7 +112,7 @@ export function TeamStructure({ users }: TeamStructureProps) {
                 </Avatar>
                 <div>
                   <p className="text-sm font-bold text-foreground">{node.user.firstName} {node.user.lastName}</p>
-                  <RoleBadge role={node.user.role} />
+                  <RoleBadge user={node.user} />
                 </div>
               </div>
 
@@ -116,7 +140,7 @@ export function TeamStructure({ users }: TeamStructureProps) {
             <div className="mt-4 pt-4 border-t border-border/30">
               <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
                 <Users className="h-3.5 w-3.5" />
-                No manager assigned ({unassigned.length})
+                {t("noManager", { count: unassigned.length })}
               </p>
               <div className="flex flex-wrap gap-2">
                 {unassigned.map((u) => (

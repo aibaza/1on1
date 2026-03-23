@@ -115,6 +115,12 @@
       "clearSelection": "Clear selection",
       "showingMembers": "Showing {from} to {to} of {total} members",
       "invited": "Invited"
+    },
+    "teamStructure": {
+      "title": "Team Structure",
+      "collapse": "Collapse All",
+      "expand": "Expand All",
+      "noManager": "No manager assigned ({count})"
     }
   }
 }
