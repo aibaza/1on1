@@ -153,18 +153,10 @@ export function SessionSummaryEmail({
                     {labels.keyTakeaways}
                   </p>
                   {aiSummary.keyTakeaways.map((takeaway, i) => (
-                    <table key={i} cellPadding="0" cellSpacing="0" width="100%" style={{ marginBottom: "20px" }}>
-                      <tr>
-                        <td style={{ width: "20px", verticalAlign: "top", paddingTop: "9px" }}>
-                          <div style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#004c47" }} />
-                        </td>
-                        <td>
-                          <p style={{ fontFamily: F.inter, fontSize: "15px", lineHeight: "1.7", color: "#454652", margin: "0" }}>
-                            {takeaway}
-                          </p>
-                        </td>
-                      </tr>
-                    </table>
+                    <p key={i} style={{ fontFamily: F.inter, fontSize: "15px", lineHeight: "1.7", color: "#454652", margin: "0 0 16px 0" }}>
+                      <span style={{ color: "#004c47", fontWeight: 700, marginRight: "8px" }}>—</span>
+                      {takeaway}
+                    </p>
                   ))}
                 </div>
               </td>
@@ -311,18 +303,10 @@ export function SessionSummaryEmail({
                   {labels.coachingSuggestions}
                 </p>
                 {aiAddendum.coachingSuggestions.map((suggestion, i) => (
-                  <table key={i} cellPadding="0" cellSpacing="0" width="100%" style={{ marginBottom: "12px" }}>
-                    <tr>
-                      <td style={{ width: "24px", verticalAlign: "top", paddingTop: "2px" }}>
-                        <span style={{ color: "#004c47", fontSize: "16px" }}>•</span>
-                      </td>
-                      <td>
-                        <p style={{ fontFamily: F.inter, fontSize: "15px", lineHeight: "1.6", color: "#454652", fontWeight: 500, margin: "0" }}>
-                          {suggestion}
-                        </p>
-                      </td>
-                    </tr>
-                  </table>
+                  <p key={i} style={{ fontFamily: F.inter, fontSize: "15px", lineHeight: "1.6", color: "#454652", fontWeight: 500, margin: "0 0 12px 0" }}>
+                    <span style={{ color: "#004c47", fontWeight: 700, marginRight: "8px" }}>—</span>
+                    {suggestion}
+                  </p>
                 ))}
               </div>
             </td>
