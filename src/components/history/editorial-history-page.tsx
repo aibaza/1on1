@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getAvatarUrl } from "@/lib/avatar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 // --- Types ---
 
@@ -508,21 +509,25 @@ export function EditorialHistoryPage({
                       <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--editorial-tertiary,var(--color-success))] mb-1">
                         {t("scoreTrend")}
                       </span>
-                      <div className="w-24 h-6 flex items-end gap-1">
+                      <div className="w-28 h-10 flex items-end gap-px overflow-hidden">
                         {(allSeriesScores[group.seriesId] ?? []).map(
-                          (score, i, arr) => (
-                            <div
-                              key={i}
-                              className={cn(
-                                "w-full rounded-t-[2px]",
-                                i === arr.length - 1
-                                  ? "bg-[var(--editorial-tertiary,var(--color-success))]"
-                                  : "bg-[var(--editorial-tertiary-fixed-dim,#71d7cd)]"
-                              )}
-                              style={{
-                                height: `${Math.max(10, (score / 5) * 100)}%`,
-                              }}
-                            />
+                          (score, i) => (
+                            <Tooltip key={i}>
+                              <TooltipTrigger asChild>
+                                <div
+                                  className={cn(
+                                    "flex-1 min-w-[3px] max-w-3 rounded-t-sm cursor-default hover:opacity-80 transition-opacity",
+                                    score >= 3.5 ? "bg-emerald-400/60" : score >= 2.5 ? "bg-amber-400/60" : "bg-red-400/60"
+                                  )}
+                                  style={{
+                                    height: `${Math.max(8, (score / 5) * 100)}%`,
+                                  }}
+                                />
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="text-xs">
+                                {score.toFixed(1)}/5
+                              </TooltipContent>
+                            </Tooltip>
                           )
                         )}
                       </div>
