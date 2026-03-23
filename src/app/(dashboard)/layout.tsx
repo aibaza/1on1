@@ -59,9 +59,6 @@ export default async function DashboardLayout({
                 <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:text-sm focus:font-bold">
                   Skip to content
                 </a>
-                <div className="relative z-[60]">
-                  <ImpersonationBanner />
-                </div>
                 <SideNav />
                 <div className="md:ml-[var(--sidebar-width,256px)] transition-[margin] duration-300">
                   <EditorialTopBar />

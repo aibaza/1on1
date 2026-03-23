@@ -1,21 +1,23 @@
 "use client";
 
-import { Bell, HelpCircle, Search } from "lucide-react";
+import { Search, ShieldAlert } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
 
-function getInitials(name?: string | null): string {
-  if (!name) return "?";
-  return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
-}
-
 export function EditorialTopBar() {
   const { data: session } = useSession();
   const t = useTranslations("navigation");
+  const tAdmin = useTranslations("admin");
   const user = session?.user;
   const userRole = user?.role ?? "member";
+  const impersonatedBy = (user as { impersonatedBy?: { name: string } } | undefined)?.impersonatedBy;
+
+  async function handleStopImpersonation() {
+    await fetch("/api/admin/impersonate", { method: "DELETE" });
+    window.location.href = "/";
+  }
 
   return (
     <header className="fixed top-0 right-0 w-full md:w-[calc(100%-var(--sidebar-width,256px))] z-40 bg-[var(--background)]/80 backdrop-blur-xl flex justify-between items-center h-16 px-4 md:px-8 shadow-sm transition-[width] duration-300">
@@ -32,17 +34,27 @@ export function EditorialTopBar() {
       </div>
 
       {/* Right actions */}
-      <div className="flex items-center gap-4">
-        <button aria-label="Notifications" className="p-2 text-muted-foreground hover:text-foreground hover:bg-[var(--editorial-surface-container-high,var(--muted))] rounded-full transition-all">
-          <Bell className="h-5 w-5" />
-        </button>
-        <button aria-label="Help" className="p-2 text-muted-foreground hover:text-foreground hover:bg-[var(--editorial-surface-container-high,var(--muted))] rounded-full transition-all">
-          <HelpCircle className="h-5 w-5" />
-        </button>
+      <div className="flex items-center gap-3">
+        {/* Impersonation indicator */}
+        {impersonatedBy && (
+          <button
+            onClick={handleStopImpersonation}
+            className="flex items-center gap-2 px-3 py-1.5 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 rounded-lg text-xs font-bold hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
+          >
+            <ShieldAlert className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">
+              {tAdmin("impersonation.banner", { name: user?.name ?? "", admin: impersonatedBy.name })}
+            </span>
+            <span className="sm:hidden">
+              {tAdmin("impersonation.returnToAdmin")}
+            </span>
+          </button>
+        )}
+
         <ThemeToggle />
 
         {/* User profile section */}
-        <div className="flex items-center gap-3 pl-4 border-l border-[var(--editorial-outline-variant,var(--border))]">
+        <div className="flex items-center gap-3 pl-3 border-l border-[var(--editorial-outline-variant,var(--border))]">
           {user && (
             <div className="text-right hidden sm:block">
               <p className="text-xs font-bold text-foreground font-headline">{user.name}</p>
