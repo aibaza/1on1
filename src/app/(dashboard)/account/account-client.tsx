@@ -128,7 +128,7 @@ export function AccountClient({ user }: AccountClientProps) {
             <button
               onClick={regenerateAvatar}
               disabled={regenerating}
-              className="flex items-center gap-2 px-6 py-2 bg-[var(--editorial-secondary-container,var(--secondary))] text-[var(--editorial-on-secondary-container,var(--secondary-foreground))] rounded-full text-xs font-headline font-bold hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50"
+              className="flex items-center justify-center gap-2 min-w-[200px] px-6 py-2 bg-[var(--editorial-secondary-container,var(--secondary))] text-[var(--editorial-on-secondary-container,var(--secondary-foreground))] rounded-full text-xs font-headline font-bold hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${regenerating ? "animate-spin" : ""}`} />
               {regenerating ? t("avatar.regenerating") : t("avatar.regenerate")}
