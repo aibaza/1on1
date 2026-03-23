@@ -594,17 +594,26 @@ export function EditorialActionItemsPage({
         )}
       </div>
 
-      {/* Edit Side Sheet Panel — Backdrop */}
-      {editItem && (
-        <div
-          className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-[55]"
-          onClick={() => setEditItem(null)}
-        />
-      )}
+      {/* Edit Drawer — Backdrop */}
+      <div
+        className={cn(
+          "fixed inset-0 z-[55] transition-all duration-300",
+          editItem
+            ? "bg-foreground/20 backdrop-blur-sm pointer-events-auto"
+            : "bg-transparent backdrop-blur-0 pointer-events-none"
+        )}
+        onClick={() => setEditItem(null)}
+      />
 
-      {/* Edit Side Sheet Panel */}
-      {editItem && (
-        <div className="fixed inset-y-0 right-0 w-[420px] bg-card shadow-2xl z-[60] p-10 border-l border-[var(--editorial-outline-variant,var(--border))]/20 overflow-y-auto">
+      {/* Edit Drawer Panel */}
+      <div
+        className={cn(
+          "fixed inset-y-0 right-0 w-[420px] bg-card shadow-2xl z-[60] p-10 border-l border-[var(--editorial-outline-variant,var(--border))]/20 overflow-y-auto transition-transform duration-300 ease-in-out",
+          editItem ? "translate-x-0" : "translate-x-full"
+        )}
+      >
+        {editItem && (
+          <>
           <div className="flex items-center justify-between mb-10">
             <h3 className="text-2xl font-headline font-black text-foreground">
               {t("edit.title")}
@@ -696,8 +705,9 @@ export function EditorialActionItemsPage({
               </button>
             </div>
           </form>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </>
   );
 }
