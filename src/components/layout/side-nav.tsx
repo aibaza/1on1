@@ -17,6 +17,7 @@ import {
   X,
   PanelLeftClose,
   PanelLeftOpen,
+  UsersRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -134,7 +135,8 @@ export function SideNav() {
   const mainNavItems: NavItem[] = [
     { label: t("overview"), href: "/overview", icon: LayoutDashboard },
     { label: t("sessions"), href: "/sessions", icon: CalendarDays, matchAlso: ["/sessions"] },
-    { label: t("people"), href: "/people", icon: Users, matchAlso: ["/teams"], minRole: "manager" },
+    { label: t("people"), href: "/people", icon: Users, minRole: "manager" },
+    { label: t("teams"), href: "/teams", icon: UsersRound, minRole: "manager" },
     { label: t("analytics"), href: "/analytics", icon: BarChart3, matchAlso: ["/analytics"], minRole: "manager" },
     { label: t("templates"), href: "/templates", icon: FileText, minRole: "manager" },
   ];
