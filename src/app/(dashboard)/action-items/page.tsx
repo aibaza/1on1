@@ -11,12 +11,16 @@ import {
 import { eq, or, and, asc, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { ActionItemsPage } from "@/components/action-items/action-items-page";
+import { EditorialActionItemsPage } from "@/components/action-items/editorial-action-items-page";
 import { getTranslations } from "next-intl/server";
+import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function ActionItemsRoute() {
   const session = await auth();
   if (!session?.user) redirect("/login");
   const t = await getTranslations("actionItems");
+  const designPref = await getDesignPreference();
+  const isEditorial = designPref === "editorial";
 
   const data = await withTenantContext(
     session.user.tenantId,
@@ -95,6 +99,10 @@ export default async function ActionItemsRoute() {
       }));
     }
   );
+
+  if (isEditorial) {
+    return <EditorialActionItemsPage initialItems={data} currentUserId={session.user.id} />;
+  }
 
   return (
     <div className="space-y-6">

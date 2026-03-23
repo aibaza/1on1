@@ -28,6 +28,11 @@
       "cancel": "Cancel",
       "saving": "Saving...",
       "save": "Save Changes"
-    }
+    },
+    "overdueLabel": "Critical Overdue",
+    "dueAgo": "Due {count} days ago",
+    "allCaughtUp": "All caught up!",
+    "tasks": "{count} tasks",
+    "sessionRef": "Connected to Session #{number}"
   }
 }

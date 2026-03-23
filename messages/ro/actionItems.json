@@ -28,6 +28,11 @@
       "cancel": "Anulează",
       "saving": "Se salvează...",
       "save": "Salvează modificările"
-    }
+    },
+    "overdueLabel": "Restante critice",
+    "dueAgo": "Restant de {count} zile",
+    "allCaughtUp": "Totul la zi!",
+    "tasks": "{count} sarcini",
+    "sessionRef": "Conectat la sesiunea #{number}"
   }
 }
