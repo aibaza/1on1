@@ -55,6 +55,7 @@ interface HealthResponse {
   teams: Array<{
     id: string;
     name: string;
+    managerId: string | null;
     avgScore: number | null;
     trend: number;
     memberCount: number;
@@ -440,7 +441,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
             {teams.map((team) => (
               <Link
                 key={team.id}
-                href={`/teams/${team.id}`}
+                href={team.managerId ? `/analytics/team/${team.managerId}` : `/teams/${team.id}`}
                 className="bg-card rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10 p-5 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center justify-between mb-3">

@@ -44,6 +44,7 @@ interface PersonSummary {
 interface TeamSummary {
   id: string;
   name: string;
+  managerId: string | null;
   avgScore: number | null;
   trend: number;
   memberCount: number;
@@ -622,6 +623,7 @@ export async function GET() {
               .select({
                 id: teams.id,
                 name: teams.name,
+                managerId: teams.managerId,
               })
               .from(teams)
               .where(eq(teams.tenantId, user.tenantId));
@@ -672,6 +674,7 @@ export async function GET() {
                   teamSummaries.push({
                     id: team.id,
                     name: team.name,
+                    managerId: team.managerId,
                     avgScore: null,
                     trend: 0,
                     memberCount: 0,
@@ -729,6 +732,7 @@ export async function GET() {
                 teamSummaries.push({
                   id: team.id,
                   name: team.name,
+                  managerId: team.managerId,
                   avgScore: round2(teamAvg),
                   trend: round2(teamTrend) ?? 0,
                   memberCount: memberIds.length,
