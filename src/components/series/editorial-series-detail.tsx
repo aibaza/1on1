@@ -82,7 +82,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
       if (!res.ok) throw new Error("Failed to start session");
       return res.json();
     },
-    onSuccess: (data) => router.push(`/wizard/${data.sessionId}`),
+    onSuccess: (data) => router.push(`/wizard/${data.id}`),
     onError: () => toast.error("Failed to start session"),
   });
 
