@@ -154,7 +154,7 @@ export function SessionSummaryEmail({
                   </p>
                   {aiSummary.keyTakeaways.map((takeaway, i) => (
                     <p key={i} style={{ fontFamily: F.inter, fontSize: "15px", lineHeight: "1.7", color: "#454652", margin: "0 0 16px 0" }}>
-                      <span style={{ color: "#004c47", fontWeight: 700, marginRight: "8px" }}>—</span>
+                      <span style={{ color: "#004c47", marginRight: "10px", fontSize: "8px", verticalAlign: "middle" }}>&#9679;</span>
                       {takeaway}
                     </p>
                   ))}
@@ -304,7 +304,7 @@ export function SessionSummaryEmail({
                 </p>
                 {aiAddendum.coachingSuggestions.map((suggestion, i) => (
                   <p key={i} style={{ fontFamily: F.inter, fontSize: "15px", lineHeight: "1.6", color: "#454652", fontWeight: 500, margin: "0 0 12px 0" }}>
-                    <span style={{ color: "#004c47", fontWeight: 700, marginRight: "8px" }}>—</span>
+                    <span style={{ color: "#004c47", marginRight: "10px", fontSize: "8px", verticalAlign: "middle" }}>&#9679;</span>
                     {suggestion}
                   </p>
                 ))}
