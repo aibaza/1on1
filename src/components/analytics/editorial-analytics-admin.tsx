@@ -163,17 +163,16 @@ function daysAgo(dateStr: string | null): number | null {
 function MiniSparkBars({ values }: { values: number[] }) {
   if (values.length === 0) return null;
   const max = 5;
-  const recent = values.slice(-8);
   return (
-    <div className="flex items-end gap-0.5 h-6">
-      {recent.map((v, i) => (
+    <div className="flex items-end gap-px h-10 w-full">
+      {values.map((v, i) => (
         <div
           key={i}
           className={cn(
-            "w-1.5 rounded-full",
-            v >= 4.0 ? "bg-emerald-400/60" : v >= 3.0 ? "bg-amber-400/60" : "bg-red-400/60"
+            "flex-1 min-w-[2px] max-w-2 rounded-t-sm",
+            v >= 3.5 ? "bg-emerald-400/60" : v >= 2.5 ? "bg-amber-400/60" : "bg-red-400/60"
           )}
-          style={{ height: `${Math.max(10, (v / max) * 100)}%` }}
+          style={{ height: `${Math.max(8, (v / max) * 100)}%` }}
         />
       ))}
     </div>
@@ -253,7 +252,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
             </span>
             <span className="text-muted-foreground text-sm">/5</span>
           </div>
-          <MiniSparkBars values={people.flatMap((p) => p.scoreHistory).slice(-8)} />
+          <MiniSparkBars values={people.map((p) => p.avgScore).filter((s): s is number => s !== null).sort((a, b) => a - b)} />
         </div>
 
         {/* Card 2 — Completion */}
