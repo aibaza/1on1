@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useTranslations, useFormatter } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -18,7 +19,9 @@ import {
   Pause,
   Settings,
   Archive,
+  MessageSquarePlus,
 } from "lucide-react";
+import { AgendaSheet } from "./agenda-sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarUrl } from "@/lib/avatar";
 import { StarRating } from "@/components/ui/star-rating";
@@ -69,6 +72,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
   const t = useTranslations("sessions");
   const format = useFormatter();
   const router = useRouter();
+  const [agendaOpen, setAgendaOpen] = useState(false);
 
   const isManager = currentUserId === series.managerId;
   const person = isManager ? series.report : series.manager;
@@ -76,6 +80,11 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
   const aiSummary = series.latestAiSummary as AISummary | null;
   const completedSessions = series.sessions.filter((s) => s.status === "completed");
   const inProgressSession = series.sessions.find((s) => s.status === "in_progress");
+  // Session for talking points: prefer in-progress, then latest completed, then first scheduled
+  const agendaSession = inProgressSession
+    ?? completedSessions[0]
+    ?? series.sessions[0]
+    ?? null;
 
   const startMutation = useMutation({
     mutationFn: async () => {
@@ -162,6 +171,14 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
               >
                 <Settings className="h-4 w-4" /> {t("editorial.edit")}
               </Link>
+              {agendaSession && (
+                <button
+                  onClick={() => setAgendaOpen(true)}
+                  className="px-4 py-2.5 bg-muted text-foreground font-semibold rounded-xl hover:bg-accent transition-colors flex items-center gap-2 text-sm"
+                >
+                  <MessageSquarePlus className="h-4 w-4" /> {t("series.agenda")}
+                </button>
+              )}
               <button
                 type="button"
                 onClick={async () => {
@@ -340,6 +357,18 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
           )}
         </div>
       </section>
+
+      {/* Talking Points Agenda Sheet */}
+      {agendaSession && (
+        <AgendaSheet
+          open={agendaOpen}
+          onOpenChange={setAgendaOpen}
+          sessionId={agendaSession.id}
+          personName={personName}
+          sessionNumber={agendaSession.sessionNumber}
+          sessionDate={agendaSession.scheduledAt}
+        />
+      )}
     </div>
   );
 }
