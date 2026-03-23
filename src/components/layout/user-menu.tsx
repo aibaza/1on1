@@ -6,6 +6,7 @@ import { LogOut, Globe, Check, Paintbrush } from "lucide-react";
 import { DESIGN_PREF_COOKIE, type DesignPreference } from "@/lib/design-preference";
 import { logoutAction } from "@/lib/auth/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -78,7 +79,7 @@ export function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.image ?? undefined} alt={user?.name ?? "User"} />
+            <AvatarImage src={user?.name ? getAvatarUrl(user.name, user.image) : undefined} alt={user?.name ?? "User"} />
             <AvatarFallback className="text-xs">
               {getInitials(user?.name)}
             </AvatarFallback>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronRight, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import type { UserRow } from "./people-table-columns";
 
 interface TeamStructureProps {
@@ -82,7 +83,7 @@ export function TeamStructure({ users }: TeamStructureProps) {
               <div className="absolute -left-[9px] top-4 w-4 h-4 rounded-full bg-primary border-4 border-background" />
               <div className="flex items-center gap-4 bg-card p-4 rounded-xl shadow-sm max-w-sm">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={node.user.avatarUrl ?? undefined} alt={`${node.user.firstName} ${node.user.lastName}`} />
+                  <AvatarImage src={getAvatarUrl(`${node.user.firstName} ${node.user.lastName}`, node.user.avatarUrl)} alt={`${node.user.firstName} ${node.user.lastName}`} />
                   <AvatarFallback className="text-xs">{getInitials(node.user.firstName, node.user.lastName)}</AvatarFallback>
                 </Avatar>
                 <div>
@@ -99,7 +100,7 @@ export function TeamStructure({ users }: TeamStructureProps) {
                       <div className="absolute -left-[5px] top-2.5 w-2 h-2 rounded-full bg-border" />
                       <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-card transition-colors">
                         <Avatar className="h-5 w-5">
-                          <AvatarImage src={report.avatarUrl ?? undefined} alt={`${report.firstName} ${report.lastName}`} />
+                          <AvatarImage src={getAvatarUrl(`${report.firstName} ${report.lastName}`, report.avatarUrl)} alt={`${report.firstName} ${report.lastName}`} />
                           <AvatarFallback className="text-[8px]">{getInitials(report.firstName, report.lastName)}</AvatarFallback>
                         </Avatar>
                         <span className="text-xs font-medium text-foreground">{report.firstName} {report.lastName}</span>
@@ -121,7 +122,7 @@ export function TeamStructure({ users }: TeamStructureProps) {
                 {unassigned.map((u) => (
                   <div key={u.id} className="flex items-center gap-2 bg-card px-3 py-2 rounded-lg">
                     <Avatar className="h-5 w-5">
-                      <AvatarImage src={u.avatarUrl ?? undefined} />
+                      <AvatarImage src={getAvatarUrl(`${u.firstName} ${u.lastName}`, u.avatarUrl)} />
                       <AvatarFallback className="text-[8px]">{getInitials(u.firstName, u.lastName)}</AvatarFallback>
                     </Avatar>
                     <span className="text-xs font-medium">{u.firstName} {u.lastName}</span>

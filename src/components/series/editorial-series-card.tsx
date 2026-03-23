@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useTranslations, useFormatter } from "next-intl";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { StarRating } from "@/components/ui/star-rating";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { CalendarDays, ChevronRight, ListTodo, Play, RotateCcw, UserCog, UserCheck } from "lucide-react";
@@ -200,7 +201,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
         <div className="flex items-center gap-3">
           <div className="relative">
             <Avatar className="h-11 w-11 rounded-xl">
-              <AvatarImage src={series.report.avatarUrl ?? undefined} alt={reportName} className="rounded-xl" />
+              <AvatarImage src={getAvatarUrl(reportName, series.report.avatarUrl)} alt={reportName} className="rounded-xl" />
               <AvatarFallback className="text-xs rounded-xl font-bold">{getInitials(series.report.firstName, series.report.lastName)}</AvatarFallback>
             </Avatar>
             {/* Relationship badge */}

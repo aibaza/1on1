@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-react";
 
@@ -48,7 +49,7 @@ export function TeamCard({ team }: TeamCardProps) {
             <div className="flex items-center gap-2">
               <Avatar className="h-6 w-6">
                 <AvatarImage
-                  src={team.managerAvatarUrl ?? undefined}
+                  src={getAvatarUrl(team.managerName ?? "", team.managerAvatarUrl)}
                   alt={team.managerName ?? t("noLead")}
                 />
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>

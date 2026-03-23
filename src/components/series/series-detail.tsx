@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -174,7 +175,7 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
           <Avatar className="h-14 w-14">
-            <AvatarImage src={report?.avatarUrl ?? undefined} />
+            <AvatarImage src={getAvatarUrl(`${report?.firstName ?? ""} ${report?.lastName ?? ""}`.trim(), report?.avatarUrl)} />
             <AvatarFallback className="text-lg">{reportInitials}</AvatarFallback>
           </Avatar>
           <div>

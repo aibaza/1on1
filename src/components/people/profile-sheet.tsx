@@ -10,6 +10,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -61,7 +62,7 @@ export function ProfileSheet({ user, open, onOpenChange }: ProfileSheetProps) {
         <SheetHeader className="text-left">
           <div className="flex items-center gap-4">
             <Avatar size="lg">
-              {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
+              <AvatarImage src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl)} />
               <AvatarFallback>
                 {getInitials(user.firstName, user.lastName)}
               </AvatarFallback>

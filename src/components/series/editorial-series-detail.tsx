@@ -20,6 +20,7 @@ import {
   Archive,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { StarRating } from "@/components/ui/star-rating";
 import type { AISummary } from "@/lib/ai/schemas/summary";
 
@@ -101,7 +102,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex items-center gap-6">
             <Avatar className="h-20 w-20 rounded-2xl shadow-lg">
-              <AvatarImage src={person?.avatarUrl ?? undefined} alt={personName} />
+              <AvatarImage src={getAvatarUrl(personName, person?.avatarUrl)} alt={personName} />
               <AvatarFallback className="text-lg rounded-2xl">
                 {person ? getInitials(person.firstName, person.lastName) : "?"}
               </AvatarFallback>

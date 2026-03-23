@@ -11,6 +11,7 @@ declare module "@tanstack/react-table" {
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { Badge } from "@/components/ui/badge";
 import { RoleSelect } from "./role-select";
 import { ManagerSelect } from "./manager-select";
@@ -84,9 +85,7 @@ export function createColumns({
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <Avatar size="sm">
-            {row.original.avatarUrl && (
-              <AvatarImage src={row.original.avatarUrl} />
-            )}
+            <AvatarImage src={getAvatarUrl(`${row.original.firstName} ${row.original.lastName}`, row.original.avatarUrl)} />
             <AvatarFallback>
               {getInitials(row.original.firstName, row.original.lastName)}
             </AvatarFallback>

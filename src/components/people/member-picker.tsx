@@ -7,6 +7,7 @@ import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarUrl } from "@/lib/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -180,7 +181,7 @@ export function MemberPicker({
                         </div>
                         <Avatar className="mr-2 h-6 w-6">
                           <AvatarImage
-                            src={user.avatarUrl ?? undefined}
+                            src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl)}
                             alt={`${user.firstName} ${user.lastName}`}
                           />
                           <AvatarFallback className="text-xs">
