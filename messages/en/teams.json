@@ -37,6 +37,8 @@
       "namePlaceholder": "e.g. Engineering",
       "descriptionLabel": "Description",
       "descriptionPlaceholder": "What does this team do?",
+      "descriptionHint": "Describe the team's mission and focus areas — this helps AI generate better session evaluations.",
+      "descriptionTooltip": "The team description is included in AI session analysis. A good description includes: the team's purpose, key responsibilities, current priorities, and what success looks like. The more context you provide, the more relevant the AI insights will be for this team's members.",
       "optional": "Optional",
       "teamLead": "Team Lead",
       "selectLead": "Select team lead...",

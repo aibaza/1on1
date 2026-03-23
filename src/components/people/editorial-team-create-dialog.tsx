@@ -8,7 +8,8 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { useZodI18nErrors } from "@/lib/i18n/zod-error-map";
-import { X, Search, User, ChevronDown, Loader2 } from "lucide-react";
+import { X, Search, User, ChevronDown, Loader2, Info } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { createTeamSchema } from "@/lib/validations/team";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
@@ -128,9 +129,22 @@ export function EditorialTeamCreateDialog({
 
           {/* Description */}
           <div className="space-y-2">
-            <label className="block text-sm font-headline font-bold text-foreground">
-              {t("create.descriptionLabel")} <span className="text-muted-foreground font-normal">({t("create.optional")})</span>
-            </label>
+            <div className="flex items-center gap-2">
+              <label className="block text-sm font-headline font-bold text-foreground">
+                {t("create.descriptionLabel")} <span className="text-muted-foreground font-normal">({t("create.optional")})</span>
+              </label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button type="button" className="text-muted-foreground hover:text-foreground transition-colors">
+                    <Info className="h-3.5 w-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs text-xs leading-relaxed">
+                  {t("create.descriptionTooltip")}
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <p className="text-xs text-muted-foreground -mt-1">{t("create.descriptionHint")}</p>
             <textarea
               placeholder={t("create.descriptionPlaceholder")}
               rows={4}

@@ -37,6 +37,8 @@
       "namePlaceholder": "ex. Inginerie",
       "descriptionLabel": "Descriere",
       "descriptionPlaceholder": "Ce face această echipă?",
+      "descriptionHint": "Descrie misiunea și ariile de focus ale echipei — ajută AI-ul să genereze evaluări mai bune ale sesiunilor.",
+      "descriptionTooltip": "Descrierea echipei este inclusă în analiza AI a sesiunilor. O descriere bună include: scopul echipei, responsabilitățile principale, prioritățile curente și cum arată succesul. Cu cât oferi mai mult context, cu atât insight-urile AI vor fi mai relevante pentru membrii acestei echipe.",
       "optional": "Opțional",
       "teamLead": "Lider echipă",
       "selectLead": "Selectează lider echipă...",
