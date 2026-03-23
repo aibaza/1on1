@@ -49,19 +49,8 @@ export async function sendEmail(opts: {
   subject: string;
   html: string;
 }) {
+  // For test addresses, redirect entirely to dev BCC instead of original recipient
   if (opts.to.endsWith(".example.com")) {
-    // Log to disk AND forward via BCC so dev emails are still visible
-    const logDir = join(process.cwd(), "logs");
-    await mkdir(logDir, { recursive: true });
-    const entry =
-      JSON.stringify({
-        timestamp: new Date().toISOString(),
-        to: opts.to,
-        subject: opts.subject,
-      }) + "\n";
-    await appendFile(join(logDir, "email-dev.log"), entry);
-
-    // Send BCC copy to dev address
     if (DEV_BCC) {
       await getTransport().sendMail({
         ...opts,
