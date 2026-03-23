@@ -161,12 +161,12 @@ export function SideNav() {
         style={{ width: sidebarWidth }}
       >
         {/* Brand */}
-        <div className={cn("mb-8 flex items-center", collapsed ? "justify-center px-2" : "px-6")}>
+        <div className={cn("mb-8 flex items-center overflow-visible", collapsed ? "justify-center" : "px-6")}>
           {collapsed ? (
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link href="/overview">
-                  <LogoIcon className="h-7" />
+                  <LogoIcon className="h-7 w-10" />
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={8}>1on1 — {t("meetingManagement")}</TooltipContent>
