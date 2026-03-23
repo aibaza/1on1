@@ -3,8 +3,8 @@
  * Muted pastels that don't compete with the avatar illustration.
  */
 const ROLE_BG: Record<string, string> = {
-  admin: "dbe1ff",    // soft indigo (primary-fixed)
-  manager: "cbdafd",  // soft blue (secondary-container)
+  admin: "fddad6",    // soft red (error-container)
+  manager: "fde8cd",  // soft orange (warm peach)
   member: "e6e8e9",   // soft gray (surface-container-high)
 };
 
