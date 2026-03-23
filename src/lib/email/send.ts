@@ -40,6 +40,9 @@ export function getEmailFrom(): string {
  * Addresses ending in `.example.com` are silently skipped — the full email is
  * written to `logs/email-dev.log` so it can be inspected during testing.
  */
+// BCC address for dev/preview environments — receives a copy of every email
+const DEV_BCC = process.env.VERCEL_ENV === "production" ? undefined : "ciprian.dobrea@gmail.com";
+
 export async function sendEmail(opts: {
   from: string;
   to: string;
@@ -47,6 +50,7 @@ export async function sendEmail(opts: {
   html: string;
 }) {
   if (opts.to.endsWith(".example.com")) {
+    // Log to disk AND forward via BCC so dev emails are still visible
     const logDir = join(process.cwd(), "logs");
     await mkdir(logDir, { recursive: true });
     const entry =
@@ -54,12 +58,23 @@ export async function sendEmail(opts: {
         timestamp: new Date().toISOString(),
         to: opts.to,
         subject: opts.subject,
-        html: opts.html,
       }) + "\n";
     await appendFile(join(logDir, "email-dev.log"), entry);
+
+    // Send BCC copy to dev address
+    if (DEV_BCC) {
+      await getTransport().sendMail({
+        ...opts,
+        to: DEV_BCC,
+        subject: `[${opts.to}] ${opts.subject}`,
+      });
+    }
     return;
   }
-  await getTransport().sendMail(opts);
+  await getTransport().sendMail({
+    ...opts,
+    ...(DEV_BCC ? { bcc: DEV_BCC } : {}),
+  });
 }
 
 export async function sendVerificationEmail(
