@@ -350,11 +350,23 @@ export function EditorialHistoryPage({
             }
           >
             <option value="all">{t("allSeries")}</option>
-            {seriesOptions.map((opt) => (
-              <option key={opt.id} value={opt.id}>
-                {opt.reportName}
-              </option>
-            ))}
+            {(() => {
+              const grouped = new Map<string, SeriesOption[]>();
+              for (const opt of seriesOptions) {
+                const group = grouped.get(opt.managerName) ?? [];
+                group.push(opt);
+                grouped.set(opt.managerName, group);
+              }
+              return Array.from(grouped.entries()).map(([manager, opts]) => (
+                <optgroup key={manager} label={manager}>
+                  {opts.map((opt) => (
+                    <option key={opt.id} value={opt.id}>
+                      {opt.reportName}
+                    </option>
+                  ))}
+                </optgroup>
+              ));
+            })()}
           </select>
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none h-3.5 w-3.5 text-muted-foreground" />
         </div>
