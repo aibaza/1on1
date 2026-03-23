@@ -48,6 +48,10 @@
       "next": "Next",
       "recentInsights": "Recent Insights",
       "sentiment": "sentiment",
+      "sentimentPositive": "Positive",
+      "sentimentConcerning": "Concerning",
+      "sentimentNeutral": "Neutral",
+      "sentimentMixed": "Mixed",
       "actionItems": "Action Items",
       "overdueLabel": "Overdue",
       "thisWeek": "This Week",
@@ -66,6 +70,7 @@
       "avgScoreInsight": "Your team's average score is {score} this month",
       "welcomeFallback": "Welcome to your dashboard",
       "scoreDropped": "{name}'s score dropped {delta} points",
+      "scoreDroppedSelf": "Your score dropped {delta} points",
       "considerCheckin": "Consider a focused check-in",
       "cadenceDrift": "{days} days since last sync with {name}",
       "driftingCadence": "Drifting past recommended cadence"

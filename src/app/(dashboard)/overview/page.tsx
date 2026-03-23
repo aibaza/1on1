@@ -57,7 +57,7 @@ export default async function OverviewPage() {
       <>
         {!user.emailVerified && <EmailVerificationBanner />}
         <EditorialDashboard
-          user={{ name: user.name, role: user.role }}
+          user={{ id: user.id, name: user.name, role: user.role }}
           tenantName={tenant?.name ?? null}
           stats={dashboardData.stats}
           trends={dashboardData.trends}

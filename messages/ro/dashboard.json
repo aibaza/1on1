@@ -48,6 +48,10 @@
       "next": "Următoarea",
       "recentInsights": "Perspective recente",
       "sentiment": "sentiment",
+      "sentimentPositive": "Pozitiv",
+      "sentimentConcerning": "Îngrijorător",
+      "sentimentNeutral": "Neutru",
+      "sentimentMixed": "Mixt",
       "actionItems": "Acțiuni de urmat",
       "overdueLabel": "Restante",
       "thisWeek": "Săptămâna aceasta",
@@ -66,6 +70,7 @@
       "avgScoreInsight": "Scorul mediu al echipei tale este {score} luna aceasta",
       "welcomeFallback": "Bine ai venit pe tabloul de bord",
       "scoreDropped": "Scorul lui {name} a scăzut cu {delta} puncte",
+      "scoreDroppedSelf": "Scorul tău a scăzut cu {delta} puncte",
       "considerCheckin": "Consideră o discuție focalizată",
       "cadenceDrift": "{days} zile de la ultima sincronizare cu {name}",
       "driftingCadence": "Depășește cadența recomandată"

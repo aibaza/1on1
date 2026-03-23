@@ -27,6 +27,7 @@ import { StarRating } from "@/components/ui/star-rating";
 
 interface EditorialDashboardProps {
   user: {
+    id: string;
     name?: string | null;
     role: string;
   };
@@ -132,12 +133,17 @@ export function EditorialDashboard({
     for (const series of upcoming) {
       const hist = series.assessmentHistory;
       if (hist.length >= 2) {
-        const delta = hist[hist.length - 1] - hist[hist.length - 2];
+        let delta = hist[hist.length - 1] - hist[hist.length - 2];
+        // Normalize: if delta suggests 0-100 scale data, convert to 1-5
+        if (Math.abs(delta) > 5) delta = delta / 20;
         if (delta <= -0.7) {
+          const isSelf = series.report.id === user.id;
           const name = `${series.report.firstName} ${series.report.lastName}`;
           cards.push({
             type: "score",
-            title: t("editorial.scoreDropped", { name, delta: Math.abs(delta).toFixed(1) }),
+            title: isSelf
+              ? t("editorial.scoreDroppedSelf", { delta: Math.abs(delta).toFixed(1) })
+              : t("editorial.scoreDropped", { name, delta: Math.abs(delta).toFixed(1) }),
             subtitle: t("editorial.considerCheckin"),
             color: "error",
             seriesId: series.id,
@@ -242,7 +248,9 @@ export function EditorialDashboard({
             <div className="relative z-10">
               <div className="text-xs font-bold uppercase tracking-wider mb-2">{t("editorial.nextSession")}</div>
               <div className="text-xl font-bold mb-1">
-                {nextSession.report.firstName} {nextSession.report.lastName}
+                {nextSession.report.id === user.id
+                  ? `${nextSession.manager.firstName} ${nextSession.manager.lastName}`
+                  : `${nextSession.report.firstName} ${nextSession.report.lastName}`}
               </div>
               <div className="flex items-center justify-between">
                 <div className="text-sm">
@@ -418,7 +426,7 @@ export function EditorialDashboard({
                               color: s.sentiment === "positive" ? "var(--color-success)" : s.sentiment === "concerning" ? "var(--destructive)" : "#d97706",
                             }}
                           >
-                            {s.sentiment} {t("editorial.sentiment")}
+                            {t(`editorial.sentiment${(s.sentiment ?? "neutral").charAt(0).toUpperCase()}${(s.sentiment ?? "neutral").slice(1)}` as Parameters<typeof t>[0])} {t("editorial.sentiment")}
                           </span>
                         )}
                       </div>
