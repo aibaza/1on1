@@ -87,7 +87,8 @@
       "cancel": "Anulează",
       "adding": "Se adaugă...",
       "addSelected": "Adaugă selecția ({count})",
-      "added": "{count} membru/membri adăugat(i)"
+      "added": "{count} membru/membri adăugat(i)",
+      "membersSelected": "membri selectați"
     },
     "profileForm": {
       "firstName": "Prenume",

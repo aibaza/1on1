@@ -87,7 +87,8 @@
       "cancel": "Cancel",
       "adding": "Adding...",
       "addSelected": "Add Selected ({count})",
-      "added": "Added {count} member(s)"
+      "added": "Added {count} member(s)",
+      "membersSelected": "members selected"
     },
     "profileForm": {
       "firstName": "First Name",

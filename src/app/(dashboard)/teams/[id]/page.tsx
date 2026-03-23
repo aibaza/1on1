@@ -3,7 +3,9 @@ import { redirect, notFound } from "next/navigation";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { teams, teamMembers, users } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { getDesignPreference } from "@/lib/design-preference.server";
 import { TeamDetailClient } from "./team-detail-client";
+import { EditorialTeamDetail } from "./editorial-team-detail";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -92,8 +94,13 @@ export default async function TeamDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const designPref = await getDesignPreference();
+  const isEditorial = designPref === "editorial";
+
+  const DetailComponent = isEditorial ? EditorialTeamDetail : TeamDetailClient;
+
   return (
-    <TeamDetailClient
+    <DetailComponent
       initialTeam={data.team}
       initialMembers={data.members}
       currentUserRole={session.user.role}

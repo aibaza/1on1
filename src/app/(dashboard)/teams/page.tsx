@@ -4,14 +4,18 @@ import { withTenantContext } from "@/lib/db/tenant-context";
 import { teams, teamMembers, users } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
+import { getDesignPreference } from "@/lib/design-preference.server";
 import { PeopleTabs } from "@/components/people/people-tabs";
 import { TeamsGrid } from "./teams-grid";
+import { EditorialTeamsGrid } from "./editorial-teams-grid";
 
 export default async function TeamsPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
   const t = await getTranslations("people");
+  const designPref = await getDesignPreference();
+  const isEditorial = designPref === "editorial";
 
   const data = await withTenantContext(
     session.user.tenantId,
@@ -89,6 +93,16 @@ export default async function TeamsPage() {
       return { teams: teamList, users: allUsers };
     }
   );
+
+  if (isEditorial) {
+    return (
+      <EditorialTeamsGrid
+        initialTeams={data.teams}
+        users={data.users}
+        currentUserRole={session.user.role}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">

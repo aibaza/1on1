@@ -27,6 +27,9 @@
     "memberRemoved": "Member removed",
     "deleted": "Team deleted",
     "noLead": "No lead",
+    "noLeadAssigned": "No lead assigned",
+    "membersLabel": "Members",
+    "description": "Organize your people into teams for better collaboration.",
     "create": {
       "title": "Create Team",
       "description": "Create a new team and optionally assign a team lead.",

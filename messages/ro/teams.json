@@ -27,6 +27,9 @@
     "memberRemoved": "Membru eliminat",
     "deleted": "Echipă ștearsă",
     "noLead": "Fără lider",
+    "noLeadAssigned": "Niciun lider asignat",
+    "membersLabel": "Membri",
+    "description": "Organizează-ți oamenii în echipe pentru o colaborare mai bună.",
     "create": {
       "title": "Creează echipă",
       "description": "Creează o echipă nouă și, opțional, asignează un lider.",
