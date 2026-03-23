@@ -71,7 +71,7 @@ interface HealthResponse {
     lastSessionDate: string | null;
     totalSessions: number;
     openActionItems: number;
-    scoreHistory: number[];
+    scoreHistory: { score: number; date: string }[];
   }>;
   personal: null;
 }
@@ -160,20 +160,33 @@ function daysAgo(dateStr: string | null): number | null {
 /*  Mini sparkline (pure CSS bars)                                     */
 /* ------------------------------------------------------------------ */
 
-function MiniSparkBars({ values }: { values: number[] }) {
-  if (values.length === 0) return null;
+interface SparkEntry {
+  score: number;
+  date: string;
+  personName: string;
+}
+
+function MiniSparkBars({ entries }: { entries: SparkEntry[] }) {
+  if (entries.length === 0) return null;
   const max = 5;
   return (
     <div className="flex items-end gap-px h-10 w-full overflow-hidden">
-      {values.map((v, i) => (
-        <div
-          key={i}
-          className={cn(
-            "flex-1 min-w-[2px] max-w-2 rounded-t-sm",
-            v >= 3.5 ? "bg-emerald-400/60" : v >= 2.5 ? "bg-amber-400/60" : "bg-red-400/60"
-          )}
-          style={{ height: `${Math.max(8, (v / max) * 100)}%` }}
-        />
+      {entries.map((e, i) => (
+        <Tooltip key={i}>
+          <TooltipTrigger asChild>
+            <div
+              className={cn(
+                "flex-1 min-w-[2px] max-w-2 rounded-t-sm cursor-default hover:opacity-80 transition-opacity",
+                e.score >= 3.5 ? "bg-emerald-400/60" : e.score >= 2.5 ? "bg-amber-400/60" : "bg-red-400/60"
+              )}
+              style={{ height: `${Math.max(8, (e.score / max) * 100)}%` }}
+            />
+          </TooltipTrigger>
+          <TooltipContent side="top" className="text-xs">
+            <p className="font-bold">{e.personName}</p>
+            <p>{e.score.toFixed(1)}/5 &middot; {e.date}</p>
+          </TooltipContent>
+        </Tooltip>
       ))}
     </div>
   );
@@ -216,6 +229,24 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
 
   const completedSessions = Math.round((kpis.completionRate / 100) * kpis.totalSessions);
 
+  // Build sparkline entries: all session scores chronologically, last 50 max
+  const sparkEntries = useMemo<SparkEntry[]>(() => {
+    const MAX_BARS = 30;
+    const raw: { score: number; isoDate: string; personName: string }[] = [];
+    for (const p of people) {
+      const name = `${p.firstName} ${p.lastName}`;
+      for (const h of p.scoreHistory) {
+        if (h.date) raw.push({ score: h.score, isoDate: h.date, personName: name });
+      }
+    }
+    raw.sort((a, b) => a.isoDate.localeCompare(b.isoDate));
+    return raw.slice(-MAX_BARS).map((r) => ({
+      score: r.score,
+      date: format.dateTime(new Date(r.isoDate), { month: "short", day: "numeric" }),
+      personName: r.personName,
+    }));
+  }, [people, format]);
+
   const distTotal = distribution
     ? distribution.healthy + distribution.attention + distribution.critical + distribution.noData
     : 0;
@@ -252,7 +283,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
             </span>
             <span className="text-muted-foreground text-sm">/5</span>
           </div>
-          <MiniSparkBars values={people.flatMap((p) => p.scoreHistory)} />
+          <MiniSparkBars entries={sparkEntries} />
         </div>
 
         {/* Card 2 — Completion */}

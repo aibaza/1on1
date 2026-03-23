@@ -61,12 +61,12 @@ interface HealthResponse {
     lastSessionDate: string | null;
     totalSessions: number;
     openActionItems: number;
-    scoreHistory: number[];
+    scoreHistory: { score: number; date: string }[];
   }>;
   personal: {
     currentScore: number | null;
     trend: number;
-    scoreHistory: number[];
+    scoreHistory: { score: number; date: string }[];
     actionItemRate: number;
     totalSessions: number;
     nextSessionDate: string | null;
@@ -177,7 +177,7 @@ export default function EditorialAnalyticsMember({
                   i === history.length - 1 &&
                     "border-t-4 border-[var(--editorial-tertiary,var(--color-success))]",
                 )}
-                style={{ height: `${(s / 5) * 100}%` }}
+                style={{ height: `${(s.score / 5) * 100}%` }}
               />
             ))}
           </div>
@@ -325,7 +325,7 @@ export default function EditorialAnalyticsMember({
                           : "w-8 h-8 bg-primary border-4 border-[var(--editorial-surface-container-low,var(--muted))] text-primary-foreground",
                       )}
                     >
-                      {s.toFixed(1)}
+                      {s.score.toFixed(1)}
                     </div>
                     {isLast && (
                       <span className="text-[10px] uppercase tracking-widest font-bold text-[var(--editorial-tertiary,var(--color-success))]">

@@ -37,7 +37,7 @@ interface PersonSummary {
   lastSessionDate: string | null;
   totalSessions: number;
   openActionItems: number;
-  scoreHistory: number[];
+  scoreHistory: { score: number; date: string }[];
 }
 
 interface TeamSummary {
@@ -73,7 +73,7 @@ interface HealthResponse {
   personal: {
     currentScore: number | null;
     trend: number;
-    scoreHistory: number[];
+    scoreHistory: { score: number; date: string }[];
     actionItemRate: number;
     totalSessions: number;
     nextSessionDate: string | null;
@@ -494,7 +494,10 @@ export async function GET() {
 
             const scoreHistory = personSessions
               .slice(0, 6)
-              .map((s) => toNum(s.sessionScore) ?? 0)
+              .map((s) => ({
+                score: toNum(s.sessionScore) ?? 0,
+                date: s.completedAt?.toISOString() ?? "",
+              }))
               .reverse();
 
             const lastSession =
@@ -786,7 +789,10 @@ export async function GET() {
 
           const scoreHistory = memberSessions
             .slice(0, 10)
-            .map((s) => toNum(s.sessionScore) ?? 0)
+            .map((s) => ({
+              score: toNum(s.sessionScore) ?? 0,
+              date: s.completedAt?.toISOString() ?? "",
+            }))
             .reverse();
 
           // Action item rate for this member
@@ -903,7 +909,7 @@ function buildEmptyResponse(
         ? {
             currentScore: null,
             trend: 0,
-            scoreHistory: [],
+            scoreHistory: [] as { score: number; date: string }[],
             actionItemRate: 0,
             totalSessions: 0,
             nextSessionDate: null,
