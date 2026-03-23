@@ -16,9 +16,11 @@ import {
   ChevronRight,
   CircleAlert,
   CheckCircle2,
+  Info,
 } from "lucide-react";
 import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -182,6 +184,22 @@ function MiniSparkBars({ values }: { values: number[] }) {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function InfoTip({ tooltipKey, t }: { tooltipKey: string; t: any }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button type="button" className="text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+          <Info className="h-3.5 w-3.5" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" className="max-w-xs text-xs leading-relaxed">
+        {t(tooltipKey)}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
 export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdminProps) {
   const t = useTranslations("analytics.health");
   const format = useFormatter();
@@ -226,7 +244,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
         {/* Card 1 — Health Score */}
         <div className="bg-card p-6 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">{t("healthScore")}</span>
+            <span className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">{t("healthScore")} <InfoTip tooltipKey="healthScoreTooltip" t={t} /></span>
             {trendBadge(kpis.scoreTrend)}
           </div>
           <div className="flex items-baseline gap-1 mb-4">
@@ -241,7 +259,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
         {/* Card 2 — Completion */}
         <div className="bg-card p-6 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">{t("completion")}</span>
+            <span className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">{t("completion")} <InfoTip tooltipKey="completionTooltip" t={t} /></span>
             <CheckCircle2 className="w-4 h-4 text-muted-foreground" />
           </div>
           <div className="text-3xl font-headline font-extrabold text-foreground mb-3">
@@ -261,7 +279,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
         {/* Card 3 — Action Items */}
         <div className="bg-card p-6 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">{t("actionItems")}</span>
+            <span className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">{t("actionItems")} <InfoTip tooltipKey="actionItemsTooltip" t={t} /></span>
             {trendBadge(kpis.actionItemRate)}
           </div>
           <div className="text-3xl font-headline font-extrabold text-foreground mb-3">
@@ -277,7 +295,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
         {/* Card 4 — Series */}
         <div className="bg-card p-6 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">{t("series")}</span>
+            <span className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">{t("series")} <InfoTip tooltipKey="seriesTooltip" t={t} /></span>
             <Activity className="w-4 h-4 text-muted-foreground" />
           </div>
           <div className="flex items-baseline gap-2 mb-3">
@@ -298,7 +316,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
       {/* ── Section 2: Health Distribution ── */}
       {distribution && distTotal > 0 && (
         <section>
-          <h3 className="text-lg font-headline font-bold text-foreground mb-4">{t("healthDistribution")}</h3>
+          <h3 className="text-lg font-headline font-bold text-foreground mb-4 flex items-center gap-2">{t("healthDistribution")} <InfoTip tooltipKey="healthDistributionTooltip" t={t} /></h3>
           <div className="flex w-full h-12 rounded-xl overflow-hidden">
             {distribution.healthy > 0 && (
               <div

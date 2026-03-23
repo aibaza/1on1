@@ -14,9 +14,11 @@ import {
   AlertTriangle,
   ChevronRight,
   Sparkles,
+  Info,
 } from "lucide-react";
 import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -141,6 +143,22 @@ function relativeDateLabel(dateStr: string | null): string {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function InfoTip({ tooltipKey, t }: { tooltipKey: string; t: any }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button type="button" className="text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+          <Info className="h-3.5 w-3.5" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" className="max-w-xs text-xs leading-relaxed">
+        {t(tooltipKey)}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
 export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsManagerProps) {
   const t = useTranslations("analytics.health");
 
@@ -183,7 +201,7 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
           <div className="w-10 h-10 rounded-lg bg-[var(--editorial-tertiary-container,theme(colors.emerald.100))] dark:bg-emerald-950/50 flex items-center justify-center mb-3">
             <Heart className="w-5 h-5 text-[var(--editorial-tertiary,theme(colors.emerald.600))] dark:text-emerald-400" />
           </div>
-          <p className="text-sm text-muted-foreground mb-1">{t("healthScore")}</p>
+          <p className="text-sm text-muted-foreground mb-1 flex items-center gap-1.5">{t("healthScore")} <InfoTip tooltipKey="healthScoreTooltip" t={t} /></p>
           <div className="flex items-baseline gap-1 mb-2">
             <span className="text-3xl font-headline font-extrabold text-foreground">
               {kpis.avgScore !== null ? kpis.avgScore.toFixed(1) : "\u2014"}
@@ -198,7 +216,7 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
             <CheckCircle2 className="w-5 h-5 text-primary" />
           </div>
-          <p className="text-sm text-muted-foreground mb-1">{t("completion")}</p>
+          <p className="text-sm text-muted-foreground mb-1 flex items-center gap-1.5">{t("completion")} <InfoTip tooltipKey="completionTooltip" t={t} /></p>
           <span className="text-3xl font-headline font-extrabold text-foreground">
             {kpis.completionRate}%
           </span>
@@ -209,7 +227,7 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
           <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center mb-3">
             <ClipboardCheck className="w-5 h-5 text-secondary-foreground" />
           </div>
-          <p className="text-sm text-muted-foreground mb-1">{t("actionItems")}</p>
+          <p className="text-sm text-muted-foreground mb-1 flex items-center gap-1.5">{t("actionItems")} <InfoTip tooltipKey="actionItemsTooltip" t={t} /></p>
           <div className="flex items-baseline gap-2 mb-2">
             <span className="text-3xl font-headline font-extrabold text-foreground">
               {kpis.actionItemRate}%
@@ -223,7 +241,7 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
           <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-3">
             <Calendar className="w-5 h-5 text-muted-foreground" />
           </div>
-          <p className="text-sm text-muted-foreground mb-1">{t("series")}</p>
+          <p className="text-sm text-muted-foreground mb-1 flex items-center gap-1.5">{t("series")} <InfoTip tooltipKey="seriesTooltip" t={t} /></p>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-headline font-extrabold text-foreground">
               {kpis.activeSeries}
@@ -237,8 +255,8 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left (2 cols) - Health Distribution */}
         <div className="lg:col-span-2 bg-card p-6 rounded-xl">
-          <h3 className="text-lg font-headline font-bold text-foreground mb-6">
-            {t("healthDistribution")}
+          <h3 className="text-lg font-headline font-bold text-foreground mb-6 flex items-center gap-2">
+            {t("healthDistribution")} <InfoTip tooltipKey="healthDistributionTooltip" t={t} />
           </h3>
 
           {distribution && distTotal > 0 ? (
