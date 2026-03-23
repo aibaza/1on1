@@ -41,7 +41,7 @@ export function getEmailFrom(): string {
  * written to `logs/email-dev.log` so it can be inspected during testing.
  */
 // BCC address for dev/preview environments — receives a copy of every email
-const DEV_BCC = process.env.VERCEL_ENV === "production" ? undefined : "ciprian.dobrea@gmail.com";
+const DEV_BCC = process.env.VERCEL_ENV !== "production" ? "ciprian.dobrea@gmail.com" : undefined;
 
 export async function sendEmail(opts: {
   from: string;
