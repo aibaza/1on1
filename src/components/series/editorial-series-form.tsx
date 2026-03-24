@@ -8,9 +8,11 @@ import { z } from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
-import { useTranslations } from "next-intl";
-import { Check, Pencil, Sparkles } from "lucide-react";
+import { useTranslations, useFormatter } from "next-intl";
+import { Check, Pencil, Sparkles, CalendarIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +24,7 @@ interface FormValues {
   preferredDay: string;
   preferredTime: string;
   defaultDurationMinutes: number;
+  nextSessionDate: string; // ISO date string YYYY-MM-DD
 }
 
 const formSchema = z.object({
@@ -32,6 +35,7 @@ const formSchema = z.object({
   preferredDay: z.string().min(1, "Please select a day"),
   preferredTime: z.string().min(1, "Please select a time"),
   defaultDurationMinutes: z.number().int().min(15).max(180),
+  nextSessionDate: z.string().min(1, "Please select a date"),
 });
 
 interface User {
@@ -49,17 +53,39 @@ interface Template {
   name: string;
 }
 
+/** Data for pre-populating the form in edit mode */
+export interface SeriesEditData {
+  id: string;
+  reportId: string;
+  reportName: string;
+  cadence: string;
+  cadenceCustomDays: number | null;
+  defaultTemplateId: string | null;
+  preferredDay: string | null;
+  preferredTime: string | null;
+  defaultDurationMinutes: number;
+  nextSessionAt: string | null;
+}
+
 interface EditorialSeriesFormProps {
   userGroups: [string, User[]][];
   templates: Template[];
+  /** If provided, form is in edit mode */
+  editData?: SeriesEditData;
 }
 
-export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFormProps) {
+function extractDate(isoString: string | null): string {
+  if (!isoString) return "";
+  return isoString.slice(0, 10);
+}
+
+export function EditorialSeriesForm({ userGroups, templates, editData }: EditorialSeriesFormProps) {
   const t = useTranslations("sessions");
+  const format = useFormatter();
   const { showApiError } = useApiErrorToast();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("");
+  const isEdit = !!editData;
 
   const allUsers = userGroups.flatMap(([, members]) => members);
 
@@ -78,67 +104,103 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
     { value: "fri", label: t("form.friday") },
   ] as const;
 
+  const [selectedTemplate, setSelectedTemplate] = useState<string>(editData?.defaultTemplateId ?? "");
+  const [calendarOpen, setCalendarOpen] = useState(false);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      reportId: "",
-      cadence: "biweekly",
-      defaultTemplateId: "",
-      preferredDay: "",
-      preferredTime: "",
-      defaultDurationMinutes: 30,
+      reportId: editData?.reportId ?? "",
+      cadence: (editData?.cadence as FormValues["cadence"]) ?? "biweekly",
+      cadenceCustomDays: editData?.cadenceCustomDays ?? undefined,
+      defaultTemplateId: editData?.defaultTemplateId ?? "",
+      preferredDay: editData?.preferredDay ?? "",
+      preferredTime: editData?.preferredTime ?? "",
+      defaultDurationMinutes: editData?.defaultDurationMinutes ?? 30,
+      nextSessionDate: extractDate(editData?.nextSessionAt ?? null),
     },
   });
 
   const cadence = form.watch("cadence");
   const reportId = form.watch("reportId");
+  const nextSessionDate = form.watch("nextSessionDate");
+  const preferredTime = form.watch("preferredTime");
 
-  const createSeries = useMutation({
+  // Combine date + time into ISO string for API
+  function buildNextSessionAt(date: string, time: string): string | null {
+    if (!date) return null;
+    const timeStr = time || "09:00";
+    return new Date(`${date}T${timeStr}:00`).toISOString();
+  }
+
+  const saveMutation = useMutation({
     mutationFn: async (values: FormValues) => {
       if (values.cadence === "custom" && !values.cadenceCustomDays) {
         throw new Error("Custom interval days is required for custom cadence");
       }
 
+      const nextSessionAt = buildNextSessionAt(values.nextSessionDate, values.preferredTime);
+
       const payload: Record<string, unknown> = {
-        reportId: values.reportId,
         cadence: values.cadence,
         defaultDurationMinutes: values.defaultDurationMinutes,
+        preferredDay: values.preferredDay || null,
+        preferredTime: values.preferredTime || null,
+        defaultTemplateId: values.defaultTemplateId || null,
       };
 
       if (values.cadenceCustomDays) payload.cadenceCustomDays = values.cadenceCustomDays;
-      if (values.defaultTemplateId) payload.defaultTemplateId = values.defaultTemplateId;
-      if (values.preferredDay) payload.preferredDay = values.preferredDay;
-      if (values.preferredTime) payload.preferredTime = values.preferredTime;
+      if (nextSessionAt) payload.nextSessionAt = nextSessionAt;
 
-      const res = await fetch("/api/series", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to create series");
+      if (isEdit) {
+        // PATCH existing
+        const res = await fetch(`/api/series/${editData.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to update series");
+        }
+        return res.json();
+      } else {
+        // POST new
+        payload.reportId = values.reportId;
+        const res = await fetch("/api/series", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to create series");
+        }
+        return res.json();
       }
-
-      return res.json();
     },
     onSuccess: () => {
-      toast.success(t("form.created"));
+      toast.success(isEdit ? t("detail.seriesUpdated") : t("form.created"));
       queryClient.invalidateQueries({ queryKey: ["series"] });
-      router.push("/sessions");
+      if (isEdit) {
+        router.refresh();
+        router.back();
+      } else {
+        router.push("/sessions");
+      }
     },
     onError: (error: Error) => {
       showApiError(error);
     },
   });
 
-  const selectedUser = allUsers.find((u) => u.id === reportId);
-  const selectedTemplateName = templates.find((t) => t.id === selectedTemplate)?.name;
+  const selectedTemplateName = templates.find((tmpl) => tmpl.id === selectedTemplate)?.name;
+
+  const inputClass = "w-full bg-[var(--editorial-surface-container-low,var(--muted))] border-0 rounded-xl p-4 font-medium text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer";
 
   return (
     <form
-      onSubmit={form.handleSubmit((values) => createSeries.mutate(values))}
+      onSubmit={form.handleSubmit((values) => saveMutation.mutate(values))}
       className="space-y-10"
     >
       {/* Section 1: The Who (Hero) */}
@@ -152,42 +214,56 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {allUsers.map((user) => {
-            const fullName = `${user.firstName} ${user.lastName}`;
-            const isSelected = reportId === user.id;
-            return (
-              <button
-                key={user.id}
-                type="button"
-                onClick={() => form.setValue("reportId", user.id, { shouldValidate: true })}
-                className={cn(
-                  "flex items-center gap-4 p-4 rounded-xl transition-all active:scale-[0.98]",
-                  isSelected
-                    ? "text-white shadow-lg ring-4 ring-primary/10"
-                    : "bg-[var(--editorial-surface-container-low,var(--muted))] hover:bg-[var(--editorial-surface-container,var(--accent))]"
-                )}
-                style={isSelected ? { background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" } : undefined}
-              >
-                <Avatar className="h-12 w-12 shrink-0 rounded-full border-2 border-white/30">
-                  <AvatarImage src={getAvatarUrl(fullName, user.avatarUrl, null, user.level)} alt={fullName} />
-                  <AvatarFallback className="text-xs font-bold">
-                    {user.firstName?.[0]}{user.lastName?.[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="text-left min-w-0">
-                  <p className="font-bold leading-tight truncate">{fullName}</p>
-                  {user.jobTitle && (
-                    <p className={cn("text-xs truncate", isSelected ? "opacity-80" : "text-muted-foreground")}>
-                      {user.jobTitle}
-                    </p>
+        {isEdit ? (
+          // In edit mode, show the fixed report (not changeable)
+          <div className="flex items-center gap-4 p-4 rounded-xl text-white shadow-lg"
+            style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}>
+            <Avatar className="h-12 w-12 shrink-0 rounded-full border-2 border-white/30">
+              <AvatarFallback className="text-xs font-bold">{editData.reportName.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+            </Avatar>
+            <div className="text-left min-w-0">
+              <p className="font-bold leading-tight truncate">{editData.reportName}</p>
+            </div>
+            <Check className="h-5 w-5 ml-auto shrink-0" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {allUsers.map((user) => {
+              const fullName = `${user.firstName} ${user.lastName}`;
+              const isSelected = reportId === user.id;
+              return (
+                <button
+                  key={user.id}
+                  type="button"
+                  onClick={() => form.setValue("reportId", user.id, { shouldValidate: true })}
+                  className={cn(
+                    "flex items-center gap-4 p-4 rounded-xl transition-all active:scale-[0.98]",
+                    isSelected
+                      ? "text-white shadow-lg ring-4 ring-primary/10"
+                      : "bg-[var(--editorial-surface-container-low,var(--muted))] hover:bg-[var(--editorial-surface-container,var(--accent))]"
                   )}
-                </div>
-                {isSelected && <Check className="h-5 w-5 ml-auto shrink-0" />}
-              </button>
-            );
-          })}
-        </div>
+                  style={isSelected ? { background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" } : undefined}
+                >
+                  <Avatar className="h-12 w-12 shrink-0 rounded-full border-2 border-white/30">
+                    <AvatarImage src={getAvatarUrl(fullName, user.avatarUrl, null, user.level)} alt={fullName} />
+                    <AvatarFallback className="text-xs font-bold">
+                      {user.firstName?.[0]}{user.lastName?.[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="text-left min-w-0">
+                    <p className="font-bold leading-tight truncate">{fullName}</p>
+                    {user.jobTitle && (
+                      <p className={cn("text-xs truncate", isSelected ? "opacity-80" : "text-muted-foreground")}>
+                        {user.jobTitle}
+                      </p>
+                    )}
+                  </div>
+                  {isSelected && <Check className="h-5 w-5 ml-auto shrink-0" />}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {form.formState.errors.reportId && (
           <p className="mt-3 text-sm text-destructive">{form.formState.errors.reportId.message}</p>
@@ -282,7 +358,7 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
                 {t("form.preferredDay")}
               </label>
               <select
-                className="w-full bg-[var(--editorial-surface-container-low,var(--muted))] border-0 rounded-xl p-4 font-medium text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
+                className={inputClass}
                 value={form.watch("preferredDay")}
                 onChange={(e) => form.setValue("preferredDay", e.target.value, { shouldValidate: true })}
               >
@@ -302,11 +378,11 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
               <div className="grid grid-cols-2 gap-3">
                 <select
                   className="bg-[var(--editorial-surface-container-low,var(--muted))] border-0 rounded-xl p-4 font-medium text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
-                  value={(() => { const v = form.watch("preferredTime"); return v ? v.split(":")[0] : ""; })()}
+                  value={(() => { const v = preferredTime; return v ? v.split(":")[0] : ""; })()}
                   onChange={(e) => {
                     const h = e.target.value;
                     if (!h) { form.setValue("preferredTime", "", { shouldValidate: true }); return; }
-                    const currentMin = form.watch("preferredTime")?.split(":")[1] ?? "00";
+                    const currentMin = preferredTime?.split(":")[1] ?? "00";
                     form.setValue("preferredTime", `${h}:${currentMin}`, { shouldValidate: true });
                   }}
                 >
@@ -318,13 +394,13 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
                 </select>
                 <select
                   className="bg-[var(--editorial-surface-container-low,var(--muted))] border-0 rounded-xl p-4 font-medium text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
-                  value={(() => { const v = form.watch("preferredTime"); return v ? v.split(":")[1] : ""; })()}
+                  value={(() => { const v = preferredTime; return v ? v.split(":")[1] : ""; })()}
                   onChange={(e) => {
                     const m = e.target.value;
-                    const currentHour = form.watch("preferredTime")?.split(":")[0] ?? "09";
+                    const currentHour = preferredTime?.split(":")[0] ?? "09";
                     form.setValue("preferredTime", `${currentHour}:${m}`, { shouldValidate: true });
                   }}
-                  disabled={!form.watch("preferredTime")}
+                  disabled={!preferredTime}
                 >
                   <option value="">{t("form.minute")}</option>
                   {Array.from({ length: 12 }, (_, i) => {
@@ -341,7 +417,66 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
         </section>
       </div>
 
-      {/* Section 3: Template */}
+      {/* Section 3: Next Session Date (Calendar) */}
+      <section className="bg-card p-8 rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.02)] border border-[var(--editorial-outline-variant,var(--border))]/50">
+        <label className="block font-headline text-lg font-bold text-foreground mb-1">
+          {isEdit ? t("form.nextSessionDate") : t("form.firstSessionDate")}
+        </label>
+        <p className="text-xs text-muted-foreground mb-4">
+          {t("form.sessionDateDesc")}
+        </p>
+        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className={cn(
+                inputClass,
+                "flex items-center justify-between text-left",
+                !nextSessionDate && "text-muted-foreground"
+              )}
+            >
+              <span>
+                {nextSessionDate
+                  ? format.dateTime(new Date(nextSessionDate + "T12:00:00"), { weekday: "long", month: "long", day: "numeric", year: "numeric" })
+                  : t("form.selectDate")}
+              </span>
+              <CalendarIcon className="h-5 w-5 text-muted-foreground" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={nextSessionDate ? new Date(nextSessionDate + "T12:00:00") : undefined}
+              onSelect={(date) => {
+                if (date) {
+                  const y = date.getFullYear();
+                  const m = String(date.getMonth() + 1).padStart(2, "0");
+                  const d = String(date.getDate()).padStart(2, "0");
+                  form.setValue("nextSessionDate", `${y}-${m}-${d}`, { shouldValidate: true });
+                } else {
+                  form.setValue("nextSessionDate", "", { shouldValidate: true });
+                }
+                setCalendarOpen(false);
+              }}
+              disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+              defaultMonth={nextSessionDate ? new Date(nextSessionDate + "T12:00:00") : new Date()}
+            />
+          </PopoverContent>
+        </Popover>
+        {nextSessionDate && preferredTime && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            {t("form.sessionAtTime", {
+              date: format.dateTime(new Date(nextSessionDate + "T12:00:00"), { weekday: "short", month: "short", day: "numeric" }),
+              time: preferredTime,
+            })}
+          </p>
+        )}
+        {form.formState.errors.nextSessionDate && (
+          <p className="mt-1 text-sm text-destructive">{form.formState.errors.nextSessionDate.message}</p>
+        )}
+      </section>
+
+      {/* Section 4: Template */}
       <section className="bg-card p-8 rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.02)] border border-[var(--editorial-outline-variant,var(--border))]/50">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div className="flex-1">
@@ -395,11 +530,13 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
         </button>
         <button
           type="submit"
-          disabled={createSeries.isPending}
+          disabled={saveMutation.isPending}
           className="text-white px-10 py-4 rounded-xl font-headline font-bold text-lg shadow-xl shadow-primary/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-60"
           style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
         >
-          {createSeries.isPending ? t("form.creating") : t("form.createSeries")}
+          {saveMutation.isPending
+            ? (isEdit ? t("detail.saving") : t("form.creating"))
+            : (isEdit ? t("detail.save") : t("form.createSeries"))}
         </button>
       </footer>
     </form>
