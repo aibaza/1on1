@@ -45,13 +45,15 @@ interface HealthResponse {
   alerts: Array<{
     type: string;
     severity: string;
+    userId: string;
     personName: string;
     detail: string;
   }>;
   // For sparkline — different APIs return different shapes
   members?: Array<{
-    firstName: string;
-    lastName: string;
+    scoreHistory: { score: number; date: string }[];
+  }>;
+  people?: Array<{
     scoreHistory: { score: number; date: string }[];
   }>;
   teamScoreHistory?: { score: number; date: string }[];
@@ -94,10 +96,19 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
     const raw: { score: number; date: string }[] = [];
 
     if (data.scoreHistory) {
+      // Member: personal score history
       for (const h of data.scoreHistory) {
         if (h.score > 0) raw.push({ score: h.score, date: h.date });
       }
+    } else if (data.people) {
+      // Admin: all people's score histories
+      for (const p of data.people) {
+        for (const h of p.scoreHistory) {
+          if (h.score > 0 && h.date) raw.push({ score: h.score, date: h.date });
+        }
+      }
     } else if (data.members) {
+      // Manager: team members' score histories
       for (const m of data.members) {
         for (const h of m.scoreHistory) {
           if (h.score > 0 && h.date) raw.push({ score: h.score, date: h.date });
@@ -127,6 +138,10 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
   if (!data?.kpis) return null;
 
   const { kpis, distribution, alerts } = data;
+  // Use only visible segments (exclude noData) so the bar fills 100%
+  const visibleDist = distribution
+    ? distribution.healthy + distribution.attention + distribution.critical
+    : 0;
   const totalDist = distribution
     ? distribution.healthy + distribution.attention + distribution.critical + distribution.noData
     : 0;
@@ -230,7 +245,7 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
               {distribution.healthy > 0 && (
                 <div
                   className={cn(DISTRIBUTION_COLORS.healthy, "flex items-center justify-center text-white text-[10px] font-bold")}
-                  style={{ width: `${(distribution.healthy / totalDist) * 100}%` }}
+                  style={{ width: `${(distribution.healthy / (visibleDist || 1)) * 100}%` }}
                 >
                   {distribution.healthy}
                 </div>
@@ -238,7 +253,7 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
               {distribution.attention > 0 && (
                 <div
                   className={cn(DISTRIBUTION_COLORS.attention, "flex items-center justify-center text-white text-[10px] font-bold")}
-                  style={{ width: `${(distribution.attention / totalDist) * 100}%` }}
+                  style={{ width: `${(distribution.attention / (visibleDist || 1)) * 100}%` }}
                 >
                   {distribution.attention}
                 </div>
@@ -246,7 +261,7 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
               {distribution.critical > 0 && (
                 <div
                   className={cn(DISTRIBUTION_COLORS.critical, "flex items-center justify-center text-white text-[10px] font-bold")}
-                  style={{ width: `${(distribution.critical / totalDist) * 100}%` }}
+                  style={{ width: `${(distribution.critical / (visibleDist || 1)) * 100}%` }}
                 >
                   {distribution.critical}
                 </div>
@@ -365,11 +380,16 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
               const statusBg = isCritical
                 ? "rgba(239, 68, 68, 0.08)"
                 : "rgba(245, 158, 11, 0.08)";
+              const href = alert.type === "stale"
+                ? `/sessions`
+                : `/analytics/individual/${alert.userId}`;
 
               return (
-                <div
+                <Link
                   key={i}
-                  className="bg-card px-4 py-3 rounded-r-xl rounded-l-sm border border-border/50 border-l-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]"
+                  href={href}
+                  onClick={() => setSignalsOpen(false)}
+                  className="bg-card px-4 py-3 rounded-r-xl rounded-l-sm border border-border/50 border-l-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 block"
                   style={{ borderLeftColor: borderColor }}
                 >
                   <div className="flex justify-between items-start">
@@ -384,7 +404,7 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
                       {statusLabel}
                     </span>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

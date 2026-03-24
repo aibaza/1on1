@@ -110,6 +110,19 @@ function trendBadge(trend: number) {
   );
 }
 
+function alertTypeLabel(type: string): string {
+  switch (type) {
+    case "declining": return "decliningScore";
+    case "critical_score": return "criticalScore";
+    case "stale": case "stale_series": return "staleSeries";
+    case "low_action_rate": return "lowActionRate";
+    case "score_drop": return "decliningScore";
+    case "low_score": return "criticalScore";
+    case "no_sessions": return "staleSeries";
+    default: return type;
+  }
+}
+
 function alertIcon(type: string) {
   switch (type) {
     case "stale_series":
@@ -391,18 +404,43 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
           {alerts.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("noAlerts")}</p>
           ) : (
-            <div className="space-y-4">
-              {alerts.map((alert, i) => (
-                <div key={`${alert.userId}-${i}`} className="flex items-start gap-3">
-                  <div className={cn("flex items-center justify-center w-8 h-8 rounded-full shrink-0", alertBadgeColor(alert.type))}>
-                    {alertIcon(alert.type)}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-foreground truncate">{alert.personName}</p>
-                    <p className="text-xs text-muted-foreground">{alert.detail}</p>
-                  </div>
-                </div>
-              ))}
+            <div className="grid gap-3">
+              {alerts.map((alert, i) => {
+                const isCritical = alert.type === "critical_score";
+                const borderColor = isCritical ? "var(--color-danger, #ef4444)" : "var(--color-warning, #f59e0b)";
+                const statusLabel = alertTypeLabel(alert.type);
+                const statusColor = isCritical
+                  ? "text-red-600 dark:text-red-400"
+                  : "text-amber-600 dark:text-amber-400";
+                const statusBg = isCritical
+                  ? "rgba(239, 68, 68, 0.08)"
+                  : "rgba(245, 158, 11, 0.08)";
+                const href = alert.type === "stale"
+                  ? `/sessions`
+                  : `/analytics/individual/${alert.userId}`;
+
+                return (
+                  <Link
+                    key={`${alert.userId}-${i}`}
+                    href={href}
+                    className="bg-background px-4 py-3 rounded-r-xl rounded-l-sm border border-border/50 border-l-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 block"
+                    style={{ borderLeftColor: borderColor }}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="min-w-0">
+                        <p className="font-bold text-sm text-foreground truncate">{alert.personName}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{alert.detail}</p>
+                      </div>
+                      <span
+                        className={cn("px-2 py-0.5 text-[10px] font-bold rounded uppercase shrink-0 ml-3", statusColor)}
+                        style={{ background: statusBg }}
+                      >
+                        {t(statusLabel as Parameters<typeof t>[0])}
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
