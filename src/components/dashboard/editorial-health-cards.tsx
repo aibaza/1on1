@@ -127,33 +127,34 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
           )}
         </div>
 
-        {/* Card 2: Actions */}
+        {/* Card 2: Actions (matches /analytics "Actiuni" card) */}
         <div className="bg-card p-5 rounded-xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10">
-              <Target className="h-4 w-4 text-primary" />
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10">
+                <Target className="h-4 w-4 text-primary" />
+              </div>
+              <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                {t("actions")}
+              </span>
             </div>
-            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              {t("actionRate")}
-            </span>
+            {kpis.actionItemRate > 0 && (
+              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                +{kpis.actionItemRate.toFixed(1)}
+              </span>
+            )}
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold tabular-nums text-foreground">
-              {kpis.actionItemRate}%
-            </span>
+          <div className="text-3xl font-extrabold tabular-nums text-foreground mb-3">
+            {kpis.actionItemRate}%
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            {t("completionRate")}
-          </p>
-          <div className="w-full bg-muted rounded-full h-1.5 mt-2">
-            <div
-              className="bg-primary h-1.5 rounded-full transition-all"
-              style={{ width: `${kpis.actionItemRate}%` }}
-            />
+          <div className="flex w-full h-1.5 rounded-full overflow-hidden bg-muted">
+            <div className="h-full bg-emerald-500" style={{ width: `${kpis.actionItemRate}%` }} />
+            <div className="h-full bg-amber-400" style={{ width: `${Math.max(0, 100 - kpis.actionItemRate) * 0.3}%` }} />
+            <div className="h-full bg-red-400 flex-1" />
           </div>
         </div>
 
-        {/* Card 3: Health Distribution */}
+        {/* Card 3: Health Distribution (matches /analytics "Distribuție sănătate") */}
         {distribution && totalDist > 0 ? (
           <div className="bg-card p-5 rounded-xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-2 mb-3">
@@ -161,7 +162,7 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
                 <Activity className="h-4 w-4 text-amber-500" />
               </div>
               <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                {t("distribution")}
+                {t("healthDistribution")}
               </span>
             </div>
             <div className="flex h-6 w-full rounded-md overflow-hidden mb-3">
@@ -193,15 +194,15 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground font-medium">
               <span className="flex items-center gap-1">
                 <span className={cn("w-2 h-2 rounded-full", LEGEND_DOT_COLORS.healthy)} />
-                {distribution.healthy}
+                {t("healthy")} ({distribution.healthy})
               </span>
               <span className="flex items-center gap-1">
                 <span className={cn("w-2 h-2 rounded-full", LEGEND_DOT_COLORS.attention)} />
-                {distribution.attention}
+                {t("attention")} ({distribution.attention})
               </span>
               <span className="flex items-center gap-1">
                 <span className={cn("w-2 h-2 rounded-full", LEGEND_DOT_COLORS.critical)} />
-                {distribution.critical}
+                {t("critical")} ({distribution.critical})
               </span>
             </div>
           </div>
