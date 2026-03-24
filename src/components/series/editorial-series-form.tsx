@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { useTranslations } from "next-intl";
-import { Check, Pencil, Clock, Sparkles } from "lucide-react";
+import { Check, Pencil, Sparkles } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
@@ -293,15 +293,20 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
               <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">
                 {t("form.preferredTime")}
               </label>
-              <div className="relative">
-                <input
-                  type="time"
-                  className="w-full bg-[var(--editorial-surface-container-low,var(--muted))] border-0 rounded-xl p-4 font-medium text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none"
-                  value={form.watch("preferredTime") ?? ""}
-                  onChange={(e) => form.setValue("preferredTime", e.target.value || undefined)}
-                />
-                <Clock className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
-              </div>
+              <select
+                className="w-full bg-[var(--editorial-surface-container-low,var(--muted))] border-0 rounded-xl p-4 font-medium text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
+                value={form.watch("preferredTime") ?? ""}
+                onChange={(e) => form.setValue("preferredTime", e.target.value || undefined)}
+              >
+                <option value="">{t("form.noPreference")}</option>
+                {Array.from({ length: 23 }, (_, i) => {
+                  const hour = Math.floor(i / 2) + 8;
+                  const min = i % 2 === 0 ? "00" : "30";
+                  if (hour > 19) return null;
+                  const val = `${String(hour).padStart(2, "0")}:${min}`;
+                  return <option key={val} value={val}>{val}</option>;
+                })}
+              </select>
             </div>
           </div>
         </section>
