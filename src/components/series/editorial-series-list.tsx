@@ -39,12 +39,14 @@ function EditorialSeriesGrid({
   currentUserId,
   muted = false,
   showManagerName = false,
+  showNewCard = false,
   t,
 }: {
   items: Series[];
   currentUserId: string;
   muted?: boolean;
   showManagerName?: boolean;
+  showNewCard?: boolean;
   t: ReturnType<typeof useTranslations<"sessions">>;
 }) {
   return (
@@ -58,8 +60,8 @@ function EditorialSeriesGrid({
           />
         </div>
       ))}
-      {/* Dashed empty state card */}
-      {!muted && (
+      {/* Dashed empty state card — only for current user's own managed series */}
+      {showNewCard && (
         <Link
           href="/sessions/new"
           className="border-2 border-dashed border-[var(--editorial-outline-variant,var(--border))]/50 rounded-2xl flex flex-col items-center justify-center p-6 text-muted-foreground hover:border-primary/50 hover:bg-[var(--editorial-surface-container,var(--muted))] transition-all cursor-pointer group min-h-[280px]"
@@ -118,7 +120,7 @@ function EditorialAdminGrouped({
                 {t("editorial.sessions", { count: items.length })}
               </span>
             </div>
-            <EditorialSeriesGrid items={items} currentUserId={currentUserId} t={t} />
+            <EditorialSeriesGrid items={items} currentUserId={currentUserId} showNewCard={managerId === currentUserId} t={t} />
           </section>
         );
       })}
@@ -148,7 +150,7 @@ function EditorialManagerSections({
               {t("sections.myTeam")}
             </h3>
           </div>
-          <EditorialSeriesGrid items={myTeam} currentUserId={currentUserId} t={t} />
+          <EditorialSeriesGrid items={myTeam} currentUserId={currentUserId} showNewCard t={t} />
         </div>
       )}
       {myOneOnOnes.length > 0 && (
