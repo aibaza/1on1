@@ -350,9 +350,10 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
             </SheetDescription>
           </SheetHeader>
 
-          <div className="divide-y divide-border px-4 pb-4">
+          <div className="grid gap-3 px-4 pb-4">
             {alerts.map((alert, i) => {
               const isCritical = alert.type === "critical_score";
+              const borderColor = isCritical ? "var(--color-danger, #ef4444)" : "var(--color-warning, #f59e0b)";
               const statusLabel = alert.type === "declining" ? t("signalDeclining")
                 : alert.type === "critical_score" ? t("signalCritical")
                 : alert.type === "stale" ? t("signalStale")
@@ -361,14 +362,28 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
               const statusColor = isCritical
                 ? "text-red-600 dark:text-red-400"
                 : "text-amber-600 dark:text-amber-400";
+              const statusBg = isCritical
+                ? "rgba(239, 68, 68, 0.08)"
+                : "rgba(245, 158, 11, 0.08)";
 
               return (
-                <div key={i} className="py-3">
-                  <p className="font-semibold text-sm text-foreground">{alert.personName}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{alert.detail}</p>
-                  <span className={cn("text-[10px] font-bold uppercase tracking-wider mt-1 inline-block", statusColor)}>
-                    {statusLabel}
-                  </span>
+                <div
+                  key={i}
+                  className="bg-card px-4 py-3 rounded-r-xl rounded-l-sm border border-border/50 border-l-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]"
+                  style={{ borderLeftColor: borderColor }}
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-bold text-sm text-foreground">{alert.personName}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{alert.detail}</p>
+                    </div>
+                    <span
+                      className={cn("px-2 py-0.5 text-[10px] font-bold rounded uppercase shrink-0 ml-3", statusColor)}
+                      style={{ background: statusBg }}
+                    >
+                      {statusLabel}
+                    </span>
+                  </div>
                 </div>
               );
             })}
