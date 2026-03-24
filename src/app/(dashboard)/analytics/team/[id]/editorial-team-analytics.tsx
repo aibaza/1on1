@@ -229,6 +229,30 @@ export function EditorialTeamAnalytics({
     },
   });
 
+  /* Build sparkline entries from members' scoreHistory — must be before early returns (rules of hooks) */
+  const members = data?.members ?? [];
+  const sparkEntries = useMemo<SparkEntry[]>(() => {
+    if (members.length === 0) return [];
+    const MAX_BARS = 30;
+    const raw: { score: number; isoDate: string; personName: string }[] = [];
+    for (const m of members) {
+      const name = `${m.firstName} ${m.lastName}`;
+      for (const h of m.scoreHistory) {
+        if (h.date)
+          raw.push({ score: h.score, isoDate: h.date, personName: name });
+      }
+    }
+    raw.sort((a, b) => a.isoDate.localeCompare(b.isoDate));
+    return raw.slice(-MAX_BARS).map((r) => ({
+      score: r.score,
+      date: format.dateTime(new Date(r.isoDate), {
+        month: "short",
+        day: "numeric",
+      }),
+      personName: r.personName,
+    }));
+  }, [members, format]);
+
   /* Loading */
   if (isLoading) {
     return (
@@ -260,7 +284,7 @@ export function EditorialTeamAnalytics({
   }
 
   const managerName = `${data.manager.firstName} ${data.manager.lastName}`;
-  const { kpis, distribution, alerts, members, teamScoreHistory } = data;
+  const { kpis, distribution, alerts, teamScoreHistory } = data;
   const totalDistribution =
     distribution.healthy +
     distribution.attention +
@@ -274,28 +298,6 @@ export function EditorialTeamAnalytics({
     if (!b.lastSessionDate) return -1;
     return b.lastSessionDate.localeCompare(a.lastSessionDate);
   });
-
-  /* Build sparkline entries from members' scoreHistory */
-  const sparkEntries = useMemo<SparkEntry[]>(() => {
-    const MAX_BARS = 30;
-    const raw: { score: number; isoDate: string; personName: string }[] = [];
-    for (const m of members) {
-      const name = `${m.firstName} ${m.lastName}`;
-      for (const h of m.scoreHistory) {
-        if (h.date)
-          raw.push({ score: h.score, isoDate: h.date, personName: name });
-      }
-    }
-    raw.sort((a, b) => a.isoDate.localeCompare(b.isoDate));
-    return raw.slice(-MAX_BARS).map((r) => ({
-      score: r.score,
-      date: format.dateTime(new Date(r.isoDate), {
-        month: "short",
-        day: "numeric",
-      }),
-      personName: r.personName,
-    }));
-  }, [members, format]);
 
   return (
     <div>
