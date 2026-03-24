@@ -454,6 +454,16 @@ export function EditorialTeamAnalytics({
                     {distribution.critical}
                   </div>
                 )}
+                {distribution.noData > 0 && (
+                  <div
+                    className="bg-muted-foreground/30 flex items-center justify-center text-foreground/70 text-xs font-bold"
+                    style={{
+                      width: `${(distribution.noData / totalDistribution) * 100}%`,
+                    }}
+                  >
+                    {distribution.noData}
+                  </div>
+                )}
               </div>
               <div className="flex flex-wrap gap-6">
                 <div className="flex items-center gap-2">
