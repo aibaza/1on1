@@ -41,9 +41,11 @@ function getInitials(name?: string | null): string {
 interface UserMenuProps {
   /** Custom trigger element — avatar will be appended inside it */
   renderTrigger?: React.ReactNode;
+  /** Avatar URL from server (DB) — takes priority over session.user.image */
+  avatarUrl?: string | null;
 }
 
-export function UserMenu({ renderTrigger }: UserMenuProps = {}) {
+export function UserMenu({ renderTrigger, avatarUrl: serverAvatarUrl }: UserMenuProps = {}) {
   const { data: session, update } = useSession();
   const t = useTranslations("navigation");
   const user = session?.user;
@@ -86,7 +88,7 @@ export function UserMenu({ renderTrigger }: UserMenuProps = {}) {
           <button className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-accent/60 transition-colors cursor-pointer">
             {renderTrigger}
             <Avatar className="h-8 w-8 shrink-0">
-              <AvatarImage src={user?.name ? getAvatarUrl(user.name, user.image, null, user.level) : undefined} alt={user?.name ?? "User"} />
+              <AvatarImage src={user?.name ? getAvatarUrl(user.name, serverAvatarUrl ?? user.image, null, user.level) : undefined} alt={user?.name ?? "User"} />
               <AvatarFallback className="text-xs">
                 {getInitials(user?.name)}
               </AvatarFallback>
@@ -95,7 +97,7 @@ export function UserMenu({ renderTrigger }: UserMenuProps = {}) {
         ) : (
           <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-full hover:bg-accent/60 transition-colors">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={user?.name ? getAvatarUrl(user.name, user.image, null, user.level) : undefined} alt={user?.name ?? "User"} />
+              <AvatarImage src={user?.name ? getAvatarUrl(user.name, serverAvatarUrl ?? user.image, null, user.level) : undefined} alt={user?.name ?? "User"} />
               <AvatarFallback className="text-xs">
                 {getInitials(user?.name)}
               </AvatarFallback>

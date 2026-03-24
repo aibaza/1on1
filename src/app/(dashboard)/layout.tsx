@@ -11,7 +11,7 @@ import { CommandPalette } from "@/components/search/command-palette";
 import { ThemeColorProvider } from "@/components/theme-color-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { tenants } from "@/lib/db/schema";
+import { tenants, users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getDesignPreference } from "@/lib/design-preference.server";
 
@@ -25,25 +25,35 @@ export default async function DashboardLayout({
   const session = await auth();
   if (!session) redirect("/login");
 
-  // Read tenant color theme for ThemeColorProvider
+  // Read tenant color theme + user avatar from DB
   let colorTheme = "neutral";
+  let userAvatarUrl: string | null = null;
   try {
-    const tenant = await withTenantContext(
+    const [tenantData, userData] = await withTenantContext(
       session.user.tenantId,
       session.user.id,
       async (tx) => {
-        const [result] = await tx
-          .select({ settings: tenants.settings })
-          .from(tenants)
-          .where(eq(tenants.id, session.user.tenantId))
-          .limit(1);
-        return result;
+        return Promise.all([
+          tx
+            .select({ settings: tenants.settings })
+            .from(tenants)
+            .where(eq(tenants.id, session.user.tenantId))
+            .limit(1)
+            .then(r => r[0]),
+          tx
+            .select({ avatarUrl: users.avatarUrl })
+            .from(users)
+            .where(eq(users.id, session.user.id))
+            .limit(1)
+            .then(r => r[0]),
+        ]);
       }
     );
-    const settings = (tenant?.settings ?? {}) as { colorTheme?: string };
+    const settings = (tenantData?.settings ?? {}) as { colorTheme?: string };
     colorTheme = settings.colorTheme ?? "neutral";
+    userAvatarUrl = userData?.avatarUrl ?? null;
   } catch {
-    // Fall back to neutral if tenant fetch fails
+    // Fall back to defaults if fetch fails
   }
 
   const designPref = await getDesignPreference();
@@ -61,7 +71,7 @@ export default async function DashboardLayout({
                 </a>
                 <SideNav />
                 <div className="md:ml-[var(--sidebar-width,256px)] transition-[margin] duration-300">
-                  <EditorialTopBar />
+                  <EditorialTopBar avatarUrl={userAvatarUrl} />
                   <main id="main-content" className="pt-20 md:pt-24 pb-20 px-4 md:px-10">
                     <div className="max-w-7xl mx-auto animate-fade-in">{children}</div>
                   </main>

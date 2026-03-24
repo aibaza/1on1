@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
 
-export function EditorialTopBar() {
+export function EditorialTopBar({ avatarUrl }: { avatarUrl?: string | null }) {
   const { data: session } = useSession();
   const t = useTranslations("navigation");
   const tAdmin = useTranslations("admin");
@@ -62,6 +62,7 @@ export function EditorialTopBar() {
         {/* User profile section */}
         <div className="pl-3 border-l border-[var(--editorial-outline-variant,var(--border))]">
           <UserMenu
+            avatarUrl={avatarUrl}
             renderTrigger={
               user ? (
                 <div className="text-right hidden sm:block">
