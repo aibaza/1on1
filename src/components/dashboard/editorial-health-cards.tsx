@@ -5,19 +5,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
-  Heart,
   Target,
   AlertTriangle,
   Activity,
   ChevronRight,
+  TrendingUp,
   TrendingDown,
   Clock,
   BarChart3,
-  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  scoreTextColor,
   sparkBarColor,
   alertBadgeColor,
   DISTRIBUTION_COLORS,
@@ -155,30 +153,33 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Health Score */}
+        {/* Card 1: Health Score (matches /analytics layout) */}
         <div className="bg-card p-5 rounded-xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-          <div className="flex items-center gap-2 mb-3">
-            <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", "bg-emerald-500/10")}>
-              <Heart className="h-4 w-4 text-emerald-500" />
-            </div>
-            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-muted-foreground">
               {t("healthScore")}
             </span>
+            {kpis.scoreTrend !== 0 && (
+              <span className={cn(
+                "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold",
+                kpis.scoreTrend > 0
+                  ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
+                  : "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400",
+              )}>
+                <TrendingUp className={cn("h-3 w-3", kpis.scoreTrend < 0 && "rotate-180")} />
+                {kpis.scoreTrend > 0 ? "+" : ""}{kpis.scoreTrend.toFixed(1)}
+              </span>
+            )}
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className={cn("text-3xl font-extrabold tabular-nums", scoreTextColor(kpis.avgScore))}>
+          <div className="flex items-baseline gap-1 mb-4">
+            <span className="text-3xl font-extrabold tabular-nums text-foreground">
               {kpis.avgScore !== null ? kpis.avgScore.toFixed(1) : "—"}
             </span>
             <span className="text-sm text-muted-foreground">/5</span>
           </div>
-          {kpis.scoreTrend !== 0 && (
-            <p className={cn("text-xs font-semibold mt-1", kpis.scoreTrend > 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400")}>
-              {kpis.scoreTrend > 0 ? "+" : ""}{kpis.scoreTrend.toFixed(1)} {t("fromLastPeriod")}
-            </p>
-          )}
           {/* Sparkline bars */}
           {sparkEntries.length > 0 && (
-            <div className="flex items-end gap-px h-8 w-full mt-3">
+            <div className="flex items-end gap-px h-12 w-full">
               {sparkEntries.map((e, i) => (
                 <div
                   key={i}
