@@ -26,7 +26,7 @@ interface ProfileSheetUser {
   avatarUrl: string | null;
   managerName: string | null;
   status: "active" | "pending" | "deactivated";
-  teams: { id: string; name: string }[];
+  teamName: string | null;
 }
 
 interface ProfileSheetProps {
@@ -107,18 +107,12 @@ export function ProfileSheet({ user, open, onOpenChange }: ProfileSheetProps) {
               <p className="text-sm">{user.managerName || t("profile.none")}</p>
             </div>
 
-            {user.teams.length > 0 && (
+            {user.teamName && (
               <div>
                 <p className="text-xs font-medium text-muted-foreground">
                   {t("profile.teams")}
                 </p>
-                <div className="mt-1 flex flex-wrap gap-1">
-                  {user.teams.map((team) => (
-                    <Badge key={team.id} variant="outline">
-                      {team.name}
-                    </Badge>
-                  ))}
-                </div>
+                <Badge variant="outline">{user.teamName}</Badge>
               </div>
             )}
           </div>

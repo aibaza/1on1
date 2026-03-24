@@ -34,6 +34,7 @@ export default async function PeoplePage() {
           jobTitle: users.jobTitle,
           avatarUrl: users.avatarUrl,
           managerId: users.managerId,
+          teamName: users.teamName,
           isActive: users.isActive,
           invitedAt: users.invitedAt,
           inviteAcceptedAt: users.inviteAcceptedAt,
@@ -43,32 +44,26 @@ export default async function PeoplePage() {
         .where(eq(users.tenantId, session.user.tenantId))
         .orderBy(users.lastName, users.firstName);
 
-      // Build a map of user ID -> name for manager names
+      // Build maps for manager names and team names
       const userMap = new Map(
         allUsers.map((u) => [u.id, `${u.firstName} ${u.lastName}`])
       );
+      const managerTeamNameMap = new Map(
+        allUsers
+          .filter((u) => u.teamName)
+          .map((u) => [u.id, u.teamName!])
+      );
 
-      // Derive team memberships from managerId
-      // Each user belongs to their manager's "team"
-      const userTeamsMap = new Map<string, { id: string; name: string }[]>();
-      for (const u of allUsers) {
-        if (u.managerId) {
-          const managerName = userMap.get(u.managerId);
-          if (managerName) {
-            userTeamsMap.set(u.id, [{ id: u.managerId, name: `${managerName}'s Team` }]);
-          }
-        }
-      }
-
-      // Derive teams list from managers with direct reports
+      // Derive available teams list from managers with direct reports
       const managerSet = new Map<string, string>();
       for (const u of allUsers) {
         if (u.managerId && userMap.has(u.managerId)) {
-          managerSet.set(u.managerId, userMap.get(u.managerId)!);
+          const teamName = managerTeamNameMap.get(u.managerId) ?? userMap.get(u.managerId)!;
+          managerSet.set(u.managerId, teamName);
         }
       }
       const allTeams = Array.from(managerSet.entries())
-        .map(([id, name]) => ({ id, name: `${name}'s Team` }))
+        .map(([id, name]) => ({ id, name }))
         .sort((a, b) => a.name.localeCompare(b.name));
 
       // Fetch pending invites (not accepted, not expired)
@@ -107,7 +102,7 @@ export default async function PeoplePage() {
           : u.inviteAcceptedAt || !u.invitedAt
             ? ("active" as const)
             : ("pending" as const),
-        teams: userTeamsMap.get(u.id) ?? [],
+        teamName: u.managerId ? (managerTeamNameMap.get(u.managerId) ?? userMap.get(u.managerId) ?? null) : null,
         invitedAt: u.invitedAt?.toISOString() ?? null,
         createdAt: u.createdAt.toISOString(),
       }));
@@ -127,7 +122,7 @@ export default async function PeoplePage() {
           managerName: null,
           isActive: false,
           status: "pending" as const,
-          teams: [],
+          teamName: null,
           invitedAt: inv.invitedAt.toISOString(),
           createdAt: inv.invitedAt.toISOString(),
         }));

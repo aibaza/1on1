@@ -29,14 +29,14 @@ export default async function TeamsPage() {
           lastName: users.lastName,
           avatarUrl: users.avatarUrl,
           teamName: users.teamName,
-          memberCount: sql<number>`(SELECT COUNT(*) FROM "user" u2 WHERE u2.manager_id = ${users.id} AND u2.is_active = true)::int`,
+          memberCount: sql<number>`(SELECT COUNT(*) FROM "user" u2 WHERE u2.manager_id = ${users.id} AND u2.is_active = true AND u2.tenant_id = ${users.tenantId})::int`,
         })
         .from(users)
         .where(
           and(
             eq(users.tenantId, session.user.tenantId),
             eq(users.isActive, true),
-            sql`EXISTS (SELECT 1 FROM "user" u2 WHERE u2.manager_id = ${users.id} AND u2.is_active = true)`
+            sql`EXISTS (SELECT 1 FROM "user" u2 WHERE u2.manager_id = ${users.id} AND u2.is_active = true AND u2.tenant_id = ${users.tenantId})`
           )
         )
         .orderBy(users.lastName, users.firstName);

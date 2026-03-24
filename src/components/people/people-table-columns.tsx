@@ -29,7 +29,7 @@ export interface UserRow {
   managerName: string | null;
   isActive: boolean;
   status: "active" | "pending" | "deactivated";
-  teams: { id: string; name: string }[];
+  teamName: string | null;
   invitedAt: string | null;
   createdAt: string;
 }
@@ -142,26 +142,22 @@ export function createColumns({
     {
       id: "teams",
       meta: { className: "hidden md:table-cell" },
-      accessorFn: (row) => row.teams.map((team) => team.name).join(", "),
+      accessorFn: (row) => row.teamName ?? "",
       header: () => t("table.teams"),
       cell: ({ row }) => {
-        const userTeams = row.original.teams;
-        if (userTeams.length === 0) {
+        const teamName = row.original.teamName;
+        if (!teamName) {
           return <span className="text-muted-foreground">--</span>;
         }
         return (
-          <div className="flex flex-wrap gap-1">
-            {userTeams.map((team) => (
-              <Badge key={team.id} variant="outline" className="text-xs">
-                {team.name}
-              </Badge>
-            ))}
-          </div>
+          <Badge variant="outline" className="text-xs">
+            {teamName}
+          </Badge>
         );
       },
       filterFn: (row, _id, value) => {
         if (!value || value === "all") return true;
-        return row.original.teams.some((t) => t.id === value);
+        return row.original.teamName === value;
       },
     },
     {

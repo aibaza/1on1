@@ -134,7 +134,7 @@ export function EditorialPeopleList({
         if (!match) return false;
       }
       if (levelFilter !== "all" && u.level !== levelFilter) return false;
-      if (teamFilter !== "all" && !u.teams.some((t) => t.id === teamFilter)) return false;
+      if (teamFilter !== "all" && u.teamName !== teamFilter) return false;
       if (statusFilter !== "all" && u.status !== statusFilter) return false;
       return true;
     });
@@ -390,9 +390,7 @@ export function EditorialPeopleList({
                       {/* Team */}
                       <td className="px-6 py-5 hidden lg:table-cell">
                         <span className="text-sm font-medium text-muted-foreground">
-                          {user.teams.length > 0
-                            ? user.teams.map((t) => t.name).join(", ")
-                            : "—"}
+                          {user.teamName ?? "—"}
                         </span>
                       </td>
                       {/* Reports to */}
