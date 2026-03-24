@@ -4,14 +4,10 @@ import { useMemo } from "react";
 import Link from "next/link";
 import {
   Layers,
-  TrendingUp,
   AlertTriangle,
   Clock,
-  CalendarClock,
-  Star,
   ChevronRight,
   CalendarPlus,
-  TrendingDown,
   Play,
   ListChecks,
   Calendar,
@@ -49,24 +45,6 @@ function getInitials(name: string): string {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 }
 
-function MiniBarChart({ data, color = "var(--primary)" }: { data: number[]; color?: string }) {
-  const max = Math.max(...data, 1);
-  return (
-    <div className="h-8 w-20 flex items-end space-x-1">
-      {data.slice(-4).map((v, i) => (
-        <div
-          key={i}
-          className="w-3 rounded-sm transition-all"
-          style={{
-            height: `${Math.max((v / max) * 100, 10)}%`,
-            backgroundColor: color,
-            opacity: 0.2 + (i / data.length) * 0.8,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
 
 
 export function EditorialDashboard({
@@ -93,59 +71,6 @@ export function EditorialDashboard({
     return sorted[0];
   }, [upcoming]);
 
-  // AI insight: use most recent session's snippet or a generic message
-  const aiInsight = recent[0]?.aiSummarySnippet
-    ? t("editorial.recentInsight", { text: recent[0].aiSummarySnippet })
-    : stats.avgScore
-      ? t("editorial.avgScoreInsight", { score: stats.avgScore.toFixed(1) })
-      : t("editorial.welcomeFallback");
-
-  // Attention cards: derive from data
-  const attentionCards = useMemo(() => {
-    const cards: Array<{ type: "score" | "cadence"; title: string; subtitle: string; color: string; seriesId: string }> = [];
-
-    // Check for score drops
-    for (const series of upcoming) {
-      const hist = series.assessmentHistory;
-      if (hist.length >= 2) {
-        let delta = hist[hist.length - 1] - hist[hist.length - 2];
-        // Normalize: if delta suggests 0-100 scale data, convert to 1-5
-        if (Math.abs(delta) > 5) delta = delta / 20;
-        if (delta <= -0.7) {
-          const isSelf = series.report.id === user.id;
-          const name = `${series.report.firstName} ${series.report.lastName}`;
-          cards.push({
-            type: "score",
-            title: isSelf
-              ? t("editorial.scoreDroppedSelf", { delta: Math.abs(delta).toFixed(1) })
-              : t("editorial.scoreDropped", { name, delta: Math.abs(delta).toFixed(1) }),
-            subtitle: t("editorial.considerCheckin"),
-            color: "error",
-            seriesId: series.id,
-          });
-        }
-      }
-    }
-
-    // Check for cadence gaps
-    for (const series of upcoming) {
-      if (series.nextSessionAt) {
-        const daysSince = Math.floor((Date.now() - new Date(series.nextSessionAt).getTime()) / (1000 * 60 * 60 * 24));
-        if (daysSince > 14) {
-          const name = `${series.report.firstName} ${series.report.lastName}`;
-          cards.push({
-            type: "cadence",
-            title: t("editorial.cadenceDrift", { days: daysSince, name }),
-            subtitle: t("editorial.driftingCadence"),
-            color: "amber",
-            seriesId: series.id,
-          });
-        }
-      }
-    }
-
-    return cards.slice(0, 2);
-  }, [upcoming]);
 
   return (
     <div className="space-y-10 max-w-7xl mx-auto">
@@ -158,98 +83,20 @@ export function EditorialDashboard({
           <h2 className="text-4xl font-extrabold text-foreground tracking-tight font-headline">
             {t(`editorial.${getGreetingKey()}`)}, {firstName}
           </h2>
-          <div className="mt-4 inline-flex items-center px-4 py-2 rounded-full border"
-            style={{ background: "var(--color-success, #004c47)10", borderColor: "var(--color-success, #004c47)20", color: "var(--color-success, #004c47)" }}>
-            <Star className="h-4 w-4 mr-2 fill-current" />
-            <span className="text-sm font-semibold">{aiInsight}</span>
-          </div>
-        </div>
-        {/* Attention card (replaces MeetingStreak) — only if there's something to flag */}
-        {attentionCards.length > 0 && (
-          <div
-            className="p-4 rounded-xl flex items-center gap-4 border max-w-sm transition-all hover:shadow-md"
-            style={{
-              background: attentionCards[0].color === "error"
-                ? "color-mix(in srgb, var(--destructive) 8%, transparent)"
-                : "color-mix(in srgb, var(--color-warning) 8%, transparent)",
-              borderColor: attentionCards[0].color === "error"
-                ? "color-mix(in srgb, var(--destructive) 15%, transparent)"
-                : "color-mix(in srgb, var(--color-warning) 20%, transparent)",
-            }}
+          <Link
+            href="/sessions"
+            className="mt-4 inline-flex items-center px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 transition-colors"
           >
-            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{
-                background: attentionCards[0].color === "error"
-                  ? "color-mix(in srgb, var(--destructive) 10%, transparent)"
-                  : "color-mix(in srgb, var(--color-warning) 12%, transparent)",
-              }}>
-              {attentionCards[0].type === "score"
-                ? <TrendingDown className="h-4 w-4 text-destructive" />
-                : <CalendarClock className="h-4 w-4 text-[var(--color-warning)]" />}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-foreground font-semibold text-sm truncate">{attentionCards[0].title}</p>
-              <p className="text-muted-foreground text-xs truncate">{attentionCards[0].subtitle}</p>
-            </div>
-            <Link
-              href={`/sessions/${attentionCards[0].seriesId}`}
-              className="px-3 py-1.5 rounded-lg text-xs font-bold shrink-0"
-              style={{
-                background: attentionCards[0].color === "error" ? "var(--card)" : "var(--color-warning)",
-                color: attentionCards[0].color === "error" ? "var(--destructive)" : "white",
-                border: attentionCards[0].color === "error" ? "1px solid color-mix(in srgb, var(--destructive) 15%, transparent)" : "none",
-              }}
-            >
-              {attentionCards[0].type === "score" ? t("editorial.review") : t("editorial.schedule")}
-            </Link>
-          </div>
-        )}
-      </section>
-
-      {/* 2. Health Overview Cards */}
-      <EditorialHealthCards userLevel={user.level} userId={user.id} />
-
-      {/* 3. Quick Stats (compact row) */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card px-5 py-4 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex items-center justify-between">
-          <div>
-            <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">{t("editorial.activeSeries")}</span>
-            <div className="text-2xl font-extrabold text-primary tabular-nums">{stats.totalReports}</div>
-          </div>
-          <MiniBarChart data={trends.reportsHistory} />
+            <Layers className="h-4 w-4 mr-2" />
+            <span className="text-sm font-semibold">{stats.totalReports} {t("editorial.activeSeries").toLowerCase()}</span>
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Link>
         </div>
-
-        <div className="bg-card px-5 py-4 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-          <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">{t("editorial.avgScore")}</span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-primary tabular-nums">
-              {stats.avgScore?.toFixed(1) ?? "—"}
-            </span>
-            {stats.avgScore && trends.scoresHistory.length >= 2 && (
-              <span className="text-xs font-semibold" style={{ color: "var(--color-success)" }}>
-                {(trends.scoresHistory[trends.scoresHistory.length - 1] - trends.scoresHistory[trends.scoresHistory.length - 2]) > 0 ? "+" : ""}
-                {(trends.scoresHistory[trends.scoresHistory.length - 1] - trends.scoresHistory[trends.scoresHistory.length - 2]).toFixed(1)}
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="bg-card px-5 py-4 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-          <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">{t("editorial.overdueActions")}</span>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl font-extrabold text-primary tabular-nums">{totalOverdue}</span>
-            {totalOverdue > 0 && (
-              <div className="flex-1 bg-[var(--editorial-surface-container,var(--muted))] rounded-full h-1.5">
-                <div className="bg-destructive h-1.5 rounded-full" style={{ width: `${Math.min(totalOverdue * 20, 100)}%` }} />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {nextSession ? (
+        {/* Next session card (right-aligned) */}
+        {nextSession && (
           <Link
             href={nextSession.latestSession?.status === "in_progress" ? `/wizard/${nextSession.latestSession.id}` : `/sessions/${nextSession.id}`}
-            className="text-white px-5 py-4 rounded-xl shadow-md relative overflow-hidden group hover:shadow-lg transition-all block"
+            className="text-white px-5 py-4 rounded-xl shadow-md relative overflow-hidden group hover:shadow-lg transition-all block max-w-xs"
             style={{ background: "linear-gradient(135deg, #29407d 0%, #425797 100%)" }}
           >
             <div className="absolute -right-3 -bottom-3 opacity-10">
@@ -274,13 +121,11 @@ export function EditorialDashboard({
               </div>
             </div>
           </Link>
-        ) : (
-          <div className="bg-muted px-5 py-4 rounded-xl border border-border/50 flex items-center justify-center text-center gap-2">
-            <CalendarPlus className="h-5 w-5 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">{t("editorial.noUpcoming")}</span>
-          </div>
         )}
       </section>
+
+      {/* 2. Health Overview Cards */}
+      <EditorialHealthCards userLevel={user.level} userId={user.id} />
 
       {/* 3. Main Grid: Left (upcoming + recent) | Right (actions + cadence) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
