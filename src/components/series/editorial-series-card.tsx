@@ -204,9 +204,9 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
       <div className="flex justify-between items-start mb-4 relative z-[1]">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Avatar className="h-11 w-11 rounded-xl">
-              <ThemedAvatarImage name={reportName} uploadedUrl={series.report.avatarUrl} role={series.report.level} className="rounded-xl" />
-              <AvatarFallback className="text-xs rounded-xl font-bold">{getInitials(series.report.firstName, series.report.lastName)}</AvatarFallback>
+            <Avatar className="h-10 w-10">
+              <ThemedAvatarImage name={reportName} uploadedUrl={series.report.avatarUrl} role={series.report.level} />
+              <AvatarFallback className="text-xs font-bold">{getInitials(series.report.firstName, series.report.lastName)}</AvatarFallback>
             </Avatar>
             {/* Relationship badge */}
             <Tooltip>
