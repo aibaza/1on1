@@ -53,6 +53,9 @@ export function ActionItemsCard({
           </span>
         )}
       </div>
+      {/* Spacer to push bar + legend to bottom */}
+      <div className="flex-1" />
+
       {/* Segmented bar with numbers (like distribution) */}
       <div className="flex w-full h-6 rounded-md overflow-hidden mb-3">
         {completed > 0 && (

@@ -10,12 +10,9 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  DISTRIBUTION_COLORS,
-  LEGEND_DOT_COLORS,
-} from "@/lib/analytics/colors";
 import { HealthScoreCard } from "@/components/analytics/health-score-card";
 import { ActionItemsCard } from "@/components/analytics/action-items-card";
+import { HealthDistributionCard } from "@/components/analytics/health-distribution-card";
 import {
   Sheet,
   SheetContent,
@@ -103,13 +100,6 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
   if (!data?.kpis) return null;
 
   const { kpis, distribution, alerts } = data;
-  // Use only visible segments (exclude noData) so the bar fills 100%
-  const visibleDist = distribution
-    ? distribution.healthy + distribution.attention + distribution.critical
-    : 0;
-  const totalDist = distribution
-    ? distribution.healthy + distribution.attention + distribution.critical + distribution.noData
-    : 0;
 
   const scopeLabel = userLevel === "admin"
     ? t("statsOrg")
@@ -143,58 +133,9 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
         {/* Card 2: Actions (shared component from analytics) */}
         <ActionItemsCard actionItemRate={kpis.actionItemRate} />
 
-        {/* Card 3: Health Distribution (matches /analytics "Distribuție sănătate") */}
-        {distribution && totalDist > 0 ? (
-          <div className="bg-card p-5 rounded-xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-amber-500/10">
-                <Activity className="h-4 w-4 text-amber-500" />
-              </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                {t("healthDistribution")}
-              </span>
-            </div>
-            <div className="flex h-6 w-full rounded-md overflow-hidden mb-3">
-              {distribution.healthy > 0 && (
-                <div
-                  className={cn(DISTRIBUTION_COLORS.healthy, "flex items-center justify-center text-white text-[10px] font-bold")}
-                  style={{ width: `${(distribution.healthy / (visibleDist || 1)) * 100}%` }}
-                >
-                  {distribution.healthy}
-                </div>
-              )}
-              {distribution.attention > 0 && (
-                <div
-                  className={cn(DISTRIBUTION_COLORS.attention, "flex items-center justify-center text-white text-[10px] font-bold")}
-                  style={{ width: `${(distribution.attention / (visibleDist || 1)) * 100}%` }}
-                >
-                  {distribution.attention}
-                </div>
-              )}
-              {distribution.critical > 0 && (
-                <div
-                  className={cn(DISTRIBUTION_COLORS.critical, "flex items-center justify-center text-white text-[10px] font-bold")}
-                  style={{ width: `${(distribution.critical / (visibleDist || 1)) * 100}%` }}
-                >
-                  {distribution.critical}
-                </div>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground font-medium">
-              <span className="flex items-center gap-1">
-                <span className={cn("w-2 h-2 rounded-full", LEGEND_DOT_COLORS.healthy)} />
-                {t("healthy")} ({distribution.healthy})
-              </span>
-              <span className="flex items-center gap-1">
-                <span className={cn("w-2 h-2 rounded-full", LEGEND_DOT_COLORS.attention)} />
-                {t("attention")} ({distribution.attention})
-              </span>
-              <span className="flex items-center gap-1">
-                <span className={cn("w-2 h-2 rounded-full", LEGEND_DOT_COLORS.critical)} />
-                {t("critical")} ({distribution.critical})
-              </span>
-            </div>
-          </div>
+        {/* Card 3: Health Distribution (shared component) */}
+        {distribution ? (
+          <HealthDistributionCard distribution={distribution} />
         ) : (
           <div className="bg-card p-5 rounded-xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-2 mb-3">
