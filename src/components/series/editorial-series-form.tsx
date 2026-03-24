@@ -27,7 +27,7 @@ interface FormValues {
   nextSessionDate: string; // ISO date string YYYY-MM-DD
 }
 
-const formSchema = z.object({
+const createFormSchema = z.object({
   reportId: z.string().min(1, "Please select a report"),
   cadence: z.enum(["weekly", "biweekly", "monthly", "custom"]),
   cadenceCustomDays: z.number().int().min(1).max(365).optional(),
@@ -36,6 +36,17 @@ const formSchema = z.object({
   preferredTime: z.string().min(1, "Please select a time"),
   defaultDurationMinutes: z.number().int().min(15).max(180),
   nextSessionDate: z.string().min(1, "Please select a date"),
+});
+
+const editFormSchema = z.object({
+  reportId: z.string(),
+  cadence: z.enum(["weekly", "biweekly", "monthly", "custom"]),
+  cadenceCustomDays: z.number().int().min(1).max(365).optional(),
+  defaultTemplateId: z.string().optional(),
+  preferredDay: z.string().optional(),
+  preferredTime: z.string().optional(),
+  defaultDurationMinutes: z.number().int().min(15).max(180),
+  nextSessionDate: z.string().optional(),
 });
 
 interface User {
@@ -107,15 +118,16 @@ export function EditorialSeriesForm({ userGroups, templates, editData }: Editori
   const [selectedTemplate, setSelectedTemplate] = useState<string>(editData?.defaultTemplateId ?? "");
   const [calendarOpen, setCalendarOpen] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(isEdit ? editFormSchema : createFormSchema) as any,
     defaultValues: {
       reportId: editData?.reportId ?? "",
       cadence: (editData?.cadence as FormValues["cadence"]) ?? "biweekly",
       cadenceCustomDays: editData?.cadenceCustomDays ?? undefined,
       defaultTemplateId: editData?.defaultTemplateId ?? "",
       preferredDay: editData?.preferredDay ?? "",
-      preferredTime: editData?.preferredTime ?? "",
+      preferredTime: editData?.preferredTime?.slice(0, 5) ?? "",
       defaultDurationMinutes: editData?.defaultDurationMinutes ?? 30,
       nextSessionDate: extractDate(editData?.nextSessionAt ?? null),
     },
