@@ -1,6 +1,6 @@
 /**
- * Playwright config targeting live UAT at https://1on1.surmont.co/
- * No webServer dependency — requires UAT to be running.
+ * Playwright config targeting Vercel develop preview.
+ * No webServer dependency — requires develop branch to be deployed.
  *
  * Auth state files are stored in e2e/.auth-uat/ (separate from localhost auth).
  *
@@ -28,7 +28,7 @@ export default defineConfig({
   reporter: [["list"], ["html", { outputFolder: "playwright-report-uat", open: "never" }]],
   timeout: 60_000,
   use: {
-    baseURL: "https://1on1.surmont.co",
+    baseURL: "https://1on1-git-develop-surcod.vercel.app",
     trace: "on-first-retry",
     screenshot: "on",
     video: "off",

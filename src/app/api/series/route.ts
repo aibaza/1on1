@@ -331,14 +331,16 @@ export async function POST(request: Request) {
           throw new Error("DUPLICATE_SERIES");
         }
 
-        // Compute next session date
-        const nextSessionAt = computeNextSessionDate(
-          new Date(),
-          data.cadence,
-          data.cadenceCustomDays ?? null,
-          data.preferredDay ?? null,
-          true
-        );
+        // Use explicit date from form if provided, otherwise compute
+        const nextSessionAt = data.nextSessionAt
+          ? new Date(data.nextSessionAt)
+          : computeNextSessionDate(
+              new Date(),
+              data.cadence,
+              data.cadenceCustomDays ?? null,
+              data.preferredDay ?? null,
+              true
+            );
 
         const [series] = await tx
           .insert(meetingSeries)

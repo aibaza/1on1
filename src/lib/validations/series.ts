@@ -23,6 +23,7 @@ export const createSeriesSchema = z
       .regex(/^\d{2}:\d{2}$/, "Time must be in HH:MM format")
       .optional(),
     defaultDurationMinutes: z.number().int().min(15).max(180).default(30),
+    nextSessionAt: z.string().datetime().optional(),
   })
   .refine(
     (data) => {
