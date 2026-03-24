@@ -91,7 +91,7 @@
       "series": "Serii",
       "seriesTooltip": "Active: serii cu cel puțin o sesiune completată în ultimele 60 de zile. Inactive: serii unde ultima sesiune completată a fost acum mai mult de 45 de zile.",
       "active": "Active",
-      "staleSeries": "{count} serii inactive detectate",
+      "staleSeries": "Serie inactivă detectată",
       "healthDistribution": "Distribuție sănătate",
       "healthDistributionTooltip": "Fiecare persoană e clasificată pe baza scorului mediu din ultimele 60 de zile. Sănătos: 3.5+, Necesită atenție: 2.5–3.5, Critic: sub 2.5, Fără date: nicio sesiune recentă.",
       "healthy": "Sănătos",

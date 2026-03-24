@@ -91,7 +91,7 @@
       "series": "Series",
       "seriesTooltip": "Active: series with at least one completed session in the last 60 days. Stale: series where the last completed session was more than 45 days ago.",
       "active": "Active",
-      "staleSeries": "{count} Stale Series Detected",
+      "staleSeries": "Stale Series Detected",
       "healthDistribution": "Health Distribution",
       "healthDistributionTooltip": "Each person is classified based on their average session score over the last 60 days. Healthy: 3.5+, Needs Attention: 2.5–3.5, Critical: below 2.5, No Data: no recent sessions.",
       "healthy": "Healthy",

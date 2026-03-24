@@ -334,6 +334,14 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
                 {distribution.critical}
               </div>
             )}
+            {distribution.noData > 0 && (
+              <div
+                className="bg-muted-foreground/30 flex items-center justify-center text-foreground/70 text-sm font-semibold"
+                style={{ width: `${pct(distribution.noData)}%` }}
+              >
+                {distribution.noData}
+              </div>
+            )}
           </div>
           <div className="flex gap-6 mt-3 text-sm">
             <span className="flex items-center gap-1.5">
