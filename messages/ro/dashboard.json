@@ -74,6 +74,23 @@
       "considerCheckin": "Consideră o discuție focalizată",
       "cadenceDrift": "{days} zile de la ultima sincronizare cu {name}",
       "driftingCadence": "Depășește cadența recomandată"
+    },
+    "healthCards": {
+      "orgScope": "Sănătate organizație",
+      "teamScope": "Sănătate echipă",
+      "personalScope": "Performanța mea",
+      "viewAnalytics": "Vezi analizele",
+      "healthScore": "Scor sănătate",
+      "fromLastPeriod": "față de perioada anterioară",
+      "actionRate": "Rata acțiuni",
+      "completionRate": "Completare vs atribuite",
+      "distribution": "Distribuție",
+      "sessions": "Sesiuni",
+      "completed": "completate",
+      "signals": "Semnale",
+      "more": "în plus",
+      "allClear": "Totul în regulă",
+      "noSignals": "Niciun semnal urgent"
     }
   }
 }

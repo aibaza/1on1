@@ -21,6 +21,7 @@ import {
 import { useTranslations, useFormatter } from "next-intl";
 import type { QuickStats, StatsTrends, OverdueGroup, RecentSession } from "@/lib/queries/dashboard";
 import type { SeriesCardData } from "@/lib/queries/series";
+import { EditorialHealthCards } from "@/components/dashboard/editorial-health-cards";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarUrl } from "@/lib/avatar";
 import { StarRating } from "@/components/ui/star-rating";
@@ -192,7 +193,10 @@ export function EditorialDashboard({
         <MeetingStreak count={stats.sessionsThisMonth} label={t("editorial.sessionsOnTime")} />
       </section>
 
-      {/* 2. Quick Stats */}
+      {/* 2. Health Overview Cards */}
+      <EditorialHealthCards userLevel={user.level} userId={user.id} />
+
+      {/* 3. Quick Stats */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-card p-6 md:p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
           <div>

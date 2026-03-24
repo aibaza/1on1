@@ -74,6 +74,23 @@
       "considerCheckin": "Consider a focused check-in",
       "cadenceDrift": "{days} days since last sync with {name}",
       "driftingCadence": "Drifting past recommended cadence"
+    },
+    "healthCards": {
+      "orgScope": "Organization Health",
+      "teamScope": "Team Health",
+      "personalScope": "My Performance",
+      "viewAnalytics": "View Analytics",
+      "healthScore": "Health Score",
+      "fromLastPeriod": "from last period",
+      "actionRate": "Action Rate",
+      "completionRate": "Completion vs assigned",
+      "distribution": "Distribution",
+      "sessions": "Sessions",
+      "completed": "completed",
+      "signals": "Signals",
+      "more": "more",
+      "allClear": "All clear",
+      "noSignals": "No urgent signals"
     }
   }
 }
