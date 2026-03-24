@@ -21,16 +21,22 @@ export function EditorialTopBar() {
 
   return (
     <header className="fixed top-0 right-0 w-full md:w-[calc(100%-var(--sidebar-width,256px))] z-40 bg-[var(--background)]/80 backdrop-blur-xl flex justify-between items-center h-16 px-4 md:px-8 shadow-sm transition-[width] duration-300">
-      {/* Search */}
+      {/* Search — opens CommandPalette via Cmd+K */}
       <div className="flex items-center flex-1">
-        <div className="relative w-full max-w-md group">
+        <button
+          type="button"
+          onClick={() => {
+            document.dispatchEvent(
+              new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true })
+            );
+          }}
+          className="relative w-full max-w-md text-left"
+        >
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder={t("searchRecords")}
-            className="w-full pl-12 pr-4 py-2.5 bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-full text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all placeholder:text-muted-foreground/60 font-body"
-          />
-        </div>
+          <div className="w-full pl-12 pr-4 py-2.5 bg-[var(--editorial-surface-container-low,var(--muted))] rounded-full text-sm text-muted-foreground/60 hover:bg-[var(--editorial-surface-container,var(--accent))] transition-colors cursor-pointer font-body">
+            {t("searchRecords")}
+          </div>
+        </button>
       </div>
 
       {/* Right actions */}
