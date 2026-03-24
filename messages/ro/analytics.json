@@ -154,6 +154,7 @@
       "decliningScore": "Scor în scădere",
       "lowActionRate": "Rată scăzută de acțiuni",
       "criticalScore": "Scor critic",
+      "alertStale": "Serie inactivă",
       "openActionsCount": "{count} acțiuni deschise",
       "allOnTrack": "Toate sesiunile sunt pe drumul cel bun",
       "completionVsAssignment": "Finalizare vs atribuire",

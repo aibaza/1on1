@@ -116,11 +116,11 @@ function alertTypeLabel(type: string): string {
   switch (type) {
     case "declining": return "decliningScore";
     case "critical_score": return "criticalScore";
-    case "stale": case "stale_series": return "staleSeries";
+    case "stale": case "stale_series": return "alertStale";
     case "low_action_rate": return "lowActionRate";
     case "score_drop": return "decliningScore";
     case "low_score": return "criticalScore";
-    case "no_sessions": return "staleSeries";
+    case "no_sessions": return "alertStale";
     default: return type;
   }
 }

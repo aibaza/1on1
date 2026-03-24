@@ -154,6 +154,7 @@
       "decliningScore": "Declining Score",
       "lowActionRate": "Low Action Rate",
       "criticalScore": "Critical Score",
+      "alertStale": "Stale Series",
       "openActionsCount": "{count} open actions",
       "allOnTrack": "All sessions on track",
       "completionVsAssignment": "Completion vs Assignment",
