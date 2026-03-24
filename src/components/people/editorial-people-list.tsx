@@ -9,6 +9,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarUrl } from "@/lib/avatar";
 import { UserActionsMenu } from "./user-actions-menu";
 import { ProfileSheet } from "./profile-sheet";
+import { LevelSelect } from "./level-select";
+import { ManagerSelect } from "./manager-select";
 import type { UserRow } from "./people-table-columns";
 
 interface EditorialPeopleListProps {
@@ -58,6 +60,20 @@ export function EditorialPeopleList({
   });
 
   const isAdmin = currentUserLevel === "admin";
+  const canEdit = currentUserLevel === "admin" || currentUserLevel === "manager";
+
+  // Build allUsers list for manager select
+  const allUsers = useMemo(
+    () =>
+      (users ?? [])
+        .filter((u) => u.status !== "pending" || u.firstName)
+        .map((u) => ({
+          id: u.id,
+          firstName: u.firstName,
+          lastName: u.lastName,
+        })),
+    [users]
+  );
 
   const bulkLevelMutation = useMutation({
     mutationFn: async (newLevel: string) => {
@@ -383,9 +399,13 @@ export function EditorialPeopleList({
                           </div>
                         </div>
                       </td>
-                      {/* Role */}
-                      <td className="px-6 py-5">
-                        <LevelPill level={user.level} />
+                      {/* Level */}
+                      <td className="px-6 py-5" onClick={(e) => e.stopPropagation()}>
+                        <LevelSelect
+                          userId={user.id}
+                          currentLevel={user.level}
+                          disabled={!isAdmin || user.id === currentUserId}
+                        />
                       </td>
                       {/* Team */}
                       <td className="px-6 py-5 hidden lg:table-cell">
@@ -394,17 +414,14 @@ export function EditorialPeopleList({
                         </span>
                       </td>
                       {/* Reports to */}
-                      <td className="px-6 py-5 hidden lg:table-cell">
-                        {user.managerName ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-full bg-[var(--editorial-primary-container,var(--primary))] text-[8px] flex items-center justify-center text-white font-bold">
-                              {user.managerName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
-                            </div>
-                            <span className="text-xs text-foreground font-medium">{user.managerName}</span>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground italic">—</span>
-                        )}
+                      <td className="px-6 py-5 hidden lg:table-cell" onClick={(e) => e.stopPropagation()}>
+                        <ManagerSelect
+                          userId={user.id}
+                          currentManagerId={user.managerId}
+                          currentManagerName={user.managerName}
+                          users={allUsers}
+                          disabled={!canEdit}
+                        />
                       </td>
                       {/* Status */}
                       <td className="px-6 py-5 hidden md:table-cell">
