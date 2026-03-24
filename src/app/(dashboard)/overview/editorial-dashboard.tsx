@@ -7,11 +7,9 @@ import {
   TrendingUp,
   AlertTriangle,
   Clock,
-  Zap,
   CalendarClock,
   Star,
   ChevronRight,
-  CircleAlert,
   CalendarPlus,
   TrendingDown,
   Play,
@@ -70,30 +68,6 @@ function MiniBarChart({ data, color = "var(--primary)" }: { data: number[]; colo
   );
 }
 
-function MeetingStreak({ count, label }: { count: number; label: string }) {
-  const circumference = 2 * Math.PI * 24;
-  const progress = Math.min(count / 15, 1); // 15 = full ring
-
-  return (
-    <div className="bg-card p-5 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex items-center space-x-4">
-      <div className="relative flex items-center justify-center">
-        <svg className="w-14 h-14 -rotate-90">
-          <circle cx="28" cy="28" r="24" fill="transparent" stroke="currentColor" strokeWidth="4" className="text-muted" />
-          <circle
-            cx="28" cy="28" r="24" fill="transparent" stroke="var(--color-success, #004c47)" strokeWidth="4"
-            strokeDasharray={circumference} strokeDashoffset={circumference * (1 - progress)}
-            strokeLinecap="round"
-          />
-        </svg>
-        <Zap className="absolute h-5 w-5" style={{ color: "var(--color-success, #004c47)" }} />
-      </div>
-      <div>
-        <div className="text-2xl font-extrabold text-foreground">{count}</div>
-        <div className="text-xs text-muted-foreground font-medium">{label}</div>
-      </div>
-    </div>
-  );
-}
 
 export function EditorialDashboard({
   user,
@@ -190,7 +164,46 @@ export function EditorialDashboard({
             <span className="text-sm font-semibold">{aiInsight}</span>
           </div>
         </div>
-        <MeetingStreak count={stats.sessionsThisMonth} label={t("editorial.sessionsOnTime")} />
+        {/* Attention card (replaces MeetingStreak) — only if there's something to flag */}
+        {attentionCards.length > 0 && (
+          <div
+            className="p-4 rounded-xl flex items-center gap-4 border max-w-sm transition-all hover:shadow-md"
+            style={{
+              background: attentionCards[0].color === "error"
+                ? "color-mix(in srgb, var(--destructive) 8%, transparent)"
+                : "color-mix(in srgb, var(--color-warning) 8%, transparent)",
+              borderColor: attentionCards[0].color === "error"
+                ? "color-mix(in srgb, var(--destructive) 15%, transparent)"
+                : "color-mix(in srgb, var(--color-warning) 20%, transparent)",
+            }}
+          >
+            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+              style={{
+                background: attentionCards[0].color === "error"
+                  ? "color-mix(in srgb, var(--destructive) 10%, transparent)"
+                  : "color-mix(in srgb, var(--color-warning) 12%, transparent)",
+              }}>
+              {attentionCards[0].type === "score"
+                ? <TrendingDown className="h-4 w-4 text-destructive" />
+                : <CalendarClock className="h-4 w-4 text-[var(--color-warning)]" />}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-foreground font-semibold text-sm truncate">{attentionCards[0].title}</p>
+              <p className="text-muted-foreground text-xs truncate">{attentionCards[0].subtitle}</p>
+            </div>
+            <Link
+              href={`/sessions/${attentionCards[0].seriesId}`}
+              className="px-3 py-1.5 rounded-lg text-xs font-bold shrink-0"
+              style={{
+                background: attentionCards[0].color === "error" ? "var(--card)" : "var(--color-warning)",
+                color: attentionCards[0].color === "error" ? "var(--destructive)" : "white",
+                border: attentionCards[0].color === "error" ? "1px solid color-mix(in srgb, var(--destructive) 15%, transparent)" : "none",
+              }}
+            >
+              {attentionCards[0].type === "score" ? t("editorial.review") : t("editorial.schedule")}
+            </Link>
+          </div>
+        )}
       </section>
 
       {/* 2. Health Overview Cards */}
@@ -269,61 +282,7 @@ export function EditorialDashboard({
         )}
       </section>
 
-      {/* 3. Attention Needed */}
-      {attentionCards.length > 0 && (
-        <section className="space-y-4">
-          <h3 className="text-xl font-bold text-foreground flex items-center font-headline">
-            <CircleAlert className="mr-2 h-5 w-5 text-destructive" />
-            {t("editorial.attentionNeeded")}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {attentionCards.map((card, i) => (
-              <div
-                key={i}
-                className="p-5 rounded-xl flex items-center justify-between border group transition-all hover:shadow-md"
-                style={{
-                  background: card.color === "error"
-                    ? "color-mix(in srgb, var(--destructive) 8%, transparent)"
-                    : "color-mix(in srgb, var(--color-warning) 8%, transparent)",
-                  borderColor: card.color === "error"
-                    ? "color-mix(in srgb, var(--destructive) 15%, transparent)"
-                    : "color-mix(in srgb, var(--color-warning) 20%, transparent)",
-                }}
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-                    style={{
-                      background: card.color === "error"
-                        ? "color-mix(in srgb, var(--destructive) 10%, transparent)"
-                        : "color-mix(in srgb, var(--color-warning) 12%, transparent)",
-                    }}>
-                    {card.type === "score"
-                      ? <TrendingDown className="h-5 w-5 text-destructive" />
-                      : <CalendarClock className="h-5 w-5 text-[var(--color-warning)]" />}
-                  </div>
-                  <div>
-                    <p className="text-foreground font-semibold text-sm">{card.title}</p>
-                    <p className="text-muted-foreground text-xs">{card.subtitle}</p>
-                  </div>
-                </div>
-                <Link
-                  href={`/sessions/${card.seriesId}`}
-                  className="px-4 py-2 rounded-lg text-xs font-bold shadow-sm opacity-70 group-hover:opacity-100 transition-all shrink-0 ml-4"
-                  style={{
-                    background: card.color === "error" ? "var(--card)" : "var(--color-warning)",
-                    color: card.color === "error" ? "var(--destructive)" : "white",
-                    border: card.color === "error" ? "1px solid color-mix(in srgb, var(--destructive) 15%, transparent)" : "none",
-                  }}
-                >
-                  {card.type === "score" ? t("editorial.review") : t("editorial.schedule")}
-                </Link>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 4. Main Grid: Left (upcoming + recent) | Right (actions + cadence) */}
+      {/* 3. Main Grid: Left (upcoming + recent) | Right (actions + cadence) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column */}
         <div className="lg:col-span-8 space-y-10">
