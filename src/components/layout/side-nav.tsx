@@ -140,10 +140,10 @@ export function SideNav() {
     { label: t("actionItems"), href: "/action-items", icon: ListChecks },
     { label: t("history"), href: "/history", icon: History },
     { label: t("analytics"), href: "/analytics", icon: BarChart3, matchAlso: ["/analytics"], minRole: "manager" },
-    { label: t("templates"), href: "/templates", icon: FileText, minRole: "manager" },
   ];
 
   const bottomNavItems: NavItem[] = [
+    { label: t("templates"), href: "/templates", icon: FileText, minRole: "manager" },
     { label: t("people"), href: "/people", icon: Users, minRole: "manager" },
     { label: t("teams"), href: "/teams", icon: UsersRound, matchAlso: ["/teams"], minRole: "manager" },
     { label: t("company"), href: "/settings/company", icon: Settings, minRole: "admin" },
