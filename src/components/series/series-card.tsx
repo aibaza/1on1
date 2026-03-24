@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, ListTodo, Play, RotateCcw, Star, UserCog, UserCheck } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
@@ -342,7 +342,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
       <CardHeader className="relative z-[1] pointer-events-none flex flex-row items-center gap-3 pb-2">
         <div className="relative shrink-0">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={getAvatarUrl(`${series.report.firstName} ${series.report.lastName}`, series.report.avatarUrl, null, series.report.level)} />
+            <ThemedAvatarImage name={`${series.report.firstName} ${series.report.lastName}`} uploadedUrl={series.report.avatarUrl} role={series.report.level} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           {isManager ? (

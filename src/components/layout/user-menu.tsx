@@ -5,8 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { LogOut, Globe, Check, Paintbrush, User } from "lucide-react";
 import Link from "next/link";
 import { DESIGN_PREF_COOKIE, type DesignPreference } from "@/lib/design-preference";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -88,7 +88,7 @@ export function UserMenu({ renderTrigger, avatarUrl: serverAvatarUrl }: UserMenu
           <button className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-accent/60 transition-colors cursor-pointer">
             {renderTrigger}
             <Avatar className="h-8 w-8 shrink-0">
-              <AvatarImage src={user?.name ? getAvatarUrl(user.name, serverAvatarUrl ?? user.image, null, user.level) : undefined} alt={user?.name ?? "User"} />
+              <ThemedAvatarImage name={user?.name ?? ""} uploadedUrl={serverAvatarUrl ?? user?.image} role={user?.level} alt={user?.name ?? "User"} />
               <AvatarFallback className="text-xs">
                 {getInitials(user?.name)}
               </AvatarFallback>
@@ -97,7 +97,7 @@ export function UserMenu({ renderTrigger, avatarUrl: serverAvatarUrl }: UserMenu
         ) : (
           <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-full hover:bg-accent/60 transition-colors">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={user?.name ? getAvatarUrl(user.name, serverAvatarUrl ?? user.image, null, user.level) : undefined} alt={user?.name ?? "User"} />
+              <ThemedAvatarImage name={user?.name ?? ""} uploadedUrl={serverAvatarUrl ?? user?.image} role={user?.level} alt={user?.name ?? "User"} />
               <AvatarFallback className="text-xs">
                 {getInitials(user?.name)}
               </AvatarFallback>

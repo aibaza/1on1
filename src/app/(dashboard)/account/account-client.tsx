@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { RefreshCw, Shield, Check, Eye, EyeOff } from "lucide-react";
 import { getAvatarUrl } from "@/lib/avatar";
+import { useIsDarkMode } from "@/lib/hooks/use-dark-mode";
 
 interface AccountClientProps {
   user: {
@@ -129,7 +130,8 @@ export function AccountClient({ user, canEditJobTitle }: AccountClientProps) {
     }
   }
 
-  const avatarUrl = getAvatarUrl(fullName, user.avatarUrl, avatarSeed, user.level);
+  const isDark = useIsDarkMode();
+  const avatarUrl = getAvatarUrl(fullName, user.avatarUrl, avatarSeed, user.level, isDark);
 
   const inputClass =
     "w-full bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg px-4 py-3 text-foreground focus:ring-2 focus:ring-[var(--editorial-primary-container,var(--ring))] outline-none transition-all placeholder:text-muted-foreground";
