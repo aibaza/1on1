@@ -117,6 +117,8 @@
       "cadenceDesc": "Cât de des vă întâlniți.",
       "schedulePreference": "Preferințe de programare",
       "schedulePreferenceDesc": "Acestea sunt preferințe, nu angajamente ferme.",
+      "selectDay": "Alege o zi",
+      "selectTemplate": "Alege un sablon",
       "hour": "Ora",
       "minute": "Min",
       "templateTip": "Despre șablon",

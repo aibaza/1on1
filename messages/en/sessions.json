@@ -117,6 +117,8 @@
       "cadenceDesc": "How often you meet.",
       "schedulePreference": "Schedule Preference",
       "schedulePreferenceDesc": "These are preferences, not hard commitments.",
+      "selectDay": "Select a day",
+      "selectTemplate": "Select a template",
       "hour": "Hour",
       "minute": "Min",
       "templateTip": "Template Insight",

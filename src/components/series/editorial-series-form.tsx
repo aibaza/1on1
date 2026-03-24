@@ -18,9 +18,9 @@ interface FormValues {
   reportId: string;
   cadence: "weekly" | "biweekly" | "monthly" | "custom";
   cadenceCustomDays?: number;
-  defaultTemplateId?: string;
-  preferredDay?: string;
-  preferredTime?: string;
+  defaultTemplateId: string;
+  preferredDay: string;
+  preferredTime: string;
   defaultDurationMinutes: number;
 }
 
@@ -28,9 +28,9 @@ const formSchema = z.object({
   reportId: z.string().min(1, "Please select a report"),
   cadence: z.enum(["weekly", "biweekly", "monthly", "custom"]),
   cadenceCustomDays: z.number().int().min(1).max(365).optional(),
-  defaultTemplateId: z.string().optional(),
-  preferredDay: z.string().optional(),
-  preferredTime: z.string().optional(),
+  defaultTemplateId: z.string().min(1, "Please select a template"),
+  preferredDay: z.string().min(1, "Please select a day"),
+  preferredTime: z.string().min(1, "Please select a time"),
   defaultDurationMinutes: z.number().int().min(15).max(180),
 });
 
@@ -83,6 +83,9 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
     defaultValues: {
       reportId: "",
       cadence: "biweekly",
+      defaultTemplateId: "",
+      preferredDay: "",
+      preferredTime: "",
       defaultDurationMinutes: 30,
     },
   });
@@ -280,14 +283,17 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
               </label>
               <select
                 className="w-full bg-[var(--editorial-surface-container-low,var(--muted))] border-0 rounded-xl p-4 font-medium text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
-                value={form.watch("preferredDay") ?? ""}
-                onChange={(e) => form.setValue("preferredDay", e.target.value || undefined)}
+                value={form.watch("preferredDay")}
+                onChange={(e) => form.setValue("preferredDay", e.target.value, { shouldValidate: true })}
               >
-                <option value="">{t("form.noPreference")}</option>
+                <option value="">{t("form.selectDay")}</option>
                 {dayOptions.map((day) => (
                   <option key={day.value} value={day.value}>{day.label}</option>
                 ))}
               </select>
+              {form.formState.errors.preferredDay && (
+                <p className="mt-1 text-sm text-destructive">{form.formState.errors.preferredDay.message}</p>
+              )}
             </div>
             <div>
               <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">
@@ -299,9 +305,9 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
                   value={(() => { const v = form.watch("preferredTime"); return v ? v.split(":")[0] : ""; })()}
                   onChange={(e) => {
                     const h = e.target.value;
-                    if (!h) { form.setValue("preferredTime", undefined); return; }
+                    if (!h) { form.setValue("preferredTime", "", { shouldValidate: true }); return; }
                     const currentMin = form.watch("preferredTime")?.split(":")[1] ?? "00";
-                    form.setValue("preferredTime", `${h}:${currentMin}`);
+                    form.setValue("preferredTime", `${h}:${currentMin}`, { shouldValidate: true });
                   }}
                 >
                   <option value="">{t("form.hour")}</option>
@@ -316,7 +322,7 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
                   onChange={(e) => {
                     const m = e.target.value;
                     const currentHour = form.watch("preferredTime")?.split(":")[0] ?? "09";
-                    form.setValue("preferredTime", `${currentHour}:${m}`);
+                    form.setValue("preferredTime", `${currentHour}:${m}`, { shouldValidate: true });
                   }}
                   disabled={!form.watch("preferredTime")}
                 >
@@ -327,6 +333,9 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
                   })}
                 </select>
               </div>
+              {form.formState.errors.preferredTime && (
+                <p className="mt-1 text-sm text-destructive">{form.formState.errors.preferredTime.message}</p>
+              )}
             </div>
           </div>
         </section>
@@ -348,15 +357,18 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
                 value={selectedTemplate}
                 onChange={(e) => {
                   setSelectedTemplate(e.target.value);
-                  form.setValue("defaultTemplateId", e.target.value || undefined);
+                  form.setValue("defaultTemplateId", e.target.value, { shouldValidate: true });
                 }}
               >
-                <option value="">{t("form.noTemplate")}</option>
+                <option value="">{t("form.selectTemplate")}</option>
                 {templates.map((tmpl) => (
                   <option key={tmpl.id} value={tmpl.id}>{tmpl.name}</option>
                 ))}
               </select>
             </div>
+            {form.formState.errors.defaultTemplateId && (
+              <p className="mt-1 text-sm text-destructive">{form.formState.errors.defaultTemplateId.message}</p>
+            )}
           </div>
           {selectedTemplateName && (
             <div className="w-full md:w-64 bg-[var(--color-success,#004c47)]/10 p-4 rounded-xl border border-[var(--color-success,#004c47)]/10">
