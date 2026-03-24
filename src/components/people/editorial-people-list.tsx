@@ -71,6 +71,7 @@ export function EditorialPeopleList({
           id: u.id,
           firstName: u.firstName,
           lastName: u.lastName,
+          level: u.level,
         })),
     [users]
   );

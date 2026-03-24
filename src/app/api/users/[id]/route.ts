@@ -220,6 +220,27 @@ export async function PATCH(request: Request, { params }: RouteContext) {
             };
           }
 
+          // Validate that the new manager has admin or manager level
+          if (data.managerId) {
+            const [newManager] = await tx
+              .select({ id: users.id, level: users.level })
+              .from(users)
+              .where(
+                and(eq(users.id, data.managerId), eq(users.tenantId, session.user.tenantId))
+              );
+
+            if (!newManager) {
+              return { error: "Manager not found", status: 404 };
+            }
+
+            if (newManager.level !== "admin" && newManager.level !== "manager") {
+              return {
+                error: "Only users with admin or manager role can be assigned as managers",
+                status: 400,
+              };
+            }
+          }
+
           const previousManagerId = targetUser.managerId;
           const [updated] = await tx
             .update(users)

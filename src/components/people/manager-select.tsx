@@ -26,7 +26,7 @@ interface ManagerSelectProps {
   userId: string;
   currentManagerId: string | null;
   currentManagerName: string | null;
-  users: { id: string; firstName: string; lastName: string }[];
+  users: { id: string; firstName: string; lastName: string; level?: string }[];
   disabled: boolean;
 }
 
@@ -42,8 +42,10 @@ export function ManagerSelect({
   const queryClient = useQueryClient();
   const { showApiError } = useApiErrorToast();
 
-  // Filter out the user themselves from the manager list
-  const managerOptions = allUsers.filter((u) => u.id !== userId);
+  // Only admins and managers can be assigned as managers
+  const managerOptions = allUsers.filter(
+    (u) => u.id !== userId && (u.level === "admin" || u.level === "manager")
+  );
 
   const mutation = useMutation({
     mutationFn: async (managerId: string | null) => {

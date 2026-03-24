@@ -55,7 +55,7 @@ function getStatusColor(status: string) {
 interface CreateColumnsOptions {
   currentUserLevel: string;
   currentUserId: string;
-  allUsers: { id: string; firstName: string; lastName: string }[];
+  allUsers: { id: string; firstName: string; lastName: string; level?: string }[];
   t: ReturnType<typeof useTranslations<"people">>;
 }
 
