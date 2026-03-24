@@ -24,11 +24,11 @@ export function EmailVerificationBanner() {
           <span className="shrink-0 text-xs font-medium">{t("verificationBanner.sent")}</span>
         ) : (
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={handleResend}
             disabled={status === "sending"}
-            className="shrink-0 border-amber-300 bg-transparent text-amber-800 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-900"
+            className="shrink-0 font-semibold text-amber-700 hover:text-amber-900 hover:bg-amber-500/10 dark:text-amber-300 dark:hover:text-amber-100 dark:hover:bg-amber-500/10"
           >
             {status === "sending"
               ? t("verificationBanner.sending")

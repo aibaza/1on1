@@ -3,17 +3,26 @@ import { AlertTriangle, AlertCircle, Info, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const inlineAlertVariants = cva(
-  "flex items-start gap-3 rounded-xl px-4 py-3 text-sm",
+  "flex items-start gap-3 rounded-lg border-l-4 px-4 py-3 text-sm",
   {
     variants: {
       variant: {
-        info: "bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-300",
-        warning:
-          "bg-amber-50 text-amber-800 dark:bg-amber-950/30 dark:text-amber-300",
-        error:
-          "bg-red-50 text-red-800 dark:bg-red-950/30 dark:text-red-300",
-        success:
-          "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300",
+        info: [
+          "border-l-blue-500 bg-blue-500/[0.06] text-blue-900",
+          "dark:bg-blue-500/[0.08] dark:text-blue-200",
+        ].join(" "),
+        warning: [
+          "border-l-amber-500 bg-amber-500/[0.06] text-amber-900",
+          "dark:bg-amber-500/[0.08] dark:text-amber-200",
+        ].join(" "),
+        error: [
+          "border-l-red-500 bg-red-500/[0.06] text-red-900",
+          "dark:bg-red-500/[0.08] dark:text-red-200",
+        ].join(" "),
+        success: [
+          "border-l-emerald-500 bg-emerald-500/[0.06] text-emerald-900",
+          "dark:bg-emerald-500/[0.08] dark:text-emerald-200",
+        ].join(" "),
       },
     },
     defaultVariants: {
@@ -21,6 +30,13 @@ const inlineAlertVariants = cva(
     },
   }
 );
+
+const iconColorMap = {
+  info: "text-blue-500",
+  warning: "text-amber-500",
+  error: "text-red-500",
+  success: "text-emerald-500",
+} as const;
 
 const iconMap = {
   info: Info,
@@ -43,7 +59,8 @@ export function InlineAlert({
   children,
   ...props
 }: InlineAlertProps) {
-  const Icon = iconMap[variant ?? "info"];
+  const v = variant ?? "info";
+  const Icon = iconMap[v];
 
   return (
     <div
@@ -52,7 +69,7 @@ export function InlineAlert({
       {...props}
     >
       {!hideIcon && (
-        <Icon className="h-4 w-4 mt-0.5 shrink-0 opacity-80" />
+        <Icon className={cn("h-[18px] w-[18px] mt-px shrink-0", iconColorMap[v])} />
       )}
       <div className="flex-1">{children}</div>
     </div>
