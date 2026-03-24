@@ -54,14 +54,17 @@ export function EditorialTopBar() {
         <ThemeToggle />
 
         {/* User profile section */}
-        <div className="flex items-center gap-3 pl-3 border-l border-[var(--editorial-outline-variant,var(--border))]">
-          {user && (
-            <div className="text-right hidden sm:block">
-              <p className="text-xs font-bold text-foreground font-headline">{user.name}</p>
-              <p className="text-[10px] text-muted-foreground font-medium capitalize">{userLevel}</p>
-            </div>
-          )}
-          <UserMenu />
+        <div className="pl-3 border-l border-[var(--editorial-outline-variant,var(--border))]">
+          <UserMenu
+            renderTrigger={
+              user ? (
+                <div className="text-right hidden sm:block">
+                  <p className="text-xs font-bold text-foreground font-headline">{user.name}</p>
+                  <p className="text-[10px] text-muted-foreground font-medium capitalize">{userLevel}</p>
+                </div>
+              ) : undefined
+            }
+          />
         </div>
       </div>
     </header>

@@ -39,7 +39,12 @@ function getInitials(name?: string | null): string {
     .slice(0, 2);
 }
 
-export function UserMenu() {
+interface UserMenuProps {
+  /** Custom trigger element — avatar will be appended inside it */
+  renderTrigger?: React.ReactNode;
+}
+
+export function UserMenu({ renderTrigger }: UserMenuProps = {}) {
   const { data: session, update } = useSession();
   const t = useTranslations("navigation");
   const user = session?.user;
@@ -78,14 +83,26 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.name ? getAvatarUrl(user.name, user.image, null, user.level) : undefined} alt={user?.name ?? "User"} />
-            <AvatarFallback className="text-xs">
-              {getInitials(user?.name)}
-            </AvatarFallback>
-          </Avatar>
-        </Button>
+        {renderTrigger ? (
+          <button className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-accent/60 transition-colors cursor-pointer">
+            {renderTrigger}
+            <Avatar className="h-8 w-8 shrink-0">
+              <AvatarImage src={user?.name ? getAvatarUrl(user.name, user.image, null, user.level) : undefined} alt={user?.name ?? "User"} />
+              <AvatarFallback className="text-xs">
+                {getInitials(user?.name)}
+              </AvatarFallback>
+            </Avatar>
+          </button>
+        ) : (
+          <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-full hover:bg-accent/60 transition-colors">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user?.name ? getAvatarUrl(user.name, user.image, null, user.level) : undefined} alt={user?.name ?? "User"} />
+              <AvatarFallback className="text-xs">
+                {getInitials(user?.name)}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="font-normal">
