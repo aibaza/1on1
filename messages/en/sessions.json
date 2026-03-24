@@ -117,6 +117,8 @@
       "cadenceDesc": "How often you meet.",
       "schedulePreference": "Schedule Preference",
       "schedulePreferenceDesc": "These are preferences, not hard commitments.",
+      "hour": "Hour",
+      "minute": "Min",
       "templateTip": "Template Insight",
       "templateTipDesc": "\"{name}\" will be used as the default question structure for each session in this series.",
       "creating": "Creating...",

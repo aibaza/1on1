@@ -293,20 +293,40 @@ export function EditorialSeriesForm({ userGroups, templates }: EditorialSeriesFo
               <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">
                 {t("form.preferredTime")}
               </label>
-              <select
-                className="w-full bg-[var(--editorial-surface-container-low,var(--muted))] border-0 rounded-xl p-4 font-medium text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
-                value={form.watch("preferredTime") ?? ""}
-                onChange={(e) => form.setValue("preferredTime", e.target.value || undefined)}
-              >
-                <option value="">{t("form.noPreference")}</option>
-                {Array.from({ length: 23 }, (_, i) => {
-                  const hour = Math.floor(i / 2) + 8;
-                  const min = i % 2 === 0 ? "00" : "30";
-                  if (hour > 19) return null;
-                  const val = `${String(hour).padStart(2, "0")}:${min}`;
-                  return <option key={val} value={val}>{val}</option>;
-                })}
-              </select>
+              <div className="grid grid-cols-2 gap-3">
+                <select
+                  className="bg-[var(--editorial-surface-container-low,var(--muted))] border-0 rounded-xl p-4 font-medium text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
+                  value={(() => { const v = form.watch("preferredTime"); return v ? v.split(":")[0] : ""; })()}
+                  onChange={(e) => {
+                    const h = e.target.value;
+                    if (!h) { form.setValue("preferredTime", undefined); return; }
+                    const currentMin = form.watch("preferredTime")?.split(":")[1] ?? "00";
+                    form.setValue("preferredTime", `${h}:${currentMin}`);
+                  }}
+                >
+                  <option value="">{t("form.hour")}</option>
+                  {Array.from({ length: 13 }, (_, i) => {
+                    const h = String(i + 6).padStart(2, "0");
+                    return <option key={h} value={h}>{h}</option>;
+                  })}
+                </select>
+                <select
+                  className="bg-[var(--editorial-surface-container-low,var(--muted))] border-0 rounded-xl p-4 font-medium text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
+                  value={(() => { const v = form.watch("preferredTime"); return v ? v.split(":")[1] : ""; })()}
+                  onChange={(e) => {
+                    const m = e.target.value;
+                    const currentHour = form.watch("preferredTime")?.split(":")[0] ?? "09";
+                    form.setValue("preferredTime", `${currentHour}:${m}`);
+                  }}
+                  disabled={!form.watch("preferredTime")}
+                >
+                  <option value="">{t("form.minute")}</option>
+                  {Array.from({ length: 12 }, (_, i) => {
+                    const m = String(i * 5).padStart(2, "0");
+                    return <option key={m} value={m}>{m}</option>;
+                  })}
+                </select>
+              </div>
             </div>
           </div>
         </section>

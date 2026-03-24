@@ -117,6 +117,8 @@
       "cadenceDesc": "Cât de des vă întâlniți.",
       "schedulePreference": "Preferințe de programare",
       "schedulePreferenceDesc": "Acestea sunt preferințe, nu angajamente ferme.",
+      "hour": "Ora",
+      "minute": "Min",
       "templateTip": "Despre șablon",
       "templateTipDesc": "{name} va fi folosit ca structura implicita de intrebari pentru fiecare sesiune din aceasta serie.",
       "creating": "Se creează...",
