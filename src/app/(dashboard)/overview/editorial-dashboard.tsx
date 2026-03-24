@@ -196,81 +196,74 @@ export function EditorialDashboard({
       {/* 2. Health Overview Cards */}
       <EditorialHealthCards userLevel={user.level} userId={user.id} />
 
-      {/* 3. Quick Stats */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-card p-6 md:p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
+      {/* 3. Quick Stats (compact row) */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-card px-5 py-4 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex items-center justify-between">
           <div>
-            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{t("editorial.activeSeries")}</span>
-            <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">{stats.totalReports}</div>
+            <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">{t("editorial.activeSeries")}</span>
+            <div className="text-2xl font-extrabold text-primary tabular-nums">{stats.totalReports}</div>
           </div>
-          <div className="mt-6">
-            <MiniBarChart data={trends.reportsHistory} />
-          </div>
+          <MiniBarChart data={trends.reportsHistory} />
         </div>
 
-        <div className="bg-card p-6 md:p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
-          <div>
-            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{t("editorial.avgScore")}</span>
-            <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">
+        <div className="bg-card px-5 py-4 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+          <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">{t("editorial.avgScore")}</span>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-extrabold text-primary tabular-nums">
               {stats.avgScore?.toFixed(1) ?? "—"}
-            </div>
-          </div>
-          <div className="mt-6 flex items-center gap-2" style={{ color: "var(--color-success)" }}>
+            </span>
             {stats.avgScore && trends.scoresHistory.length >= 2 && (
-              <>
-                <TrendingUp className="h-4 w-4" />
-                <span className="text-sm font-semibold">
-                  {(trends.scoresHistory[trends.scoresHistory.length - 1] - trends.scoresHistory[trends.scoresHistory.length - 2]) > 0 ? "+" : ""}
-                  {(trends.scoresHistory[trends.scoresHistory.length - 1] - trends.scoresHistory[trends.scoresHistory.length - 2]).toFixed(1)} from last period
-                </span>
-              </>
+              <span className="text-xs font-semibold" style={{ color: "var(--color-success)" }}>
+                {(trends.scoresHistory[trends.scoresHistory.length - 1] - trends.scoresHistory[trends.scoresHistory.length - 2]) > 0 ? "+" : ""}
+                {(trends.scoresHistory[trends.scoresHistory.length - 1] - trends.scoresHistory[trends.scoresHistory.length - 2]).toFixed(1)}
+              </span>
             )}
           </div>
         </div>
 
-        <div className="bg-card p-6 md:p-8 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
-          <div>
-            <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{t("editorial.overdueActions")}</span>
-            <div className="text-4xl font-extrabold text-primary mt-2 tabular-nums">{totalOverdue}</div>
+        <div className="bg-card px-5 py-4 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+          <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">{t("editorial.overdueActions")}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-2xl font-extrabold text-primary tabular-nums">{totalOverdue}</span>
+            {totalOverdue > 0 && (
+              <div className="flex-1 bg-[var(--editorial-surface-container,var(--muted))] rounded-full h-1.5">
+                <div className="bg-destructive h-1.5 rounded-full" style={{ width: `${Math.min(totalOverdue * 20, 100)}%` }} />
+              </div>
+            )}
           </div>
-          {totalOverdue > 0 && (
-            <div className="mt-6 w-full bg-[var(--editorial-surface-container,var(--muted))] rounded-full h-2">
-              <div className="bg-destructive h-2 rounded-full" style={{ width: `${Math.min(totalOverdue * 20, 100)}%` }} />
-            </div>
-          )}
         </div>
 
         {nextSession ? (
           <Link
             href={nextSession.latestSession?.status === "in_progress" ? `/wizard/${nextSession.latestSession.id}` : `/sessions/${nextSession.id}`}
-            className="text-white p-6 rounded-xl shadow-lg relative overflow-hidden group hover:shadow-xl transition-all block"
+            className="text-white px-5 py-4 rounded-xl shadow-md relative overflow-hidden group hover:shadow-lg transition-all block"
             style={{ background: "linear-gradient(135deg, #29407d 0%, #425797 100%)" }}
           >
-            <div className="absolute -right-4 -bottom-4 opacity-10">
-              <Clock className="h-24 w-24" />
+            <div className="absolute -right-3 -bottom-3 opacity-10">
+              <Clock className="h-16 w-16" />
             </div>
             <div className="relative z-10">
-              <div className="text-xs font-bold uppercase tracking-wider mb-2">{t("editorial.nextSession")}</div>
-              <div className="text-xl font-bold mb-1">
+              <div className="text-[10px] font-bold uppercase tracking-wider mb-1">{t("editorial.nextSession")}</div>
+              <div className="text-base font-bold">
                 {nextSession.report.id === user.id
                   ? `${nextSession.manager.firstName} ${nextSession.manager.lastName}`
                   : `${nextSession.report.firstName} ${nextSession.report.lastName}`}
               </div>
-              <div className="flex items-center justify-between">
-                <div className="text-sm">
+              <div className="flex items-center justify-between mt-1">
+                <span className="text-xs opacity-80">
                   {nextSession.nextSessionAt
                     ? format.relativeTime(new Date(nextSession.nextSessionAt))
                     : t("editorial.scheduled")}
-                </div>
-                <div className="flex items-center gap-1 text-xs font-bold opacity-60 group-hover:opacity-100 transition-opacity">
-                  <Play className="h-3 w-3 fill-current" /> Start
-                </div>
+                </span>
+                <span className="flex items-center gap-1 text-[10px] font-bold opacity-60 group-hover:opacity-100 transition-opacity">
+                  <Play className="h-2.5 w-2.5 fill-current" /> Start
+                </span>
               </div>
             </div>
           </Link>
         ) : (
-          <div className="bg-muted p-6 rounded-xl border border-border/50 flex flex-col items-center justify-center text-center">
-            <CalendarPlus className="h-8 w-8 text-muted-foreground mb-2" />
+          <div className="bg-muted px-5 py-4 rounded-xl border border-border/50 flex items-center justify-center text-center gap-2">
+            <CalendarPlus className="h-5 w-5 text-muted-foreground" />
             <span className="text-sm font-medium text-muted-foreground">{t("editorial.noUpcoming")}</span>
           </div>
         )}
