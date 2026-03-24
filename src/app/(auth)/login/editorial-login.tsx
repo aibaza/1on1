@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { loginAction } from "@/lib/auth/actions";
+import { Logo } from "@/components/logo";
 
 export function EditorialLogin() {
   const t = useTranslations("auth");
@@ -58,14 +59,13 @@ export function EditorialLogin() {
         <div className="relative z-10 max-w-lg">
           <div className="mb-12">
             <span className="font-bold tracking-widest text-sm uppercase" style={{ color: "#71d7cd" }}>
-              Curation for Teams
+              {t("login.heroTagline")}
             </span>
             <h1 className="font-headline text-5xl font-extrabold leading-tight mt-4" style={{ color: "#dbe1ff" }}>
-              The Human Connection in Management
+              {t("login.heroTitle")}
             </h1>
             <p className="mt-6 text-lg leading-relaxed opacity-90" style={{ color: "#b4c5ff" }}>
-              We believe every one-on-one is a curated moment. Transform your team&apos;s performance through
-              high-fidelity insights and supportive growth frameworks.
+              {t("login.heroDescription")}
             </p>
           </div>
 
@@ -104,12 +104,7 @@ export function EditorialLogin() {
         <div className="max-w-md w-full mx-auto">
           {/* Brand anchor */}
           <div className="mb-12">
-            <h2 className="font-headline text-xl font-bold tracking-tighter" style={{ color: "var(--primary, #29407d)" }}>
-              1on1
-            </h2>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] mt-1">
-              Meeting Management
-            </p>
+            <Logo className="h-8" />
           </div>
 
           <div className="mb-10">
