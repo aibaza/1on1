@@ -53,9 +53,6 @@ export function ActionItemsCard({
           </span>
         )}
       </div>
-      <div className="text-3xl font-headline font-extrabold text-foreground mb-3">
-        {actionItemRate}%
-      </div>
       {/* Segmented bar with numbers (like distribution) */}
       <div className="flex w-full h-6 rounded-md overflow-hidden mb-3">
         {completed > 0 && (
