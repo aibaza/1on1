@@ -1,5 +1,5 @@
 import { createAvatar } from "@dicebear/core";
-import { notionists } from "@dicebear/collection";
+import { avataaarsNeutral } from "@dicebear/collection";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -10,7 +10,7 @@ export async function GET(
   const url = new URL(req.url);
   const bg = url.searchParams.get("bg") || "transparent";
 
-  const avatar = createAvatar(notionists, {
+  const avatar = createAvatar(avataaarsNeutral, {
     seed: decodeURIComponent(seed),
     backgroundColor: [bg],
   });
