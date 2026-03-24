@@ -24,6 +24,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { THEME_PRESETS } from "@/lib/theme-presets";
+import { InlineAlert } from "@/components/ui/inline-alert";
 
 const TIMEZONES = [
   { value: "UTC", label: "UTC" },
@@ -153,15 +154,9 @@ export function CompanySettingsForm({ initialData }: CompanySettingsFormProps) {
   return (
     <div className="space-y-6">
       {message && (
-        <div
-          className={`rounded-md px-4 py-3 text-sm ${
-            message.type === "success"
-              ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200"
-              : "bg-destructive/10 text-destructive"
-          }`}
-        >
+        <InlineAlert variant={message.type === "success" ? "success" : "error"}>
           {message.text}
-        </div>
+        </InlineAlert>
       )}
 
       <Card>

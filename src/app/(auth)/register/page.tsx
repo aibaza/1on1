@@ -17,6 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { registerAction } from "@/lib/auth/actions";
 import { useZodI18nErrors } from "@/lib/i18n/zod-error-map";
+import { InlineAlert } from "@/components/ui/inline-alert";
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
@@ -59,9 +60,9 @@ export default function RegisterPage() {
       <CardContent>
         <form action={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            <InlineAlert variant="error">
               {error}
-            </div>
+            </InlineAlert>
           )}
 
           <div className="space-y-2">

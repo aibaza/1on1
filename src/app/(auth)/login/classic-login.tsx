@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { loginAction } from "@/lib/auth/actions";
+import { InlineAlert } from "@/components/ui/inline-alert";
 
 export function ClassicLogin() {
   const t = useTranslations("auth");
@@ -63,9 +64,9 @@ export function ClassicLogin() {
       <CardContent>
         <form action={handleSubmit} className="space-y-4">
           {(error || errorMessage) && (
-            <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            <InlineAlert variant="error">
               {error || errorMessage}
-            </div>
+            </InlineAlert>
           )}
 
           <div className="space-y-2">

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { InlineAlert } from "@/components/ui/inline-alert";
 import {
   Sparkles,
   RefreshCw,
@@ -119,12 +120,9 @@ export function AISummarySection({
     (status === "pending" || status === "generating")
   ) {
     return (
-      <div className="mb-8 rounded-lg border border-dashed p-6">
+      <InlineAlert variant="warning" hideIcon className="mb-8">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
-            <h3 className="font-medium">{t("title")}</h3>
-          </div>
+          <h3 className="font-medium">{t("title")}</h3>
           {canRetry && (
             <Button
               variant="outline"
@@ -142,13 +140,13 @@ export function AISummarySection({
             </Button>
           )}
         </div>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm opacity-80">
           {t("takingLong")}{" "}
           {canRetry
             ? t("managerRetry")
             : t("memberRetry")}
         </p>
-      </div>
+      </InlineAlert>
     );
   }
 
@@ -182,12 +180,9 @@ export function AISummarySection({
   // Failed state
   if (status === "failed") {
     return (
-      <div className="mb-8 rounded-lg border border-dashed p-6">
+      <InlineAlert variant="error" hideIcon className="mb-8">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
-            <h3 className="font-medium">{t("title")}</h3>
-          </div>
+          <h3 className="font-medium">{t("title")}</h3>
           {canRetry && (
             <Button
               variant="outline"
@@ -202,10 +197,10 @@ export function AISummarySection({
             </Button>
           )}
         </div>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm opacity-80">
           {t("failed")} {canRetry ? t("managerRetryFailed") : t("memberRetryFailed")}
         </p>
-      </div>
+      </InlineAlert>
     );
   }
 

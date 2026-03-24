@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/form";
 import { Eye, EyeOff, ArrowLeft, ArrowRight, Building2 } from "lucide-react";
 import { useZodI18nErrors } from "@/lib/i18n/zod-error-map";
+import { InlineAlert } from "@/components/ui/inline-alert";
 
 // Combined form schema for both steps
 const formSchema = z.object({
@@ -203,9 +204,9 @@ export function InviteAcceptForm({
         </div>
 
         {error && (
-          <div className="mb-4 rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <InlineAlert variant="error" className="mb-4">
             {error}
-          </div>
+          </InlineAlert>
         )}
 
         <Form {...form}>

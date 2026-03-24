@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { forgotPasswordAction } from "@/lib/auth/actions";
+import { InlineAlert } from "@/components/ui/inline-alert";
 
 export default function ForgotPasswordPage() {
   const t = useTranslations("auth");
@@ -72,9 +73,9 @@ export default function ForgotPasswordPage() {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            <InlineAlert variant="error">
               {error}
-            </div>
+            </InlineAlert>
           )}
 
           <div className="space-y-2">

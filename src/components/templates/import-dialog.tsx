@@ -25,6 +25,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { InlineAlert } from "@/components/ui/inline-alert";
 
 type ImportStep = "select" | "preview" | "error" | "conflict" | "success";
 
@@ -298,7 +299,7 @@ export function ImportDialog({
             </div>
 
             {languageMismatch && !mismatchConfirmed && (
-              <div className="rounded-md border border-yellow-500 bg-yellow-50 p-4 text-yellow-800">
+              <InlineAlert variant="warning">
                 <p className="font-medium text-sm">{t("import.languageMismatch.title")}</p>
                 <p className="text-sm mt-1">
                   {t("import.languageMismatch.message", {
@@ -310,7 +311,6 @@ export function ImportDialog({
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-yellow-600 text-yellow-800 hover:bg-yellow-100"
                     onClick={() => setMismatchConfirmed(true)}
                   >
                     {t("import.languageMismatch.proceed")}
@@ -323,7 +323,7 @@ export function ImportDialog({
                     {t("import.languageMismatch.cancel")}
                   </Button>
                 </div>
-              </div>
+              </InlineAlert>
             )}
 
             {(mismatchConfirmed || !languageMismatch) && (
