@@ -51,12 +51,12 @@ export function AccountClient({ user, canEditJobTitle }: AccountClientProps) {
       const res = await fetch("/api/user/avatar", { method: "POST" });
       const data = await res.json();
       if (res.ok) {
-        const newUrl = getAvatarUrl(fullName, user.avatarUrl, data.seed, user.level);
+        // Preload the new avatar image before swapping
         await new Promise<void>((resolve) => {
           const img = new Image();
           img.onload = () => resolve();
           img.onerror = () => resolve();
-          img.src = newUrl;
+          img.src = data.avatarUrl;
         });
         setAvatarFading(true);
         await new Promise((r) => setTimeout(r, 200));
@@ -64,7 +64,7 @@ export function AccountClient({ user, canEditJobTitle }: AccountClientProps) {
         await new Promise((r) => setTimeout(r, 50));
         setAvatarFading(false);
         toast.success(t("avatar.regenerated"));
-        // Refresh server components so sidebar/top-bar pick up the new seed
+        // Refresh server components so all avatars across the app update
         router.refresh();
       }
     } finally {
