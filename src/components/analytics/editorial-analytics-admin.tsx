@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
-import { scoreBadgeColor, sparkBarColor, trendIconColor, trendBadgeColor, alertBadgeColor, DISTRIBUTION_COLORS, LEGEND_DOT_COLORS } from "@/lib/analytics/colors";
+import { scoreBadgeColor, scoreDotColor, scoreTextColor, sparkBarColor, trendIconColor, trendBadgeColor, alertBadgeColor, DISTRIBUTION_COLORS, LEGEND_DOT_COLORS } from "@/lib/analytics/colors";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ------------------------------------------------------------------ */
@@ -513,9 +513,12 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
                       </td>
                       {/* Avg Score */}
                       <td className="px-4 py-4">
-                        <span className={cn("px-2 py-0.5 rounded-full text-xs font-bold", scoreBadgeColor(person.avgScore))}>
-                          {person.avgScore !== null ? person.avgScore.toFixed(1) : "—"}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className={cn("w-2 h-2 rounded-full", scoreDotColor(person.avgScore))} />
+                          <span className={cn("font-bold", scoreTextColor(person.avgScore))}>
+                            {person.avgScore !== null ? person.avgScore.toFixed(1) : "—"}
+                          </span>
+                        </div>
                       </td>
                       {/* Trend */}
                       <td className="px-4 py-4">

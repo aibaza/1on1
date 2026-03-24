@@ -10,6 +10,7 @@ import {
   scoreBadgeColor,
   trendBadgeColor,
   scoreTextColor,
+  sparkBarColor,
   SCORE_THRESHOLD_HEALTHY,
   SCORE_THRESHOLD_ATTENTION,
 } from "@/lib/analytics/colors";
@@ -233,16 +234,20 @@ export function EditorialIndividualAnalytics({
             </h2>
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-primary/20" />
-                Previous
+                <span className="w-3 h-3 rounded-full bg-emerald-500" />
+                {t("healthy")}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-primary" />
-                Current
+                <span className="w-3 h-3 rounded-full bg-amber-400" />
+                {t("attention")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-full bg-red-500" />
+                {t("critical")}
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-6 border-t-2 border-dashed border-emerald-500/50" />
-                Goal
+                {t("goal", { value: "4.0" })}
               </span>
             </div>
           </div>
@@ -274,9 +279,8 @@ export function EditorialIndividualAnalytics({
                       <div
                         className={cn(
                           "w-full rounded-t-lg transition-all duration-300 hover:opacity-100",
-                          isLast
-                            ? "bg-primary shadow-lg shadow-primary/10"
-                            : "bg-primary",
+                          sparkBarColor(entry.score),
+                          isLast && "shadow-lg",
                         )}
                         style={{
                           height: barHeight,
