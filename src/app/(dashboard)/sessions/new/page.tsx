@@ -8,7 +8,9 @@ import {
 } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { SeriesForm } from "@/components/series/series-form";
+import { EditorialSeriesForm } from "@/components/series/editorial-series-form";
 import { getTranslations } from "next-intl/server";
+import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function NewSeriesPage() {
   const t = await getTranslations("sessions");
@@ -30,6 +32,9 @@ export default async function NewSeriesPage() {
             firstName: users.firstName,
             lastName: users.lastName,
             email: users.email,
+            jobTitle: users.jobTitle,
+            avatarUrl: users.avatarUrl,
+            level: users.level,
           })
           .from(users)
           .where(
@@ -67,15 +72,36 @@ export default async function NewSeriesPage() {
   const teamGroups = new Map<string, typeof usersList>();
 
   if (usersList.length > 0) {
-    // All users fetched are direct reports of the current user
     const teamLabel = t("noTeam");
     teamGroups.set(teamLabel, usersList);
   }
 
-  // Sort groups alphabetically
   const sortedGroups = [...teamGroups.entries()].sort(([a], [b]) =>
     a.localeCompare(b)
   );
+
+  const designPref = await getDesignPreference();
+  const isEditorial = designPref === "editorial";
+
+  if (isEditorial) {
+    return (
+      <div className="mx-auto max-w-4xl space-y-6">
+        <header className="mb-12">
+          <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground mb-2">
+            {t("newSeriesTitle")}
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            {t("newSeriesDesc")}
+          </p>
+        </header>
+
+        <EditorialSeriesForm
+          userGroups={sortedGroups}
+          templates={templatesList}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
