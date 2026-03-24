@@ -141,7 +141,7 @@ export default async function AnalyticsPage() {
       const teamRows = await tx
         .select({
           id: users.id,
-          name: sql<string>`COALESCE(${users.teamName}, ${users.firstName} || ' ' || ${users.lastName})`,
+          name: sql<string>`'Team ' || COALESCE(${users.teamName}, ${users.firstName} || ' ' || ${users.lastName})`,
           memberCount: sql<number>`(SELECT COUNT(*) FROM "user" u2 WHERE u2.manager_id = ${users.id} AND u2.is_active = true)::int`,
         })
         .from(users)

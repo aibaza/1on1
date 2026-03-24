@@ -666,7 +666,7 @@ export async function GET() {
               const mgr = managerMap.get(mgrId);
               const memberIds = [...(managerReportMap.get(mgrId) ?? [])];
               const teamName = mgr
-                ? (mgr.teamName ?? `${mgr.firstName} ${mgr.lastName}`)
+                ? `Team ${mgr.teamName ?? `${mgr.firstName} ${mgr.lastName}`}`
                 : "Unknown Team";
 
               if (memberIds.length === 0) {
