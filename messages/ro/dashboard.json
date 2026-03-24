@@ -94,8 +94,14 @@
       "completed": "completate",
       "signals": "Semnale",
       "more": "în plus",
+      "viewAll": "Vezi toate",
       "allClear": "Totul în regulă",
-      "noSignals": "Niciun semnal urgent"
+      "noSignals": "Niciun semnal urgent",
+      "signalsDescription": "Probleme care necesită atenția ta în echipă.",
+      "signalDeclining": "Scor în scădere",
+      "signalCritical": "Scor critic",
+      "signalStale": "Serie inactivă",
+      "signalLowActions": "Rata scăzută de acțiuni"
     }
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -9,14 +10,25 @@ import {
   AlertTriangle,
   Activity,
   ChevronRight,
+  TrendingDown,
+  Clock,
+  BarChart3,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  scoreDotColor,
   scoreTextColor,
+  alertBadgeColor,
   DISTRIBUTION_COLORS,
   LEGEND_DOT_COLORS,
 } from "@/lib/analytics/colors";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 interface HealthResponse {
   kpis: {
@@ -78,6 +90,8 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
       </section>
     );
   }
+
+  const [signalsOpen, setSignalsOpen] = useState(false);
 
   if (!data?.kpis) return null;
 
@@ -222,8 +236,15 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
           </div>
         )}
 
-        {/* Card 4: Urgent Signals */}
-        <div className="bg-card p-5 rounded-xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+        {/* Card 4: Urgent Signals (clickable → opens drawer) */}
+        <button
+          type="button"
+          onClick={() => alerts.length > 0 && setSignalsOpen(true)}
+          className={cn(
+            "bg-card p-5 rounded-xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] text-left",
+            alerts.length > 0 && "cursor-pointer hover:shadow-md hover:border-red-200 dark:hover:border-red-900/50 transition-all",
+          )}
+        >
           <div className="flex items-center gap-2 mb-3">
             <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", alerts.length > 0 ? "bg-red-500/10" : "bg-emerald-500/10")}>
               <AlertTriangle className={cn("h-4 w-4", alerts.length > 0 ? "text-red-500" : "text-emerald-500")} />
@@ -231,6 +252,11 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
             <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
               {t("signals")}
             </span>
+            {alerts.length > 0 && (
+              <span className="ml-auto text-[10px] font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full">
+                {alerts.length}
+              </span>
+            )}
           </div>
           {alerts.length > 0 ? (
             <div className="space-y-2">
@@ -241,8 +267,8 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
                 </div>
               ))}
               {alerts.length > 2 && (
-                <p className="text-[10px] text-muted-foreground font-medium">
-                  +{alerts.length - 2} {t("more")}
+                <p className="text-[10px] text-primary font-semibold mt-1">
+                  {t("viewAll")} ({alerts.length})
                 </p>
               )}
             </div>
@@ -254,8 +280,66 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
               <p className="text-xs text-muted-foreground mt-1">{t("noSignals")}</p>
             </div>
           )}
-        </div>
+        </button>
       </div>
+
+      {/* Signals Drawer */}
+      <Sheet open={signalsOpen} onOpenChange={setSignalsOpen}>
+        <SheetContent className="overflow-y-auto">
+          <SheetHeader className="text-left mb-6">
+            <SheetTitle className="flex items-center gap-2 text-xl font-headline">
+              <AlertTriangle className="h-5 w-5 text-red-500" />
+              {t("signals")}
+              <span className="text-sm font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full">
+                {alerts.length}
+              </span>
+            </SheetTitle>
+            <SheetDescription>
+              {t("signalsDescription")}
+            </SheetDescription>
+          </SheetHeader>
+
+          <div className="space-y-3 px-4 pb-4">
+            {alerts.map((alert, i) => {
+              const iconType = alert.type === "declining" || alert.type === "critical_score"
+                ? "score"
+                : alert.type === "stale" ? "stale" : "action";
+
+              return (
+                <div
+                  key={i}
+                  className={cn(
+                    "p-4 rounded-xl border-l-4",
+                    alertBadgeColor(alert.type),
+                  )}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 bg-background/50">
+                      {iconType === "score" ? (
+                        <TrendingDown className="h-4 w-4" />
+                      ) : iconType === "stale" ? (
+                        <Clock className="h-4 w-4" />
+                      ) : (
+                        <BarChart3 className="h-4 w-4" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-sm">{alert.personName}</p>
+                      <p className="text-xs mt-0.5 opacity-80">{alert.detail}</p>
+                      <span className="inline-block mt-2 text-[10px] font-bold uppercase tracking-wider opacity-60">
+                        {alert.type === "declining" && t("signalDeclining")}
+                        {alert.type === "critical_score" && t("signalCritical")}
+                        {alert.type === "stale" && t("signalStale")}
+                        {alert.type === "low_action_rate" && t("signalLowActions")}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </SheetContent>
+      </Sheet>
     </section>
   );
 }

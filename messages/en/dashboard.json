@@ -94,8 +94,14 @@
       "completed": "completed",
       "signals": "Signals",
       "more": "more",
+      "viewAll": "View all",
       "allClear": "All clear",
-      "noSignals": "No urgent signals"
+      "noSignals": "No urgent signals",
+      "signalsDescription": "Issues that need your attention across your team.",
+      "signalDeclining": "Declining score",
+      "signalCritical": "Critical score",
+      "signalStale": "Stale series",
+      "signalLowActions": "Low action rate"
     }
   }
 }
