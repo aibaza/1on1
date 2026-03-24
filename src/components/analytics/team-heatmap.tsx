@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useCallback } from "react";
 import { useFormatter, useTranslations } from "next-intl";
+import { scoreChartColor } from "@/lib/analytics/colors";
 
 interface HeatmapDatum {
   userId: string;
@@ -16,12 +17,6 @@ interface TeamHeatmapProps {
   categories: string[];
 }
 
-// Score-to-color mapping using semantic CSS variables
-function scoreToColor(score: number): string {
-  if (score >= 4.0) return "var(--color-success)";
-  if (score >= 3.0) return "var(--color-warning)";
-  return "var(--color-danger)";
-}
 
 // Sample count to radius: min 6px, max 16px
 function sampleToRadius(count: number, maxCount: number): number {
@@ -217,7 +212,7 @@ export function TeamHeatmap({ data, categories }: TeamHeatmapProps) {
                       cx={x}
                       cy={y}
                       r={radius}
-                      fill={scoreToColor(cellData.score)}
+                      fill={scoreChartColor(cellData.score)}
                       opacity={0.85}
                       className="cursor-pointer transition-opacity hover:opacity-100"
                       onMouseEnter={(e) =>

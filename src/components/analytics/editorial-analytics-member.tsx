@@ -11,6 +11,7 @@ import {
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trendIconColor } from "@/lib/analytics/colors";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -107,7 +108,7 @@ export default function EditorialAnalyticsMember({
       {/* ============================================================ */}
       <div className="grid grid-cols-12 gap-6">
         {/* Left — Current Growth Score */}
-        <div className="col-span-12 md:col-span-4 bg-card p-8 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
+        <div className="col-span-12 md:col-span-4 bg-card p-8 rounded-xl shadow-sm border border-border/10">
           <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
             {t("currentGrowthScore")}
           </p>
@@ -116,7 +117,7 @@ export default function EditorialAnalyticsMember({
             <span
               className={cn(
                 "inline-flex items-center gap-1 text-sm font-medium mb-2",
-                trend > 0 ? "text-green-500" : "text-red-500",
+                trendIconColor(trend),
               )}
             >
               {trend > 0 ? (
@@ -142,7 +143,7 @@ export default function EditorialAnalyticsMember({
         </div>
 
         {/* Right — Score History */}
-        <div className="col-span-12 md:col-span-8 bg-card p-8 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10 min-h-[300px] flex flex-col justify-between">
+        <div className="col-span-12 md:col-span-8 bg-card p-8 rounded-xl shadow-sm border border-border/10 min-h-[300px] flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs uppercase tracking-widest text-muted-foreground">
               {t("scoreHistory")}
@@ -164,7 +165,7 @@ export default function EditorialAnalyticsMember({
             {[0, 1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="absolute left-0 right-0 border-t border-[var(--editorial-outline-variant,var(--border))]/10"
+                className="absolute left-0 right-0 border-t border-border/10"
                 style={{ bottom: `${(i + 1) * 25}%` }}
               />
             ))}
@@ -175,7 +176,7 @@ export default function EditorialAnalyticsMember({
                 className={cn(
                   "w-4 bg-primary rounded-t-full shadow-lg shadow-primary/10 relative z-10",
                   i === history.length - 1 &&
-                    "border-t-4 border-[var(--editorial-tertiary,var(--color-success))]",
+                    "border-t-4 border-emerald-500",
                 )}
                 style={{ height: `${(s.score / 5) * 100}%` }}
               />
@@ -189,7 +190,7 @@ export default function EditorialAnalyticsMember({
       {/* ============================================================ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Sessions */}
-        <div className="bg-card p-6 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/10">
+        <div className="bg-card p-6 rounded-xl border border-border/10">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-4xl font-black">{personal.totalSessions}</p>
@@ -197,14 +198,14 @@ export default function EditorialAnalyticsMember({
                 {t("totalSessions")}
               </p>
             </div>
-            <div className="rounded-xl bg-[var(--editorial-primary-fixed,var(--primary))]/10 p-3">
+            <div className="rounded-xl bg-primary/10 p-3">
               <MessageSquare className="h-5 w-5 text-primary" />
             </div>
           </div>
         </div>
 
         {/* Completion */}
-        <div className="bg-card p-6 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/10">
+        <div className="bg-card p-6 rounded-xl border border-border/10">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-4xl font-black">
@@ -227,7 +228,7 @@ export default function EditorialAnalyticsMember({
                     strokeWidth="6"
                   />
                   <circle
-                    className="text-[var(--editorial-tertiary,var(--color-success))]"
+                    className="text-emerald-600 dark:text-emerald-400"
                     cx="32"
                     cy="32"
                     r="28"
@@ -239,18 +240,18 @@ export default function EditorialAnalyticsMember({
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Zap className="h-4 w-4 text-[var(--editorial-tertiary,var(--color-success))]" />
+                  <Zap className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
               </div>
-              <div className="rounded-xl bg-[var(--editorial-tertiary-fixed,var(--color-success))]/10 p-3">
-                <CheckCircle2 className="h-5 w-5 text-[var(--editorial-tertiary,var(--color-success))]" />
+              <div className="rounded-xl bg-emerald-500/10 p-3">
+                <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Next Session */}
-        <div className="bg-card p-6 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/10">
+        <div className="bg-card p-6 rounded-xl border border-border/10">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-2xl font-black">
@@ -265,14 +266,14 @@ export default function EditorialAnalyticsMember({
                 {t("nextSession")}
               </p>
             </div>
-            <div className="rounded-xl bg-[var(--editorial-secondary-fixed,var(--secondary))]/10 p-3">
+            <div className="rounded-xl bg-secondary/10 p-3">
               <Calendar className="h-5 w-5 text-secondary-foreground" />
             </div>
           </div>
         </div>
 
         {/* Streak */}
-        <div className="bg-card p-6 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/10">
+        <div className="bg-card p-6 rounded-xl border border-border/10">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-4xl font-black">
@@ -285,8 +286,8 @@ export default function EditorialAnalyticsMember({
                 {t("streak")}
               </p>
             </div>
-            <div className="rounded-xl bg-[var(--editorial-tertiary,var(--color-success))]/10 p-3">
-              <Flame className="h-5 w-5 text-[var(--editorial-tertiary,var(--color-success))]" />
+            <div className="rounded-xl bg-emerald-500/10 p-3">
+              <Flame className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
             </div>
           </div>
         </div>
@@ -296,7 +297,7 @@ export default function EditorialAnalyticsMember({
       {/*  Section 3 — Growth Journey Timeline                          */}
       {/* ============================================================ */}
       {history.length > 0 && (
-        <div className="bg-[var(--editorial-surface-container-low,var(--muted))] p-10 rounded-2xl relative overflow-hidden">
+        <div className="bg-muted p-10 rounded-2xl relative overflow-hidden">
           {/* Decorative blur */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32" />
 
@@ -321,14 +322,14 @@ export default function EditorialAnalyticsMember({
                       className={cn(
                         "rounded-full flex items-center justify-center font-bold text-xs z-10",
                         isLast
-                          ? "w-12 h-12 bg-[var(--editorial-tertiary-container,#00665f)] border-4 border-[var(--editorial-surface-container-low,var(--muted))] text-white"
-                          : "w-8 h-8 bg-primary border-4 border-[var(--editorial-surface-container-low,var(--muted))] text-primary-foreground",
+                          ? "w-12 h-12 bg-emerald-700 dark:bg-emerald-800 border-4 border-muted text-white"
+                          : "w-8 h-8 bg-primary border-4 border-muted text-primary-foreground",
                       )}
                     >
                       {s.score.toFixed(1)}
                     </div>
                     {isLast && (
-                      <span className="text-[10px] uppercase tracking-widest font-bold text-[var(--editorial-tertiary,var(--color-success))]">
+                      <span className="text-[10px] uppercase tracking-widest font-bold text-emerald-600 dark:text-emerald-400">
                         {t("current")}
                       </span>
                     )}

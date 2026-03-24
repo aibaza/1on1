@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
+import { scoreBadgeColor, sparkBarColor, trendIconColor, trendBadgeColor, alertBadgeColor, DISTRIBUTION_COLORS, LEGEND_DOT_COLORS } from "@/lib/analytics/colors";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ------------------------------------------------------------------ */
@@ -87,24 +88,10 @@ interface EditorialAnalyticsAdminProps {
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
-function scoreColor(score: number | null): string {
-  if (score === null) return "text-muted-foreground bg-muted";
-  if (score >= 4.0) return "text-emerald-700 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/40";
-  if (score >= 3.0) return "text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/40";
-  return "text-red-700 bg-red-50 dark:text-red-400 dark:bg-red-950/40";
-}
-
-function scoreBadgeColor(score: number | null): string {
-  if (score === null) return "bg-muted text-muted-foreground";
-  if (score >= 3.5) return "bg-[var(--editorial-tertiary-container,theme(colors.emerald.100))] text-[var(--editorial-on-tertiary-container,theme(colors.emerald.800))] dark:bg-emerald-950/50 dark:text-emerald-300";
-  if (score >= 2.5) return "bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300";
-  return "bg-red-100 text-red-800 dark:bg-red-950/50 dark:text-red-300";
-}
-
 function trendIcon(trend: number) {
-  if (trend > 0) return <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />;
-  if (trend < 0) return <TrendingDown className="w-4 h-4 text-red-600 dark:text-red-400" />;
-  return <Minus className="w-4 h-4 text-muted-foreground" />;
+  if (trend > 0) return <TrendingUp className={cn("w-4 h-4", trendIconColor(trend))} />;
+  if (trend < 0) return <TrendingDown className={cn("w-4 h-4", trendIconColor(trend))} />;
+  return <Minus className={cn("w-4 h-4", trendIconColor(trend))} />;
 }
 
 function trendBadge(trend: number) {
@@ -114,9 +101,7 @@ function trendBadge(trend: number) {
     <span
       className={cn(
         "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold",
-        positive && "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400",
-        negative && "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400",
-        !positive && !negative && "bg-muted text-muted-foreground"
+        trendBadgeColor(trend)
       )}
     >
       {positive ? <TrendingUp className="w-3 h-3" /> : negative ? <TrendingDown className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
@@ -140,18 +125,6 @@ function alertIcon(type: string) {
   }
 }
 
-function alertColor(type: string): string {
-  switch (type) {
-    case "low_score":
-    case "score_drop":
-      return "bg-red-100 text-red-600 dark:bg-red-950/40 dark:text-red-400";
-    case "stale_series":
-    case "overdue":
-      return "bg-amber-100 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400";
-    default:
-      return "bg-blue-100 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400";
-  }
-}
 
 function daysAgo(dateStr: string | null): number | null {
   if (!dateStr) return null;
@@ -180,7 +153,7 @@ function MiniSparkBars({ entries }: { entries: SparkEntry[] }) {
             <div
               className={cn(
                 "flex-1 min-w-[2px] max-w-2 rounded-t-sm cursor-default hover:opacity-80 transition-opacity",
-                e.score >= 3.5 ? "bg-emerald-400/60" : e.score >= 2.5 ? "bg-amber-400/60" : "bg-red-400/60"
+                sparkBarColor(e.score)
               )}
               style={{ height: `${Math.max(8, (e.score / max) * 100)}%` }}
             />
@@ -355,7 +328,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
           <div className="flex w-full h-12 rounded-xl overflow-hidden">
             {distribution.healthy > 0 && (
               <div
-                className="bg-emerald-500 dark:bg-emerald-600 flex items-center justify-center text-white text-sm font-semibold"
+                className={`${DISTRIBUTION_COLORS.healthy} flex items-center justify-center text-white text-sm font-semibold`}
                 style={{ width: `${pct(distribution.healthy)}%` }}
               >
                 {distribution.healthy}
@@ -363,7 +336,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
             )}
             {distribution.attention > 0 && (
               <div
-                className="bg-amber-400 dark:bg-amber-500 flex items-center justify-center text-white text-sm font-semibold"
+                className={`${DISTRIBUTION_COLORS.attention} flex items-center justify-center text-white text-sm font-semibold`}
                 style={{ width: `${pct(distribution.attention)}%` }}
               >
                 {distribution.attention}
@@ -371,7 +344,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
             )}
             {distribution.critical > 0 && (
               <div
-                className="bg-red-500 dark:bg-red-600 flex items-center justify-center text-white text-sm font-semibold"
+                className={`${DISTRIBUTION_COLORS.critical} flex items-center justify-center text-white text-sm font-semibold`}
                 style={{ width: `${pct(distribution.critical)}%` }}
               >
                 {distribution.critical}
@@ -380,20 +353,20 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
           </div>
           <div className="flex gap-6 mt-3 text-sm">
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-emerald-500" />
+              <span className={`w-3 h-3 rounded-full ${LEGEND_DOT_COLORS.healthy}`} />
               {t("healthy")} ({distribution.healthy})
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-amber-400" />
+              <span className={`w-3 h-3 rounded-full ${LEGEND_DOT_COLORS.attention}`} />
               {t("attention")} ({distribution.attention})
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-red-500" />
+              <span className={`w-3 h-3 rounded-full ${LEGEND_DOT_COLORS.critical}`} />
               {t("critical")} ({distribution.critical})
             </span>
             {distribution.noData > 0 && (
               <span className="flex items-center gap-1.5 text-muted-foreground">
-                <span className="w-3 h-3 rounded-full bg-muted" />
+                <span className={`w-3 h-3 rounded-full ${LEGEND_DOT_COLORS.noData}`} />
                 {t("noData")} ({distribution.noData})
               </span>
             )}
@@ -421,7 +394,7 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
             <div className="space-y-4">
               {alerts.map((alert, i) => (
                 <div key={`${alert.userId}-${i}`} className="flex items-start gap-3">
-                  <div className={cn("flex items-center justify-center w-8 h-8 rounded-full shrink-0", alertColor(alert.type))}>
+                  <div className={cn("flex items-center justify-center w-8 h-8 rounded-full shrink-0", alertBadgeColor(alert.type))}>
                     {alertIcon(alert.type)}
                   </div>
                   <div className="min-w-0">

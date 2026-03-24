@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
 import { hashSeriesColor } from "@/lib/chart-colors";
+import { scoreChartColor } from "@/lib/analytics/colors";
 import type { TeamAverage } from "@/lib/analytics/queries";
 
 function BackgroundSparkline({ data, category }: { data: number[]; category: string }) {
@@ -43,11 +44,6 @@ function capitalizeCategory(cat: string): string {
   return cat.charAt(0).toUpperCase() + cat.slice(1);
 }
 
-function scoreColor(score: number): string {
-  if (score >= 4.0) return "var(--color-success)";
-  if (score >= 3.0) return "var(--color-warning)";
-  return "var(--color-danger)";
-}
 
 export function TeamOverview({ data, loading, anonymize, memberCount }: TeamOverviewProps) {
   const t = useTranslations("analytics");
@@ -84,7 +80,7 @@ export function TeamOverview({ data, loading, anonymize, memberCount }: TeamOver
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {data.map((item) => {
         const pct = (item.avgScore / 5) * 100;
-        const color = scoreColor(item.avgScore);
+        const color = scoreChartColor(item.avgScore);
         const limited = item.memberCount < 3;
 
         return (

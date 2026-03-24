@@ -18,6 +18,13 @@ import {
 } from "lucide-react";
 import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
+import {
+  scoreBadgeColor,
+  trendBadgeColor,
+  SCORE_THRESHOLD_HEALTHY,
+  SCORE_THRESHOLD_ATTENTION,
+  DISTRIBUTION_COLORS,
+} from "@/lib/analytics/colors";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ------------------------------------------------------------------ */
@@ -86,7 +93,7 @@ interface EditorialAnalyticsManagerProps {
 function trendBadge(trend: number) {
   if (trend <= 0) return null;
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+    <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold", trendBadgeColor(trend))}>
       <TrendingUp className="w-3 h-3" />
       +{trend.toFixed(1)}
     </span>
@@ -102,24 +109,24 @@ function statusBadge(score: number | null) {
       </span>
     );
   }
-  if (score < 2.5) {
+  if (score < SCORE_THRESHOLD_ATTENTION) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-destructive/10 text-destructive">
-        <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400">
+        <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
         Critical
       </span>
     );
   }
-  if (score < 3.5) {
+  if (score < SCORE_THRESHOLD_HEALTHY) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-muted text-muted-foreground">
-        <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400">
+        <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
         Needs Focus
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[var(--editorial-tertiary-container,theme(colors.emerald.100))] text-[var(--editorial-on-tertiary-container,theme(colors.emerald.800))] dark:bg-emerald-950/50 dark:text-emerald-300">
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300">
       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
       Optimal
     </span>
@@ -188,7 +195,7 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
     <div className="space-y-12">
       {/* -- Header -- */}
       <header>
-        <p className="text-xs font-medium uppercase tracking-wider text-[var(--editorial-tertiary,theme(colors.emerald.600))] dark:text-[var(--editorial-tertiary,theme(colors.emerald.400))] mb-2">
+        <p className="text-xs font-medium uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2">
           {t("teamOverview")}
         </p>
         <h2 className="text-4xl font-headline font-extrabold text-foreground tracking-tight">
@@ -200,8 +207,8 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1 - Team Health Score */}
         <div className="bg-card p-6 rounded-xl hover:bg-accent transition-all">
-          <div className="w-10 h-10 rounded-lg bg-[var(--editorial-tertiary-container,theme(colors.emerald.100))] dark:bg-emerald-950/50 flex items-center justify-center mb-3">
-            <Heart className="w-5 h-5 text-[var(--editorial-tertiary,theme(colors.emerald.600))] dark:text-emerald-400" />
+          <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-950/40 flex items-center justify-center mb-3">
+            <Heart className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           </div>
           <p className="text-sm text-muted-foreground mb-1 flex items-center gap-1.5">{t("healthScore")} <InfoTip tooltipKey="healthScoreTooltip" t={t} /></p>
           <div className="flex items-baseline gap-1 mb-2">
@@ -271,7 +278,7 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
                 </div>
                 <div className="w-full h-3 rounded-full bg-muted overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-[var(--editorial-tertiary,theme(colors.emerald.500))] transition-all"
+                    className="h-full rounded-full bg-emerald-500 transition-all"
                     style={{ width: `${healthyPct}%` }}
                   />
                 </div>
@@ -285,7 +292,7 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
                 </div>
                 <div className="w-full h-3 rounded-full bg-muted overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-destructive transition-all"
+                    className="h-full rounded-full bg-red-500 transition-all"
                     style={{ width: `${attentionPct}%` }}
                   />
                 </div>
@@ -350,7 +357,7 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
           <h3 className="text-lg font-headline font-bold text-foreground">{t("reportingPipeline")}</h3>
           <span className="text-xs text-muted-foreground">{t("sortedByUrgency")}</span>
         </div>
-        <div className="bg-card rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10 overflow-hidden">
+        <div className="bg-card rounded-xl shadow-sm border border-border/10 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>

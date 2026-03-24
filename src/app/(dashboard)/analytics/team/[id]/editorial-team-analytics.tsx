@@ -17,6 +17,14 @@ import {
 import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 import {
+  scoreDotColor,
+  scoreTextColor,
+  sparkBarColor,
+  trendIconColor,
+  DISTRIBUTION_COLORS,
+  LEGEND_DOT_COLORS,
+} from "@/lib/analytics/colors";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -85,29 +93,13 @@ function daysAgo(dateStr: string | null): number | null {
   return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
 }
 
-function scoreDotColor(score: number | null): string {
-  if (score === null) return "bg-muted-foreground";
-  if (score >= 3.5)
-    return "bg-[var(--editorial-tertiary,var(--color-success))]";
-  if (score >= 2.5) return "bg-amber-400";
-  return "bg-destructive";
-}
-
-function scoreTextColor(score: number | null): string {
-  if (score === null) return "text-muted-foreground";
-  if (score >= 3.5)
-    return "text-[var(--editorial-tertiary,var(--color-success))]";
-  if (score >= 2.5) return "text-amber-600";
-  return "text-destructive";
-}
-
 function trendIcon(trend: number) {
   if (trend > 0)
     return (
-      <TrendingUp className="w-4 h-4 text-[var(--editorial-tertiary,var(--color-success))]" />
+      <TrendingUp className={`w-4 h-4 ${trendIconColor(1)}`} />
     );
-  if (trend < 0) return <TrendingDown className="w-4 h-4 text-destructive" />;
-  return <Minus className="w-4 h-4 text-muted-foreground" />;
+  if (trend < 0) return <TrendingDown className={`w-4 h-4 ${trendIconColor(-1)}`} />;
+  return <Minus className={`w-4 h-4 ${trendIconColor(0)}`} />;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -151,11 +143,10 @@ function alertTypeColor(type: string): string {
   switch (type) {
     case "declining":
     case "critical_score":
-      return "text-destructive";
+      return "text-red-600 dark:text-red-400";
     case "stale":
-      return "text-amber-600";
     case "low_action_rate":
-      return "text-primary";
+      return "text-amber-600 dark:text-amber-400";
     default:
       return "text-muted-foreground";
   }
@@ -182,11 +173,7 @@ function MiniSparkBars({ entries }: { entries: SparkEntry[] }) {
             <div
               className={cn(
                 "flex-1 min-w-[2px] max-w-2 rounded-t-sm cursor-default hover:opacity-80 transition-opacity",
-                e.score >= 3.5
-                  ? "bg-emerald-400/60"
-                  : e.score >= 2.5
-                    ? "bg-amber-400/60"
-                    : "bg-red-400/60",
+                sparkBarColor(e.score),
               )}
               style={{ height: `${Math.max(8, (e.score / max) * 100)}%` }}
             />
@@ -355,11 +342,11 @@ export function EditorialTeamAnalytics({
               <span className="text-lg text-muted-foreground">/5</span>
             </span>
             {kpis.scoreTrend !== 0 && (
-              <span className="text-[var(--editorial-tertiary,var(--color-success))] text-xs font-bold flex items-center">
+              <span className={cn("text-xs font-bold flex items-center", trendIconColor(kpis.scoreTrend))}>
                 {kpis.scoreTrend > 0 ? (
                   <TrendingUp className="w-3 h-3 mr-0.5" />
                 ) : (
-                  <TrendingDown className="w-3 h-3 mr-0.5 text-destructive" />
+                  <TrendingDown className="w-3 h-3 mr-0.5" />
                 )}
                 {kpis.scoreTrend > 0 ? "+" : ""}
                 {kpis.scoreTrend.toFixed(1)}
@@ -418,13 +405,13 @@ export function EditorialTeamAnalytics({
           </span>
           <p className="text-xs text-muted-foreground mt-1">{t("active")}</p>
           {kpis.staleSeries > 0 ? (
-            <p className="flex items-center gap-1.5 text-xs text-amber-600 mt-3">
-              <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
+            <p className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 mt-3">
+              <span className={`w-2 h-2 rounded-full ${LEGEND_DOT_COLORS.attention} inline-block`} />
               {t("staleSeries", { count: kpis.staleSeries })}
             </p>
           ) : (
-            <p className="flex items-center gap-1.5 text-xs text-[var(--editorial-tertiary,var(--color-success))] mt-3">
-              <span className="w-2 h-2 rounded-full bg-[var(--editorial-tertiary,var(--color-success))] inline-block" />
+            <p className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 mt-3">
+              <span className={`w-2 h-2 rounded-full ${LEGEND_DOT_COLORS.healthy} inline-block`} />
               {t("allOnTrack")}
             </p>
           )}
@@ -444,7 +431,7 @@ export function EditorialTeamAnalytics({
               <div className="flex h-12 w-full rounded-xl overflow-hidden mb-6">
                 {distribution.healthy > 0 && (
                   <div
-                    className="bg-[var(--editorial-tertiary,var(--color-success))] flex items-center justify-center text-white text-xs font-bold"
+                    className={`${DISTRIBUTION_COLORS.healthy} flex items-center justify-center text-white text-xs font-bold`}
                     style={{
                       width: `${(distribution.healthy / totalDistribution) * 100}%`,
                     }}
@@ -454,7 +441,7 @@ export function EditorialTeamAnalytics({
                 )}
                 {distribution.attention > 0 && (
                   <div
-                    className="bg-amber-400 flex items-center justify-center text-white text-xs font-bold"
+                    className={`${DISTRIBUTION_COLORS.attention} flex items-center justify-center text-white text-xs font-bold`}
                     style={{
                       width: `${(distribution.attention / totalDistribution) * 100}%`,
                     }}
@@ -464,7 +451,7 @@ export function EditorialTeamAnalytics({
                 )}
                 {distribution.critical > 0 && (
                   <div
-                    className="bg-destructive flex items-center justify-center text-white text-xs font-bold"
+                    className={`${DISTRIBUTION_COLORS.critical} flex items-center justify-center text-white text-xs font-bold`}
                     style={{
                       width: `${(distribution.critical / totalDistribution) * 100}%`,
                     }}
@@ -475,26 +462,26 @@ export function EditorialTeamAnalytics({
               </div>
               <div className="flex flex-wrap gap-6">
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[var(--editorial-tertiary,var(--color-success))]" />
+                  <span className={`w-3 h-3 rounded-full ${LEGEND_DOT_COLORS.healthy}`} />
                   <span className="text-sm text-muted-foreground">
                     {t("healthy")} ({distribution.healthy})
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-amber-400" />
+                  <span className={`w-3 h-3 rounded-full ${LEGEND_DOT_COLORS.attention}`} />
                   <span className="text-sm text-muted-foreground">
                     {t("attention")} ({distribution.attention})
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-destructive" />
+                  <span className={`w-3 h-3 rounded-full ${LEGEND_DOT_COLORS.critical}`} />
                   <span className="text-sm text-muted-foreground">
                     {t("critical")} ({distribution.critical})
                   </span>
                 </div>
                 {distribution.noData > 0 && (
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-muted-foreground" />
+                    <span className={`w-3 h-3 rounded-full ${LEGEND_DOT_COLORS.noData}`} />
                     <span className="text-sm text-muted-foreground">
                       {t("noData")} ({distribution.noData})
                     </span>

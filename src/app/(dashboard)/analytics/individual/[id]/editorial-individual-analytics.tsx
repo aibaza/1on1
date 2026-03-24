@@ -6,6 +6,14 @@ import Link from "next/link";
 import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 import {
+  scoreBorderColor,
+  scoreBadgeColor,
+  trendBadgeColor,
+  scoreTextColor,
+  SCORE_THRESHOLD_HEALTHY,
+  SCORE_THRESHOLD_ATTENTION,
+} from "@/lib/analytics/colors";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -65,24 +73,6 @@ interface IndividualAnalyticsResponse {
     sessionNumber: number;
   }>;
   streak: number;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
-/* ------------------------------------------------------------------ */
-
-function scoreBorderColor(score: number): string {
-  if (score >= 3.5)
-    return "border-[var(--editorial-tertiary,var(--color-success))]";
-  if (score >= 2.5) return "border-amber-500";
-  return "border-destructive";
-}
-
-function scoreBadgeClasses(score: number): string {
-  if (score >= 3.5)
-    return "bg-[var(--editorial-tertiary,var(--color-success))]/10 text-[var(--editorial-tertiary,var(--color-success))]";
-  if (score >= 2.5) return "bg-amber-100 text-amber-700";
-  return "bg-destructive/10 text-destructive";
 }
 
 /* ------------------------------------------------------------------ */
@@ -178,7 +168,7 @@ export function EditorialIndividualAnalytics({
                 alt={fullName}
                 className="w-32 h-32 rounded-xl object-cover shadow-2xl"
               />
-              <div className="absolute -bottom-2 -right-2 bg-[var(--editorial-tertiary,var(--color-success))] text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md">
+              <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md">
                 {data.user.level}
               </div>
             </div>
@@ -193,7 +183,7 @@ export function EditorialIndividualAnalytics({
           </div>
 
           {/* Current Score Card */}
-          <div className="bg-card p-6 rounded-xl shadow-xl shadow-black/5 flex items-center gap-6 border border-[var(--editorial-outline-variant,var(--border))]/10">
+          <div className="bg-card p-6 rounded-xl shadow-xl shadow-black/5 flex items-center gap-6 border border-border/10">
             <div className="text-right">
               <p className="text-muted-foreground text-xs font-bold uppercase tracking-tighter mb-1">
                 {t("currentGrowthScore")}
@@ -213,9 +203,7 @@ export function EditorialIndividualAnalytics({
               <div
                 className={cn(
                   "px-4 py-2 rounded-lg flex flex-col items-center justify-center",
-                  data.trend > 0
-                    ? "bg-[var(--editorial-tertiary-container,#00665f)]/30 text-[var(--editorial-tertiary,var(--color-success))]"
-                    : "bg-destructive/10 text-destructive",
+                  trendBadgeColor(data.trend),
                 )}
               >
                 {data.trend > 0 ? (
@@ -238,7 +226,7 @@ export function EditorialIndividualAnalytics({
       {/* ============================================================ */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8">
         {/* ---- Left: Score History Chart (8 cols) ---- */}
-        <div className="md:col-span-8 bg-card p-8 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10 flex flex-col h-[400px]">
+        <div className="md:col-span-8 bg-card p-8 rounded-xl shadow-sm border border-border/10 flex flex-col h-[400px]">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-foreground">
               {t("scoreHistory")}
@@ -253,7 +241,7 @@ export function EditorialIndividualAnalytics({
                 Current
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-6 border-t-2 border-dashed border-[var(--editorial-tertiary,var(--color-success))]/50" />
+                <span className="w-6 border-t-2 border-dashed border-emerald-500/50" />
                 Goal
               </span>
             </div>
@@ -262,7 +250,7 @@ export function EditorialIndividualAnalytics({
           <div className="flex-1 flex items-end justify-between gap-4 px-2 relative">
             {/* Goal line at 80% (score 4.0) */}
             <div
-              className="absolute w-full border-t-2 border-dashed border-[var(--editorial-tertiary,var(--color-success))]/30"
+              className="absolute w-full border-t-2 border-dashed border-emerald-500/30"
               style={{ bottom: "80%" }}
             />
 
@@ -331,7 +319,7 @@ export function EditorialIndividualAnalytics({
         {/* ---- Right: Two stacked cards (4 cols) ---- */}
         <div className="md:col-span-4 flex flex-col gap-6">
           {/* Focus Score with SVG ring */}
-          <div className="bg-card p-8 rounded-xl shadow-sm flex flex-col justify-center items-center text-center border border-[var(--editorial-outline-variant,var(--border))]/10">
+          <div className="bg-card p-8 rounded-xl shadow-sm flex flex-col justify-center items-center text-center border border-border/10">
             <div className="relative w-32 h-32 mb-4">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 128 128">
                 <circle
@@ -349,7 +337,7 @@ export function EditorialIndividualAnalytics({
                   r="58"
                   fill="none"
                   stroke="currentColor"
-                  className="text-[var(--editorial-tertiary,var(--color-success))]"
+                  className="text-emerald-600 dark:text-emerald-400"
                   strokeWidth="8"
                   strokeLinecap="round"
                   strokeDasharray="364.4"
@@ -368,11 +356,7 @@ export function EditorialIndividualAnalytics({
             <span
               className={cn(
                 "text-xs font-bold px-3 py-1 rounded-full",
-                data.trend > 0
-                  ? "bg-[var(--editorial-tertiary,var(--color-success))]/10 text-[var(--editorial-tertiary,var(--color-success))]"
-                  : data.trend < 0
-                    ? "bg-destructive/10 text-destructive"
-                    : "bg-muted text-muted-foreground",
+                trendBadgeColor(data.trend),
               )}
             >
               {data.trend > 0
@@ -384,7 +368,7 @@ export function EditorialIndividualAnalytics({
           </div>
 
           {/* AI Insight */}
-          <div className="bg-[var(--editorial-tertiary,#004c47)] text-white p-6 rounded-xl shadow-lg">
+          <div className="bg-emerald-700 dark:bg-emerald-800 text-white p-6 rounded-xl shadow-lg">
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="h-4 w-4" />
               <span className="text-sm font-bold uppercase tracking-wider">
@@ -404,7 +388,7 @@ export function EditorialIndividualAnalytics({
       {/* ============================================================ */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {/* Total Sessions */}
-        <div className="bg-card p-6 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/10">
+        <div className="bg-card p-6 rounded-xl border border-border/10">
           <div className="flex items-center justify-between mb-4">
             <div className="p-2 rounded-lg bg-primary/5">
               <Calendar className="h-5 w-5 text-primary" />
@@ -422,10 +406,10 @@ export function EditorialIndividualAnalytics({
         </div>
 
         {/* Average Score */}
-        <div className="bg-card p-6 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/10">
+        <div className="bg-card p-6 rounded-xl border border-border/10">
           <div className="flex items-center justify-between mb-4">
-            <div className="p-2 rounded-lg bg-[var(--editorial-tertiary,var(--color-success))]/5">
-              <BarChart3 className="h-5 w-5 text-[var(--editorial-tertiary,var(--color-success))]" />
+            <div className="p-2 rounded-lg bg-emerald-500/5">
+              <BarChart3 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               {t("globalAvg")}
@@ -435,7 +419,7 @@ export function EditorialIndividualAnalytics({
             className={cn(
               "text-3xl font-extrabold",
               data.avgScore !== null
-                ? scoreBadgeClasses(data.avgScore).split(" ")[1]
+                ? scoreTextColor(data.avgScore)
                 : "text-foreground",
             )}
           >
@@ -447,7 +431,7 @@ export function EditorialIndividualAnalytics({
         </div>
 
         {/* Action Rate */}
-        <div className="bg-card p-6 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/10">
+        <div className="bg-card p-6 rounded-xl border border-border/10">
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               {t("actionRate")}
@@ -489,7 +473,7 @@ export function EditorialIndividualAnalytics({
         </div>
 
         {/* Session Streak */}
-        <div className="bg-card p-6 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/10">
+        <div className="bg-card p-6 rounded-xl border border-border/10">
           <div className="flex items-center justify-between mb-4">
             <div className="p-2 rounded-lg bg-orange-50 dark:bg-orange-500/5">
               <Flame className="h-5 w-5 text-orange-500 fill-orange-500" />
@@ -545,7 +529,7 @@ export function EditorialIndividualAnalytics({
                 <span
                   className={cn(
                     "text-sm font-bold px-2.5 py-0.5 rounded-full",
-                    scoreBadgeClasses(entry.score),
+                    scoreBadgeColor(entry.score),
                   )}
                 >
                   {entry.score.toFixed(1)}
@@ -587,9 +571,9 @@ export function EditorialIndividualAnalytics({
               {actionRate.toFixed(0)}%
             </p>
 
-            <div className="bg-[var(--editorial-primary-container,hsl(var(--primary)/0.3))]/50 h-3 rounded-full overflow-hidden mb-6">
+            <div className="bg-primary-foreground/30 h-3 rounded-full overflow-hidden mb-6">
               <div
-                className="bg-[var(--editorial-tertiary-fixed,hsl(var(--primary-foreground)))] h-full rounded-full transition-all duration-500"
+                className="bg-primary-foreground h-full rounded-full transition-all duration-500"
                 style={{ width: `${actionRate}%` }}
               />
             </div>
@@ -617,7 +601,7 @@ export function EditorialIndividualAnalytics({
           </div>
 
           {/* Priority Focus card */}
-          <div className="bg-card p-6 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/10">
+          <div className="bg-card p-6 rounded-xl border border-border/10">
             <div className="flex items-center gap-2 mb-4">
               <AlertCircle className="h-4 w-4 text-muted-foreground" />
               <h3 className="text-sm font-bold text-foreground">
