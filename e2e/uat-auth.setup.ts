@@ -13,11 +13,23 @@ if (!fs.existsSync(AUTH_DIR)) {
 
 async function loginAndSave(page: Page, email: string, password: string, file: string) {
   await page.goto("/login");
-  await page.waitForLoadState("domcontentloaded", { timeout: 20_000 });
-  await page.getByLabel(/email/i).fill(email);
-  await page.getByLabel(/password/i).fill(password);
-  await page.getByRole("button", { name: /sign in/i }).click();
-  await page.waitForURL(/\/(overview|dashboard)/i, { timeout: 30_000 });
+  await page.waitForLoadState("networkidle", { timeout: 20_000 });
+
+  // Use direct CSS selectors to ensure we target the actual inputs
+  const emailInput = page.locator('input[name="email"]');
+  const passwordInput = page.locator('input[name="password"]');
+
+  await emailInput.waitFor({ state: "visible", timeout: 10_000 });
+  await emailInput.click();
+  await emailInput.fill(email);
+  await passwordInput.click();
+  await passwordInput.fill(password);
+
+  // Handle both classic ("Sign in") and editorial ("Autentificare") button text
+  const submitButton = page.getByRole("button", { name: /sign in|autentificare/i });
+  await submitButton.click();
+
+  await page.waitForURL(/\/(overview|dashboard|sessions)/i, { timeout: 30_000 });
   await page.context().storageState({ path: file });
   console.log(`Saved auth state for ${email} → ${file}`);
 }
