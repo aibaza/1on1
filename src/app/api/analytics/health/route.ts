@@ -628,6 +628,7 @@ export async function GET() {
                       id: users.id,
                       firstName: users.firstName,
                       lastName: users.lastName,
+                      teamName: users.teamName,
                     })
                     .from(users)
                     .where(inArray(users.id, managerIds))
@@ -665,7 +666,7 @@ export async function GET() {
               const mgr = managerMap.get(mgrId);
               const memberIds = [...(managerReportMap.get(mgrId) ?? [])];
               const teamName = mgr
-                ? `${mgr.firstName} ${mgr.lastName}'s Team`
+                ? (mgr.teamName ?? `${mgr.firstName} ${mgr.lastName}`)
                 : "Unknown Team";
 
               if (memberIds.length === 0) {

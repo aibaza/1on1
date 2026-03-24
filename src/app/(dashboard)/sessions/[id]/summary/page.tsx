@@ -92,16 +92,16 @@ export default async function SessionSummaryPage({
           .then((rows) => rows[0]),
       ]);
 
-      // Derive team names from manager's manager
+      // Derive team names from manager's teamName
       let managerTeamRow: { name: string } | null = null;
       let reportTeamRow: { name: string } | null = null;
       if (managerUser?.managerId) {
-        const [mgr] = await tx.select({ firstName: users.firstName, lastName: users.lastName }).from(users).where(eq(users.id, managerUser.managerId)).limit(1);
-        if (mgr) managerTeamRow = { name: `${mgr.firstName} ${mgr.lastName}'s Team` };
+        const [mgr] = await tx.select({ teamName: users.teamName, firstName: users.firstName, lastName: users.lastName }).from(users).where(eq(users.id, managerUser.managerId)).limit(1);
+        if (mgr) managerTeamRow = { name: mgr.teamName ?? `${mgr.firstName} ${mgr.lastName}` };
       }
       if (reportUser?.managerId) {
-        const [mgr] = await tx.select({ firstName: users.firstName, lastName: users.lastName }).from(users).where(eq(users.id, reportUser.managerId)).limit(1);
-        if (mgr) reportTeamRow = { name: `${mgr.firstName} ${mgr.lastName}'s Team` };
+        const [mgr] = await tx.select({ teamName: users.teamName, firstName: users.firstName, lastName: users.lastName }).from(users).where(eq(users.id, reportUser.managerId)).limit(1);
+        if (mgr) reportTeamRow = { name: mgr.teamName ?? `${mgr.firstName} ${mgr.lastName}` };
       }
 
       // Fetch all data in parallel
