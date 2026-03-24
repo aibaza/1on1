@@ -14,7 +14,11 @@
       "firstName": "Prenume",
       "lastName": "Nume",
       "email": "Adresa de email",
-      "verified": "Cont verificat"
+      "verified": "Cont verificat",
+      "jobTitle": "Funcție",
+      "jobTitlePlaceholder": "ex. Manager de inginerie",
+      "jobTitleSaved": "Funcția a fost actualizată",
+      "save": "Salvează"
     },
     "password": {
       "title": "Securitate",

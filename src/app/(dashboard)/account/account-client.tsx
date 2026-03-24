@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { RefreshCw, Shield, Check, Eye, EyeOff } from "lucide-react";
@@ -11,21 +12,29 @@ interface AccountClientProps {
     firstName: string;
     lastName: string;
     email: string;
+    jobTitle: string | null;
     avatarUrl: string | null;
     avatarSeed: string | null;
     level: string;
     emailVerified: boolean;
   };
+  canEditJobTitle: boolean;
 }
 
-export function AccountClient({ user }: AccountClientProps) {
+export function AccountClient({ user, canEditJobTitle }: AccountClientProps) {
   const t = useTranslations("account");
+  const router = useRouter();
   const fullName = `${user.firstName} ${user.lastName}`;
 
   // Avatar state
   const [avatarSeed, setAvatarSeed] = useState(user.avatarSeed);
   const [regenerating, setRegenerating] = useState(false);
   const [avatarFading, setAvatarFading] = useState(false);
+
+  // Job title state
+  const [jobTitle, setJobTitle] = useState(user.jobTitle ?? "");
+  const [savingJobTitle, setSavingJobTitle] = useState(false);
+  const jobTitleChanged = jobTitle !== (user.jobTitle ?? "");
 
   // Password state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -55,9 +64,31 @@ export function AccountClient({ user }: AccountClientProps) {
         await new Promise((r) => setTimeout(r, 50));
         setAvatarFading(false);
         toast.success(t("avatar.regenerated"));
+        // Refresh server components so sidebar/top-bar pick up the new seed
+        router.refresh();
       }
     } finally {
       setRegenerating(false);
+    }
+  }
+
+  async function saveJobTitle() {
+    setSavingJobTitle(true);
+    try {
+      const res = await fetch("/api/user/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobTitle: jobTitle || null }),
+      });
+      if (res.ok) {
+        toast.success(t("profile.jobTitleSaved"));
+        router.refresh();
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to save");
+      }
+    } finally {
+      setSavingJobTitle(false);
     }
   }
 
@@ -175,6 +206,38 @@ export function AccountClient({ user }: AccountClientProps) {
                   <Check className="h-2.5 w-2.5" />
                   {t("profile.verified")}
                 </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className={labelClass}>{t("profile.jobTitle")}</label>
+              {canEditJobTitle ? (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={jobTitle}
+                    onChange={(e) => setJobTitle(e.target.value)}
+                    placeholder={t("profile.jobTitlePlaceholder")}
+                    className={inputClass}
+                  />
+                  {jobTitleChanged && (
+                    <button
+                      type="button"
+                      onClick={saveJobTitle}
+                      disabled={savingJobTitle}
+                      className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold shrink-0 active:scale-95 transition-all disabled:opacity-50"
+                    >
+                      {savingJobTitle ? "..." : t("profile.save")}
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <input
+                  type="text"
+                  value={user.jobTitle ?? ""}
+                  readOnly
+                  className={`${inputClass} cursor-default`}
+                />
               )}
             </div>
           </div>

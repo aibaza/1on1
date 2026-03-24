@@ -21,6 +21,7 @@ export default async function AccountPage() {
           firstName: users.firstName,
           lastName: users.lastName,
           email: users.email,
+          jobTitle: users.jobTitle,
           avatarUrl: users.avatarUrl,
           avatarSeed: users.avatarSeed,
           level: users.level,
@@ -50,11 +51,13 @@ export default async function AccountPage() {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
+          jobTitle: user.jobTitle,
           avatarUrl: user.avatarUrl,
           avatarSeed: user.avatarSeed,
           level: user.level,
           emailVerified: !!user.emailVerified,
         }}
+        canEditJobTitle={session.user.level === "admin" || session.user.level === "manager"}
       />
     </div>
   );

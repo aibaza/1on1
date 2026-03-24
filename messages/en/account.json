@@ -14,7 +14,11 @@
       "firstName": "First Name",
       "lastName": "Last Name",
       "email": "Email Address",
-      "verified": "Verified Account"
+      "verified": "Verified Account",
+      "jobTitle": "Job Title",
+      "jobTitlePlaceholder": "e.g. Engineering Manager",
+      "jobTitleSaved": "Job title updated",
+      "save": "Save"
     },
     "password": {
       "title": "Security",
