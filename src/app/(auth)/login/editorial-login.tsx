@@ -69,12 +69,17 @@ export function EditorialLogin() {
             </p>
           </div>
 
-          {/* Abstract visual element */}
+          {/* Logo visual element */}
           <div className="relative w-full aspect-square max-w-sm mx-auto">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-32 h-32 rounded-full blur-xl opacity-40 editorial-gradient animate-pulse" />
               <div className="w-48 h-48 rounded-full border absolute -rotate-12" style={{ borderColor: "rgba(180, 197, 255, 0.2)" }} />
               <div className="w-48 h-48 rounded-full border absolute rotate-45" style={{ borderColor: "rgba(113, 215, 205, 0.2)" }} />
+
+              {/* Centered logo */}
+              <div className="absolute inset-0 flex items-center justify-center" style={{ ["--logo-color" as string]: "#71d7cd" }}>
+                <Logo className="h-16 w-auto drop-shadow-lg" />
+              </div>
 
               {/* Floating glass cards */}
               <div className="absolute top-0 right-0 w-32 h-20 rounded-xl p-4 transform translate-x-4 -translate-y-4 shadow-2xl"
