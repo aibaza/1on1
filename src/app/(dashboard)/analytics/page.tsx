@@ -5,8 +5,8 @@ import { eq, and, sql } from "drizzle-orm";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { users, meetingSeries, sessions, actionItems } from "@/lib/db/schema";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Users, TrendingUp } from "lucide-react";
 import { getTranslations, getFormatter } from "next-intl/server";
@@ -329,7 +329,7 @@ export default async function AnalyticsPage() {
                 <Link key={report.userId} href={`/analytics/individual/${report.userId}`}>
                   <ListCard>
                     <Avatar className={isEditorial ? "h-11 w-11 rounded-xl" : "h-10 w-10"}>
-                      <AvatarImage src={getAvatarUrl(`${report.firstName} ${report.lastName}`, report.avatarUrl)} alt={`${report.firstName} ${report.lastName}`} className={isEditorial ? "rounded-xl" : undefined} />
+                      <ThemedAvatarImage name={`${report.firstName} ${report.lastName}`} uploadedUrl={report.avatarUrl} className={isEditorial ? "rounded-xl" : undefined} />
                       <AvatarFallback className={isEditorial ? "rounded-xl text-xs font-bold" : undefined}>{initials}</AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">

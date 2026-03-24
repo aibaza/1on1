@@ -15,7 +15,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 // --- Types ---
@@ -490,11 +491,10 @@ export function EditorialHistoryPage({
                   {/* Group header */}
                   <div className="flex items-end justify-between mb-6 px-2">
                     <div className="flex items-center gap-4">
-                      <img
-                        src={getAvatarUrl(group.reportName, group.reportAvatarUrl, null, group.reportLevel)}
-                        alt={group.reportName}
-                        className="w-12 h-12 rounded-full object-cover shrink-0"
-                      />
+                      <Avatar className="h-10 w-10 shrink-0">
+                        <ThemedAvatarImage name={group.reportName} uploadedUrl={group.reportAvatarUrl} role={group.reportLevel} />
+                        <AvatarFallback className="text-xs">{group.reportName.split(" ").map(n => n[0]).join("").slice(0, 2)}</AvatarFallback>
+                      </Avatar>
                       <div>
                         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-1 block">
                           {t("series")}

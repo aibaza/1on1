@@ -25,7 +25,8 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import Link from "next/link";
 import type { ActionItemRow } from "./action-items-page";
 
@@ -503,12 +504,10 @@ export function EditorialActionItemsPage({
                   {/* Report header with avatar */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={getAvatarUrl(group.reportName)}
-                        alt={group.reportName}
-                        className="w-12 h-12 rounded-full"
-                      />
+                      <Avatar className="h-10 w-10">
+                        <ThemedAvatarImage name={group.reportName} />
+                        <AvatarFallback className="text-xs">{group.reportName.split(" ").map(n => n[0]).join("").slice(0, 2)}</AvatarFallback>
+                      </Avatar>
                       <div>
                         <h4 className="font-bold text-foreground">
                           {group.reportName}

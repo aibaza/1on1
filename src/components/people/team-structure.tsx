@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { ChevronDown, ChevronRight, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import type { UserRow } from "./people-table-columns";
 
 interface TeamStructureProps {
@@ -107,7 +107,7 @@ export function TeamStructure({ users, currentUserId, currentUserLevel }: TeamSt
               <div className="absolute -left-[9px] top-4 w-4 h-4 rounded-full bg-primary border-4 border-background" />
               <div className="flex items-center gap-4 bg-card p-4 rounded-xl shadow-sm max-w-sm">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={getAvatarUrl(`${node.user.firstName} ${node.user.lastName}`, node.user.avatarUrl, null, node.user.level)} alt={`${node.user.firstName} ${node.user.lastName}`} />
+                  <ThemedAvatarImage name={`${node.user.firstName} ${node.user.lastName}`} uploadedUrl={node.user.avatarUrl} role={node.user.level} />
                   <AvatarFallback className="text-xs">{getInitials(node.user.firstName, node.user.lastName)}</AvatarFallback>
                 </Avatar>
                 <div>
@@ -124,7 +124,7 @@ export function TeamStructure({ users, currentUserId, currentUserLevel }: TeamSt
                       <div className="absolute -left-[5px] top-2.5 w-2 h-2 rounded-full bg-border" />
                       <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-card transition-colors">
                         <Avatar className="h-5 w-5">
-                          <AvatarImage src={getAvatarUrl(`${report.firstName} ${report.lastName}`, report.avatarUrl, null, report.level)} alt={`${report.firstName} ${report.lastName}`} />
+                          <ThemedAvatarImage name={`${report.firstName} ${report.lastName}`} uploadedUrl={report.avatarUrl} role={report.level} />
                           <AvatarFallback className="text-[8px]">{getInitials(report.firstName, report.lastName)}</AvatarFallback>
                         </Avatar>
                         <span className="text-xs font-medium text-foreground">{report.firstName} {report.lastName}</span>
@@ -146,7 +146,7 @@ export function TeamStructure({ users, currentUserId, currentUserLevel }: TeamSt
                 {unassigned.map((u) => (
                   <div key={u.id} className="flex items-center gap-2 bg-card px-3 py-2 rounded-lg">
                     <Avatar className="h-5 w-5">
-                      <AvatarImage src={getAvatarUrl(`${u.firstName} ${u.lastName}`, u.avatarUrl, null, u.level)} />
+                      <ThemedAvatarImage name={`${u.firstName} ${u.lastName}`} uploadedUrl={u.avatarUrl} role={u.level} />
                       <AvatarFallback className="text-[8px]">{getInitials(u.firstName, u.lastName)}</AvatarFallback>
                     </Avatar>
                     <span className="text-xs font-medium">{u.firstName} {u.lastName}</span>

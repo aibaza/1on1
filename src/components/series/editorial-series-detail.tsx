@@ -22,8 +22,8 @@ import {
   MessageSquarePlus,
 } from "lucide-react";
 import { AgendaSheet } from "./agenda-sheet";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { StarRating } from "@/components/ui/star-rating";
 import type { AISummary } from "@/lib/ai/schemas/summary";
 
@@ -110,8 +110,8 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex items-center gap-6">
-            <Avatar className="h-20 w-20 rounded-2xl shadow-lg">
-              <AvatarImage src={getAvatarUrl(personName, person?.avatarUrl, null, person?.level)} alt={personName} />
+            <Avatar className="h-16 w-16 rounded-2xl shadow-lg">
+              <ThemedAvatarImage name={personName} uploadedUrl={person?.avatarUrl} role={person?.level} />
               <AvatarFallback className="text-lg rounded-2xl">
                 {person ? getInitials(person.firstName, person.lastName) : "?"}
               </AvatarFallback>

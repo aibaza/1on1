@@ -3,7 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations, useFormatter } from "next-intl";
 import Link from "next/link";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { cn } from "@/lib/utils";
 import {
   scoreBorderColor,
@@ -159,16 +160,10 @@ export function EditorialIndividualAnalytics({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex items-center gap-6">
             <div className="relative">
-              <img
-                src={getAvatarUrl(
-                  fullName,
-                  data.user.avatarUrl,
-                  null,
-                  data.user.level,
-                )}
-                alt={fullName}
-                className="w-32 h-32 rounded-xl object-cover shadow-2xl"
-              />
+              <Avatar className="h-16 w-16 rounded-2xl shadow-2xl">
+                <ThemedAvatarImage name={fullName} uploadedUrl={data.user.avatarUrl} role={data.user.level} />
+                <AvatarFallback className="text-lg rounded-2xl">{fullName.split(" ").map(n => n[0]).join("").slice(0, 2)}</AvatarFallback>
+              </Avatar>
               <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md">
                 {data.user.level}
               </div>

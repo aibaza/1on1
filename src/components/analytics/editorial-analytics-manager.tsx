@@ -16,7 +16,8 @@ import {
   Sparkles,
   Info,
 } from "lucide-react";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { cn } from "@/lib/utils";
 import {
   scoreBadgeColor,
@@ -381,11 +382,10 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
                       {/* Report Name */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <img
-                            src={getAvatarUrl(name, person.avatarUrl, null, person.level)}
-                            alt={name}
-                            className="w-8 h-8 rounded-full object-cover shrink-0"
-                          />
+                          <Avatar className="h-8 w-8 shrink-0">
+                            <ThemedAvatarImage name={name} uploadedUrl={person.avatarUrl} role={person.level} />
+                            <AvatarFallback className="text-xs">{name.split(" ").map(n => n[0]).join("").slice(0, 2)}</AvatarFallback>
+                          </Avatar>
                           <div className="min-w-0">
                             <p className="font-medium text-foreground truncate">{name}</p>
                             {person.jobTitle && (

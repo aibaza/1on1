@@ -5,8 +5,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations, useFormatter } from "next-intl";
 import { toast } from "sonner";
 import { Search, ChevronLeft, ChevronRight, Shield, UserX } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { UserActionsMenu } from "./user-actions-menu";
 import { ProfileSheet } from "./profile-sheet";
 import { LevelSelect } from "./level-select";
@@ -387,7 +387,7 @@ export function EditorialPeopleList({
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl, null, user.level)} alt={`${user.firstName} ${user.lastName}`} />
+                            <ThemedAvatarImage name={`${user.firstName} ${user.lastName}`} uploadedUrl={user.avatarUrl} role={user.level} />
                             <AvatarFallback className="text-xs font-bold">
                               {getInitials(user.firstName, user.lastName)}
                             </AvatarFallback>

@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -175,8 +175,8 @@ export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
-          <Avatar className="h-14 w-14">
-            <AvatarImage src={getAvatarUrl(`${report?.firstName ?? ""} ${report?.lastName ?? ""}`.trim(), report?.avatarUrl, null, report?.level)} />
+          <Avatar className="h-16 w-16 rounded-2xl">
+            <ThemedAvatarImage name={`${report?.firstName ?? ""} ${report?.lastName ?? ""}`.trim()} uploadedUrl={report?.avatarUrl} role={report?.level} />
             <AvatarFallback className="text-lg">{reportInitials}</AvatarFallback>
           </Avatar>
           <div>

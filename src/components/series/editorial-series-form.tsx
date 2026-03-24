@@ -10,10 +10,10 @@ import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import { useTranslations, useFormatter } from "next-intl";
 import { Check, Pencil, Sparkles, CalendarIcon } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 
 interface FormValues {
@@ -257,7 +257,7 @@ export function EditorialSeriesForm({ userGroups, templates, editData }: Editori
                   style={isSelected ? { background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" } : undefined}
                 >
                   <Avatar className="h-12 w-12 shrink-0 rounded-full border-2 border-white/30">
-                    <AvatarImage src={getAvatarUrl(fullName, user.avatarUrl, null, user.level)} alt={fullName} />
+                    <ThemedAvatarImage name={fullName} uploadedUrl={user.avatarUrl} role={user.level} />
                     <AvatarFallback className="text-xs font-bold">
                       {user.firstName?.[0]}{user.lastName?.[0]}
                     </AvatarFallback>

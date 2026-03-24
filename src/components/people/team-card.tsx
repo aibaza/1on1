@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-react";
 
@@ -40,10 +40,7 @@ export function TeamCard({ team }: TeamCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Avatar className="h-6 w-6">
-                <AvatarImage
-                  src={getAvatarUrl(team.managerName, team.managerAvatarUrl)}
-                  alt={team.managerName}
-                />
+                <ThemedAvatarImage name={team.managerName} uploadedUrl={team.managerAvatarUrl} />
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
               </Avatar>
               <span className="text-sm text-muted-foreground">

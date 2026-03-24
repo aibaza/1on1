@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Info,
 } from "lucide-react";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { cn } from "@/lib/utils";
 import {
   scoreDotColor,
@@ -307,16 +308,10 @@ export function EditorialTeamAnalytics({
             </p>
           </div>
           <div className="flex items-center gap-4 bg-[var(--editorial-surface-container-low,var(--muted))] p-3 pr-6 rounded-xl">
-            <img
-              src={getAvatarUrl(
-                managerName,
-                data.manager.avatarUrl,
-                null,
-                data.manager.level,
-              )}
-              alt={managerName}
-              className="w-14 h-14 rounded-full object-cover"
-            />
+            <Avatar className="h-10 w-10">
+              <ThemedAvatarImage name={managerName} uploadedUrl={data.manager.avatarUrl} role={data.manager.level} />
+              <AvatarFallback className="text-xs">{managerName.split(" ").map(n => n[0]).join("").slice(0, 2)}</AvatarFallback>
+            </Avatar>
             <div>
               <p className="font-bold text-foreground">{managerName}</p>
               {data.manager.level && (
@@ -572,16 +567,10 @@ export function EditorialTeamAnalytics({
                   >
                     <td className="px-8 py-4">
                       <div className="flex items-center gap-3">
-                        <img
-                          src={getAvatarUrl(
-                            memberName,
-                            member.avatarUrl,
-                            null,
-                            member.level,
-                          )}
-                          alt={memberName}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
+                        <Avatar className="h-10 w-10">
+                          <ThemedAvatarImage name={memberName} uploadedUrl={member.avatarUrl} role={member.level} />
+                          <AvatarFallback className="text-xs">{memberName.split(" ").map(n => n[0]).join("").slice(0, 2)}</AvatarFallback>
+                        </Avatar>
                         <span className="font-bold text-foreground">
                           {memberName}
                         </span>

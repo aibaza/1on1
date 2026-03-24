@@ -16,8 +16,7 @@ import { useTranslations, useFormatter } from "next-intl";
 import type { QuickStats, StatsTrends, OverdueGroup, RecentSession } from "@/lib/queries/dashboard";
 import type { SeriesCardData } from "@/lib/queries/series";
 import { EditorialHealthCards } from "@/components/dashboard/editorial-health-cards";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { StarRating } from "@/components/ui/star-rating";
 

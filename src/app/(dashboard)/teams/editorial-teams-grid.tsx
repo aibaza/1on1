@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { Users } from "lucide-react";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 
@@ -78,11 +79,10 @@ export function EditorialTeamsGrid({ initialTeams }: EditorialTeamsGridProps) {
                 <div className="space-y-4 pt-6 border-t border-[var(--editorial-surface-container-low,var(--border))]">
                   {/* Team lead row */}
                   <div className="flex items-center gap-3">
-                    <img
-                      src={getAvatarUrl(team.managerName, team.managerAvatarUrl)}
-                      alt={team.managerName}
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
+                    <Avatar className="h-8 w-8">
+                      <ThemedAvatarImage name={team.managerName} uploadedUrl={team.managerAvatarUrl} />
+                      <AvatarFallback className="text-xs">{team.managerName.split(" ").map(n => n[0]).join("").slice(0, 2)}</AvatarFallback>
+                    </Avatar>
                     <span className="text-sm font-medium text-foreground">
                       {team.managerName}
                     </span>

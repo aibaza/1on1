@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { useTranslations, useFormatter } from "next-intl";
 
 export type SaveStatus = "saved" | "saving" | "error";
@@ -69,7 +69,7 @@ export function WizardTopBar({
       {/* Left: Avatar + Report info + Save status */}
       <div className="flex items-center gap-4">
         <Avatar className="h-10 w-10">
-          <AvatarImage src={getAvatarUrl(reportName)} />
+          <ThemedAvatarImage name={reportName} />
           <AvatarFallback className="text-xs font-bold bg-[var(--editorial-secondary-container,var(--accent))] text-[var(--editorial-on-secondary-container,var(--accent-foreground))]">
             {getInitials(reportName)}
           </AvatarFallback>

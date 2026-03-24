@@ -4,8 +4,8 @@ import { getTranslations, getFormatter } from "next-intl/server";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { users } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
@@ -126,7 +126,7 @@ export default async function UserProfilePage({
       {/* Profile header */}
       <div className="flex items-start gap-6">
         <Avatar className="h-20 w-20 text-xl">
-          <AvatarImage src={getAvatarUrl(`${data.firstName} ${data.lastName}`, data.avatarUrl, null, data.level)} />
+          <ThemedAvatarImage name={`${data.firstName} ${data.lastName}`} uploadedUrl={data.avatarUrl} role={data.level} />
           <AvatarFallback className="text-xl">
             {getInitials(data.firstName, data.lastName)}
           </AvatarFallback>

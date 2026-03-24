@@ -11,8 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,8 +73,8 @@ function SessionCard({
       className="transition-all duration-200 hover:border-foreground/20 hover:shadow-md"
     >
       <CardHeader className="flex flex-row items-center gap-3 pb-2">
-        <Avatar className="size-9">
-          <AvatarImage src={getAvatarUrl(session.reportName)} />
+        <Avatar className="h-10 w-10">
+          <ThemedAvatarImage name={session.reportName} />
           <AvatarFallback className="text-xs">{initials}</AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">

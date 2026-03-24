@@ -12,7 +12,8 @@ import {
   Check,
   X,
 } from "lucide-react";
-import { getAvatarUrl } from "@/lib/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 
 interface TeamMember {
   id: string;
@@ -162,11 +163,10 @@ export function EditorialTeamDetail({
 
           {/* Team Lead card */}
           <div className="flex items-center gap-4 bg-card p-3 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
-            <img
-              src={getAvatarUrl(team.managerName, team.managerAvatarUrl)}
-              alt={team.managerName}
-              className="w-12 h-12 rounded-lg object-cover"
-            />
+            <Avatar className="h-10 w-10">
+              <ThemedAvatarImage name={team.managerName} uploadedUrl={team.managerAvatarUrl} />
+              <AvatarFallback className="text-xs">{team.managerName.split(" ").map(n => n[0]).join("").slice(0, 2)}</AvatarFallback>
+            </Avatar>
             <div>
               <p className="text-[10px] uppercase font-bold text-[var(--editorial-tertiary,var(--color-success))] tracking-widest">
                 {t("lead")}
@@ -222,11 +222,10 @@ export function EditorialTeamDetail({
                   >
                     <td className="px-8 py-5">
                       <div className="flex items-center gap-3">
-                        <img
-                          src={getAvatarUrl(fullName, member.avatarUrl)}
-                          alt={fullName}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
+                        <Avatar className="h-10 w-10">
+                          <ThemedAvatarImage name={fullName} uploadedUrl={member.avatarUrl} />
+                          <AvatarFallback className="text-xs">{fullName.split(" ").map(n => n[0]).join("").slice(0, 2)}</AvatarFallback>
+                        </Avatar>
                         <span className="font-headline font-bold text-foreground">
                           {fullName}
                         </span>
