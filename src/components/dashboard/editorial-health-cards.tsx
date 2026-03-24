@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -9,14 +9,13 @@ import {
   AlertTriangle,
   Activity,
   ChevronRight,
-  TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  sparkBarColor,
   DISTRIBUTION_COLORS,
   LEGEND_DOT_COLORS,
 } from "@/lib/analytics/colors";
+import { HealthScoreCard } from "@/components/analytics/health-score-card";
 import {
   Sheet,
   SheetContent,
@@ -89,40 +88,6 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
 
   const [signalsOpen, setSignalsOpen] = useState(false);
 
-  // Build sparkline entries — must be before early returns (rules of hooks)
-  const sparkEntries = useMemo(() => {
-    if (!data) return [];
-    const MAX_BARS = 20;
-    const raw: { score: number; date: string }[] = [];
-
-    if (data.scoreHistory) {
-      // Member: personal score history
-      for (const h of data.scoreHistory) {
-        if (h.score > 0) raw.push({ score: h.score, date: h.date });
-      }
-    } else if (data.people) {
-      // Admin: all people's score histories
-      for (const p of data.people) {
-        for (const h of p.scoreHistory) {
-          if (h.score > 0 && h.date) raw.push({ score: h.score, date: h.date });
-        }
-      }
-    } else if (data.members) {
-      // Manager: team members' score histories
-      for (const m of data.members) {
-        for (const h of m.scoreHistory) {
-          if (h.score > 0 && h.date) raw.push({ score: h.score, date: h.date });
-        }
-      }
-    } else if (data.teamScoreHistory) {
-      for (const h of data.teamScoreHistory) {
-        if (h.score > 0) raw.push({ score: h.score, date: h.date });
-      }
-    }
-
-    raw.sort((a, b) => a.date.localeCompare(b.date));
-    return raw.slice(-MAX_BARS);
-  }, [data]);
 
   // Early returns AFTER all hooks
   if (isLoading) {
@@ -146,8 +111,11 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
     ? distribution.healthy + distribution.attention + distribution.critical + distribution.noData
     : 0;
 
-  const scopeLabel =
-    userLevel === "admin" ? t("orgScope") : userLevel === "manager" ? t("teamScope") : t("personalScope");
+  const scopeLabel = userLevel === "admin"
+    ? t("statsOrg")
+    : userLevel === "manager"
+      ? t("statsTeam")
+      : t("statsPersonal");
 
   return (
     <section className="space-y-2">
@@ -164,49 +132,13 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Health Score (matches /analytics layout) */}
-        <div className="bg-card p-5 rounded-xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">
-              {t("healthScore")}
-            </span>
-            {kpis.scoreTrend !== 0 && (
-              <span className={cn(
-                "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold",
-                kpis.scoreTrend > 0
-                  ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
-                  : "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400",
-              )}>
-                <TrendingUp className={cn("h-3 w-3", kpis.scoreTrend < 0 && "rotate-180")} />
-                {kpis.scoreTrend > 0 ? "+" : ""}{kpis.scoreTrend.toFixed(1)}
-              </span>
-            )}
-          </div>
-          <div className="flex items-baseline gap-1 mb-4">
-            <span className="text-3xl font-extrabold tabular-nums text-foreground">
-              {kpis.avgScore !== null ? kpis.avgScore.toFixed(1) : "—"}
-            </span>
-            <span className="text-sm text-muted-foreground">/5</span>
-          </div>
-          {/* Sparkline bars */}
-          {sparkEntries.length > 0 && (
-            <div className="flex items-end gap-px h-12 w-full">
-              {sparkEntries.map((e, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    "flex-1 min-w-[2px] max-w-2 rounded-t-sm",
-                    sparkBarColor(e.score),
-                  )}
-                  style={{
-                    height: `${Math.max(10, (e.score / 5) * 100)}%`,
-                    opacity: 0.3 + (i / sparkEntries.length) * 0.7,
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Card 1: Health Score (shared component from analytics) */}
+        <HealthScoreCard
+          avgScore={kpis.avgScore}
+          scoreTrend={kpis.scoreTrend}
+          people={data.people ?? data.members}
+          personalScoreHistory={data.scoreHistory}
+        />
 
         {/* Card 2: Actions (matches /analytics "Actiuni" card) */}
         <div className="bg-card p-5 rounded-xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">

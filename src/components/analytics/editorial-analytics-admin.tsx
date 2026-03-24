@@ -20,7 +20,8 @@ import {
 } from "lucide-react";
 import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
-import { scoreBadgeColor, scoreDotColor, scoreTextColor, sparkBarColor, trendIconColor, trendBadgeColor, alertBadgeColor, DISTRIBUTION_COLORS, LEGEND_DOT_COLORS } from "@/lib/analytics/colors";
+import { scoreBadgeColor, scoreDotColor, scoreTextColor, sparkBarColor, trendIconColor, trendBadgeColor, DISTRIBUTION_COLORS, LEGEND_DOT_COLORS } from "@/lib/analytics/colors";
+import { HealthScoreCard } from "@/components/analytics/health-score-card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ------------------------------------------------------------------ */
@@ -262,20 +263,12 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
 
       {/* ── Section 1: KPI Cards ── */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1 — Health Score */}
-        <div className="bg-card p-6 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">{t("healthScore")} <InfoTip tooltipKey="healthScoreTooltip" t={t} /></span>
-            {trendBadge(kpis.scoreTrend)}
-          </div>
-          <div className="flex items-baseline gap-1 mb-4">
-            <span className="text-3xl font-headline font-extrabold text-foreground">
-              {kpis.avgScore !== null ? kpis.avgScore.toFixed(1) : "—"}
-            </span>
-            <span className="text-muted-foreground text-sm">/5</span>
-          </div>
-          <MiniSparkBars entries={sparkEntries} />
-        </div>
+        {/* Card 1 — Health Score (shared component) */}
+        <HealthScoreCard
+          avgScore={kpis.avgScore}
+          scoreTrend={kpis.scoreTrend}
+          people={people}
+        />
 
         {/* Card 2 — Completion */}
         <div className="bg-card p-6 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
