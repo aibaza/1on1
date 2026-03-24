@@ -34,7 +34,7 @@ interface TemplateData {
 }
 
 interface ImportDialogProps {
-  currentUserRole: string;
+  currentUserLevel: string;
   contentLanguage: string;
   onImportSuccess?: () => void;
   // Optional controlled state — when provided, parent controls open/close
@@ -43,7 +43,7 @@ interface ImportDialogProps {
 }
 
 export function ImportDialog({
-  currentUserRole: _currentUserRole,
+  currentUserLevel: _currentUserLevel,
   contentLanguage,
   onImportSuccess,
   open: controlledOpen,

@@ -61,7 +61,7 @@ export async function GET(
 
         // Authorization: admin can see all, others must be participant
         if (
-          session.user.role !== "admin" &&
+          session.user.level !== "admin" &&
           !isSeriesParticipant(session.user.id, series)
         ) {
           return "FORBIDDEN";
@@ -159,7 +159,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!canManageSeries(session.user.role)) {
+  if (!canManageSeries(session.user.level)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -199,7 +199,7 @@ export async function PATCH(
 
         // Only manager on the series or admin can update
         if (
-          session.user.role !== "admin" &&
+          session.user.level !== "admin" &&
           session.user.id !== series.managerId
         ) {
           return "FORBIDDEN";
@@ -353,7 +353,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!canManageSeries(session.user.role)) {
+  if (!canManageSeries(session.user.level)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -381,7 +381,7 @@ export async function DELETE(
 
         // Only manager on the series or admin can archive
         if (
-          session.user.role !== "admin" &&
+          session.user.level !== "admin" &&
           session.user.id !== existing[0].managerId
         ) {
           return "FORBIDDEN";

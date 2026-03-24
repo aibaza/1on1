@@ -17,7 +17,7 @@ export const inviteUsersSchema = z.object({
         .min(1, "At least one valid email is required")
         .max(50, "Maximum 50 invites at once")
     ),
-  role: z.enum(["admin", "manager", "member"]),
+  level: z.enum(["admin", "manager", "member"]),
 });
 
 export const acceptInviteSchema = z.object({
@@ -40,8 +40,8 @@ export const updateProfileSchema = z.object({
   avatarUrl: z.string().url().refine((u) => u.startsWith("https://"), { message: "Must be an HTTPS URL" }).nullable().optional(),
 });
 
-export const updateUserRoleSchema = z.object({
-  role: z.enum(["admin", "manager", "member"]),
+export const updateUserLevelSchema = z.object({
+  level: z.enum(["admin", "manager", "member"]),
 });
 
 export const assignManagerSchema = z.object({

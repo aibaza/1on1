@@ -32,7 +32,7 @@ interface HistorySession {
   reportFirstName: string;
   reportLastName: string;
   reportAvatarUrl: string | null;
-  reportRole: string;
+  reportLevel: string;
   managerFirstName: string;
   managerLastName: string;
 }
@@ -248,7 +248,7 @@ export function EditorialHistoryPage({
         seriesId: string;
         reportName: string;
         reportAvatarUrl: string | null;
-        reportRole: string;
+        reportLevel: string;
         managerName: string;
         sessions: HistorySession[];
       }
@@ -260,7 +260,7 @@ export function EditorialHistoryPage({
           seriesId: s.seriesId,
           reportName: `${s.reportFirstName} ${s.reportLastName}`.trim(),
           reportAvatarUrl: s.reportAvatarUrl,
-          reportRole: s.reportRole,
+          reportLevel: s.reportLevel,
           managerName: `${s.managerFirstName} ${s.managerLastName}`.trim(),
           sessions: [],
         });
@@ -491,7 +491,7 @@ export function EditorialHistoryPage({
                   <div className="flex items-end justify-between mb-6 px-2">
                     <div className="flex items-center gap-4">
                       <img
-                        src={getAvatarUrl(group.reportName, group.reportAvatarUrl, null, group.reportRole)}
+                        src={getAvatarUrl(group.reportName, group.reportAvatarUrl, null, group.reportLevel)}
                         alt={group.reportName}
                         className="w-12 h-12 rounded-full object-cover shrink-0"
                       />

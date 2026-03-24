@@ -2,17 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useTranslations, useFormatter } from "next-intl";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import {
   ArrowLeft,
   Pencil,
-  Plus,
-  Trash2,
-  UserMinus,
   Check,
   X,
 } from "lucide-react";
@@ -21,7 +17,6 @@ import { getAvatarUrl } from "@/lib/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
   TableBody,
@@ -30,166 +25,76 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MemberPicker } from "@/components/people/member-picker";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 interface TeamMember {
-  userId: string;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
   avatarUrl: string | null;
-  role: string;
-  joinedAt: string;
+  jobTitle: string | null;
+  level: string;
 }
 
 interface TeamData {
-  id: string;
-  name: string;
-  description: string | null;
-  managerId: string | null;
-  managerName: string | null;
-  createdAt: string;
-  updatedAt: string;
+  managerId: string;
+  teamName: string;
+  managerName: string;
+  managerEmail: string;
+  managerAvatarUrl: string | null;
+  members: TeamMember[];
 }
 
 interface TeamDetailClientProps {
   initialTeam: TeamData;
-  initialMembers: TeamMember[];
-  currentUserRole: string;
+  currentUserLevel: string;
+  currentUserId: string;
 }
 
 export function TeamDetailClient({
   initialTeam,
-  initialMembers,
-  currentUserRole,
+  currentUserLevel,
+  currentUserId,
 }: TeamDetailClientProps) {
   const t = useTranslations("teams");
-  const format = useFormatter();
   const { showApiError } = useApiErrorToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
-  const canManage =
-    currentUserRole === "admin" || currentUserRole === "manager";
-  const isAdmin = currentUserRole === "admin";
+  const canEditName =
+    currentUserLevel === "admin" ||
+    (currentUserLevel === "manager" && currentUserId === initialTeam.managerId);
 
-  const [memberPickerOpen, setMemberPickerOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editingName, setEditingName] = useState(false);
-  const [editingDescription, setEditingDescription] = useState(false);
-  const [nameValue, setNameValue] = useState(initialTeam.name);
-  const [descriptionValue, setDescriptionValue] = useState(
-    initialTeam.description ?? ""
-  );
+  const [nameValue, setNameValue] = useState(initialTeam.teamName);
 
   const { data: team } = useQuery<TeamData>({
-    queryKey: ["team", initialTeam.id],
+    queryKey: ["team", initialTeam.managerId],
     queryFn: async () => {
-      const res = await fetch(`/api/teams/${initialTeam.id}`);
+      const res = await fetch(`/api/teams/${initialTeam.managerId}`);
       if (!res.ok) throw new Error("Failed to fetch team");
-      const data = await res.json();
-      return {
-        id: data.id,
-        name: data.name,
-        description: data.description,
-        managerId: data.managerId,
-        managerName: data.managerName,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      };
+      return res.json();
     },
     initialData: initialTeam,
   });
 
-  const { data: members } = useQuery<TeamMember[]>({
-    queryKey: ["team", initialTeam.id, "members"],
-    queryFn: async () => {
-      const res = await fetch(`/api/teams/${initialTeam.id}`);
-      if (!res.ok) throw new Error("Failed to fetch team");
-      const data = await res.json();
-      return data.members;
-    },
-    initialData: initialMembers,
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: async (payload: { name?: string; description?: string | null }) => {
-      const res = await fetch(`/api/teams/${initialTeam.id}`, {
+  const updateNameMutation = useMutation({
+    mutationFn: async (teamName: string) => {
+      const res = await fetch(`/api/teams/${initialTeam.managerId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ teamName }),
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to update team");
+        throw new Error(data.error || "Failed to update team name");
       }
       return res.json();
     },
     onSuccess: () => {
       toast.success(t("updated"));
       queryClient.invalidateQueries({
-        queryKey: ["team", initialTeam.id],
+        queryKey: ["team", initialTeam.managerId],
       });
       queryClient.invalidateQueries({ queryKey: ["teams"] });
-    },
-    onError: (error) => {
-      showApiError(error);
-    },
-  });
-
-  const removeMemberMutation = useMutation({
-    mutationFn: async (userId: string) => {
-      const res = await fetch(`/api/teams/${initialTeam.id}/members`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to remove member");
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      toast.success(t("memberRemoved"));
-      queryClient.invalidateQueries({
-        queryKey: ["team", initialTeam.id],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["team", initialTeam.id, "members"],
-      });
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
-    },
-    onError: (error) => {
-      showApiError(error);
-    },
-  });
-
-  const deleteTeamMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(`/api/teams/${initialTeam.id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to delete team");
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      toast.success(t("deleted"));
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
-      router.push("/teams");
     },
     onError: (error) => {
       showApiError(error);
@@ -197,21 +102,11 @@ export function TeamDetailClient({
   });
 
   function handleSaveName() {
-    if (nameValue.trim() && nameValue !== team.name) {
-      updateMutation.mutate({ name: nameValue.trim() });
+    if (nameValue.trim() && nameValue !== team.teamName) {
+      updateNameMutation.mutate(nameValue.trim());
     }
     setEditingName(false);
   }
-
-  function handleSaveDescription() {
-    const newDesc = descriptionValue.trim() || null;
-    if (newDesc !== team.description) {
-      updateMutation.mutate({ description: newDesc });
-    }
-    setEditingDescription(false);
-  }
-
-  const existingMemberIds = members.map((m) => m.userId);
 
   return (
     <div className="space-y-6">
@@ -237,7 +132,7 @@ export function TeamDetailClient({
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleSaveName();
                   if (e.key === "Escape") {
-                    setNameValue(team.name);
+                    setNameValue(team.teamName);
                     setEditingName(false);
                   }
                 }}
@@ -255,7 +150,7 @@ export function TeamDetailClient({
                 size="icon"
                 className="h-7 w-7"
                 onClick={() => {
-                  setNameValue(team.name);
+                  setNameValue(team.teamName);
                   setEditingName(false);
                 }}
               >
@@ -265,9 +160,9 @@ export function TeamDetailClient({
           ) : (
             <>
               <h1 className="text-2xl font-semibold tracking-tight">
-                {team.name}
+                {t("teamPrefix")} {team.teamName}
               </h1>
-              {canManage && (
+              {canEditName && (
                 <Button
                   variant="ghost"
                   size="icon"
@@ -281,124 +176,28 @@ export function TeamDetailClient({
           )}
         </div>
 
-        {editingDescription ? (
-          <div className="flex items-start gap-2 max-w-lg">
-            <Textarea
-              value={descriptionValue}
-              onChange={(e) => setDescriptionValue(e.target.value)}
-              rows={3}
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Escape") {
-                  setDescriptionValue(team.description ?? "");
-                  setEditingDescription(false);
-                }
-              }}
+        <div className="flex items-center gap-2">
+          <Avatar className="h-6 w-6">
+            <AvatarImage
+              src={getAvatarUrl(team.managerName, team.managerAvatarUrl)}
+              alt={team.managerName}
             />
-            <div className="flex flex-col gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
-                onClick={handleSaveDescription}
-              >
-                <Check className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
-                onClick={() => {
-                  setDescriptionValue(team.description ?? "");
-                  setEditingDescription(false);
-                }}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <p className="text-sm text-muted-foreground">
-              {team.description || t("noDescription")}
-            </p>
-            {canManage && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6"
-                onClick={() => setEditingDescription(true)}
-              >
-                <Pencil className="h-3 w-3" />
-              </Button>
-            )}
-          </div>
-        )}
-
-        {team.managerName && (
-          <div className="flex items-center gap-2">
-            <Badge variant="outline">{t("teamLead", { name: team.managerName })}</Badge>
-          </div>
-        )}
-      </div>
-
-      {/* Actions row */}
-      <div className="flex items-center gap-2">
-        {canManage && (
-          <Button
-            size="sm"
-            onClick={() => setMemberPickerOpen(true)}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            {t("addMembers")}
-          </Button>
-        )}
-      </div>
-
-      {/* Danger Zone */}
-      {isAdmin && (
-        <div className="mt-8 pt-8 border-t border-destructive/20 space-y-3">
-          <div>
-            <h3 className="text-sm font-medium text-destructive">{t("dangerZone")}</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">{t("dangerZoneDesc")}</p>
-          </div>
-          <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-destructive text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                {t("deleteTeam")}
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
-                <AlertDialogDescription>{t("deleteConfirm")}</AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-destructive hover:bg-destructive/90"
-                  onClick={() => deleteTeamMutation.mutate()}
-                  disabled={deleteTeamMutation.isPending}
-                >
-                  {deleteTeamMutation.isPending ? t("deleting") : t("deleteTeam")}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+            <AvatarFallback className="text-xs">
+              {team.managerName.split(" ").map((n) => n[0]).join("").toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <Badge variant="outline">
+            {t("teamLead", { name: team.managerName })}
+          </Badge>
         </div>
-      )}
+      </div>
 
       {/* Members table */}
       <div>
         <h2 className="text-lg font-medium mb-3">
-          {t("members", { count: members.length })}
+          {t("members", { count: team.members.length })}
         </h2>
-        {members.length === 0 ? (
+        {team.members.length === 0 ? (
           <div className="rounded-lg border border-dashed py-8 text-center">
             <p className="text-sm text-muted-foreground">
               {t("noMembers")}
@@ -411,25 +210,16 @@ export function TeamDetailClient({
                 <TableRow>
                   <TableHead>{t("name")}</TableHead>
                   <TableHead>{t("email")}</TableHead>
-                  <TableHead>{t("role")}</TableHead>
-                  <TableHead>{t("joined")}</TableHead>
-                  {canManage && <TableHead className="w-[80px]" />}
+                  <TableHead>{t("jobTitle")}</TableHead>
+                  <TableHead>{t("level")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {members.map((member) => {
+                {team.members.map((member) => {
                   const initials = `${member.firstName[0] ?? ""}${member.lastName[0] ?? ""}`.toUpperCase();
-                  const joinedDate = format.dateTime(
-                    new Date(member.joinedAt),
-                    {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    }
-                  );
 
                   return (
-                    <TableRow key={member.userId}>
+                    <TableRow key={member.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Avatar className="h-7 w-7">
@@ -449,33 +239,14 @@ export function TeamDetailClient({
                       <TableCell className="text-muted-foreground">
                         {member.email}
                       </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {member.jobTitle ?? "—"}
+                      </TableCell>
                       <TableCell>
-                        <Badge
-                          variant={
-                            member.role === "lead" ? "default" : "secondary"
-                          }
-                        >
-                          {member.role === "lead" ? t("lead") : t("member")}
+                        <Badge variant="secondary">
+                          {member.level}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {joinedDate}
-                      </TableCell>
-                      {canManage && (
-                        <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                            onClick={() =>
-                              removeMemberMutation.mutate(member.userId)
-                            }
-                            disabled={removeMemberMutation.isPending}
-                          >
-                            <UserMinus className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      )}
                     </TableRow>
                   );
                 })}
@@ -484,25 +255,6 @@ export function TeamDetailClient({
           </div>
         )}
       </div>
-
-      {/* Member picker dialog */}
-      {canManage && (
-        <MemberPicker
-          teamId={initialTeam.id}
-          existingMemberIds={existingMemberIds}
-          open={memberPickerOpen}
-          onOpenChange={setMemberPickerOpen}
-          onSuccess={() => {
-            queryClient.invalidateQueries({
-              queryKey: ["team", initialTeam.id],
-            });
-            queryClient.invalidateQueries({
-              queryKey: ["team", initialTeam.id, "members"],
-            });
-            queryClient.invalidateQueries({ queryKey: ["teams"] });
-          }}
-        />
-      )}
     </div>
   );
 }

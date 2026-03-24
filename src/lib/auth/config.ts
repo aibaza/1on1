@@ -64,7 +64,7 @@ const config = {
           email: user.email,
           name: `${user.firstName} ${user.lastName}`,
           tenantId: user.tenantId,
-          role: user.role,
+          level: user.level,
           emailVerified: user.emailVerified,
           uiLanguage: user.language ?? "en",
           contentLanguage: (tenantSettings.preferredLanguage as string | undefined) ?? "en",
@@ -104,11 +104,16 @@ const config = {
     async jwt({ token, user, trigger }) {
       if (user) {
         token.tenantId = user.tenantId;
-        token.role = user.role;
+        token.level = user.level;
         token.userId = user.id!;
         token.emailVerified = user.emailVerified ?? null;
         token.uiLanguage = user.uiLanguage ?? "en";
         token.contentLanguage = user.contentLanguage ?? "en";
+      }
+
+      // Backward compat: handle old JWT tokens that still carry "role"
+      if (!token.level && (token as Record<string, unknown>).role) {
+        token.level = (token as Record<string, unknown>).role as string;
       }
 
       // Support language switching without re-login
@@ -144,13 +149,13 @@ const config = {
     async session({ session, token }) {
       session.user.id = token.userId;
       session.user.tenantId = token.tenantId;
-      session.user.role = token.role;
+      session.user.level = token.level;
       session.user.emailVerified = token.emailVerified;
       session.user.uiLanguage = token.uiLanguage;
       session.user.contentLanguage = token.contentLanguage;
 
       // Overlay session with impersonated user when admin has set the cookie
-      if (token.role === "admin") {
+      if (token.level === "admin") {
         try {
           const { cookies } = await import("next/headers");
           const cookieStore = await cookies();
@@ -164,13 +169,13 @@ const config = {
                   eq(u.isActive, true)
                 ),
             });
-            if (targetUser && targetUser.role !== "admin") {
+            if (targetUser && targetUser.level !== "admin") {
               session.user.impersonatedBy = {
                 id: token.userId,
                 name: (token.name as string) ?? "",
               };
               session.user.id = targetUser.id;
-              session.user.role = targetUser.role;
+              session.user.level = targetUser.level;
               session.user.emailVerified = targetUser.emailVerified;
               session.user.uiLanguage = targetUser.language ?? "en";
               session.user.name = `${targetUser.firstName} ${targetUser.lastName}`;

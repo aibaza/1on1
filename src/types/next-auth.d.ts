@@ -4,7 +4,7 @@ import "next-auth/jwt";
 declare module "next-auth" {
   interface User {
     tenantId: string;
-    role: string;
+    level: string;
     emailVerified: Date | null;
     uiLanguage: string;
     contentLanguage: string;
@@ -13,7 +13,7 @@ declare module "next-auth" {
     user: User & {
       id: string;
       tenantId: string;
-      role: string;
+      level: string;
       emailVerified: Date | null;
       uiLanguage: string;
       contentLanguage: string;
@@ -25,7 +25,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     tenantId: string;
-    role: string;
+    level: string;
     userId: string;
     emailVerified: Date | null;
     uiLanguage: string;

@@ -48,7 +48,7 @@ export async function POST(request: Request) {
   }
 
   // 2. RBAC check
-  if (!canManageTemplates(session.user.role)) {
+  if (!canManageTemplates(session.user.level)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

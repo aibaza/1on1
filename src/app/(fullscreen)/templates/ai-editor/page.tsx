@@ -6,12 +6,12 @@ import { AiEditorShell } from "@/components/templates/ai-editor/ai-editor-shell"
 export default async function NewTemplateAiEditorPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
-  if (!canManageTemplates(session.user.role)) redirect("/templates");
+  if (!canManageTemplates(session.user.level)) redirect("/templates");
 
   return (
     <AiEditorShell
       contentLanguage={session.user.contentLanguage ?? "en"}
-      userRole={session.user.role}
+      userLevel={session.user.level}
     />
   );
 }

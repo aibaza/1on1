@@ -25,7 +25,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 /* ------------------------------------------------------------------ */
 
 interface HealthResponse {
-  role: string;
+  level: string;
   kpis: {
     avgScore: number | null;
     scoreTrend: number;
@@ -64,7 +64,7 @@ interface HealthResponse {
     lastName: string;
     jobTitle: string | null;
     avatarUrl: string | null;
-    role: string;
+    level: string;
     avgScore: number | null;
     trend: number;
     lastSessionDate: string | null;
@@ -375,7 +375,7 @@ export default function EditorialAnalyticsManager({ data }: EditorialAnalyticsMa
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <img
-                            src={getAvatarUrl(name, person.avatarUrl, null, person.role)}
+                            src={getAvatarUrl(name, person.avatarUrl, null, person.level)}
                             alt={name}
                             className="w-8 h-8 rounded-full object-cover shrink-0"
                           />

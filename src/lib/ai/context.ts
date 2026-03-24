@@ -10,8 +10,6 @@ import {
   templateQuestions,
   templateSections,
   tenants,
-  teams,
-  teamMembers,
   meetingSeries,
 } from "@/lib/db/schema";
 import type { AISummary } from "./schemas/summary";
@@ -164,22 +162,15 @@ export async function gatherSessionContext(params: {
     const companyName = tenant?.name ?? "Company";
     const companyContext = (tenant?.settings as Record<string, unknown> | null)?.companyContext as string | null ?? null;
 
-    // Fetch team context (team where report is member and manager is lead)
-    const teamRow = await tx
-      .select({ name: teams.name, description: teams.description })
-      .from(teams)
-      .innerJoin(teamMembers, eq(teams.id, teamMembers.teamId))
-      .where(
-        and(
-          eq(teamMembers.userId, reportId),
-          eq(teams.managerId, managerId),
-          eq(teams.tenantId, tenantId)
-        )
-      )
+    // Fetch team context (manager's team name)
+    const [managerRow] = await tx
+      .select({ teamName: users.teamName })
+      .from(users)
+      .where(eq(users.id, managerId))
       .limit(1);
 
-    const teamName = teamRow[0]?.name ?? null;
-    const teamDescription = teamRow[0]?.description ?? null;
+    const teamName = managerRow?.teamName ?? null;
+    const teamDescription: string | null = null;
 
     // Fetch current session answers with question text and section
     const answersRaw = await tx

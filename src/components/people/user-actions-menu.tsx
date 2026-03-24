@@ -19,22 +19,22 @@ interface UserActionsMenuProps {
   user: {
     id: string;
     email: string;
-    role: string;
+    level: string;
     status: "active" | "pending" | "deactivated";
   };
-  currentUserRole: string;
+  currentUserLevel: string;
   currentUserId: string;
 }
 
 export function UserActionsMenu({
   user,
-  currentUserRole,
+  currentUserLevel,
   currentUserId,
 }: UserActionsMenuProps) {
   const t = useTranslations("people");
   const queryClient = useQueryClient();
   const { showApiError } = useApiErrorToast();
-  const isAdmin = currentUserRole === "admin";
+  const isAdmin = currentUserLevel === "admin";
   const isSelf = user.id === currentUserId;
 
   const deactivateMutation = useMutation({
@@ -149,7 +149,7 @@ export function UserActionsMenu({
             </>
           )}
 
-          {isAdmin && user.status === "active" && !isSelf && user.role !== "admin" && (
+          {isAdmin && user.status === "active" && !isSelf && user.level !== "admin" && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem

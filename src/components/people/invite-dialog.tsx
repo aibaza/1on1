@@ -33,10 +33,10 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 
-// Client-side form schema: emails as raw string, role selection
+// Client-side form schema: emails as raw string, level selection
 const inviteFormSchema = z.object({
   emails: z.string().min(1, "Enter at least one email address"),
-  role: z.enum(["admin", "manager", "member"]),
+  level: z.enum(["admin", "manager", "member"]),
 });
 
 type InviteFormValues = z.infer<typeof inviteFormSchema>;
@@ -60,7 +60,7 @@ export function InviteDialog({
     resolver: zodResolver(inviteFormSchema),
     defaultValues: {
       emails: "",
-      role: "member",
+      level: "member",
     },
   });
 
@@ -73,7 +73,7 @@ export function InviteDialog({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           emails: values.emails,
-          role: values.role,
+          level: values.level,
         }),
       });
 
@@ -145,7 +145,7 @@ export function InviteDialog({
 
             <FormField
               control={form.control}
-              name="role"
+              name="level"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("invite.roleLabel")}</FormLabel>

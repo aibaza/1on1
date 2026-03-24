@@ -52,7 +52,7 @@ export async function POST(
         const series = seriesRows[0];
 
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           !isSeriesParticipant(session.user.id, series)
         ) {
           return { error: "FORBIDDEN" as const };

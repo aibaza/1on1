@@ -4,7 +4,7 @@ import { eq, isNull } from "drizzle-orm";
 import { render } from "@react-email/render";
 import { z } from "zod";
 import { auth } from "@/lib/auth/config";
-import { requireRole } from "@/lib/auth/rbac";
+import { requireLevel } from "@/lib/auth/rbac";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { adminDb } from "@/lib/db";
 import { inviteTokens, users } from "@/lib/db/schema";
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const roleError = requireRole(session.user.role, "admin");
+  const roleError = requireLevel(session.user.level, "admin");
   if (roleError) return roleError;
 
   let body: unknown;
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
           ops.eq(u.email, email),
           isNull(u.emailVerified)
         ),
-      columns: { id: true, role: true },
+      columns: { id: true, level: true },
     });
 
     if (!unverifiedUser) {
@@ -83,9 +83,9 @@ export async function POST(request: Request) {
       );
     }
 
-    inviteRole = unverifiedUser.role;
+    inviteRole = unverifiedUser.level;
   } else {
-    inviteRole = existingInvite.role;
+    inviteRole = existingInvite.level;
   }
 
   // Generate new token and expiry
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
           .values({
             tenantId,
             email,
-            role: inviteRole as "admin" | "manager" | "member",
+            level: inviteRole as "admin" | "manager" | "member",
             token: newToken,
             invitedBy: actorId,
             expiresAt: newExpiresAt,
@@ -124,7 +124,7 @@ export async function POST(request: Request) {
         action: "invite_resent",
         resourceType: "invite_token",
         resourceId: inviteId,
-        metadata: { email, role: inviteRole },
+        metadata: { email, level: inviteRole },
         ipAddress: ipAddress ?? undefined,
       });
     });

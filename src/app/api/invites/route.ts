@@ -3,7 +3,7 @@ import { randomBytes } from "crypto";
 import { isNull } from "drizzle-orm";
 import { render } from "@react-email/render";
 import { auth } from "@/lib/auth/config";
-import { requireRole } from "@/lib/auth/rbac";
+import { requireLevel } from "@/lib/auth/rbac";
 import { inviteUsersSchema } from "@/lib/validations/user";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { adminDb } from "@/lib/db";
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const roleError = requireRole(session.user.role, "admin");
+  const roleError = requireLevel(session.user.level, "admin");
   if (roleError) return roleError;
 
   let body: unknown;
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { emails, role } = parsed.data;
+  const { emails, level } = parsed.data;
   const tenantId = session.user.tenantId;
   const inviterId = session.user.id;
 
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
         await tx.insert(inviteTokens).values({
           tenantId,
           email,
-          role,
+          level,
           token,
           invitedBy: inviterId,
           expiresAt,
@@ -118,7 +118,7 @@ export async function POST(request: Request) {
           actorId: inviterId,
           action: "invite_sent",
           resourceType: "invite_token",
-          metadata: { email, role },
+          metadata: { email, level },
           ipAddress: ipAddress ?? undefined,
         });
       });
@@ -130,9 +130,9 @@ export async function POST(request: Request) {
           inviteUrl,
           organizationName,
           inviterName,
-          role,
+          role: level,
           heading: t("emails.invite.heading"),
-          body: t("emails.invite.body", { inviterName, organizationName, role }),
+          body: t("emails.invite.body", { inviterName, organizationName, role: level }),
           buttonLabel: t("emails.invite.button"),
           footer: t("emails.invite.footer"),
         })

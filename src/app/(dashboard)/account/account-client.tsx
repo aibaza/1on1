@@ -13,7 +13,7 @@ interface AccountClientProps {
     email: string;
     avatarUrl: string | null;
     avatarSeed: string | null;
-    role: string;
+    level: string;
     emailVerified: boolean;
   };
 }
@@ -42,7 +42,7 @@ export function AccountClient({ user }: AccountClientProps) {
       const res = await fetch("/api/user/avatar", { method: "POST" });
       const data = await res.json();
       if (res.ok) {
-        const newUrl = getAvatarUrl(fullName, user.avatarUrl, data.seed, user.role);
+        const newUrl = getAvatarUrl(fullName, user.avatarUrl, data.seed, user.level);
         await new Promise<void>((resolve) => {
           const img = new Image();
           img.onload = () => resolve();
@@ -94,7 +94,7 @@ export function AccountClient({ user }: AccountClientProps) {
     }
   }
 
-  const avatarUrl = getAvatarUrl(fullName, user.avatarUrl, avatarSeed, user.role);
+  const avatarUrl = getAvatarUrl(fullName, user.avatarUrl, avatarSeed, user.level);
 
   const inputClass =
     "w-full bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg px-4 py-3 text-foreground focus:ring-2 focus:ring-[var(--editorial-primary-container,var(--ring))] outline-none transition-all placeholder:text-muted-foreground";

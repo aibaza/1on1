@@ -10,7 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { tenants } from "./tenants";
-import { userRoleEnum } from "./enums";
+import { userLevelEnum } from "./enums";
 
 export const users = pgTable(
   "user",
@@ -25,8 +25,9 @@ export const users = pgTable(
     image: varchar("image", { length: 500 }),
     firstName: varchar("first_name", { length: 100 }).notNull(),
     lastName: varchar("last_name", { length: 100 }).notNull(),
-    role: userRoleEnum("role").notNull().default("member"),
+    level: userLevelEnum("level").notNull().default("member"),
     jobTitle: varchar("job_title", { length: 200 }),
+    teamName: varchar("team_name", { length: 200 }),
     avatarUrl: varchar("avatar_url", { length: 500 }),
     avatarSeed: varchar("avatar_seed", { length: 50 }),
     passwordHash: varchar("password_hash", { length: 255 }),
@@ -49,7 +50,7 @@ export const users = pgTable(
   (table) => [
     uniqueIndex("user_tenant_email_idx").on(table.tenantId, table.email),
     index("user_tenant_manager_idx").on(table.tenantId, table.managerId),
-    index("user_tenant_role_idx").on(table.tenantId, table.role),
+    index("user_tenant_level_idx").on(table.tenantId, table.level),
   ]
 );
 

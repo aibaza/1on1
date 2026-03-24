@@ -38,7 +38,7 @@ export default async function SeriesDetailPage({
 
       // Authorization: admin can see all, others must be participant
       if (
-        session.user.role !== "admin" &&
+        session.user.level !== "admin" &&
         !isSeriesParticipant(session.user.id, series)
       ) {
         return null;
@@ -51,7 +51,7 @@ export default async function SeriesDetailPage({
             firstName: users.firstName,
             lastName: users.lastName,
             avatarUrl: users.avatarUrl,
-            role: users.role,
+            level: users.level,
           })
           .from(users)
           .where(eq(users.id, series.managerId))
@@ -62,7 +62,7 @@ export default async function SeriesDetailPage({
             firstName: users.firstName,
             lastName: users.lastName,
             avatarUrl: users.avatarUrl,
-            role: users.role,
+            level: users.level,
           })
           .from(users)
           .where(eq(users.id, series.reportId))

@@ -45,7 +45,7 @@ export async function GET() {
         ];
 
         // Non-admin users can only see items from series they participate in
-        if (!isAdmin(session.user.role)) {
+        if (!isAdmin(session.user.level)) {
           baseConditions.push(
             or(
               eq(meetingSeries.managerId, session.user.id),

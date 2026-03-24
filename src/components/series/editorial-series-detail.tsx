@@ -46,8 +46,8 @@ interface SeriesData {
   nextSessionAt: string | null;
   managerId: string;
   reportId: string;
-  manager: { id: string; firstName: string; lastName: string; avatarUrl: string | null; role: string } | null;
-  report: { id: string; firstName: string; lastName: string; avatarUrl: string | null; role: string } | null;
+  manager: { id: string; firstName: string; lastName: string; avatarUrl: string | null; level: string } | null;
+  report: { id: string; firstName: string; lastName: string; avatarUrl: string | null; level: string } | null;
   latestAiSummary: AISummary | null;
   latestSessionScore: number | null;
   latestSessionNumber: number | null;
@@ -111,7 +111,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex items-center gap-6">
             <Avatar className="h-20 w-20 rounded-2xl shadow-lg">
-              <AvatarImage src={getAvatarUrl(personName, person?.avatarUrl, null, person?.role)} alt={personName} />
+              <AvatarImage src={getAvatarUrl(personName, person?.avatarUrl, null, person?.level)} alt={personName} />
               <AvatarFallback className="text-lg rounded-2xl">
                 {person ? getInitials(person.firstName, person.lastName) : "?"}
               </AvatarFallback>

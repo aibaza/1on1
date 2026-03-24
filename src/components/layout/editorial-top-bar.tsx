@@ -11,7 +11,7 @@ export function EditorialTopBar() {
   const t = useTranslations("navigation");
   const tAdmin = useTranslations("admin");
   const user = session?.user;
-  const userRole = user?.role ?? "member";
+  const userLevel = user?.level ?? "member";
   const impersonatedBy = (user as { impersonatedBy?: { name: string } } | undefined)?.impersonatedBy;
 
   async function handleStopImpersonation() {
@@ -58,7 +58,7 @@ export function EditorialTopBar() {
           {user && (
             <div className="text-right hidden sm:block">
               <p className="text-xs font-bold text-foreground font-headline">{user.name}</p>
-              <p className="text-[10px] text-muted-foreground font-medium capitalize">{userRole}</p>
+              <p className="text-[10px] text-muted-foreground font-medium capitalize">{userLevel}</p>
             </div>
           )}
           <UserMenu />

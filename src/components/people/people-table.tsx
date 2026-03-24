@@ -36,14 +36,14 @@ import { ProfileSheet } from "./profile-sheet";
 
 interface PeopleTableProps {
   initialData: UserRow[];
-  currentUserRole: string;
+  currentUserLevel: string;
   currentUserId: string;
   availableTeams: { id: string; name: string }[];
 }
 
 export function PeopleTable({
   initialData,
-  currentUserRole,
+  currentUserLevel,
   currentUserId,
   availableTeams,
 }: PeopleTableProps) {
@@ -90,8 +90,8 @@ export function PeopleTable({
   );
 
   const columns = useMemo(
-    () => createColumns({ currentUserRole, currentUserId, allUsers, t }),
-    [currentUserRole, currentUserId, allUsers, t]
+    () => createColumns({ currentUserLevel, currentUserId, allUsers, t }),
+    [currentUserLevel, currentUserId, allUsers, t]
   );
 
   const table = useReactTable({
@@ -144,10 +144,10 @@ export function PeopleTable({
 
         <Select
           value={
-            (table.getColumn("role")?.getFilterValue() as string) ?? "all"
+            (table.getColumn("level")?.getFilterValue() as string) ?? "all"
           }
           onValueChange={(value) =>
-            table.getColumn("role")?.setFilterValue(value === "all" ? "" : value)
+            table.getColumn("level")?.setFilterValue(value === "all" ? "" : value)
           }
         >
           <SelectTrigger className="w-[130px]">

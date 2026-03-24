@@ -9,12 +9,12 @@
     "table": {
       "name": "Nume",
       "email": "Email",
-      "role": "Rol",
+      "role": "Nivel",
       "teams": "Echipe",
       "manager": "Manager",
       "status": "Status",
       "searchPlaceholder": "Caută după nume, email sau titlu...",
-      "allRoles": "Toate rolurile",
+      "allRoles": "Toate nivelurile",
       "admin": "Admin",
       "manager": "Manager",
       "member": "Membru",
@@ -36,9 +36,9 @@
       "emailLabel": "Adrese de email",
       "emailPlaceholder": "Introduceți adrese de email, câte una pe rând sau separate prin virgulă",
       "emailDesc": "Poți invita până la 50 de persoane simultan.",
-      "roleLabel": "Rol",
-      "rolePlaceholder": "Selectează un rol",
-      "roleDesc": "Toți invitații vor primi acest rol.",
+      "roleLabel": "Nivel",
+      "rolePlaceholder": "Selectează un nivel",
+      "roleDesc": "Toți invitații vor primi acest nivel.",
       "cancel": "Anulează",
       "sending": "Se trimite...",
       "send": "Trimite invitațiile",
@@ -60,7 +60,7 @@
       "viewProfile": "Vezi profilul complet"
     },
     "role": {
-      "updated": "Rol actualizat"
+      "updated": "Nivel actualizat"
     },
     "actions": {
       "viewProfile": "Vezi profil",
@@ -112,7 +112,7 @@
       "viewProfile": "Vezi profil",
       "membersSelected": "{count} membru selectat",
       "membersSelectedPlural": "{count} membri selectați",
-      "changeRole": "Schimbă rolul",
+      "changeRole": "Schimbă nivelul",
       "clearSelection": "Anulează selecția",
       "showingMembers": "Se afișează {from}-{to} din {total} membri",
       "invited": "Invitat"

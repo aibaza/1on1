@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 /* ------------------------------------------------------------------ */
 
 interface HealthResponse {
-  role: string;
+  level: string;
   kpis: {
     avgScore: number | null;
     scoreTrend: number;

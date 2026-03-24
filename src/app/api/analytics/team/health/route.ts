@@ -24,7 +24,7 @@ interface MemberSummary {
   lastName: string;
   jobTitle: string | null;
   avatarUrl: string | null;
-  role: string;
+  level: string;
   avgScore: number | null;
   trend: number;
   lastSessionDate: string | null;
@@ -39,7 +39,7 @@ interface TeamHealthResponse {
     firstName: string;
     lastName: string;
     avatarUrl: string | null;
-    role: string;
+    level: string;
   };
   reportCount: number;
   kpis: {
@@ -109,10 +109,10 @@ export async function GET(request: Request) {
   }
 
   const { user } = session;
-  const role = user.role as "admin" | "manager" | "member";
+  const level = user.level as "admin" | "manager" | "member";
 
   // Members cannot access team health
-  if (role === "member") {
+  if (level === "member") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -127,7 +127,7 @@ export async function GET(request: Request) {
   }
 
   // Managers can only view their own team
-  if (role === "manager" && managerId !== user.id) {
+  if (level === "manager" && managerId !== user.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -151,7 +151,7 @@ export async function GET(request: Request) {
             firstName: users.firstName,
             lastName: users.lastName,
             avatarUrl: users.avatarUrl,
-            role: users.role,
+            level: users.level,
             tenantId: users.tenantId,
           })
           .from(users)
@@ -347,7 +347,7 @@ export async function GET(request: Request) {
                   lastName: users.lastName,
                   jobTitle: users.jobTitle,
                   avatarUrl: users.avatarUrl,
-                  role: users.role,
+                  level: users.level,
                 })
                 .from(users)
                 .where(inArray(users.id, reportIds))
@@ -520,7 +520,7 @@ export async function GET(request: Request) {
             lastName: u.lastName,
             jobTitle: u.jobTitle,
             avatarUrl: u.avatarUrl,
-            role: u.role,
+            level: u.level,
             avgScore: round2(personAvg),
             trend: round2(personTrend) ?? 0,
             lastSessionDate: lastSession?.completedAt?.toISOString() ?? null,
@@ -677,7 +677,7 @@ export async function GET(request: Request) {
             firstName: managerUser.firstName,
             lastName: managerUser.lastName,
             avatarUrl: managerUser.avatarUrl,
-            role: managerUser.role,
+            level: managerUser.level,
           },
           reportCount: reportIds.length,
           kpis,
@@ -720,7 +720,7 @@ function buildEmptyResponse(
     firstName: string;
     lastName: string;
     avatarUrl: string | null;
-    role: string;
+    level: string;
   },
 ): TeamHealthResponse {
   return {
@@ -729,7 +729,7 @@ function buildEmptyResponse(
       firstName: managerUser.firstName,
       lastName: managerUser.lastName,
       avatarUrl: managerUser.avatarUrl,
-      role: managerUser.role,
+      level: managerUser.level,
     },
     reportCount: 0,
     kpis: {

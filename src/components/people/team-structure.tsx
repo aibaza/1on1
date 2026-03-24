@@ -10,7 +10,7 @@ import type { UserRow } from "./people-table-columns";
 interface TeamStructureProps {
   users: UserRow[];
   currentUserId: string;
-  currentUserRole: string;
+  currentUserLevel: string;
 }
 
 interface ManagerNode {
@@ -25,7 +25,7 @@ function getInitials(first: string, last: string): string {
 function buildTree(
   users: UserRow[],
   currentUserId: string,
-  currentUserRole: string
+  currentUserLevel: string
 ): { roots: ManagerNode[]; unassigned: UserRow[] } {
   const activeUsers = users.filter((u) => u.status !== "deactivated");
   const byId = new Map(activeUsers.map((u) => [u.id, u]));
@@ -44,7 +44,7 @@ function buildTree(
   // For managers: show only their own tree node
   // For admins: show all trees
   let roots: ManagerNode[];
-  if (currentUserRole === "admin") {
+  if (currentUserLevel === "admin") {
     roots = allRoots;
   } else {
     roots = allRoots.filter((node) => node.user.id === currentUserId);
@@ -52,14 +52,14 @@ function buildTree(
 
   // Sort: admins first, then by name
   roots.sort((a, b) => {
-    if (a.user.role === "admin" && b.user.role !== "admin") return -1;
-    if (a.user.role !== "admin" && b.user.role === "admin") return 1;
+    if (a.user.level === "admin" && b.user.level !== "admin") return -1;
+    if (a.user.level !== "admin" && b.user.level === "admin") return 1;
     return `${a.user.lastName} ${a.user.firstName}`.localeCompare(`${b.user.lastName} ${b.user.firstName}`);
   });
 
   // Users without a manager who aren't a manager themselves (admin view only)
   let unassigned: UserRow[] = [];
-  if (currentUserRole === "admin") {
+  if (currentUserLevel === "admin") {
     const allManagedOrManagers = new Set([...managerIds, ...activeUsers.filter((u) => u.managerId).map((u) => u.id)]);
     unassigned = activeUsers.filter((u) => !allManagedOrManagers.has(u.id));
   }
@@ -71,7 +71,7 @@ function RoleBadge({ user }: { user: UserRow }) {
   const t = useTranslations("people.table");
   const label = user.jobTitle
     ? user.jobTitle
-    : user.role === "admin" ? t("admin") : user.role === "manager" ? t("manager") : t("member");
+    : user.level === "admin" ? t("admin") : user.level === "manager" ? t("manager") : t("member");
   return (
     <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
       {label}
@@ -79,10 +79,10 @@ function RoleBadge({ user }: { user: UserRow }) {
   );
 }
 
-export function TeamStructure({ users, currentUserId, currentUserRole }: TeamStructureProps) {
+export function TeamStructure({ users, currentUserId, currentUserLevel }: TeamStructureProps) {
   const t = useTranslations("people.teamStructure");
   const [expanded, setExpanded] = useState(true);
-  const { roots, unassigned } = buildTree(users, currentUserId, currentUserRole);
+  const { roots, unassigned } = buildTree(users, currentUserId, currentUserLevel);
 
   if (roots.length === 0) return null;
 
@@ -107,7 +107,7 @@ export function TeamStructure({ users, currentUserId, currentUserRole }: TeamStr
               <div className="absolute -left-[9px] top-4 w-4 h-4 rounded-full bg-primary border-4 border-background" />
               <div className="flex items-center gap-4 bg-card p-4 rounded-xl shadow-sm max-w-sm">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={getAvatarUrl(`${node.user.firstName} ${node.user.lastName}`, node.user.avatarUrl, null, node.user.role)} alt={`${node.user.firstName} ${node.user.lastName}`} />
+                  <AvatarImage src={getAvatarUrl(`${node.user.firstName} ${node.user.lastName}`, node.user.avatarUrl, null, node.user.level)} alt={`${node.user.firstName} ${node.user.lastName}`} />
                   <AvatarFallback className="text-xs">{getInitials(node.user.firstName, node.user.lastName)}</AvatarFallback>
                 </Avatar>
                 <div>
@@ -124,7 +124,7 @@ export function TeamStructure({ users, currentUserId, currentUserRole }: TeamStr
                       <div className="absolute -left-[5px] top-2.5 w-2 h-2 rounded-full bg-border" />
                       <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-card transition-colors">
                         <Avatar className="h-5 w-5">
-                          <AvatarImage src={getAvatarUrl(`${report.firstName} ${report.lastName}`, report.avatarUrl, null, report.role)} alt={`${report.firstName} ${report.lastName}`} />
+                          <AvatarImage src={getAvatarUrl(`${report.firstName} ${report.lastName}`, report.avatarUrl, null, report.level)} alt={`${report.firstName} ${report.lastName}`} />
                           <AvatarFallback className="text-[8px]">{getInitials(report.firstName, report.lastName)}</AvatarFallback>
                         </Avatar>
                         <span className="text-xs font-medium text-foreground">{report.firstName} {report.lastName}</span>
@@ -146,7 +146,7 @@ export function TeamStructure({ users, currentUserId, currentUserRole }: TeamStr
                 {unassigned.map((u) => (
                   <div key={u.id} className="flex items-center gap-2 bg-card px-3 py-2 rounded-lg">
                     <Avatar className="h-5 w-5">
-                      <AvatarImage src={getAvatarUrl(`${u.firstName} ${u.lastName}`, u.avatarUrl, null, u.role)} />
+                      <AvatarImage src={getAvatarUrl(`${u.firstName} ${u.lastName}`, u.avatarUrl, null, u.level)} />
                       <AvatarFallback className="text-[8px]">{getInitials(u.firstName, u.lastName)}</AvatarFallback>
                     </Avatar>
                     <span className="text-xs font-medium">{u.firstName} {u.lastName}</span>

@@ -1,93 +1,89 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { canManageTeams, requireRole } from "@/lib/auth/rbac";
+import { canManageTeams } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
-import { updateTeamSchema } from "@/lib/validations/team";
-import { teams, teamMembers, users } from "@/lib/db/schema";
+import { updateTeamNameSchema } from "@/lib/validations/role";
+import { users } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
+/**
+ * GET /api/teams/[managerId]
+ *
+ * Returns a derived team: the manager + their direct reports.
+ */
 export async function GET(request: Request, { params }: RouteContext) {
   const session = await auth();
   if (!session?.user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { id } = await params;
+  const { id: managerId } = await params;
 
   try {
     const result = await withTenantContext(
       session.user.tenantId,
       session.user.id,
       async (tx) => {
-        const [team] = await tx
+        // Verify manager exists
+        const [manager] = await tx
           .select({
-            id: teams.id,
-            name: teams.name,
-            description: teams.description,
-            managerId: teams.managerId,
-            createdAt: teams.createdAt,
-            updatedAt: teams.updatedAt,
-          })
-          .from(teams)
-          .where(
-            and(eq(teams.id, id), eq(teams.tenantId, session.user.tenantId))
-          );
-
-        if (!team) return null;
-
-        // Get manager info
-        let managerName: string | null = null;
-        let managerAvatarUrl: string | null = null;
-        if (team.managerId) {
-          const [manager] = await tx
-            .select({
-              firstName: users.firstName,
-              lastName: users.lastName,
-              avatarUrl: users.avatarUrl,
-            })
-            .from(users)
-            .where(eq(users.id, team.managerId));
-          if (manager) {
-            managerName = `${manager.firstName} ${manager.lastName}`;
-            managerAvatarUrl = manager.avatarUrl;
-          }
-        }
-
-        // Get members with user details
-        const members = await tx
-          .select({
-            userId: users.id,
+            id: users.id,
             firstName: users.firstName,
             lastName: users.lastName,
             email: users.email,
             avatarUrl: users.avatarUrl,
-            role: teamMembers.role,
-            joinedAt: teamMembers.joinedAt,
+            teamName: users.teamName,
           })
-          .from(teamMembers)
-          .innerJoin(users, eq(teamMembers.userId, users.id))
-          .where(eq(teamMembers.teamId, id));
+          .from(users)
+          .where(
+            and(
+              eq(users.id, managerId),
+              eq(users.tenantId, session.user.tenantId),
+            )
+          );
+
+        if (!manager) return null;
+
+        // Get direct reports
+        const members = await tx
+          .select({
+            id: users.id,
+            firstName: users.firstName,
+            lastName: users.lastName,
+            email: users.email,
+            avatarUrl: users.avatarUrl,
+            jobTitle: users.jobTitle,
+            level: users.level,
+            isActive: users.isActive,
+          })
+          .from(users)
+          .where(
+            and(
+              eq(users.managerId, managerId),
+              eq(users.tenantId, session.user.tenantId),
+              eq(users.isActive, true),
+            )
+          );
+
+        const defaultName = `${manager.firstName} ${manager.lastName}`;
 
         return {
-          id: team.id,
-          name: team.name,
-          description: team.description,
-          managerId: team.managerId,
-          managerName,
-          managerAvatarUrl,
-          createdAt: team.createdAt.toISOString(),
-          updatedAt: team.updatedAt.toISOString(),
+          managerId: manager.id,
+          teamName: manager.teamName ?? defaultName,
+          managerName: defaultName,
+          managerEmail: manager.email,
+          managerAvatarUrl: manager.avatarUrl,
           members: members.map((m) => ({
-            userId: m.userId,
+            id: m.id,
             firstName: m.firstName,
             lastName: m.lastName,
             email: m.email,
             avatarUrl: m.avatarUrl,
-            role: m.role,
-            joinedAt: m.joinedAt.toISOString(),
+            jobTitle: m.jobTitle,
+            level: m.level,
           })),
         };
       }
@@ -107,17 +103,27 @@ export async function GET(request: Request, { params }: RouteContext) {
   }
 }
 
+/**
+ * PATCH /api/teams/[managerId]
+ *
+ * Update the team name for a manager.
+ */
 export async function PATCH(request: Request, { params }: RouteContext) {
   const session = await auth();
   if (!session?.user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!canManageTeams(session.user.role)) {
+  if (!canManageTeams(session.user.level)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { id } = await params;
+  const { id: managerId } = await params;
+
+  // Managers can only update their own team name; admins can update any
+  if (session.user.level === "manager" && session.user.id !== managerId) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   let body: unknown;
   try {
@@ -127,131 +133,43 @@ export async function PATCH(request: Request, { params }: RouteContext) {
   }
 
   try {
-    const data = updateTeamSchema.parse(body);
+    const data = updateTeamNameSchema.parse(body);
 
     const result = await withTenantContext(
       session.user.tenantId,
       session.user.id,
       async (tx) => {
-        const [team] = await tx
-          .select({
-            id: teams.id,
-            name: teams.name,
-            managerId: teams.managerId,
-          })
-          .from(teams)
+        const [manager] = await tx
+          .select({ id: users.id, teamName: users.teamName })
+          .from(users)
           .where(
-            and(eq(teams.id, id), eq(teams.tenantId, session.user.tenantId))
+            and(
+              eq(users.id, managerId),
+              eq(users.tenantId, session.user.tenantId),
+            )
           );
 
-        if (!team) {
-          return { error: "Team not found", status: 404 };
-        }
-
-        const updatePayload: Record<string, unknown> = {
-          updatedAt: new Date(),
-        };
-
-        if (data.name !== undefined) updatePayload.name = data.name;
-        if (data.description !== undefined)
-          updatePayload.description = data.description;
-
-        // Handle manager/lead change
-        if (data.managerId !== undefined && data.managerId !== team.managerId) {
-          if (data.managerId) {
-            // Verify new manager exists in tenant
-            const [newManager] = await tx
-              .select({ id: users.id })
-              .from(users)
-              .where(and(eq(users.id, data.managerId), eq(users.tenantId, session.user.tenantId)));
-
-            if (!newManager) {
-              return { error: "Manager not found", status: 404 };
-            }
-          }
-
-          // Update old lead's teamMember role to "member"
-          if (team.managerId) {
-            await tx
-              .update(teamMembers)
-              .set({ role: "member" })
-              .where(
-                and(
-                  eq(teamMembers.teamId, id),
-                  eq(teamMembers.userId, team.managerId)
-                )
-              );
-          }
-
-          // Add or update new lead's teamMember role
-          if (data.managerId) {
-            // Check if already a member
-            const [existingMember] = await tx
-              .select({ id: teamMembers.id })
-              .from(teamMembers)
-              .where(
-                and(
-                  eq(teamMembers.teamId, id),
-                  eq(teamMembers.userId, data.managerId)
-                )
-              );
-
-            if (existingMember) {
-              await tx
-                .update(teamMembers)
-                .set({ role: "lead" })
-                .where(
-                  and(
-                    eq(teamMembers.teamId, id),
-                    eq(teamMembers.userId, data.managerId)
-                  )
-                );
-            } else {
-              await tx.insert(teamMembers).values({
-                teamId: id,
-                userId: data.managerId,
-                role: "lead",
-              });
-            }
-          }
-
-          updatePayload.managerId = data.managerId;
-
-          await logAuditEvent(tx, {
-            tenantId: session.user.tenantId,
-            actorId: session.user.id,
-            action: "team_lead_changed",
-            resourceType: "team",
-            resourceId: id,
-            metadata: {
-              previousLeadId: team.managerId,
-              newLeadId: data.managerId,
-            },
-          });
+        if (!manager) {
+          return { error: "Manager not found", status: 404 };
         }
 
         const [updated] = await tx
-          .update(teams)
-          .set(updatePayload)
-          .where(eq(teams.id, id))
-          .returning();
+          .update(users)
+          .set({ teamName: data.teamName, updatedAt: new Date() })
+          .where(eq(users.id, managerId))
+          .returning({ id: users.id, teamName: users.teamName });
 
-        // Log team_updated if name or description changed
-        if (data.name !== undefined || data.description !== undefined) {
-          await logAuditEvent(tx, {
-            tenantId: session.user.tenantId,
-            actorId: session.user.id,
-            action: "team_updated",
-            resourceType: "team",
-            resourceId: id,
-            metadata: {
-              ...(data.name !== undefined && { newName: data.name }),
-              ...(data.description !== undefined && {
-                newDescription: data.description,
-              }),
-            },
-          });
-        }
+        await logAuditEvent(tx, {
+          tenantId: session.user.tenantId,
+          actorId: session.user.id,
+          action: "team_name_updated",
+          resourceType: "user",
+          resourceId: managerId,
+          metadata: {
+            previousName: manager.teamName,
+            newName: data.teamName,
+          },
+        });
 
         return { data: updated };
       }
@@ -272,74 +190,9 @@ export async function PATCH(request: Request, { params }: RouteContext) {
         { status: 400 }
       );
     }
-    console.error("Failed to update team:", error);
+    console.error("Failed to update team name:", error);
     return NextResponse.json(
-      { error: "Failed to update team" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(request: Request, { params }: RouteContext) {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
-
-  const roleError = requireRole(session.user.role, "admin");
-  if (roleError) return roleError;
-
-  const { id } = await params;
-
-  try {
-    const result = await withTenantContext(
-      session.user.tenantId,
-      session.user.id,
-      async (tx) => {
-        const [team] = await tx
-          .select({ id: teams.id, name: teams.name })
-          .from(teams)
-          .where(
-            and(eq(teams.id, id), eq(teams.tenantId, session.user.tenantId))
-          );
-
-        if (!team) {
-          return { error: "Team not found", status: 404 };
-        }
-
-        // Delete all team members first
-        await tx
-          .delete(teamMembers)
-          .where(eq(teamMembers.teamId, id));
-
-        // Delete the team
-        await tx.delete(teams).where(eq(teams.id, id));
-
-        await logAuditEvent(tx, {
-          tenantId: session.user.tenantId,
-          actorId: session.user.id,
-          action: "team_deleted",
-          resourceType: "team",
-          resourceId: id,
-          metadata: { teamName: team.name },
-        });
-
-        return { success: true };
-      }
-    );
-
-    if ("error" in result) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: result.status }
-      );
-    }
-
-    return NextResponse.json(result);
-  } catch (error) {
-    console.error("Failed to delete team:", error);
-    return NextResponse.json(
-      { error: "Failed to delete team" },
+      { error: "Failed to update team name" },
       { status: 500 }
     );
   }

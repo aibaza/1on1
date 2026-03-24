@@ -63,13 +63,13 @@ interface TemplateData {
 
 interface TemplateListProps {
   initialTemplates: TemplateData[];
-  currentUserRole: string;
+  currentUserLevel: string;
   contentLanguage: string;
 }
 
 export function TemplateList({
   initialTemplates,
-  currentUserRole,
+  currentUserLevel,
   contentLanguage,
 }: TemplateListProps) {
   const t = useTranslations("templates");
@@ -77,7 +77,7 @@ export function TemplateList({
   const [createOpen, setCreateOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const canCreate =
-    currentUserRole === "admin" || currentUserRole === "manager";
+    currentUserLevel === "admin" || currentUserLevel === "manager";
 
   const queryClient = useQueryClient();
 
@@ -147,7 +147,7 @@ export function TemplateList({
           <>
             {/* DESKTOP layout: full button row (hidden on mobile) */}
             <div className="hidden md:flex items-center gap-2">
-              {canManageTemplates(currentUserRole) && (
+              {canManageTemplates(currentUserLevel) && (
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/templates/ai-editor">
                     <Wand2 className="mr-2 h-4 w-4" />
@@ -156,7 +156,7 @@ export function TemplateList({
                 </Button>
               )}
               <ImportDialog
-                currentUserRole={currentUserRole}
+                currentUserLevel={currentUserLevel}
                 contentLanguage={contentLanguage}
                 onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ["templates"] })}
               />
@@ -180,7 +180,7 @@ export function TemplateList({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  {canManageTemplates(currentUserRole) && (
+                  {canManageTemplates(currentUserLevel) && (
                     <DropdownMenuItem asChild>
                       <Link href="/templates/ai-editor">
                         <Wand2 className="mr-2 h-4 w-4" />
@@ -196,7 +196,7 @@ export function TemplateList({
               </DropdownMenu>
               {/* Controlled ImportDialog opened from mobile overflow menu */}
               <ImportDialog
-                currentUserRole={currentUserRole}
+                currentUserLevel={currentUserLevel}
                 contentLanguage={contentLanguage}
                 onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ["templates"] })}
                 open={importOpen}

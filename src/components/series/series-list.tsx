@@ -29,7 +29,7 @@ interface Series {
     firstName: string;
     lastName: string;
     avatarUrl: string | null;
-    role: string;
+    level: string;
   };
   latestSession: {
     id: string;
@@ -47,7 +47,7 @@ interface Series {
 interface SeriesListProps {
   initialSeries: Series[];
   currentUserId: string;
-  userRole: string;
+  userLevel: string;
 }
 
 function SeriesGrid({
@@ -164,7 +164,7 @@ function ManagerSectionView({
   );
 }
 
-export function SeriesList({ initialSeries, currentUserId, userRole }: SeriesListProps) {
+export function SeriesList({ initialSeries, currentUserId, userLevel }: SeriesListProps) {
   const t = useTranslations("sessions");
   const [archivedOpen, setArchivedOpen] = useState(false);
 
@@ -203,13 +203,13 @@ export function SeriesList({ initialSeries, currentUserId, userRole }: SeriesLis
     <div className="space-y-6">
       {activeSeries.length > 0 && (
         <>
-          {userRole === "admin" ? (
+          {userLevel === "admin" ? (
             <AdminGroupedView
               activeSeries={activeSeries}
               currentUserId={currentUserId}
               t={t}
             />
-          ) : userRole === "manager" ? (
+          ) : userLevel === "manager" ? (
             <ManagerSectionView
               activeSeries={activeSeries}
               currentUserId={currentUserId}

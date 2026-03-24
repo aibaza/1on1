@@ -57,7 +57,7 @@ export async function POST(request: Request, { params }: RouteContext) {
           .where(eq(meetingSeries.id, sessionRecord.seriesId));
 
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           !isSeriesParticipant(session.user.id, series)
         ) {
           return { error: "Forbidden", status: 403 };

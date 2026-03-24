@@ -7,14 +7,14 @@ export default async function NewTemplatePage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  if (!canManageTemplates(session.user.role)) {
+  if (!canManageTemplates(session.user.level)) {
     redirect("/templates");
   }
 
   return (
     <TemplateEditor
       template={null}
-      userRole={session.user.role}
+      userLevel={session.user.level}
     />
   );
 }

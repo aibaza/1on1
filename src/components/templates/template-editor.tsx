@@ -194,17 +194,17 @@ function toSectionData(s: ServerSectionData): SectionData {
 
 interface TemplateEditorProps {
   template: TemplateData | null;
-  userRole: string;
+  userLevel: string;
 }
 
-export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
+export function TemplateEditor({ template, userLevel }: TemplateEditorProps) {
   const t = useTranslations("templates");
   const { showApiError } = useApiErrorToast();
   const router = useRouter();
   const queryClient = useQueryClient();
   const isCreateMode = !template;
-  const isReadOnly = userRole === "member";
-  const isAdminUser = userRole === "admin";
+  const isReadOnly = userLevel === "member";
+  const isAdminUser = userLevel === "admin";
   const canEdit = !isReadOnly;
 
   // Template metadata form
@@ -581,7 +581,7 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
           <>
             {/* DESKTOP layout: full button row (hidden on mobile) */}
             <div className="hidden md:flex items-center gap-2">
-              {canManageTemplates(userRole) && (
+              {canManageTemplates(userLevel) && (
                 <Button variant="outline" size="sm" asChild>
                   <Link href={`/templates/${template!.id}/ai-editor`}>
                     <Wand2 className="mr-2 h-4 w-4" />
@@ -589,7 +589,7 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
                   </Link>
                 </Button>
               )}
-              {canManageTemplates(userRole) && (
+              {canManageTemplates(userLevel) && (
                 <ExportButton templateId={template!.id} variant="full" />
               )}
               <Button
@@ -676,7 +676,7 @@ export function TemplateEditor({ template, userRole }: TemplateEditorProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  {canManageTemplates(userRole) && (
+                  {canManageTemplates(userLevel) && (
                     <DropdownMenuItem asChild>
                       <Link href={`/templates/${template!.id}/ai-editor`}>
                         <Wand2 className="mr-2 h-4 w-4" />

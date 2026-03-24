@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       session.user.id,
       async (tx) => {
         // First, find all series the user participates in (or all if admin)
-        const userIsAdmin = isAdmin(session.user.role);
+        const userIsAdmin = isAdmin(session.user.level);
 
         let seriesFilter;
         if (userIsAdmin) {

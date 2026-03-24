@@ -12,7 +12,7 @@ export default async function AuditLogPage() {
     redirect("/login");
   }
 
-  if (session.user.role !== "admin") {
+  if (session.user.level !== "admin") {
     redirect("/overview");
   }
 

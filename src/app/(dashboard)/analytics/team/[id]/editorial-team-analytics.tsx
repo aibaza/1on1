@@ -32,7 +32,7 @@ interface TeamHealthResponse {
     firstName: string;
     lastName: string;
     avatarUrl: string | null;
-    role: string;
+    level: string;
   };
   reportCount: number;
   kpis: {
@@ -65,7 +65,7 @@ interface TeamHealthResponse {
     lastName: string;
     jobTitle: string | null;
     avatarUrl: string | null;
-    role: string;
+    level: string;
     avgScore: number | null;
     trend: number;
     lastSessionDate: string | null;
@@ -323,16 +323,16 @@ export function EditorialTeamAnalytics({
                 managerName,
                 data.manager.avatarUrl,
                 null,
-                data.manager.role,
+                data.manager.level,
               )}
               alt={managerName}
               className="w-14 h-14 rounded-full object-cover"
             />
             <div>
               <p className="font-bold text-foreground">{managerName}</p>
-              {data.manager.role && (
+              {data.manager.level && (
                 <span className="inline-block px-2 py-0.5 bg-[var(--editorial-secondary-container,var(--secondary))] text-[var(--editorial-on-secondary-container,var(--secondary-foreground))] text-xs font-bold rounded-lg uppercase tracking-wider">
-                  {data.manager.role}
+                  {data.manager.level}
                 </span>
               )}
             </div>
@@ -588,7 +588,7 @@ export function EditorialTeamAnalytics({
                             memberName,
                             member.avatarUrl,
                             null,
-                            member.role,
+                            member.level,
                           )}
                           alt={memberName}
                           className="w-10 h-10 rounded-full object-cover"

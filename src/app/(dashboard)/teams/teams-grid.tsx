@@ -1,41 +1,27 @@
 "use client";
 
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { Plus, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Users } from "lucide-react";
 import { TeamCard } from "@/components/people/team-card";
-import { TeamCreateDialog } from "@/components/people/team-create-dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 
-interface TeamData {
-  id: string;
-  name: string;
-  description: string | null;
-  managerId: string | null;
-  managerName: string | null;
+interface DerivedTeam {
+  managerId: string;
+  teamName: string;
+  managerName: string;
   managerAvatarUrl: string | null;
   memberCount: number;
-  createdAt: string;
 }
 
 interface TeamsGridProps {
-  initialTeams: TeamData[];
-  users: { id: string; firstName: string; lastName: string }[];
-  currentUserRole: string;
+  initialTeams: DerivedTeam[];
 }
 
-export function TeamsGrid({
-  initialTeams,
-  users,
-  currentUserRole,
-}: TeamsGridProps) {
+export function TeamsGrid({ initialTeams }: TeamsGridProps) {
   const t = useTranslations("teams");
-  const [createOpen, setCreateOpen] = useState(false);
-  const canCreate = currentUserRole === "admin" || currentUserRole === "manager";
 
-  const { data: teamsList, refetch } = useQuery<TeamData[]>({
+  const { data: teamsList } = useQuery<DerivedTeam[]>({
     queryKey: ["teams"],
     queryFn: async () => {
       const res = await fetch("/api/teams");
@@ -45,47 +31,21 @@ export function TeamsGrid({
     initialData: initialTeams,
   });
 
+  if (teamsList.length === 0) {
+    return (
+      <EmptyState
+        icon={Users}
+        heading={t("empty")}
+        description={t("emptyDesc")}
+      />
+    );
+  }
+
   return (
-    <div className="space-y-4">
-      {canCreate && (
-        <div className="flex justify-end">
-          <Button onClick={() => setCreateOpen(true)} size="sm">
-            <Plus className="mr-2 h-4 w-4" />
-            {t("createTeam")}
-          </Button>
-        </div>
-      )}
-
-      {teamsList.length === 0 ? (
-        <EmptyState
-          icon={Users}
-          heading={t("empty")}
-          description={t("emptyDesc")}
-          action={
-            canCreate ? (
-              <Button size="sm" onClick={() => setCreateOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                {t("createTeam")}
-              </Button>
-            ) : undefined
-          }
-        />
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {teamsList.map((team) => (
-            <TeamCard key={team.id} team={team} />
-          ))}
-        </div>
-      )}
-
-      {canCreate && (
-        <TeamCreateDialog
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-          onSuccess={() => refetch()}
-          users={users}
-        />
-      )}
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {teamsList.map((team) => (
+        <TeamCard key={team.managerId} team={team} />
+      ))}
     </div>
   );
 }

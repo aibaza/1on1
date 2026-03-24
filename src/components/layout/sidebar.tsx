@@ -81,8 +81,8 @@ function getSettingsNavItems(t: ReturnType<typeof useTranslations<"navigation">>
 export function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const userRole = session?.user?.role ?? "member";
-  const isAdmin = userRole === "admin";
+  const userLevel = session?.user?.level ?? "member";
+  const isAdmin = userLevel === "admin";
   const t = useTranslations("navigation");
 
   const mainNavItems = getMainNavItems(t);

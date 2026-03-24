@@ -10,10 +10,9 @@ import { Users } from "lucide-react";
 
 interface TeamCardProps {
   team: {
-    id: string;
-    name: string;
-    description: string | null;
-    managerName: string | null;
+    managerId: string;
+    teamName: string;
+    managerName: string;
     managerAvatarUrl: string | null;
     memberCount: number;
   };
@@ -23,39 +22,32 @@ export function TeamCard({ team }: TeamCardProps) {
   const t = useTranslations("teams");
 
   const initials = team.managerName
-    ? team.managerName
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "TL";
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   return (
-    <Link href={`/teams/${team.id}`}>
+    <Link href={`/teams/${team.managerId}`}>
       <Card className="transition-all duration-200 hover:bg-accent/50 hover:shadow-md cursor-pointer h-full dark:border-border">
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-semibold leading-tight">
-            {team.name}
+            {t("teamPrefix")} {team.teamName}
           </CardTitle>
-          {team.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {team.description}
-            </p>
-          )}
         </CardHeader>
         <CardContent className="pt-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Avatar className="h-6 w-6">
                 <AvatarImage
-                  src={getAvatarUrl(team.managerName ?? "", team.managerAvatarUrl)}
-                  alt={team.managerName ?? t("noLead")}
+                  src={getAvatarUrl(team.managerName, team.managerAvatarUrl)}
+                  alt={team.managerName}
                 />
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
               </Avatar>
               <span className="text-sm text-muted-foreground">
-                {team.managerName ?? t("noLead")}
+                {team.managerName}
               </span>
             </div>
             <Badge variant="secondary" className="gap-1">

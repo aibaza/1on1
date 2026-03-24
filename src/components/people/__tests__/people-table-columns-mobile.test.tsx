@@ -9,7 +9,7 @@ declare module "@tanstack/react-table" {
 
 const t = (key: string) => key;
 const columns = createColumns({
-  currentUserRole: "admin",
+  currentUserLevel: "admin",
   currentUserId: "u1",
   allUsers: [],
   t: t as ReturnType<typeof import("next-intl").useTranslations<"people">>,

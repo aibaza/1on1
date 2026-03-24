@@ -80,7 +80,7 @@ export async function GET(
 
         // Authorization: user must be participant or admin
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           !isSeriesParticipant(session.user.id, series)
         ) {
           return { error: "FORBIDDEN" as const };

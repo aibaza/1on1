@@ -42,10 +42,10 @@ interface NavItem {
   minRole?: "admin" | "manager";
 }
 
-function canSeeItem(role: string, item: NavItem): boolean {
+function canSeeItem(level: string, item: NavItem): boolean {
   if (!item.minRole) return true;
-  if (item.minRole === "admin") return role === "admin";
-  if (item.minRole === "manager") return role === "admin" || role === "manager";
+  if (item.minRole === "admin") return level === "admin";
+  if (item.minRole === "manager") return level === "admin" || level === "manager";
   return true;
 }
 
@@ -103,7 +103,7 @@ export function SideNav() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const user = session?.user;
-  const userRole = user?.role ?? "member";
+  const userLevel = user?.level ?? "member";
   const t = useTranslations("navigation");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -149,8 +149,8 @@ export function SideNav() {
     { label: t("company"), href: "/settings/company", icon: Settings, minRole: "admin" },
   ];
 
-  const visibleMain = mainNavItems.filter((item) => canSeeItem(userRole, item));
-  const visibleBottom = bottomNavItems.filter((item) => canSeeItem(userRole, item));
+  const visibleMain = mainNavItems.filter((item) => canSeeItem(userLevel, item));
+  const visibleBottom = bottomNavItems.filter((item) => canSeeItem(userLevel, item));
 
   const sidebarWidth = collapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED;
 

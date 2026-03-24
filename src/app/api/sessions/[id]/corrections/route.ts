@@ -99,7 +99,7 @@ export async function POST(
         const series = seriesRows[0];
 
         // d. RBAC check: admin can correct any, manager can only correct their own series
-        if (!canCorrectSession(session.user.id, session.user.role, series)) {
+        if (!canCorrectSession(session.user.id, session.user.level, series)) {
           return { error: "FORBIDDEN" as const };
         }
 
@@ -258,7 +258,7 @@ export async function POST(
         adminDb
           .select({ id: users.id, email: users.email, firstName: users.firstName, lastName: users.lastName, isActive: users.isActive })
           .from(users)
-          .where(and(eq(users.tenantId, tenantId), eq(users.role, "admin"), eq(users.isActive, true))),
+          .where(and(eq(users.tenantId, tenantId), eq(users.level, "admin"), eq(users.isActive, true))),
       ]);
 
       if (!reportRow[0] || !managerRow[0]) {

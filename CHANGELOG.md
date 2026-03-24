@@ -6,7 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Renamed "role" (admin/manager/member) to "level" across entire codebase — DB schema, auth system (JWT/session), RBAC functions, API routes (~55 files), UI components (~30 files), i18n translations (EN/RO)
+- Teams are now derived from manager assignments (users.managerId) instead of explicit team/team_member tables — a manager's direct reports automatically form their team
+- Team names customizable per manager via new `teamName` field on users table (unique per tenant)
+- Analytics queries use managerId instead of teamId for team-level aggregations
+
 ### Added
+- Job roles system: new `job_role` and `user_job_role` tables for job function roles (developer, tester, etc.) — many-to-many with users
+- Job role CRUD API routes: GET/POST `/api/roles`, GET/PATCH/DELETE `/api/roles/[id]`
+- Team name edit UI on team detail pages (manager or admin can customize)
+- Database migration `0023_level_roles_teams.sql` handling all schema changes with data backfill
+
+### Removed
+- Explicit `team` and `team_member` database tables (replaced by derived teams)
+- `teamMemberRoleEnum` (lead/member) — no longer needed
+- Team create/delete UI dialogs and member picker components
+- Team member add/remove API routes
+
+
 - Editorial sessions page: complete feature parity with classic — sentiment-based left border, agenda/talking points button with badge count, manager/report relationship badges, relative date formatting (Today/Tomorrow/in X days), schedule display (cadence + day + time), in-progress session status + template name, half-star rating support, tooltips on all interactive elements, AgendaSheet integration
 - Editorial wizard redesign: glassmorphic top bar, editorial step sidebar (bg-sidebar, rounded-lg, numbered indicators with success/primary colors), question cards with numbered circles and editorial borders, eyebrow category label, editorial divider between questions and discussion tools, gradient next button, editorial mobile carousel with gradient progress bar
 - Editorial settings page: section cards with icons (Building2, Clock, Globe, Palette, Brain), editorial inputs (borderless, rounded-xl), pill-style cadence selector, visual color theme picker, gradient save button, toast feedback

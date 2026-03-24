@@ -1,15 +1,11 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import type { TransactionClient } from "@/lib/db/tenant-context";
-import { isAdmin } from "@/lib/auth/rbac";
 import {
   sessions,
   meetingSeries,
   actionItems,
   users,
-  teams,
-  teamMembers,
 } from "@/lib/db/schema";
 import { eq, and, or, sql, desc, gte, lt, inArray } from "drizzle-orm";
 
@@ -32,7 +28,7 @@ interface PersonSummary {
   lastName: string;
   jobTitle: string | null;
   avatarUrl: string | null;
-  role: string;
+  level: string;
   avgScore: number | null;
   trend: number;
   lastSessionDate: string | null;
@@ -53,7 +49,7 @@ interface TeamSummary {
 }
 
 interface HealthResponse {
-  role: "admin" | "manager" | "member";
+  level: "admin" | "manager" | "member";
   kpis: {
     avgScore: number | null;
     scoreTrend: number;
@@ -119,7 +115,7 @@ export async function GET() {
   }
 
   const { user } = session;
-  const role = user.role as "admin" | "manager" | "member";
+  const level = user.level as "admin" | "manager" | "member";
 
   try {
     const result = await withTenantContext(
@@ -136,9 +132,9 @@ export async function GET() {
         // 1. Get visible series IDs (role-scoped)
         // ---------------------------------------------------------------
         const seriesFilter =
-          role === "admin"
+          level === "admin"
             ? eq(meetingSeries.tenantId, user.tenantId)
-            : role === "manager"
+            : level === "manager"
               ? and(
                   eq(meetingSeries.tenantId, user.tenantId),
                   eq(meetingSeries.managerId, user.id),
@@ -163,7 +159,7 @@ export async function GET() {
 
         // Early return for empty data
         if (seriesIds.length === 0) {
-          return buildEmptyResponse(role);
+          return buildEmptyResponse(level);
         }
 
         // ---------------------------------------------------------------
@@ -314,7 +310,7 @@ export async function GET() {
         const people: PersonSummary[] = [];
         const teamSummaries: TeamSummary[] = [];
 
-        if (role === "admin" || role === "manager") {
+        if (level === "admin" || level === "manager") {
           // Unique report user IDs from visible series
           const reportIds = [
             ...new Set(visibleSeries.map((s) => s.reportId)),
@@ -330,7 +326,7 @@ export async function GET() {
                     lastName: users.lastName,
                     jobTitle: users.jobTitle,
                     avatarUrl: users.avatarUrl,
-                    role: users.role,
+                    level: users.level,
                   })
                   .from(users)
                   .where(inArray(users.id, reportIds))
@@ -514,7 +510,7 @@ export async function GET() {
               lastName: u.lastName,
               jobTitle: u.jobTitle,
               avatarUrl: u.avatarUrl,
-              role: u.role,
+              level: u.level,
               avgScore: round2(personAvg),
               trend: round2(personTrend) ?? 0,
               lastSessionDate: lastSession?.completedAt?.toISOString() ?? null,
@@ -616,130 +612,131 @@ export async function GET() {
           alerts.splice(7);
 
           // ---------------------------------------------------------------
-          // 5. Team summaries (admin + manager)
+          // 5. Team summaries (admin + manager) — derived from managerId
           // ---------------------------------------------------------------
-          if (role === "admin" || role === "manager") {
-            const allTeams = await tx
-              .select({
-                id: teams.id,
-                name: teams.name,
-                managerId: teams.managerId,
-              })
-              .from(teams)
-              .where(eq(teams.tenantId, user.tenantId));
+          if (level === "admin" || level === "manager") {
+            // Group reports by their managerId (from meeting_series)
+            const managerIds = [
+              ...new Set(visibleSeries.map((s) => s.managerId)),
+            ];
 
-            if (allTeams.length > 0) {
-              const teamIds = allTeams.map((t) => t.id);
-              const allTeamMembers = await tx
-                .select({
-                  teamId: teamMembers.teamId,
-                  userId: teamMembers.userId,
-                })
-                .from(teamMembers)
-                .where(inArray(teamMembers.teamId, teamIds));
+            // Fetch manager user info
+            const managerUsers =
+              managerIds.length > 0
+                ? await tx
+                    .select({
+                      id: users.id,
+                      firstName: users.firstName,
+                      lastName: users.lastName,
+                    })
+                    .from(users)
+                    .where(inArray(users.id, managerIds))
+                : [];
+            const managerMap = new Map(managerUsers.map((m) => [m.id, m]));
 
-              const teamMemberMap = new Map<
-                string,
-                string[]
-              >();
-              for (const tm of allTeamMembers) {
-                const list = teamMemberMap.get(tm.teamId) ?? [];
-                list.push(tm.userId);
-                teamMemberMap.set(tm.teamId, list);
+            // Build managerId -> reportIds mapping from series
+            const managerReportMap = new Map<string, Set<string>>();
+            for (const vs of visibleSeries) {
+              const set = managerReportMap.get(vs.managerId) ?? new Set();
+              set.add(vs.reportId);
+              managerReportMap.set(vs.managerId, set);
+            }
+
+            // Precompute: per-person avg scores for current and prev period
+            const personCurrentAvg = new Map<string, number>();
+            const personPrevAvg = new Map<string, number>();
+            for (const p of people) {
+              if (p.avgScore !== null) personCurrentAvg.set(p.userId, p.avgScore);
+              if (p.avgScore !== null && p.trend !== 0) {
+                personPrevAvg.set(p.userId, p.avgScore - p.trend);
               }
+            }
 
-              // Precompute: per-person avg scores for current and prev period
-              const personCurrentAvg = new Map<string, number>();
-              const personPrevAvg = new Map<string, number>();
-              for (const p of people) {
-                if (p.avgScore !== null) personCurrentAvg.set(p.userId, p.avgScore);
-                // Reconstruct prev avg from trend
-                if (p.avgScore !== null && p.trend !== 0) {
-                  personPrevAvg.set(p.userId, p.avgScore - p.trend);
-                }
-              }
+            // Build alerts set for counting
+            const alertsByUser = new Map<string, number>();
+            for (const a of alerts) {
+              alertsByUser.set(
+                a.userId,
+                (alertsByUser.get(a.userId) ?? 0) + 1,
+              );
+            }
 
-              // Build alerts set for counting
-              const alertsByUser = new Map<string, number>();
-              for (const a of alerts) {
-                alertsByUser.set(
-                  a.userId,
-                  (alertsByUser.get(a.userId) ?? 0) + 1,
-                );
-              }
+            for (const mgrId of managerIds) {
+              const mgr = managerMap.get(mgrId);
+              const memberIds = [...(managerReportMap.get(mgrId) ?? [])];
+              const teamName = mgr
+                ? `${mgr.firstName} ${mgr.lastName}'s Team`
+                : "Unknown Team";
 
-              for (const team of allTeams) {
-                const memberIds = teamMemberMap.get(team.id) ?? [];
-                if (memberIds.length === 0) {
-                  teamSummaries.push({
-                    id: team.id,
-                    name: team.name,
-                    managerId: team.managerId,
-                    avgScore: null,
-                    trend: 0,
-                    memberCount: 0,
-                    alertCount: 0,
-                    completionRate: 0,
-                  });
-                  continue;
-                }
-
-                const memberScores = memberIds
-                  .map((id) => personCurrentAvg.get(id))
-                  .filter((v): v is number => v !== undefined);
-                const memberPrevScores = memberIds
-                  .map((id) => personPrevAvg.get(id))
-                  .filter((v): v is number => v !== undefined);
-
-                const teamAvg =
-                  memberScores.length > 0
-                    ? memberScores.reduce((a, b) => a + b, 0) /
-                      memberScores.length
-                    : null;
-                const teamPrevAvg =
-                  memberPrevScores.length > 0
-                    ? memberPrevScores.reduce((a, b) => a + b, 0) /
-                      memberPrevScores.length
-                    : null;
-                const teamTrend =
-                  teamAvg !== null && teamPrevAvg !== null
-                    ? teamAvg - teamPrevAvg
-                    : 0;
-
-                const teamAlertCount = memberIds.reduce(
-                  (sum, id) => sum + (alertsByUser.get(id) ?? 0),
-                  0,
-                );
-
-                // Team completion rate: sessions from series where reportId is a team member
-                const teamSeriesIds = visibleSeries
-                  .filter((s) => memberIds.includes(s.reportId))
-                  .map((s) => s.id);
-                const teamCurrentSessions = currentPeriodSessions.filter((s) =>
-                  teamSeriesIds.includes(s.seriesId),
-                );
-                const teamCompleted = teamCurrentSessions.filter(
-                  (s) => s.status === "completed",
-                );
-                const teamCountable = teamCurrentSessions.filter((s) =>
-                  (countableStatuses as readonly string[]).includes(s.status),
-                );
-                const teamCompletionRate =
-                  teamCountable.length > 0
-                    ? Math.round((teamCompleted.length / teamCountable.length) * 100)
-                    : 0;
-
+              if (memberIds.length === 0) {
                 teamSummaries.push({
-                  id: team.id,
-                  name: team.name,
-                  managerId: team.managerId,
-                  avgScore: round2(teamAvg),
-                  trend: round2(teamTrend) ?? 0,
-                  memberCount: memberIds.length,
-                  alertCount: teamAlertCount,
-                  completionRate: round2(teamCompletionRate) ?? 0,
+                  id: mgrId,
+                  name: teamName,
+                  managerId: mgrId,
+                  avgScore: null,
+                  trend: 0,
+                  memberCount: 0,
+                  alertCount: 0,
+                  completionRate: 0,
                 });
+                continue;
               }
+
+              const memberScores = memberIds
+                .map((id) => personCurrentAvg.get(id))
+                .filter((v): v is number => v !== undefined);
+              const memberPrevScores = memberIds
+                .map((id) => personPrevAvg.get(id))
+                .filter((v): v is number => v !== undefined);
+
+              const teamAvg =
+                memberScores.length > 0
+                  ? memberScores.reduce((a, b) => a + b, 0) /
+                    memberScores.length
+                  : null;
+              const teamPrevAvg =
+                memberPrevScores.length > 0
+                  ? memberPrevScores.reduce((a, b) => a + b, 0) /
+                    memberPrevScores.length
+                  : null;
+              const teamTrend =
+                teamAvg !== null && teamPrevAvg !== null
+                  ? teamAvg - teamPrevAvg
+                  : 0;
+
+              const teamAlertCount = memberIds.reduce(
+                (sum, id) => sum + (alertsByUser.get(id) ?? 0),
+                0,
+              );
+
+              // Team completion rate: sessions from series where reportId is a team member
+              const teamSeriesIds = visibleSeries
+                .filter((s) => memberIds.includes(s.reportId))
+                .map((s) => s.id);
+              const teamCurrentSessions = currentPeriodSessions.filter((s) =>
+                teamSeriesIds.includes(s.seriesId),
+              );
+              const teamCompleted = teamCurrentSessions.filter(
+                (s) => s.status === "completed",
+              );
+              const teamCountable = teamCurrentSessions.filter((s) =>
+                (countableStatuses as readonly string[]).includes(s.status),
+              );
+              const teamCompletionRate =
+                teamCountable.length > 0
+                  ? Math.round((teamCompleted.length / teamCountable.length) * 100)
+                  : 0;
+
+              teamSummaries.push({
+                id: mgrId,
+                name: teamName,
+                managerId: mgrId,
+                avgScore: round2(teamAvg),
+                trend: round2(teamTrend) ?? 0,
+                memberCount: memberIds.length,
+                alertCount: teamAlertCount,
+                completionRate: round2(teamCompletionRate) ?? 0,
+              });
             }
           }
         }
@@ -748,7 +745,7 @@ export async function GET() {
         // 6. Personal stats (member only)
         // ---------------------------------------------------------------
         let personal: HealthResponse["personal"] = null;
-        if (role === "member") {
+        if (level === "member") {
           const memberSessions = await tx
             .select({
               id: sessions.id,
@@ -855,7 +852,7 @@ export async function GET() {
         // Build response
         // ---------------------------------------------------------------
         const response: HealthResponse = {
-          role,
+          level,
           kpis,
           distribution,
           alerts,
@@ -893,10 +890,10 @@ function avgOfScores(
 }
 
 function buildEmptyResponse(
-  role: "admin" | "manager" | "member",
+  level: "admin" | "manager" | "member",
 ): HealthResponse {
   return {
-    role,
+    level,
     kpis: {
       avgScore: null,
       scoreTrend: 0,
@@ -908,14 +905,14 @@ function buildEmptyResponse(
       completedSessions: 0,
     },
     distribution:
-      role === "admin" || role === "manager"
+      level === "admin" || level === "manager"
         ? { healthy: 0, attention: 0, critical: 0, noData: 0 }
         : null,
     alerts: [],
     teams: [],
     people: [],
     personal:
-      role === "member"
+      level === "member"
         ? {
             currentScore: null,
             trend: 0,

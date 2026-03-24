@@ -64,9 +64,9 @@ async function getUserSeriesIds(
   tx: TransactionClient,
   tenantId: string,
   userId: string,
-  role: string
+  level: string
 ): Promise<string[]> {
-  const userIsAdmin = isAdmin(role);
+  const userIsAdmin = isAdmin(level);
 
   const seriesFilter = userIsAdmin
     ? eq(meetingSeries.tenantId, tenantId)
@@ -429,7 +429,7 @@ export async function GET(request: NextRequest) {
           tx,
           session.user.tenantId,
           session.user.id,
-          session.user.role
+          session.user.level
         );
 
         // Run all searches in parallel

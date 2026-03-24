@@ -13,7 +13,7 @@ import type { UserRow } from "./people-table-columns";
 
 interface EditorialPeopleListProps {
   initialData: UserRow[];
-  currentUserRole: string;
+  currentUserLevel: string;
   currentUserId: string;
   availableTeams: { id: string; name: string }[];
 }
@@ -23,21 +23,21 @@ function getInitials(first: string, last: string): string {
   return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
 }
 
-type FilterRole = "all" | "admin" | "manager" | "member";
+type FilterLevel = "all" | "admin" | "manager" | "member";
 type FilterStatus = "all" | "active" | "pending" | "deactivated";
 
 const PAGE_SIZE = 20;
 
 export function EditorialPeopleList({
   initialData,
-  currentUserRole,
+  currentUserLevel,
   currentUserId,
   availableTeams,
 }: EditorialPeopleListProps) {
   const t = useTranslations("people");
   const format = useFormatter();
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState<FilterRole>("all");
+  const [levelFilter, setLevelFilter] = useState<FilterLevel>("all");
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
   const [teamFilter, setTeamFilter] = useState("all");
   const [page, setPage] = useState(0);
@@ -57,17 +57,17 @@ export function EditorialPeopleList({
     initialData,
   });
 
-  const isAdmin = currentUserRole === "admin";
+  const isAdmin = currentUserLevel === "admin";
 
-  const bulkRoleMutation = useMutation({
-    mutationFn: async (newRole: string) => {
+  const bulkLevelMutation = useMutation({
+    mutationFn: async (newLevel: string) => {
       const ids = [...selectedIds];
       const results = await Promise.allSettled(
         ids.map((id) =>
           fetch(`/api/users/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ role: newRole }),
+            body: JSON.stringify({ level: newLevel }),
           }).then((res) => {
             if (!res.ok) throw new Error(`Failed for user ${id}`);
             return res.json();
@@ -83,13 +83,13 @@ export function EditorialPeopleList({
       setSelectedIds(new Set());
       setBulkRolePicker(false);
       if (failed === 0) {
-        toast.success(`Role updated for ${succeeded} member${succeeded !== 1 ? "s" : ""}`);
+        toast.success(`Level updated for ${succeeded} member${succeeded !== 1 ? "s" : ""}`);
       } else {
         toast.warning(`${succeeded} updated, ${failed} failed`);
       }
     },
     onError: () => {
-      toast.error("Failed to update roles");
+      toast.error("Failed to update levels");
     },
   });
 
@@ -133,12 +133,12 @@ export function EditorialPeopleList({
           (u.jobTitle?.toLowerCase().includes(q) ?? false);
         if (!match) return false;
       }
-      if (roleFilter !== "all" && u.role !== roleFilter) return false;
+      if (levelFilter !== "all" && u.level !== levelFilter) return false;
       if (teamFilter !== "all" && !u.teams.some((t) => t.id === teamFilter)) return false;
       if (statusFilter !== "all" && u.status !== statusFilter) return false;
       return true;
     });
-  }, [users, search, roleFilter, teamFilter, statusFilter]);
+  }, [users, search, levelFilter, teamFilter, statusFilter]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageData = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -186,18 +186,18 @@ export function EditorialPeopleList({
 
           {/* Role pills */}
           <div className="lg:col-span-5 flex items-center gap-2 overflow-x-auto py-1">
-            {(["all", "admin", "manager", "member"] as const).map((role) => (
+            {(["all", "admin", "manager", "member"] as const).map((lvl) => (
               <button
-                key={role}
+                key={lvl}
                 type="button"
-                onClick={() => { setRoleFilter(role); setPage(0); }}
+                onClick={() => { setLevelFilter(lvl); setPage(0); }}
                 className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${
-                  roleFilter === role
+                  levelFilter === lvl
                     ? "bg-primary text-white"
                     : "bg-[var(--editorial-surface-container,var(--muted))] text-muted-foreground hover:bg-[var(--editorial-surface-container-high,var(--accent))]"
                 }`}
               >
-                {role === "all" ? t("table.allRoles") : t(`table.${role}`)}
+                {lvl === "all" ? t("table.allRoles") : t(`table.${lvl}`)}
               </button>
             ))}
           </div>
@@ -250,15 +250,15 @@ export function EditorialPeopleList({
                 </button>
                 {bulkRolePicker && (
                   <div className="absolute top-full left-0 mt-2 bg-card rounded-xl shadow-xl border border-[var(--editorial-outline-variant,var(--border))]/50 p-2 z-10 min-w-[140px]">
-                    {(["admin", "manager", "member"] as const).map((role) => (
+                    {(["admin", "manager", "member"] as const).map((lvl) => (
                       <button
-                        key={role}
+                        key={lvl}
                         type="button"
-                        disabled={bulkRoleMutation.isPending}
-                        onClick={() => bulkRoleMutation.mutate(role)}
+                        disabled={bulkLevelMutation.isPending}
+                        onClick={() => bulkLevelMutation.mutate(lvl)}
                         className="w-full text-left px-3 py-2 text-xs font-bold capitalize rounded-lg hover:bg-[var(--editorial-surface-container,var(--muted))] transition-colors disabled:opacity-50"
                       >
-                        {role}
+                        {lvl}
                       </button>
                     ))}
                   </div>
@@ -370,7 +370,7 @@ export function EditorialPeopleList({
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl, null, user.role)} alt={`${user.firstName} ${user.lastName}`} />
+                            <AvatarImage src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl, null, user.level)} alt={`${user.firstName} ${user.lastName}`} />
                             <AvatarFallback className="text-xs font-bold">
                               {getInitials(user.firstName, user.lastName)}
                             </AvatarFallback>
@@ -385,7 +385,7 @@ export function EditorialPeopleList({
                       </td>
                       {/* Role */}
                       <td className="px-6 py-5">
-                        <RolePill role={user.role} />
+                        <LevelPill level={user.level} />
                       </td>
                       {/* Team */}
                       <td className="px-6 py-5 hidden lg:table-cell">
@@ -425,7 +425,7 @@ export function EditorialPeopleList({
                         <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                           <UserActionsMenu
                             user={user}
-                            currentUserRole={currentUserRole}
+                            currentUserLevel={currentUserLevel}
                             currentUserId={currentUserId}
                           />
                         </div>
@@ -492,16 +492,16 @@ export function EditorialPeopleList({
   );
 }
 
-function RolePill({ role }: { role: string }) {
+function LevelPill({ level }: { level: string }) {
   const styles =
-    role === "admin"
+    level === "admin"
       ? "bg-[var(--editorial-secondary-container,var(--accent))] text-[var(--editorial-on-secondary-container,var(--accent-foreground))]"
-      : role === "manager"
+      : level === "manager"
         ? "bg-[var(--editorial-secondary-container,var(--accent))] text-[var(--editorial-on-secondary-container,var(--accent-foreground))]"
         : "bg-[var(--editorial-surface-container-high,var(--muted))] text-muted-foreground";
   return (
     <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${styles}`}>
-      {role}
+      {level}
     </span>
   );
 }

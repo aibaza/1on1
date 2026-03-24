@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { users, teams, teamMembers, inviteTokens } from "@/lib/db/schema";
+import { users, inviteTokens } from "@/lib/db/schema";
 import { eq, and, gt, isNull, sql } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { PeopleTabs } from "@/components/people/people-tabs";
@@ -30,7 +30,7 @@ export default async function PeoplePage() {
           firstName: users.firstName,
           lastName: users.lastName,
           email: users.email,
-          role: users.role,
+          level: users.level,
           jobTitle: users.jobTitle,
           avatarUrl: users.avatarUrl,
           managerId: users.managerId,
@@ -48,38 +48,35 @@ export default async function PeoplePage() {
         allUsers.map((u) => [u.id, `${u.firstName} ${u.lastName}`])
       );
 
-      // Fetch team memberships for all users
-      const memberships = await tx
-        .select({
-          userId: teamMembers.userId,
-          teamId: teams.id,
-          teamName: teams.name,
-        })
-        .from(teamMembers)
-        .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-        .where(eq(teams.tenantId, session.user.tenantId));
-
-      // Group teams by user
+      // Derive team memberships from managerId
+      // Each user belongs to their manager's "team"
       const userTeamsMap = new Map<string, { id: string; name: string }[]>();
-      for (const m of memberships) {
-        const existing = userTeamsMap.get(m.userId) ?? [];
-        existing.push({ id: m.teamId, name: m.teamName });
-        userTeamsMap.set(m.userId, existing);
+      for (const u of allUsers) {
+        if (u.managerId) {
+          const managerName = userMap.get(u.managerId);
+          if (managerName) {
+            userTeamsMap.set(u.id, [{ id: u.managerId, name: `${managerName}'s Team` }]);
+          }
+        }
       }
 
-      // Get all unique teams for filter dropdown
-      const allTeams = await tx
-        .select({ id: teams.id, name: teams.name })
-        .from(teams)
-        .where(eq(teams.tenantId, session.user.tenantId))
-        .orderBy(teams.name);
+      // Derive teams list from managers with direct reports
+      const managerSet = new Map<string, string>();
+      for (const u of allUsers) {
+        if (u.managerId && userMap.has(u.managerId)) {
+          managerSet.set(u.managerId, userMap.get(u.managerId)!);
+        }
+      }
+      const allTeams = Array.from(managerSet.entries())
+        .map(([id, name]) => ({ id, name: `${name}'s Team` }))
+        .sort((a, b) => a.name.localeCompare(b.name));
 
       // Fetch pending invites (not accepted, not expired)
       const pendingInvites = await tx
         .select({
           id: inviteTokens.id,
           email: inviteTokens.email,
-          role: inviteTokens.role,
+          level: inviteTokens.level,
           invitedAt: inviteTokens.createdAt,
         })
         .from(inviteTokens)
@@ -99,7 +96,7 @@ export default async function PeoplePage() {
         firstName: u.firstName,
         lastName: u.lastName,
         email: u.email,
-        role: u.role,
+        level: u.level,
         jobTitle: u.jobTitle,
         avatarUrl: u.avatarUrl,
         managerId: u.managerId,
@@ -123,7 +120,7 @@ export default async function PeoplePage() {
           firstName: "",
           lastName: "",
           email: inv.email,
-          role: inv.role,
+          level: inv.level,
           jobTitle: null,
           avatarUrl: null,
           managerId: null,
@@ -150,7 +147,7 @@ export default async function PeoplePage() {
       {isEditorial ? (
         <EditorialPeopleHeader
           memberCount={data.users.length}
-          isAdmin={session.user.role === "admin"}
+          isAdmin={session.user.level === "admin"}
         />
       ) : (
         <div className="flex items-center justify-between">
@@ -158,7 +155,7 @@ export default async function PeoplePage() {
             <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
             <p className="text-sm text-muted-foreground">{t("description")}</p>
           </div>
-          {session.user.role === "admin" && <InviteButton />}
+          {session.user.level === "admin" && <InviteButton />}
         </div>
       )}
 
@@ -166,19 +163,19 @@ export default async function PeoplePage() {
         <>
           <EditorialPeopleList
             initialData={data.users}
-            currentUserRole={session.user.role}
+            currentUserLevel={session.user.level}
             currentUserId={session.user.id}
             availableTeams={data.teams}
           />
-          {(session.user.role === "admin" || session.user.role === "manager") && (
-            <TeamStructure users={data.users} currentUserId={session.user.id} currentUserRole={session.user.role} />
+          {(session.user.level === "admin" || session.user.level === "manager") && (
+            <TeamStructure users={data.users} currentUserId={session.user.id} currentUserLevel={session.user.level} />
           )}
         </>
       ) : (
         <PeopleTabs>
           <PeopleTable
             initialData={data.users}
-            currentUserRole={session.user.role}
+            currentUserLevel={session.user.level}
             currentUserId={session.user.id}
             availableTeams={data.teams}
           />

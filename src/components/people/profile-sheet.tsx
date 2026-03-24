@@ -21,7 +21,7 @@ interface ProfileSheetUser {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  level: string;
   jobTitle: string | null;
   avatarUrl: string | null;
   managerName: string | null;
@@ -62,7 +62,7 @@ export function ProfileSheet({ user, open, onOpenChange }: ProfileSheetProps) {
         <SheetHeader className="text-left">
           <div className="flex items-center gap-4">
             <Avatar size="lg">
-              <AvatarImage src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl, null, user.role)} />
+              <AvatarImage src={getAvatarUrl(`${user.firstName} ${user.lastName}`, user.avatarUrl, null, user.level)} />
               <AvatarFallback>
                 {getInitials(user.firstName, user.lastName)}
               </AvatarFallback>
@@ -81,7 +81,7 @@ export function ProfileSheet({ user, open, onOpenChange }: ProfileSheetProps) {
         <div className="space-y-6 px-4 pb-4">
           <div className="flex items-center gap-2">
             <Badge variant="secondary">
-              {user.role === "admin" ? t("table.admin") : user.role === "manager" ? t("table.manager") : user.role === "member" ? t("table.member") : user.role}
+              {user.level === "admin" ? t("table.admin") : user.level === "manager" ? t("table.manager") : user.level === "member" ? t("table.member") : user.level}
             </Badge>
             <Badge variant="outline" className={getStatusColor(user.status)}>
               {user.status.charAt(0).toUpperCase() + user.status.slice(1)}

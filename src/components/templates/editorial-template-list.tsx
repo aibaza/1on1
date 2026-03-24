@@ -56,13 +56,13 @@ interface TemplateData {
 
 interface EditorialTemplateListProps {
   initialTemplates: TemplateData[];
-  currentUserRole: string;
+  currentUserLevel: string;
   contentLanguage: string;
 }
 
 export function EditorialTemplateList({
   initialTemplates,
-  currentUserRole,
+  currentUserLevel,
   contentLanguage,
 }: EditorialTemplateListProps) {
   const t = useTranslations("templates");
@@ -71,7 +71,7 @@ export function EditorialTemplateList({
   const [createOpen, setCreateOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [filter, setFilter] = useState<"all" | "published" | "draft">("all");
-  const canCreate = currentUserRole === "admin" || currentUserRole === "manager";
+  const canCreate = currentUserLevel === "admin" || currentUserLevel === "manager";
   const queryClient = useQueryClient();
 
   const { data: templates } = useQuery<TemplateData[]>({
@@ -155,7 +155,7 @@ export function EditorialTemplateList({
                   <Upload className="mr-2 h-4 w-4" />
                   {t("import.button")}
                 </DropdownMenuItem>
-                {canManageTemplates(currentUserRole) && (
+                {canManageTemplates(currentUserLevel) && (
                   <DropdownMenuItem asChild>
                     <Link href="/templates/ai-editor">
                       <Wand2 className="mr-2 h-4 w-4" />
@@ -308,7 +308,7 @@ export function EditorialTemplateList({
 
       {/* Import Dialog */}
       <ImportDialog
-        currentUserRole={currentUserRole}
+        currentUserLevel={currentUserLevel}
         contentLanguage={contentLanguage}
         onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ["templates"] })}
         open={importOpen}

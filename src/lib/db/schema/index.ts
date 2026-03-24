@@ -2,7 +2,7 @@ export * from "./enums";
 export * from "./tenants";
 export * from "./users";
 export * from "./auth";
-export * from "./teams";
+export * from "./roles";
 export * from "./templates";
 export * from "./series";
 export * from "./sessions";

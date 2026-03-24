@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { teams, teamMembers } from "@/lib/db/schema";
+import { users } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import {
   getTeamAverages,
@@ -10,16 +10,17 @@ import {
 import { periodToDateRange } from "@/lib/analytics/period";
 
 /**
- * GET /api/analytics/team/[id]
+ * GET /api/analytics/team/[managerId]
  *
- * Returns team analytics data (aggregated scores + heatmap).
+ * Returns team analytics data (aggregated scores + heatmap) for a manager's
+ * direct reports (derived team).
+ *
  * Query params:
  *   - period: preset string (30d, 3mo, 6mo, 1yr)
  *   - startDate, endDate: ISO date strings for custom range
  *   - anonymize: "true" to replace names with "Member N"
  *
- * Auth: user must be team lead, manager of team members, or admin.
- * Members cannot access team analytics.
+ * Auth: user must be the manager or admin. Members cannot access.
  */
 export async function GET(
   request: Request,
@@ -30,11 +31,16 @@ export async function GET(
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { id: teamId } = await params;
+  const { id: managerId } = await params;
   const { user } = session;
 
   // Members cannot access team analytics
-  if (user.role === "member") {
+  if (user.level === "member") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // Managers can only view their own team
+  if (user.level === "manager" && user.id !== managerId) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -43,42 +49,29 @@ export async function GET(
       user.tenantId,
       user.id,
       async (tx) => {
-        // Verify team exists
-        const [team] = await tx
+        // Verify manager exists in tenant
+        const [manager] = await tx
           .select({
-            id: teams.id,
-            name: teams.name,
-            managerId: teams.managerId,
+            id: users.id,
+            firstName: users.firstName,
+            lastName: users.lastName,
+            teamName: users.teamName,
           })
-          .from(teams)
-          .where(eq(teams.id, teamId))
+          .from(users)
+          .where(
+            and(eq(users.id, managerId), eq(users.tenantId, user.tenantId))
+          )
           .limit(1);
 
-        if (!team) {
+        if (!manager) {
           return { error: "not_found" } as const;
         }
 
-        // Authorization: manager must be team lead or admin
-        if (user.role === "manager") {
-          // Check if user is team manager
-          if (team.managerId !== user.id) {
-            // Check if user is a member with lead role
-            const membership = await tx
-              .select({ role: teamMembers.role })
-              .from(teamMembers)
-              .where(
-                and(
-                  eq(teamMembers.teamId, teamId),
-                  eq(teamMembers.userId, user.id),
-                ),
-              )
-              .limit(1);
-
-            if (membership.length === 0 || membership[0]!.role !== "lead") {
-              return { error: "forbidden" } as const;
-            }
-          }
-        }
+        // Count direct reports
+        const members = await tx
+          .select({ id: users.id })
+          .from(users)
+          .where(and(eq(users.managerId, managerId), eq(users.isActive, true)));
 
         // Parse query params
         const url = new URL(request.url);
@@ -99,21 +92,18 @@ export async function GET(
           endDate = range.endDate.toISOString().split("T")[0]!;
         }
 
-        // Count team members
-        const members = await tx
-          .select({ userId: teamMembers.userId })
-          .from(teamMembers)
-          .where(eq(teamMembers.teamId, teamId));
-
         // Fetch analytics in parallel
         const [teamAverages, heatmapData] = await Promise.all([
-          getTeamAverages(tx, teamId, startDate, endDate, anonymize),
-          getTeamHeatmapData(tx, teamId, startDate, endDate, anonymize),
+          getTeamAverages(tx, managerId, startDate, endDate, anonymize),
+          getTeamHeatmapData(tx, managerId, startDate, endDate, anonymize),
         ]);
 
-        console.log("[team-analytics] anonymize:", anonymize, "teamAverages:", JSON.stringify(teamAverages), "heatmap count:", heatmapData.length);
+        const defaultName = `${manager.firstName} ${manager.lastName}`;
         return {
-          team: { id: team.id, name: team.name },
+          team: {
+            managerId: manager.id,
+            name: manager.teamName ?? defaultName,
+          },
           memberCount: members.length,
           teamAverages,
           heatmapData,

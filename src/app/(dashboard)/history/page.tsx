@@ -25,7 +25,7 @@ export default async function HistoryServerPage() {
     session.user.id,
     async (tx) => {
       // Fetch all series the user participates in
-      const userIsAdmin = isAdmin(session.user.role);
+      const userIsAdmin = isAdmin(session.user.level);
 
       let seriesFilter;
       if (userIsAdmin) {
@@ -61,7 +61,7 @@ export default async function HistoryServerPage() {
               firstName: users.firstName,
               lastName: users.lastName,
               avatarUrl: users.avatarUrl,
-              role: users.role,
+              level: users.level,
             })
             .from(users)
             .where(inArray(users.id, allUserIds))
@@ -167,7 +167,7 @@ export default async function HistoryServerPage() {
           reportFirstName: report?.firstName ?? "",
           reportLastName: report?.lastName ?? "",
           reportAvatarUrl: report?.avatarUrl ?? null,
-          reportRole: report?.role ?? "member",
+          reportLevel: report?.level ?? "member",
           managerFirstName: manager?.firstName ?? "",
           managerLastName: manager?.lastName ?? "",
         };

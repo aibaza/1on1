@@ -19,7 +19,7 @@ export default async function ExistingTemplateAiEditorPage({
 }: PageProps) {
   const session = await auth();
   if (!session?.user) redirect("/login");
-  if (!canManageTemplates(session.user.role)) redirect("/templates");
+  if (!canManageTemplates(session.user.level)) redirect("/templates");
 
   const { id } = await params;
   const contentLanguage = session.user.contentLanguage ?? "en";
@@ -90,7 +90,7 @@ export default async function ExistingTemplateAiEditorPage({
       initialTemplate={exportPayload}
       templateId={id}
       contentLanguage={contentLanguage}
-      userRole={session.user.role}
+      userLevel={session.user.level}
       initialChatHistory={template.aiChatHistory}
       initialVersionHistory={template.aiVersionHistory}
     />

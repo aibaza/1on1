@@ -211,7 +211,7 @@ export async function getUpcomingSessions(
 export async function getOverdueActionItems(
   tx: TransactionClient,
   userId: string,
-  role: string
+  _level: string
 ): Promise<OverdueGroup[]> {
   const now = new Date();
   const reportUser = alias(users, "reportUser");

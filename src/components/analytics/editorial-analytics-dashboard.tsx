@@ -6,10 +6,10 @@ import EditorialAnalyticsManager from "./editorial-analytics-manager";
 import EditorialAnalyticsMember from "./editorial-analytics-member";
 
 interface EditorialAnalyticsDashboardProps {
-  currentUserRole: string;
+  currentUserLevel: string;
 }
 
-export function EditorialAnalyticsDashboard({ currentUserRole }: EditorialAnalyticsDashboardProps) {
+export function EditorialAnalyticsDashboard({ currentUserLevel }: EditorialAnalyticsDashboardProps) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["analytics-health"],
     queryFn: async () => {
@@ -42,7 +42,7 @@ export function EditorialAnalyticsDashboard({ currentUserRole }: EditorialAnalyt
     );
   }
 
-  if (currentUserRole === "admin" || currentUserRole === "manager") {
+  if (currentUserLevel === "admin" || currentUserLevel === "manager") {
     return <EditorialAnalyticsAdmin data={data} />;
   }
 

@@ -85,7 +85,7 @@ export async function GET(
         if (
           session.user.id !== series.managerId &&
           session.user.id !== series.reportId &&
-          session.user.role !== "admin"
+          session.user.level !== "admin"
         ) {
           return { error: "FORBIDDEN" as const };
         }

@@ -20,7 +20,7 @@ export async function POST(request: Request, { params }: RouteContext) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!canManageTemplates(session.user.role)) {
+  if (!canManageTemplates(session.user.level)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

@@ -16,7 +16,7 @@ export default async function CompanySettingsPage() {
   }
   const t = await getTranslations("settings");
 
-  if (session.user.role !== "admin") {
+  if (session.user.level !== "admin") {
     redirect("/overview");
   }
 

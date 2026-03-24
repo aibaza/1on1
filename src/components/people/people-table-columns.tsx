@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarUrl } from "@/lib/avatar";
 import { Badge } from "@/components/ui/badge";
-import { RoleSelect } from "./role-select";
+import { LevelSelect } from "./level-select";
 import { ManagerSelect } from "./manager-select";
 import { UserActionsMenu } from "./user-actions-menu";
 
@@ -22,7 +22,7 @@ export interface UserRow {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  level: string;
   jobTitle: string | null;
   avatarUrl: string | null;
   managerId: string | null;
@@ -53,19 +53,19 @@ function getStatusColor(status: string) {
 }
 
 interface CreateColumnsOptions {
-  currentUserRole: string;
+  currentUserLevel: string;
   currentUserId: string;
   allUsers: { id: string; firstName: string; lastName: string }[];
   t: ReturnType<typeof useTranslations<"people">>;
 }
 
 export function createColumns({
-  currentUserRole,
+  currentUserLevel,
   currentUserId,
   allUsers,
   t,
 }: CreateColumnsOptions): ColumnDef<UserRow>[] {
-  const isAdmin = currentUserRole === "admin";
+  const isAdmin = currentUserLevel === "admin";
 
   return [
     {
@@ -85,7 +85,7 @@ export function createColumns({
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <Avatar size="sm">
-            <AvatarImage src={getAvatarUrl(`${row.original.firstName} ${row.original.lastName}`, row.original.avatarUrl, null, row.original.role)} />
+            <AvatarImage src={getAvatarUrl(`${row.original.firstName} ${row.original.lastName}`, row.original.avatarUrl, null, row.original.level)} />
             <AvatarFallback>
               {getInitials(row.original.firstName, row.original.lastName)}
             </AvatarFallback>
@@ -115,7 +115,7 @@ export function createColumns({
       ),
     },
     {
-      accessorKey: "role",
+      accessorKey: "level",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -128,15 +128,15 @@ export function createColumns({
         </Button>
       ),
       cell: ({ row }) => (
-        <RoleSelect
+        <LevelSelect
           userId={row.original.id}
-          currentRole={row.original.role}
+          currentLevel={row.original.level}
           disabled={!isAdmin || row.original.status === "pending"}
         />
       ),
       filterFn: (row, _id, value) => {
         if (!value || value === "all") return true;
-        return row.original.role === value;
+        return row.original.level === value;
       },
     },
     {
@@ -226,7 +226,7 @@ export function createColumns({
       cell: ({ row }) => (
         <UserActionsMenu
           user={row.original}
-          currentUserRole={currentUserRole}
+          currentUserLevel={currentUserLevel}
           currentUserId={currentUserId}
         />
       ),

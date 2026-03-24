@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth/config";
 import { redirect, notFound } from "next/navigation";
 import { getTranslations, getFormatter } from "next-intl/server";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { users, teams, teamMembers } from "@/lib/db/schema";
+import { users } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarUrl } from "@/lib/avatar";
@@ -52,7 +52,7 @@ export default async function UserProfilePage({
           firstName: users.firstName,
           lastName: users.lastName,
           email: users.email,
-          role: users.role,
+          level: users.level,
           jobTitle: users.jobTitle,
           avatarUrl: users.avatarUrl,
           managerId: users.managerId,
@@ -80,13 +80,6 @@ export default async function UserProfilePage({
         }
       }
 
-      // Get team memberships
-      const memberships = await tx
-        .select({ teamId: teams.id, teamName: teams.name })
-        .from(teamMembers)
-        .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-        .where(eq(teamMembers.userId, id));
-
       const status = !user.isActive
         ? "deactivated"
         : user.inviteAcceptedAt || !user.invitedAt
@@ -97,7 +90,7 @@ export default async function UserProfilePage({
         ...user,
         managerName,
         status,
-        teams: memberships.map((m) => ({ id: m.teamId, name: m.teamName })),
+        teams: [] as { id: string; name: string }[],
       };
     }
   );
@@ -105,11 +98,11 @@ export default async function UserProfilePage({
   if (!data) notFound();
 
   const isSelf = id === session.user.id;
-  const canEdit = isSelf || session.user.role === "admin";
+  const canEdit = isSelf || session.user.level === "admin";
 
-  const roleLabel = data.role === "admin"
+  const roleLabel = data.level === "admin"
     ? t("table.admin")
-    : data.role === "manager"
+    : data.level === "manager"
       ? t("table.manager")
       : t("table.member");
 
@@ -133,7 +126,7 @@ export default async function UserProfilePage({
       {/* Profile header */}
       <div className="flex items-start gap-6">
         <Avatar className="h-20 w-20 text-xl">
-          <AvatarImage src={getAvatarUrl(`${data.firstName} ${data.lastName}`, data.avatarUrl, null, data.role)} />
+          <AvatarImage src={getAvatarUrl(`${data.firstName} ${data.lastName}`, data.avatarUrl, null, data.level)} />
           <AvatarFallback className="text-xl">
             {getInitials(data.firstName, data.lastName)}
           </AvatarFallback>

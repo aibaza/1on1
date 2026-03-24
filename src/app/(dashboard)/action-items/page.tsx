@@ -38,7 +38,7 @@ export default async function ActionItemsRoute() {
         ),
       ];
 
-      if (!isAdmin(session.user.role)) {
+      if (!isAdmin(session.user.level)) {
         baseConditions.push(
           or(
             eq(meetingSeries.managerId, session.user.id),

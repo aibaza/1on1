@@ -107,13 +107,13 @@ export default async function TemplatesPage() {
       {isEditorial ? (
         <EditorialTemplateList
           initialTemplates={templates}
-          currentUserRole={session.user.role}
+          currentUserLevel={session.user.level}
           contentLanguage={session.user.contentLanguage ?? "en"}
         />
       ) : (
         <TemplateList
           initialTemplates={templates}
-          currentUserRole={session.user.role}
+          currentUserLevel={session.user.level}
           contentLanguage={session.user.contentLanguage ?? "en"}
         />
       )}

@@ -77,7 +77,7 @@ export async function PATCH(
 
         // Authorization: user must be series participant or admin
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           !isSeriesParticipant(session.user.id, {
             managerId: row.managerId,
             reportId: row.reportId,
@@ -88,7 +88,7 @@ export async function PATCH(
 
         // Only the assignee (or admin) can toggle status or edit fields
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           session.user.id !== row.assigneeId
         ) {
           return { error: "FORBIDDEN" as const };

@@ -49,7 +49,7 @@ export async function GET(request: Request) {
             lastName: users.lastName,
             jobTitle: users.jobTitle,
             avatarUrl: users.avatarUrl,
-            role: users.role,
+            level: users.level,
           })
           .from(users)
           .where(eq(users.id, userId))
@@ -60,11 +60,11 @@ export async function GET(request: Request) {
         }
 
         // ── Authorization ──────────────────────────────────────────────
-        if (user.role === "member" && user.id !== userId) {
+        if (user.level === "member" && user.id !== userId) {
           return { error: "forbidden" } as const;
         }
 
-        if (user.role === "manager" && user.id !== userId) {
+        if (user.level === "manager" && user.id !== userId) {
           const series = await tx
             .select({ id: meetingSeries.id })
             .from(meetingSeries)

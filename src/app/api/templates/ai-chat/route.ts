@@ -57,7 +57,7 @@ export async function POST(req: Request) {
   }
 
   // 2. RBAC check — admin and manager only
-  if (!canManageTemplates(session.user.role)) {
+  if (!canManageTemplates(session.user.level)) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 

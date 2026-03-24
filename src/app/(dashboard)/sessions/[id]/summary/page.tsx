@@ -12,11 +12,9 @@ import {
   talkingPoints,
   privateNotes,
   actionItems,
-  teams,
-  teamMembers,
   sessionAnswerHistory,
 } from "@/lib/db/schema";
-import { eq, and, asc, inArray, sql, desc, ne } from "drizzle-orm";
+import { eq, and, asc, inArray, sql, desc } from "drizzle-orm";
 import { decryptNote, type EncryptedPayload } from "@/lib/encryption/private-notes";
 import { SessionSummaryView } from "@/components/session/session-summary-view";
 import { EditorialSessionSummary } from "@/components/session/editorial-session-summary";
@@ -70,7 +68,7 @@ export default async function SessionSummaryPage({
 
       // Authorization: user must be participant or admin
       if (
-        !isAdmin(session.user.role) &&
+        !isAdmin(session.user.level) &&
         !isSeriesParticipant(session.user.id, series)
       ) {
         return { error: "FORBIDDEN" as const };
@@ -78,35 +76,33 @@ export default async function SessionSummaryPage({
 
       const isManager = session.user.id === series.managerId;
 
-      // Fetch manager and report names + their first team
-      const [managerUser, reportUser, managerTeamRow, reportTeamRow] = await Promise.all([
+      // Fetch manager and report names + derive team from managerId
+      const [managerUser, reportUser] = await Promise.all([
         tx
-          .select({ firstName: users.firstName, lastName: users.lastName })
+          .select({ firstName: users.firstName, lastName: users.lastName, managerId: users.managerId })
           .from(users)
           .where(eq(users.id, series.managerId))
           .limit(1)
           .then((rows) => rows[0]),
         tx
-          .select({ firstName: users.firstName, lastName: users.lastName })
+          .select({ firstName: users.firstName, lastName: users.lastName, managerId: users.managerId })
           .from(users)
           .where(eq(users.id, series.reportId))
           .limit(1)
           .then((rows) => rows[0]),
-        tx
-          .select({ name: teams.name })
-          .from(teamMembers)
-          .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-          .where(eq(teamMembers.userId, series.managerId))
-          .limit(1)
-          .then((rows) => rows[0] ?? null),
-        tx
-          .select({ name: teams.name })
-          .from(teamMembers)
-          .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-          .where(eq(teamMembers.userId, series.reportId))
-          .limit(1)
-          .then((rows) => rows[0] ?? null),
       ]);
+
+      // Derive team names from manager's manager
+      let managerTeamRow: { name: string } | null = null;
+      let reportTeamRow: { name: string } | null = null;
+      if (managerUser?.managerId) {
+        const [mgr] = await tx.select({ firstName: users.firstName, lastName: users.lastName }).from(users).where(eq(users.id, managerUser.managerId)).limit(1);
+        if (mgr) managerTeamRow = { name: `${mgr.firstName} ${mgr.lastName}'s Team` };
+      }
+      if (reportUser?.managerId) {
+        const [mgr] = await tx.select({ firstName: users.firstName, lastName: users.lastName }).from(users).where(eq(users.id, reportUser.managerId)).limit(1);
+        if (mgr) reportTeamRow = { name: `${mgr.firstName} ${mgr.lastName}'s Team` };
+      }
 
       // Fetch all data in parallel
       const [
@@ -181,7 +177,7 @@ export default async function SessionSummaryPage({
           .where(eq(talkingPoints.sessionId, sessionId))
           .orderBy(asc(talkingPoints.sortOrder)),
         // Admin sees all notes (all authors); manager/report see only their own
-        isAdmin(session.user.role)
+        isAdmin(session.user.level)
           ? tx
               .select({
                 id: privateNotes.id,
@@ -446,11 +442,11 @@ export default async function SessionSummaryPage({
         status: sessionRecord.status,
         categories: categoriesData,
         isManager,
-        isAdmin: isAdmin(session.user.role),
+        isAdmin: isAdmin(session.user.level),
         seriesId: series.id,
         aiStatus: sessionRecord.aiStatus,
         aiSummary: sessionRecord.aiSummary ?? null,
-        aiAddendum: (isManager || isAdmin(session.user.role))
+        aiAddendum: (isManager || isAdmin(session.user.level))
           ? (sessionRecord.aiManagerAddendum ?? null)
           : null,
         managerId: series.managerId,

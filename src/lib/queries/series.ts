@@ -15,14 +15,14 @@ export interface SeriesCardData {
     id: string;
     firstName: string;
     lastName: string;
-    role: string;
+    level: string;
   };
   report: {
     id: string;
     firstName: string;
     lastName: string;
     avatarUrl: string | null;
-    role: string;
+    level: string;
   };
   latestSession: {
     id: string;
@@ -51,8 +51,8 @@ export async function getSeriesCardData(
     limit?: number;
     /** Filter by manager ID */
     managerId?: string;
-    /** Filter by role — 'member' shows series where user is reportId */
-    role?: string;
+    /** Filter by level — 'member' shows series where user is reportId */
+    level?: string;
     userId?: string;
     /** Home page mode: show only series where user is manager OR report */
     myOnly?: boolean;
@@ -72,9 +72,9 @@ export async function getSeriesCardData(
     conditions.push(
       sql`(${meetingSeries.managerId} = ${options.userId} OR ${meetingSeries.reportId} = ${options.userId})`
     );
-  } else if (options?.role === "member" && options?.userId) {
+  } else if (options?.level === "member" && options?.userId) {
     conditions.push(eq(meetingSeries.reportId, options.userId));
-  } else if (options?.role === "manager" && options?.userId) {
+  } else if (options?.level === "manager" && options?.userId) {
     conditions.push(
       sql`(${meetingSeries.managerId} = ${options.userId} OR ${meetingSeries.reportId} = ${options.userId})`
     );
@@ -129,7 +129,7 @@ export async function getSeriesCardData(
       firstName: users.firstName,
       lastName: users.lastName,
       avatarUrl: users.avatarUrl,
-      role: users.role,
+      level: users.level,
     })
     .from(users)
     .where(sql`${users.id} IN ${reportIds}`);
@@ -143,7 +143,7 @@ export async function getSeriesCardData(
       id: users.id,
       firstName: users.firstName,
       lastName: users.lastName,
-      role: users.role,
+      level: users.level,
     })
     .from(users)
     .where(sql`${users.id} IN ${managerIds}`);
@@ -306,14 +306,14 @@ export async function getSeriesCardData(
         id: s.managerId,
         firstName: managerMap.get(s.managerId)?.firstName ?? "",
         lastName: managerMap.get(s.managerId)?.lastName ?? "",
-        role: managerMap.get(s.managerId)?.role ?? "manager",
+        level: managerMap.get(s.managerId)?.level ?? "manager",
       },
       report: {
         id: s.reportId,
         firstName: report?.firstName ?? "",
         lastName: report?.lastName ?? "",
         avatarUrl: report?.avatarUrl ?? null,
-        role: report?.role ?? "member",
+        level: report?.level ?? "member",
       },
       latestSession: latest
         ? {

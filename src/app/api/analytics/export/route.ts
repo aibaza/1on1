@@ -68,13 +68,13 @@ export async function GET(request: Request) {
         const effectiveUserId = targetUserId ?? user.id;
 
         // Members can only export their own data
-        if (user.role === "member" && effectiveUserId !== user.id) {
+        if (user.level === "member" && effectiveUserId !== user.id) {
           return { error: "forbidden" } as const;
         }
 
         // Managers can only export data for their reports (or self)
         if (
-          user.role === "manager" &&
+          user.level === "manager" &&
           effectiveUserId !== user.id
         ) {
           const series = await tx
@@ -94,7 +94,7 @@ export async function GET(request: Request) {
         }
 
         let csv: string;
-        const role = user.role;
+        const role = user.level;
 
         switch (exportType) {
           case "score-trend": {

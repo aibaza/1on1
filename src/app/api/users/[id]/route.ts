@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { requireRole, isAdmin } from "@/lib/auth/rbac";
+import { requireLevel, isAdmin } from "@/lib/auth/rbac";
 import { logAuditEvent } from "@/lib/audit/log";
 import {
   updateProfileSchema,
-  updateUserRoleSchema,
+  updateUserLevelSchema,
   assignManagerSchema,
 } from "@/lib/validations/user";
-import { users, teams, teamMembers } from "@/lib/db/schema";
+import { users } from "@/lib/db/schema";
 import { eq, and, count } from "drizzle-orm";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -32,7 +32,7 @@ export async function GET(request: Request, { params }: RouteContext) {
             firstName: users.firstName,
             lastName: users.lastName,
             email: users.email,
-            role: users.role,
+            level: users.level,
             jobTitle: users.jobTitle,
             avatarUrl: users.avatarUrl,
             managerId: users.managerId,
@@ -64,16 +64,6 @@ export async function GET(request: Request, { params }: RouteContext) {
           }
         }
 
-        // Get team memberships
-        const memberships = await tx
-          .select({
-            teamId: teams.id,
-            teamName: teams.name,
-          })
-          .from(teamMembers)
-          .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-          .where(eq(teamMembers.userId, id));
-
         return {
           ...user,
           managerName,
@@ -82,10 +72,6 @@ export async function GET(request: Request, { params }: RouteContext) {
             : user.inviteAcceptedAt || !user.invitedAt
               ? ("active" as const)
               : ("pending" as const),
-          teams: memberships.map((m) => ({
-            id: m.teamId,
-            name: m.teamName,
-          })),
         };
       }
     );
@@ -122,12 +108,12 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
   try {
     // Determine what kind of update this is
-    if ("role" in body) {
-      // Role change: admin only
-      const roleError = requireRole(session.user.role, "admin");
+    if ("level" in body) {
+      // Level change: admin only
+      const roleError = requireLevel(session.user.level, "admin");
       if (roleError) return roleError;
 
-      const data = updateUserRoleSchema.parse(body);
+      const data = updateUserLevelSchema.parse(body);
 
       const result = await withTenantContext(
         session.user.tenantId,
@@ -137,7 +123,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
           const [targetUser] = await tx
             .select({
               id: users.id,
-              role: users.role,
+              level: users.level,
               isActive: users.isActive,
             })
             .from(users)
@@ -149,15 +135,15 @@ export async function PATCH(request: Request, { params }: RouteContext) {
             return { error: "User not found", status: 404 };
           }
 
-          // Last admin check: if target user is currently admin and new role is not admin
-          if (targetUser.role === "admin" && data.role !== "admin") {
+          // Last admin check: if target user is currently admin and new level is not admin
+          if (targetUser.level === "admin" && data.level !== "admin") {
             const [adminCount] = await tx
               .select({ value: count() })
               .from(users)
               .where(
                 and(
                   eq(users.tenantId, session.user.tenantId),
-                  eq(users.role, "admin"),
+                  eq(users.level, "admin"),
                   eq(users.isActive, true)
                 )
               );
@@ -170,20 +156,20 @@ export async function PATCH(request: Request, { params }: RouteContext) {
             }
           }
 
-          const previousRole = targetUser.role;
+          const previousLevel = targetUser.level;
           const [updated] = await tx
             .update(users)
-            .set({ role: data.role, updatedAt: new Date() })
+            .set({ level: data.level, updatedAt: new Date() })
             .where(eq(users.id, id))
             .returning();
 
           await logAuditEvent(tx, {
             tenantId: session.user.tenantId,
             actorId: session.user.id,
-            action: "role_changed",
+            action: "level_changed",
             resourceType: "user",
             resourceId: id,
-            metadata: { previousRole, newRole: data.role },
+            metadata: { previousLevel, newLevel: data.level },
           });
 
           return { data: updated };
@@ -202,7 +188,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
     if ("managerId" in body) {
       // Manager assignment: admin only
-      const roleError = requireRole(session.user.role, "admin");
+      const roleError = requireLevel(session.user.level, "admin");
       if (roleError) return roleError;
 
       const data = assignManagerSchema.parse(body);
@@ -269,7 +255,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
     if ("isActive" in body && body.isActive === true) {
       // Reactivation: admin only
-      const roleError = requireRole(session.user.role, "admin");
+      const roleError = requireLevel(session.user.level, "admin");
       if (roleError) return roleError;
 
       const result = await withTenantContext(
@@ -316,7 +302,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     }
 
     // Profile update: self or admin
-    if (!isSelf && !isAdmin(session.user.role)) {
+    if (!isSelf && !isAdmin(session.user.level)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -406,7 +392,7 @@ export async function DELETE(request: Request, { params }: RouteContext) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const roleError = requireRole(session.user.role, "admin");
+  const roleError = requireLevel(session.user.level, "admin");
   if (roleError) return roleError;
 
   const { id } = await params;
@@ -427,7 +413,7 @@ export async function DELETE(request: Request, { params }: RouteContext) {
         const [targetUser] = await tx
           .select({
             id: users.id,
-            role: users.role,
+            level: users.level,
             isActive: users.isActive,
           })
           .from(users)
@@ -440,14 +426,14 @@ export async function DELETE(request: Request, { params }: RouteContext) {
         }
 
         // Cannot deactivate the last admin
-        if (targetUser.role === "admin") {
+        if (targetUser.level === "admin") {
           const [adminCount] = await tx
             .select({ value: count() })
             .from(users)
             .where(
               and(
                 eq(users.tenantId, session.user.tenantId),
-                eq(users.role, "admin"),
+                eq(users.level, "admin"),
                 eq(users.isActive, true)
               )
             );

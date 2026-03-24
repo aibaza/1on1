@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { requireRole } from "@/lib/auth/rbac";
+import { requireLevel } from "@/lib/auth/rbac";
 import { auditLog, users } from "@/lib/db/schema";
 import { eq, and, gte, lte, like, or, sql, count } from "drizzle-orm";
 
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const roleError = requireRole(session.user.role, "admin");
+  const roleError = requireLevel(session.user.level, "admin");
   if (roleError) return roleError;
 
   const searchParams = request.nextUrl.searchParams;

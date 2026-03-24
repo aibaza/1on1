@@ -115,7 +115,7 @@ export default async function TemplateDetailPage({ params }: PageProps) {
   return (
     <TemplateEditor
       template={template}
-      userRole={session.user.role}
+      userLevel={session.user.level}
     />
   );
 }

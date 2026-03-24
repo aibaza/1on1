@@ -11,7 +11,7 @@ import {
 import { relations } from "drizzle-orm";
 import { tenants } from "./tenants";
 import { users } from "./users";
-import { userRoleEnum } from "./enums";
+import { userLevelEnum } from "./enums";
 
 // OAuth account links (Google, Microsoft, etc.)
 // Column property names must match @auth/drizzle-adapter expectations (snake_case for some)
@@ -95,7 +95,7 @@ export const inviteTokens = pgTable(
       .notNull()
       .references(() => tenants.id),
     email: varchar("email", { length: 255 }).notNull(),
-    role: userRoleEnum("role").notNull().default("member"),
+    level: userLevelEnum("level").notNull().default("member"),
     token: varchar("token", { length: 255 }).notNull().unique(),
     invitedBy: uuid("invited_by")
       .notNull()

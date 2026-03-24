@@ -2,7 +2,7 @@
  * Editorial seed extension script.
  *
  * Adds rich, realistic data to the Acme Corp tenant for editorial/demo purposes.
- * Creates 13 new users, 3 teams, 13 meeting series with 6-10 sessions each,
+ * Creates 13 new users, 13 meeting series with 6-10 sessions each,
  * full session answers, AI summaries, action items, talking points, and analytics.
  *
  * Designed to run AFTER the base seed (additive, not destructive).
@@ -84,14 +84,6 @@ const STEFAN_L_ID = 'aaaaaaaa-0037-4000-a000-000000000037';
 const OANA_P_ID = 'aaaaaaaa-0038-4000-a000-000000000038';
 
 // =============================================================================
-// Team IDs
-// =============================================================================
-
-const TEAM_ENGINEERING_ID = 'cccccccc-0010-4000-a000-000000000010';
-const TEAM_EDITORIAL_ID = 'cccccccc-0011-4000-a000-000000000011';
-const TEAM_PEOPLE_ID = 'cccccccc-0012-4000-a000-000000000012';
-
-// =============================================================================
 // Meeting Series IDs (one per manager-report pair)
 // =============================================================================
 
@@ -161,12 +153,6 @@ function talkingPointId(idx: number): string {
 function snapshotId(idx: number): string {
   const i = idx.toString().padStart(4, '0');
   return `55550000-${i}-4000-a000-000000000000`;
-}
-
-/** Generate a deterministic UUID for team members */
-function teamMemberId(idx: number): string {
-  const i = idx.toString().padStart(4, '0');
-  return `aabbcc00-${i}-4000-ab00-000000000000`;
 }
 
 /** Clamp a number to a range */
@@ -579,103 +565,103 @@ async function seedUsers() {
     {
       id: CIPRIAN_ID, email: 'ciprian@acme.example.com',
       firstName: 'Ciprian', lastName: 'Dobrea',
-      role: 'admin', jobTitle: 'CEO', managerId: null, isActive: true,
+      level: 'admin', jobTitle: 'CEO', teamName: 'Ciprian', managerId: null, isActive: true,
     },
     {
       id: AUREL_ID, email: 'aurel@acme.example.com',
       firstName: 'Aurel', lastName: 'Filip',
-      role: 'manager', jobTitle: 'Tech Lead', managerId: CIPRIAN_ID, isActive: true,
+      level: 'manager', jobTitle: 'Tech Lead', teamName: 'Aurel', managerId: CIPRIAN_ID, isActive: true,
     },
     {
       id: EMILIA_ID, email: 'emilia@acme.example.com',
       firstName: 'Emilia', lastName: 'Mintean',
-      role: 'manager', jobTitle: 'People & Culture Lead', managerId: CIPRIAN_ID, isActive: true,
+      level: 'manager', jobTitle: 'People & Culture Lead', teamName: 'Emilia', managerId: CIPRIAN_ID, isActive: true,
     },
     // Ciprian's reports
     {
       id: MARIA_T_ID, email: 'maria.turcan@acme.example.com',
       firstName: 'Maria', lastName: 'Turcan',
-      role: 'member', jobTitle: 'Content Strategist', managerId: CIPRIAN_ID, isActive: true,
+      level: 'member', jobTitle: 'Content Strategist', managerId: CIPRIAN_ID, isActive: true,
     },
     {
       id: ANDREI_P_ID, email: 'andrei.popa@acme.example.com',
       firstName: 'Andrei', lastName: 'Popa',
-      role: 'member', jobTitle: 'Senior Editor', managerId: CIPRIAN_ID, isActive: true,
+      level: 'member', jobTitle: 'Senior Editor', managerId: CIPRIAN_ID, isActive: true,
     },
     {
       id: ELENA_V_ID, email: 'elena.voinea@acme.example.com',
       firstName: 'Elena', lastName: 'Voinea',
-      role: 'member', jobTitle: 'Editorial Manager', managerId: CIPRIAN_ID, isActive: true,
+      level: 'member', jobTitle: 'Editorial Manager', managerId: CIPRIAN_ID, isActive: true,
     },
     {
       id: RADU_D_ID, email: 'radu.dumitru@acme.example.com',
       firstName: 'Radu', lastName: 'Dumitru',
-      role: 'member', jobTitle: 'Content Writer', managerId: CIPRIAN_ID, isActive: true,
+      level: 'member', jobTitle: 'Content Writer', managerId: CIPRIAN_ID, isActive: true,
     },
     {
       id: DIANA_N_ID, email: 'diana.neagu@acme.example.com',
       firstName: 'Diana', lastName: 'Neagu',
-      role: 'member', jobTitle: 'Copy Editor', managerId: CIPRIAN_ID, isActive: true,
+      level: 'member', jobTitle: 'Copy Editor', managerId: CIPRIAN_ID, isActive: true,
     },
     // Aurel's reports
     {
       id: MIHAI_I_ID, email: 'mihai.ionescu@acme.example.com',
       firstName: 'Mihai', lastName: 'Ionescu',
-      role: 'member', jobTitle: 'Senior Software Engineer', managerId: AUREL_ID, isActive: true,
+      level: 'member', jobTitle: 'Senior Software Engineer', managerId: AUREL_ID, isActive: true,
     },
     {
       id: IOANA_S_ID, email: 'ioana.stanescu@acme.example.com',
       firstName: 'Ioana', lastName: 'Stanescu',
-      role: 'member', jobTitle: 'Software Engineer', managerId: AUREL_ID, isActive: true,
+      level: 'member', jobTitle: 'Software Engineer', managerId: AUREL_ID, isActive: true,
     },
     {
       id: DAN_M_ID, email: 'dan.marin@acme.example.com',
       firstName: 'Dan', lastName: 'Marin',
-      role: 'member', jobTitle: 'Backend Engineer', managerId: AUREL_ID, isActive: true,
+      level: 'member', jobTitle: 'Backend Engineer', managerId: AUREL_ID, isActive: true,
     },
     {
       id: CRISTINA_B_ID, email: 'cristina.barbu@acme.example.com',
       firstName: 'Cristina', lastName: 'Barbu',
-      role: 'member', jobTitle: 'Frontend Engineer', managerId: AUREL_ID, isActive: true,
+      level: 'member', jobTitle: 'Frontend Engineer', managerId: AUREL_ID, isActive: true,
     },
     // Emilia's reports
     {
       id: ALEX_R_ID, email: 'alex.rusu@acme.example.com',
       firstName: 'Alex', lastName: 'Rusu',
-      role: 'member', jobTitle: 'HR Specialist', managerId: EMILIA_ID, isActive: true,
+      level: 'member', jobTitle: 'HR Specialist', managerId: EMILIA_ID, isActive: true,
     },
     {
       id: LAURA_G_ID, email: 'laura.gheorghe@acme.example.com',
       firstName: 'Laura', lastName: 'Gheorghe',
-      role: 'member', jobTitle: 'Talent Acquisition', managerId: EMILIA_ID, isActive: true,
+      level: 'member', jobTitle: 'Talent Acquisition', managerId: EMILIA_ID, isActive: true,
     },
     {
       id: VLAD_M_ID, email: 'vlad.moldovan@acme.example.com',
       firstName: 'Vlad', lastName: 'Moldovan',
-      role: 'member', jobTitle: 'People Operations', managerId: EMILIA_ID, isActive: true,
+      level: 'member', jobTitle: 'People Operations', managerId: EMILIA_ID, isActive: true,
     },
     {
       id: ANA_C_ID, email: 'ana.costin@acme.example.com',
       firstName: 'Ana', lastName: 'Costin',
-      role: 'member', jobTitle: 'Learning & Development', managerId: EMILIA_ID, isActive: true,
+      level: 'member', jobTitle: 'Learning & Development', managerId: EMILIA_ID, isActive: true,
     },
     // Deactivated user
     {
       id: ADELA_G_ID, email: 'adela.gherman@acme.example.com',
       firstName: 'Adela', lastName: 'Gherman',
-      role: 'member', jobTitle: 'Former HR Coordinator', managerId: EMILIA_ID, isActive: false,
+      level: 'member', jobTitle: 'Former HR Coordinator', managerId: EMILIA_ID, isActive: false,
     },
     // Pending invites (no password hash, invitedAt set)
     {
       id: STEFAN_L_ID, email: 'stefan.lungu@acme.example.com',
       firstName: 'Stefan', lastName: 'Lungu',
-      role: 'member', jobTitle: 'DevOps Engineer', managerId: AUREL_ID, isActive: true,
+      level: 'member', jobTitle: 'DevOps Engineer', managerId: AUREL_ID, isActive: true,
       isPending: true,
     },
     {
       id: OANA_P_ID, email: 'oana.petrescu@acme.example.com',
       firstName: 'Oana', lastName: 'Petrescu',
-      role: 'member', jobTitle: 'Office Manager', managerId: EMILIA_ID, isActive: true,
+      level: 'member', jobTitle: 'Office Manager', managerId: EMILIA_ID, isActive: true,
       isPending: true,
     },
   ];
@@ -683,10 +669,10 @@ async function seedUsers() {
   for (const u of users) {
     const isPending = (u as any).isPending;
     await sql`
-      INSERT INTO "user" (id, tenant_id, email, first_name, last_name, role, job_title, password_hash, manager_id, is_active, invited_at, notification_preferences, language)
+      INSERT INTO "user" (id, tenant_id, email, first_name, last_name, level, job_title, team_name, password_hash, manager_id, is_active, invited_at, notification_preferences, language)
       VALUES (
         ${u.id}, ${ACME_TENANT_ID}, ${u.email}, ${u.firstName}, ${u.lastName},
-        ${u.role}, ${u.jobTitle},
+        ${u.level}, ${u.jobTitle}, ${(u as any).teamName ?? null},
         ${isPending ? null : TEST_PASSWORD_HASH},
         ${u.managerId},
         ${u.isActive},
@@ -698,68 +684,13 @@ async function seedUsers() {
         email = EXCLUDED.email,
         first_name = EXCLUDED.first_name,
         last_name = EXCLUDED.last_name,
-        role = EXCLUDED.role,
+        level = EXCLUDED.level,
         job_title = EXCLUDED.job_title,
+        team_name = EXCLUDED.team_name,
         password_hash = EXCLUDED.password_hash,
         manager_id = EXCLUDED.manager_id,
         is_active = EXCLUDED.is_active,
         updated_at = now()
-    `;
-  }
-}
-
-async function seedTeams() {
-  console.log('  Seeding editorial teams...');
-
-  const teams = [
-    { id: TEAM_ENGINEERING_ID, name: 'Engineering (Aurel)', description: 'Full-stack engineering team led by Aurel Filip. Focused on platform development, API design, and frontend architecture.', managerId: AUREL_ID },
-    { id: TEAM_EDITORIAL_ID, name: 'Editorial', description: 'Content and editorial team led by Ciprian Dobrea. Responsible for content strategy, copy editing, and brand voice.', managerId: CIPRIAN_ID },
-    { id: TEAM_PEOPLE_ID, name: 'People & Culture', description: 'People operations team led by Emilia Mintean. Handles HR, talent acquisition, L&D, and employee experience.', managerId: EMILIA_ID },
-  ];
-
-  for (const t of teams) {
-    await sql`
-      INSERT INTO team (id, tenant_id, name, description, manager_id)
-      VALUES (${t.id}, ${ACME_TENANT_ID}, ${t.name}, ${t.description}, ${t.managerId})
-      ON CONFLICT (id) DO UPDATE SET
-        name = EXCLUDED.name,
-        description = EXCLUDED.description,
-        manager_id = EXCLUDED.manager_id,
-        updated_at = now()
-    `;
-  }
-
-  // Team members
-  const members: { id: string; teamId: string; userId: string; role: string }[] = [
-    // Engineering
-    { id: teamMemberId(1), teamId: TEAM_ENGINEERING_ID, userId: AUREL_ID, role: 'lead' },
-    { id: teamMemberId(2), teamId: TEAM_ENGINEERING_ID, userId: MIHAI_I_ID, role: 'member' },
-    { id: teamMemberId(3), teamId: TEAM_ENGINEERING_ID, userId: IOANA_S_ID, role: 'member' },
-    { id: teamMemberId(4), teamId: TEAM_ENGINEERING_ID, userId: DAN_M_ID, role: 'member' },
-    { id: teamMemberId(5), teamId: TEAM_ENGINEERING_ID, userId: CRISTINA_B_ID, role: 'member' },
-    // Editorial
-    { id: teamMemberId(6), teamId: TEAM_EDITORIAL_ID, userId: CIPRIAN_ID, role: 'lead' },
-    { id: teamMemberId(7), teamId: TEAM_EDITORIAL_ID, userId: MARIA_T_ID, role: 'member' },
-    { id: teamMemberId(8), teamId: TEAM_EDITORIAL_ID, userId: ANDREI_P_ID, role: 'member' },
-    { id: teamMemberId(9), teamId: TEAM_EDITORIAL_ID, userId: ELENA_V_ID, role: 'member' },
-    { id: teamMemberId(10), teamId: TEAM_EDITORIAL_ID, userId: RADU_D_ID, role: 'member' },
-    { id: teamMemberId(11), teamId: TEAM_EDITORIAL_ID, userId: DIANA_N_ID, role: 'member' },
-    // People & Culture
-    { id: teamMemberId(12), teamId: TEAM_PEOPLE_ID, userId: EMILIA_ID, role: 'lead' },
-    { id: teamMemberId(13), teamId: TEAM_PEOPLE_ID, userId: ALEX_R_ID, role: 'member' },
-    { id: teamMemberId(14), teamId: TEAM_PEOPLE_ID, userId: LAURA_G_ID, role: 'member' },
-    { id: teamMemberId(15), teamId: TEAM_PEOPLE_ID, userId: VLAD_M_ID, role: 'member' },
-    { id: teamMemberId(16), teamId: TEAM_PEOPLE_ID, userId: ANA_C_ID, role: 'member' },
-  ];
-
-  for (const m of members) {
-    await sql`
-      INSERT INTO team_member (id, team_id, user_id, role)
-      VALUES (${m.id}, ${m.teamId}, ${m.userId}, ${m.role})
-      ON CONFLICT (id) DO UPDATE SET
-        team_id = EXCLUDED.team_id,
-        user_id = EXCLUDED.user_id,
-        role = EXCLUDED.role
     `;
   }
 }
@@ -1294,14 +1225,12 @@ async function main() {
 
   try {
     await seedUsers();
-    await seedTeams();
     await seedSeriesAndSessions();
 
     console.log('');
     console.log('=== Editorial seed complete ===');
     console.log('Summary:');
     console.log('  - 19 users (13 active + 1 deactivated + 2 pending invites + 3 managers)');
-    console.log('  - 3 teams (Engineering, Editorial, People & Culture)');
     console.log('  - 13 meeting series');
     console.log('  - ~97 sessions with answers, AI summaries, and analytics');
     console.log('  - 32 action items (15 open, 8 completed, 4 overdue, 5 in-progress)');

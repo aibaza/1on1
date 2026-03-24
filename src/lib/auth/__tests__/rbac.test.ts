@@ -18,7 +18,7 @@ describe('canManageTemplates', () => {
     expect(canManageTemplates('')).toBe(false);
   });
 
-  it('returns false for "superadmin" (unknown role)', () => {
+  it('returns false for "superadmin" (unknown level)', () => {
     expect(canManageTemplates('superadmin')).toBe(false);
   });
 });
@@ -26,19 +26,19 @@ describe('canManageTemplates', () => {
 describe('canCorrectSession', () => {
   const series = { managerId: 'manager-user-id' };
 
-  it('returns true for admin role regardless of series.managerId', () => {
+  it('returns true for admin level regardless of series.managerId', () => {
     expect(canCorrectSession('other-user-id', 'admin', series)).toBe(true);
   });
 
-  it('returns true for manager role when userId === series.managerId', () => {
+  it('returns true for manager level when userId === series.managerId', () => {
     expect(canCorrectSession('manager-user-id', 'manager', series)).toBe(true);
   });
 
-  it('returns false for manager role when userId !== series.managerId', () => {
+  it('returns false for manager level when userId !== series.managerId', () => {
     expect(canCorrectSession('other-user-id', 'manager', series)).toBe(false);
   });
 
-  it('returns false for member role even when userId === series.managerId', () => {
+  it('returns false for member level even when userId === series.managerId', () => {
     expect(canCorrectSession('manager-user-id', 'member', series)).toBe(false);
   });
 });

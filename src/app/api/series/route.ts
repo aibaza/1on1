@@ -37,7 +37,7 @@ export async function GET(request: Request) {
         }
 
         // Role-based access control
-        const userRole = session.user.role;
+        const userRole = session.user.level;
         const userId = session.user.id;
 
         if (userRole === "member") {
@@ -277,7 +277,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!canManageSeries(session.user.role)) {
+  if (!canManageSeries(session.user.level)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

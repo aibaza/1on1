@@ -23,7 +23,7 @@ export default async function AccountPage() {
           email: users.email,
           avatarUrl: users.avatarUrl,
           avatarSeed: users.avatarSeed,
-          role: users.role,
+          level: users.level,
           emailVerified: users.emailVerified,
         })
         .from(users)
@@ -52,7 +52,7 @@ export default async function AccountPage() {
           email: user.email,
           avatarUrl: user.avatarUrl,
           avatarSeed: user.avatarSeed,
-          role: user.role,
+          level: user.level,
           emailVerified: !!user.emailVerified,
         }}
       />

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { eq, and, sql } from "drizzle-orm";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { users, meetingSeries, sessions, actionItems, teams, teamMembers } from "@/lib/db/schema";
+import { users, meetingSeries, sessions, actionItems } from "@/lib/db/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarUrl } from "@/lib/avatar";
@@ -39,7 +39,7 @@ export default async function AnalyticsPage() {
   const { user } = session;
 
   // Members can only see their own analytics
-  if (user.role === "member") {
+  if (user.level === "member") {
     redirect(`/analytics/individual/${user.id}`);
   }
 
@@ -49,7 +49,7 @@ export default async function AnalyticsPage() {
     async (tx) => {
       // Managers see their direct reports, admins see all users with sessions
       const managerCondition =
-        user.role === "manager"
+        user.level === "manager"
           ? and(
               eq(meetingSeries.managerId, user.id),
               eq(users.isActive, true),
@@ -133,26 +133,30 @@ export default async function AnalyticsPage() {
         ),
       );
 
-      // Fetch teams the user can see analytics for
-      // Managers: teams they manage or lead; Admins: all teams
-      const teamCondition =
-        user.role === "admin" ? undefined : eq(teams.managerId, user.id);
+      // Derive teams from managers with direct reports
+      // Managers see only their own team; Admins see all managers with reports
+      const managerFilter =
+        user.level === "admin" ? undefined : eq(users.id, user.id);
 
       const teamRows = await tx
         .select({
-          id: teams.id,
-          name: teams.name,
-          memberCount: sql<number>`COUNT(${teamMembers.id})::int`,
+          id: users.id,
+          name: sql<string>`${users.firstName} || ' ' || ${users.lastName} || '''s Team'`,
+          memberCount: sql<number>`(SELECT COUNT(*) FROM "user" u2 WHERE u2.manager_id = ${users.id} AND u2.is_active = true)::int`,
         })
-        .from(teams)
-        .leftJoin(teamMembers, eq(teamMembers.teamId, teams.id))
-        .where(teamCondition)
-        .groupBy(teams.id, teams.name)
-        .orderBy(teams.name);
+        .from(users)
+        .where(
+          and(
+            eq(users.tenantId, user.tenantId),
+            eq(users.level, "manager"),
+            managerFilter,
+          )
+        )
+        .orderBy(users.lastName, users.firstName);
 
       // Aggregate company-wide metrics (scoped to what the user can see)
       const seriesConditionForAgg =
-        user.role === "manager"
+        user.level === "manager"
           ? eq(meetingSeries.managerId, user.id)
           : undefined;
 
@@ -207,7 +211,7 @@ export default async function AnalyticsPage() {
   const isEditorial = designPref === "editorial";
 
   if (isEditorial) {
-    return <EditorialAnalyticsDashboard currentUserRole={session.user.role} />;
+    return <EditorialAnalyticsDashboard currentUserLevel={session.user.level} />;
   }
 
   // Editorial stat card wrapper

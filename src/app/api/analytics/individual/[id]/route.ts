@@ -43,11 +43,11 @@ export async function GET(
       user.id,
       async (tx) => {
         // Authorization check
-        if (user.role === "member" && user.id !== targetUserId) {
+        if (user.level === "member" && user.id !== targetUserId) {
           return { error: "forbidden" } as const;
         }
 
-        if (user.role === "manager" && user.id !== targetUserId) {
+        if (user.level === "manager" && user.id !== targetUserId) {
           // Verify the target user is a direct report via meeting_series
           const series = await tx
             .select({ id: meetingSeries.id })
@@ -86,7 +86,7 @@ export async function GET(
 
         // Determine effective role for velocity/adherence queries
         // When viewing a specific user, use "member" role to scope to their data
-        const effectiveRole = targetUserId === user.id ? user.role : "member";
+        const effectiveRole = targetUserId === user.id ? user.level : "member";
 
         // Fetch analytics in parallel
         const [scoreTrend, categoryAverages, sessionList, velocity, adherence, historyTable] = await Promise.all([

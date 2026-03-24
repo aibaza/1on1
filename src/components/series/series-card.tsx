@@ -77,7 +77,7 @@ interface SeriesCardProps {
       firstName: string;
       lastName: string;
       avatarUrl: string | null;
-      role: string;
+      level: string;
     };
     latestSession: {
       id: string;
@@ -340,7 +340,7 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
       <CardHeader className="relative z-[1] pointer-events-none flex flex-row items-center gap-3 pb-2">
         <div className="relative shrink-0">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={getAvatarUrl(`${series.report.firstName} ${series.report.lastName}`, series.report.avatarUrl, null, series.report.role)} />
+            <AvatarImage src={getAvatarUrl(`${series.report.firstName} ${series.report.lastName}`, series.report.avatarUrl, null, series.report.level)} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           {isManager ? (

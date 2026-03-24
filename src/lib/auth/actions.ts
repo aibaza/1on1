@@ -120,7 +120,7 @@ export async function registerAction(formData: FormData) {
           email: data.email,
           firstName: data.firstName,
           lastName: data.lastName,
-          role: "admin",
+          level: "admin",
           passwordHash,
         })
         .returning();

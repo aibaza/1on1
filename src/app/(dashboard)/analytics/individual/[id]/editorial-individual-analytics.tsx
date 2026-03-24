@@ -37,7 +37,7 @@ interface IndividualAnalyticsResponse {
     lastName: string;
     jobTitle: string | null;
     avatarUrl: string | null;
-    role: string;
+    level: string;
   };
   currentScore: number | null;
   avgScore: number | null;
@@ -173,13 +173,13 @@ export function EditorialIndividualAnalytics({
                   fullName,
                   data.user.avatarUrl,
                   null,
-                  data.user.role,
+                  data.user.level,
                 )}
                 alt={fullName}
                 className="w-32 h-32 rounded-xl object-cover shadow-2xl"
               />
               <div className="absolute -bottom-2 -right-2 bg-[var(--editorial-tertiary,var(--color-success))] text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md">
-                {data.user.role}
+                {data.user.level}
               </div>
             </div>
             <div>

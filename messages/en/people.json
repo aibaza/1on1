@@ -9,12 +9,12 @@
     "table": {
       "name": "Name",
       "email": "Email",
-      "role": "Role",
+      "role": "Level",
       "teams": "Teams",
       "manager": "Manager",
       "status": "Status",
       "searchPlaceholder": "Search by name, email, or job title...",
-      "allRoles": "All Roles",
+      "allRoles": "All Levels",
       "admin": "Admin",
       "manager": "Manager",
       "member": "Member",
@@ -36,9 +36,9 @@
       "emailLabel": "Email addresses",
       "emailPlaceholder": "Enter email addresses, one per line or comma-separated",
       "emailDesc": "You can invite up to 50 people at once.",
-      "roleLabel": "Role",
-      "rolePlaceholder": "Select a role",
-      "roleDesc": "All invitees will receive this role.",
+      "roleLabel": "Level",
+      "rolePlaceholder": "Select a level",
+      "roleDesc": "All invitees will receive this level.",
       "cancel": "Cancel",
       "sending": "Sending...",
       "send": "Send invites",
@@ -60,7 +60,7 @@
       "viewProfile": "View Full Profile"
     },
     "role": {
-      "updated": "Role updated"
+      "updated": "Level updated"
     },
     "actions": {
       "viewProfile": "View Profile",
@@ -112,7 +112,7 @@
       "viewProfile": "View Profile",
       "membersSelected": "{count} member selected",
       "membersSelectedPlural": "{count} members selected",
-      "changeRole": "Change role",
+      "changeRole": "Change level",
       "clearSelection": "Clear selection",
       "showingMembers": "Showing {from} to {to} of {total} members",
       "invited": "Invited"

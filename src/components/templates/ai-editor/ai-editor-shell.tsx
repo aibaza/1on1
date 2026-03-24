@@ -29,7 +29,7 @@ interface AiEditorShellProps {
   initialTemplate?: TemplateExport;
   templateId?: string;
   contentLanguage: string;
-  userRole: string;
+  userLevel: string;
   initialChatHistory?: AiChatMessage[] | null;
   initialVersionHistory?: AiVersionSnapshot[] | null;
 }
@@ -65,7 +65,7 @@ export function AiEditorShell({
   initialTemplate,
   templateId,
   contentLanguage: _contentLanguage,
-  userRole: _userRole,
+  userLevel: _userLevel,
   initialChatHistory,
   initialVersionHistory,
 }: AiEditorShellProps) {

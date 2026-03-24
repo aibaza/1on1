@@ -13,43 +13,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface RoleSelectProps {
+interface LevelSelectProps {
   userId: string;
-  currentRole: string;
+  currentLevel: string;
   disabled: boolean;
 }
 
-export function RoleSelect({ userId, currentRole, disabled }: RoleSelectProps) {
+export function LevelSelect({ userId, currentLevel, disabled }: LevelSelectProps) {
   const t = useTranslations("people");
   const queryClient = useQueryClient();
   const { showApiError } = useApiErrorToast();
 
   const mutation = useMutation({
-    mutationFn: async (newRole: string) => {
+    mutationFn: async (newLevel: string) => {
       const res = await fetch(`/api/users/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: newRole }),
+        body: JSON.stringify({ level: newLevel }),
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to update role");
+        throw new Error(data.error || "Failed to update level");
       }
       return res.json();
     },
-    onMutate: async (newRole: string) => {
+    onMutate: async (newLevel: string) => {
       await queryClient.cancelQueries({ queryKey: ["users"] });
       const previous = queryClient.getQueryData(["users"]);
       queryClient.setQueryData(
         ["users"],
         (old: Array<Record<string, unknown>> | undefined) =>
           old?.map((user) =>
-            user.id === userId ? { ...user, role: newRole } : user
+            user.id === userId ? { ...user, level: newLevel } : user
           )
       );
       return { previous };
     },
-    onError: (error, _newRole, context) => {
+    onError: (error, _newLevel, context) => {
       if (context?.previous) {
         queryClient.setQueryData(["users"], context.previous);
       }
@@ -66,7 +66,7 @@ export function RoleSelect({ userId, currentRole, disabled }: RoleSelectProps) {
   if (disabled) {
     return (
       <Badge variant="secondary">
-        {currentRole === "admin" ? t("table.admin") : currentRole === "manager" ? t("table.manager") : t("table.member")}
+        {currentLevel === "admin" ? t("table.admin") : currentLevel === "manager" ? t("table.manager") : t("table.member")}
       </Badge>
     );
   }
@@ -74,7 +74,7 @@ export function RoleSelect({ userId, currentRole, disabled }: RoleSelectProps) {
   return (
     <div onClick={(e) => e.stopPropagation()}>
       <Select
-        value={currentRole}
+        value={currentLevel}
         onValueChange={(value) => mutation.mutate(value)}
         disabled={mutation.isPending}
       >

@@ -69,7 +69,7 @@ export async function GET(
         }
 
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           !isSeriesParticipant(session.user.id, seriesRows[0])
         ) {
           return { error: "FORBIDDEN" as const };
@@ -206,7 +206,7 @@ export async function POST(
         }
 
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           !isSeriesParticipant(session.user.id, seriesRows[0])
         ) {
           return { error: "FORBIDDEN" as const };
@@ -337,7 +337,7 @@ export async function PATCH(
         }
 
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           !isSeriesParticipant(session.user.id, seriesRows[0])
         ) {
           return { error: "FORBIDDEN" as const };
@@ -464,7 +464,7 @@ export async function DELETE(
         }
 
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           !isSeriesParticipant(session.user.id, seriesRows[0])
         ) {
           return { error: "FORBIDDEN" as const };

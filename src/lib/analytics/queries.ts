@@ -6,7 +6,6 @@ import {
   sessionAnswers,
   templateQuestions,
   templateSections,
-  teamMembers,
   users,
   actionItems,
   meetingSeries,
@@ -79,7 +78,7 @@ export async function getScoreTrend(
         eq(analyticsSnapshots.userId, userId),
         eq(analyticsSnapshots.metricName, METRIC_NAMES.SESSION_SCORE),
         eq(analyticsSnapshots.periodType, "month"),
-        isNull(analyticsSnapshots.teamId),
+        isNull(analyticsSnapshots.managerId),
         gte(analyticsSnapshots.periodStart, startDate),
         lte(analyticsSnapshots.periodStart, endDate),
       ),
@@ -151,7 +150,7 @@ export async function getCategoryAverages(
     .where(
       and(
         eq(analyticsSnapshots.userId, userId),
-        isNull(analyticsSnapshots.teamId),
+        isNull(analyticsSnapshots.managerId),
         sql`${analyticsSnapshots.metricName} NOT IN (${sql.join(
           operationalNames.map((n) => sql`${n}`),
           sql`, `,
@@ -326,27 +325,27 @@ export async function getSessionComparison(
 // ---------- Team Averages ----------
 
 /**
- * Get aggregated category averages across all team members.
+ * Get aggregated category averages across all team members (direct reports of a manager).
  *
- * Queries analytics_snapshot for all members of a given team, aggregates
- * per-category. Enforces minimum 3 data points for anonymization.
+ * Queries analytics_snapshot for all reports of the given manager, aggregates
+ * per-category. Enforces minimum 2 data points for anonymization.
  */
 export async function getTeamAverages(
   tx: TransactionClient,
-  teamId: string,
+  managerId: string,
   startDate: string,
   endDate: string,
   anonymize: boolean = false,
 ): Promise<TeamAverage[]> {
-  // Get team member user IDs
+  // Get direct report user IDs (team members derived from managerId)
   const members = await tx
-    .select({ userId: teamMembers.userId })
-    .from(teamMembers)
-    .where(eq(teamMembers.teamId, teamId));
+    .select({ id: users.id })
+    .from(users)
+    .where(and(eq(users.managerId, managerId), eq(users.isActive, true)));
 
   if (members.length === 0) return [];
 
-  const memberIds = members.map((m) => m.userId);
+  const memberIds = members.map((m) => m.id);
   const operationalNames = [...OPERATIONAL_METRICS];
 
   const results = await tx
@@ -360,7 +359,7 @@ export async function getTeamAverages(
     .where(
       and(
         inArray(analyticsSnapshots.userId, memberIds),
-        isNull(analyticsSnapshots.teamId),
+        isNull(analyticsSnapshots.managerId),
         sql`${analyticsSnapshots.metricName} NOT IN (${sql.join(
           operationalNames.map((n) => sql`${n}`),
           sql`, `,
@@ -588,30 +587,29 @@ export async function getSessionHistoryTable(
 /**
  * Get per-user per-category scores for a team heatmap.
  *
- * Returns individual scores for each team member per category.
+ * Returns individual scores for each team member (direct report) per category.
  * When anonymize=true, user names are replaced with "Member 1", "Member 2", etc.
  */
 export async function getTeamHeatmapData(
   tx: TransactionClient,
-  teamId: string,
+  managerId: string,
   startDate: string,
   endDate: string,
   anonymize: boolean = false,
 ): Promise<HeatmapDataPoint[]> {
-  // Get team member user IDs with names
+  // Get direct reports with names
   const members = await tx
     .select({
-      userId: teamMembers.userId,
+      id: users.id,
       firstName: users.firstName,
       lastName: users.lastName,
     })
-    .from(teamMembers)
-    .innerJoin(users, eq(teamMembers.userId, users.id))
-    .where(eq(teamMembers.teamId, teamId));
+    .from(users)
+    .where(and(eq(users.managerId, managerId), eq(users.isActive, true)));
 
   if (members.length === 0) return [];
 
-  const memberIds = members.map((m) => m.userId);
+  const memberIds = members.map((m) => m.id);
   const operationalNames = [...OPERATIONAL_METRICS];
 
   const snapshots = await tx
@@ -625,7 +623,7 @@ export async function getTeamHeatmapData(
     .where(
       and(
         inArray(analyticsSnapshots.userId, memberIds),
-        isNull(analyticsSnapshots.teamId),
+        isNull(analyticsSnapshots.managerId),
         sql`${analyticsSnapshots.metricName} NOT IN (${sql.join(
           operationalNames.map((n) => sql`${n}`),
           sql`, `,
@@ -643,7 +641,7 @@ export async function getTeamHeatmapData(
   );
   sortedMembers.forEach((m, idx) => {
     nameMap.set(
-      m.userId,
+      m.id,
       anonymize ? `Member ${idx + 1}` : `${m.firstName} ${m.lastName}`,
     );
   });
@@ -725,16 +723,16 @@ export interface VelocityPoint {
 export async function getActionItemVelocity(
   tx: TransactionClient,
   userId: string,
-  role: string,
+  level: string,
   startDate: string,
   endDate: string,
 ): Promise<VelocityPoint[]> {
-  // Build role-specific filter
-  let roleFilter;
-  if (role === "admin") {
-    roleFilter = sql`1=1`; // org-wide (RLS handles tenant)
-  } else if (role === "manager") {
-    roleFilter = inArray(
+  // Build level-specific filter
+  let levelFilter;
+  if (level === "admin") {
+    levelFilter = sql`1=1`; // org-wide (RLS handles tenant)
+  } else if (level === "manager") {
+    levelFilter = inArray(
       actionItems.sessionId,
       tx
         .select({ id: sessions.id })
@@ -743,7 +741,7 @@ export async function getActionItemVelocity(
         .where(eq(meetingSeries.managerId, userId)),
     );
   } else {
-    roleFilter = eq(actionItems.assigneeId, userId);
+    levelFilter = eq(actionItems.assigneeId, userId);
   }
 
   const rows = await tx
@@ -759,7 +757,7 @@ export async function getActionItemVelocity(
         sql`${actionItems.completedAt} IS NOT NULL`,
         sql`${actionItems.completedAt} >= ${startDate}::date`,
         sql`${actionItems.completedAt} <= ${endDate}::date + interval '1 day'`,
-        roleFilter,
+        levelFilter,
       ),
     )
     .groupBy(sql`to_char(${actionItems.completedAt}, 'YYYY-MM')`)
@@ -795,20 +793,20 @@ export interface AdherencePoint {
 export async function getMeetingAdherence(
   tx: TransactionClient,
   userId: string,
-  role: string,
+  level: string,
   startDate: string,
   endDate: string,
 ): Promise<AdherencePoint[]> {
-  // Build role-specific filter
-  let roleFilter;
-  if (role === "admin") {
-    roleFilter = sql`1=1`;
-  } else if (role === "manager") {
-    roleFilter = sql`${sessions.seriesId} IN (
+  // Build level-specific filter
+  let levelFilter;
+  if (level === "admin") {
+    levelFilter = sql`1=1`;
+  } else if (level === "manager") {
+    levelFilter = sql`${sessions.seriesId} IN (
       SELECT id FROM meeting_series WHERE manager_id = ${userId}
     )`;
   } else {
-    roleFilter = sql`${sessions.seriesId} IN (
+    levelFilter = sql`${sessions.seriesId} IN (
       SELECT id FROM meeting_series WHERE report_id = ${userId}
     )`;
   }
@@ -827,7 +825,7 @@ export async function getMeetingAdherence(
         sql`${sessions.status} IN ('completed', 'cancelled', 'missed')`,
         sql`${sessions.scheduledAt} >= ${startDate}::date`,
         sql`${sessions.scheduledAt} <= ${endDate}::date + interval '1 day'`,
-        roleFilter,
+        levelFilter,
       ),
     )
     .groupBy(sql`to_char(${sessions.scheduledAt}, 'YYYY-MM')`)

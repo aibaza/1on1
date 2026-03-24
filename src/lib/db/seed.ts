@@ -54,10 +54,6 @@ const ZARA_ID = 'bbbbbbbb-0001-4000-b000-000000000001'; // admin
 const YURI_ID = 'bbbbbbbb-0002-4000-b000-000000000002'; // manager
 const XENA_ID = 'bbbbbbbb-0003-4000-b000-000000000003'; // member (Yuri's report)
 
-// Acme Teams
-const ENGINEERING_TEAM_ID = 'cccccccc-0001-4000-a000-000000000001';
-const PRODUCT_TEAM_ID = 'cccccccc-0002-4000-a000-000000000002';
-
 // Acme Templates
 const WEEKLY_TEMPLATE_ID = 'dddddddd-0001-4000-a000-000000000001';
 const CAREER_TEMPLATE_ID = 'dddddddd-0002-4000-a000-000000000002';
@@ -278,15 +274,6 @@ const ANSWER_S3_BLOCKERS_ID = '66666666-0013-4000-8000-000000000013';
 const ANSWER_S3_HELP_ID = '66666666-0014-4000-8000-000000000014';
 const ANSWER_S3_SATISFACTION_ID = '66666666-0015-4000-8000-000000000015';
 
-// Team member junction table IDs
-const TM_BOB_ENG_ID = 'aabbccdd-0001-4000-ab00-000000000001';
-const TM_DAVE_ENG_ID = 'aabbccdd-0002-4000-ab00-000000000002';
-const TM_EVE_ENG_ID = 'aabbccdd-0003-4000-ab00-000000000003';
-const TM_CAROL_PROD_ID = 'aabbccdd-0004-4000-ab00-000000000004';
-const TM_FRANK_PROD_ID = 'aabbccdd-0005-4000-ab00-000000000005';
-const TM_GRACE_PROD_ID = 'aabbccdd-0006-4000-ab00-000000000006';
-const TM_FRANK_ENG_ID = 'aabbccdd-0007-4000-ab00-000000000007';
-
 // Sample Notifications
 const NOTIF_PRE_MEETING_BOB_ID = 'aaccddee-0001-4000-ac00-000000000001';
 const NOTIF_PRE_MEETING_DAVE_ID = 'aaccddee-0002-4000-ac00-000000000002';
@@ -307,18 +294,6 @@ const TV_MARIA_ID   = 'eeeeeeee-0004-4000-a000-eeeeeeeeeeee'; // member, report 
 const TV_RADU_ID    = 'eeeeeeee-0005-4000-a000-eeeeeeeeeeee'; // manager, report of Elena
 const TV_IOANA_ID   = 'eeeeeeee-0006-4000-a000-eeeeeeeeeeee'; // member, report of Radu
 const TV_ALEX_ID    = 'eeeeeeee-0007-4000-a000-eeeeeeeeeeee'; // member, report of Radu
-
-// Teams
-const TV_TEAM_PRODUS_ID = 'ffffffff-0001-4000-a000-ffffffffffff';
-const TV_TEAM_OPS_ID    = 'ffffffff-0002-4000-a000-ffffffffffff';
-
-// Team member junction IDs
-const TV_TM_CIPRIAN = 'eeeedddd-0001-4000-a000-eeeeeeeeeeee';
-const TV_TM_ANDREI  = 'eeeedddd-0002-4000-a000-eeeeeeeeeeee';
-const TV_TM_MARIA   = 'eeeedddd-0003-4000-a000-eeeeeeeeeeee';
-const TV_TM_RADU    = 'eeeedddd-0004-4000-a000-eeeeeeeeeeee';
-const TV_TM_IOANA   = 'eeeedddd-0005-4000-a000-eeeeeeeeeeee';
-const TV_TM_ALEX_TV = 'eeeedddd-0006-4000-a000-eeeeeeeeeeee';
 
 // Templates
 const TV_CHECKIN_TEMPLATE_ID = 'dddddddd-0010-4000-a000-dddddddddddd';
@@ -457,8 +432,9 @@ async function seedUsers() {
       email: 'alice@acme.example.com',
       firstName: 'Alice',
       lastName: 'Johnson',
-      role: 'admin' as const,
+      level: 'admin' as const,
       jobTitle: 'VP of Engineering',
+      teamName: 'Alice',
       passwordHash: TEST_PASSWORD_HASH,
       isActive: true,
     },
@@ -468,8 +444,9 @@ async function seedUsers() {
       email: 'bob@acme.example.com',
       firstName: 'Bob',
       lastName: 'Smith',
-      role: 'manager' as const,
+      level: 'manager' as const,
       jobTitle: 'Engineering Manager',
+      teamName: 'Bob',
       passwordHash: TEST_PASSWORD_HASH,
       isActive: true,
       managerId: ALICE_ID,
@@ -480,8 +457,9 @@ async function seedUsers() {
       email: 'carol@acme.example.com',
       firstName: 'Carol',
       lastName: 'Williams',
-      role: 'manager' as const,
+      level: 'manager' as const,
       jobTitle: 'Product Manager',
+      teamName: 'Carol',
       managerId: ALICE_ID,
       isActive: true,
     },
@@ -491,7 +469,7 @@ async function seedUsers() {
       email: 'dave@acme.example.com',
       firstName: 'Dave',
       lastName: 'Brown',
-      role: 'member' as const,
+      level: 'member' as const,
       jobTitle: 'Senior Software Engineer',
       passwordHash: TEST_PASSWORD_HASH,
       managerId: BOB_ID,
@@ -503,7 +481,7 @@ async function seedUsers() {
       email: 'eve@acme.example.com',
       firstName: 'Eve',
       lastName: 'Davis',
-      role: 'member' as const,
+      level: 'member' as const,
       jobTitle: 'Software Engineer',
       managerId: BOB_ID,
       isActive: true,
@@ -514,7 +492,7 @@ async function seedUsers() {
       email: 'frank@acme.example.com',
       firstName: 'Frank',
       lastName: 'Miller',
-      role: 'member' as const,
+      level: 'member' as const,
       jobTitle: 'Product Designer',
       managerId: CAROL_ID,
       isActive: true,
@@ -525,7 +503,7 @@ async function seedUsers() {
       email: 'grace@acme.example.com',
       firstName: 'Grace',
       lastName: 'Wilson',
-      role: 'member' as const,
+      level: 'member' as const,
       jobTitle: 'UX Researcher',
       managerId: CAROL_ID,
       isActive: true,
@@ -540,7 +518,7 @@ async function seedUsers() {
       email: 'zara@beta.example.com',
       firstName: 'Zara',
       lastName: 'Admin',
-      role: 'admin' as const,
+      level: 'admin' as const,
       jobTitle: 'CEO',
       isActive: true,
     },
@@ -550,8 +528,9 @@ async function seedUsers() {
       email: 'yuri@beta.example.com',
       firstName: 'Yuri',
       lastName: 'Manager',
-      role: 'manager' as const,
+      level: 'manager' as const,
       jobTitle: 'Team Lead',
+      teamName: 'Yuri',
       isActive: true,
     },
     {
@@ -560,7 +539,7 @@ async function seedUsers() {
       email: 'xena@beta.example.com',
       firstName: 'Xena',
       lastName: 'Member',
-      role: 'member' as const,
+      level: 'member' as const,
       jobTitle: 'Developer',
       managerId: YURI_ID,
       isActive: true,
@@ -577,68 +556,12 @@ async function seedUsers() {
           email: sql`excluded.email`,
           firstName: sql`excluded.first_name`,
           lastName: sql`excluded.last_name`,
-          role: sql`excluded.role`,
+          level: sql`excluded.level`,
           jobTitle: sql`excluded.job_title`,
           passwordHash: sql`excluded.password_hash`,
           managerId: sql`excluded.manager_id`,
           isActive: sql`excluded.is_active`,
           updatedAt: sql`now()`,
-        },
-      });
-  }
-}
-
-async function seedTeams() {
-  console.log('  Seeding teams...');
-  await db
-    .insert(schema.teams)
-    .values([
-      {
-        id: ENGINEERING_TEAM_ID,
-        tenantId: ACME_TENANT_ID,
-        name: 'Engineering',
-        description: 'Full-stack engineering team responsible for the core platform. Currently focused on API performance, migrating to microservices, and improving CI/CD pipeline. Team values: ship fast, measure everything, refactor when it hurts. Weekly standups, bi-weekly sprints, monthly tech debt days.',
-        managerId: BOB_ID,
-      },
-      {
-        id: PRODUCT_TEAM_ID,
-        tenantId: ACME_TENANT_ID,
-        name: 'Product',
-        description: 'Product design and user research team driving the roadmap. Focused on user onboarding improvements and enterprise feature requests. Team culture emphasizes user interviews, data-driven decisions, and cross-functional collaboration with engineering.',
-        managerId: CAROL_ID,
-      },
-    ])
-    .onConflictDoUpdate({
-      target: schema.teams.id,
-      set: {
-        name: sql`excluded.name`,
-        description: sql`excluded.description`,
-        managerId: sql`excluded.manager_id`,
-        updatedAt: sql`now()`,
-      },
-    });
-
-  // Team members
-  const teamMembers = [
-    { id: TM_BOB_ENG_ID, teamId: ENGINEERING_TEAM_ID, userId: BOB_ID, role: 'lead' as const },
-    { id: TM_DAVE_ENG_ID, teamId: ENGINEERING_TEAM_ID, userId: DAVE_ID, role: 'member' as const },
-    { id: TM_EVE_ENG_ID, teamId: ENGINEERING_TEAM_ID, userId: EVE_ID, role: 'member' as const },
-    { id: TM_FRANK_ENG_ID, teamId: ENGINEERING_TEAM_ID, userId: FRANK_ID, role: 'member' as const },
-    { id: TM_CAROL_PROD_ID, teamId: PRODUCT_TEAM_ID, userId: CAROL_ID, role: 'lead' as const },
-    { id: TM_FRANK_PROD_ID, teamId: PRODUCT_TEAM_ID, userId: FRANK_ID, role: 'member' as const },
-    { id: TM_GRACE_PROD_ID, teamId: PRODUCT_TEAM_ID, userId: GRACE_ID, role: 'member' as const },
-  ];
-
-  for (const member of teamMembers) {
-    await db
-      .insert(schema.teamMembers)
-      .values(member)
-      .onConflictDoUpdate({
-        target: schema.teamMembers.id,
-        set: {
-          teamId: sql`excluded.team_id`,
-          userId: sql`excluded.user_id`,
-          role: sql`excluded.role`,
         },
       });
   }
@@ -1811,13 +1734,13 @@ async function seedTechvibe() {
   // Users
   // --------------------------------------------------------------------------
   const tvUsers = [
-    { id: TV_ELENA_ID,   tenantId: TV_TENANT_ID, email: 'elena@techvibe.example.com',   firstName: 'Elena',     lastName: 'Constantin', role: 'admin' as const,   jobTitle: 'CEO',               passwordHash: TEST_PASSWORD_HASH, isActive: true },
-    { id: TV_CIPRIAN_ID, tenantId: TV_TENANT_ID, email: 'ciprian@techvibe.example.com', firstName: 'Ciprian',   lastName: 'Surmont',    role: 'manager' as const, jobTitle: 'Director Produs',   passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_ELENA_ID },
-    { id: TV_RADU_ID,    tenantId: TV_TENANT_ID, email: 'radu@techvibe.example.com',    firstName: 'Radu',      lastName: 'Dumitru',    role: 'manager' as const, jobTitle: 'Manager Operațiuni',passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_ELENA_ID },
-    { id: TV_ANDREI_ID,  tenantId: TV_TENANT_ID, email: 'andrei@techvibe.example.com',  firstName: 'Andrei',    lastName: 'Ionescu',    role: 'member' as const,  jobTitle: 'Inginer Software',  passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_CIPRIAN_ID },
-    { id: TV_MARIA_ID,   tenantId: TV_TENANT_ID, email: 'maria@techvibe.example.com',   firstName: 'Maria',     lastName: 'Popa',       role: 'member' as const,  jobTitle: 'Designer UX',       passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_CIPRIAN_ID },
-    { id: TV_IOANA_ID,   tenantId: TV_TENANT_ID, email: 'ioana@techvibe.example.com',   firstName: 'Ioana',     lastName: 'Munteanu',   role: 'member' as const,  jobTitle: 'Analist Date',      passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_RADU_ID },
-    { id: TV_ALEX_ID,    tenantId: TV_TENANT_ID, email: 'alex@techvibe.example.com',    firstName: 'Alexandru', lastName: 'Vasile',     role: 'member' as const,  jobTitle: 'DevOps Engineer',   passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_RADU_ID },
+    { id: TV_ELENA_ID,   tenantId: TV_TENANT_ID, email: 'elena@techvibe.example.com',   firstName: 'Elena',     lastName: 'Constantin', level: 'admin' as const,   jobTitle: 'CEO',               teamName: 'Elena', passwordHash: TEST_PASSWORD_HASH, isActive: true },
+    { id: TV_CIPRIAN_ID, tenantId: TV_TENANT_ID, email: 'ciprian@techvibe.example.com', firstName: 'Ciprian',   lastName: 'Surmont',    level: 'manager' as const, jobTitle: 'Director Produs',   teamName: 'Ciprian', passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_ELENA_ID },
+    { id: TV_RADU_ID,    tenantId: TV_TENANT_ID, email: 'radu@techvibe.example.com',    firstName: 'Radu',      lastName: 'Dumitru',    level: 'manager' as const, jobTitle: 'Manager Operațiuni', teamName: 'Radu', passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_ELENA_ID },
+    { id: TV_ANDREI_ID,  tenantId: TV_TENANT_ID, email: 'andrei@techvibe.example.com',  firstName: 'Andrei',    lastName: 'Ionescu',    level: 'member' as const,  jobTitle: 'Inginer Software',  passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_CIPRIAN_ID },
+    { id: TV_MARIA_ID,   tenantId: TV_TENANT_ID, email: 'maria@techvibe.example.com',   firstName: 'Maria',     lastName: 'Popa',       level: 'member' as const,  jobTitle: 'Designer UX',       passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_CIPRIAN_ID },
+    { id: TV_IOANA_ID,   tenantId: TV_TENANT_ID, email: 'ioana@techvibe.example.com',   firstName: 'Ioana',     lastName: 'Munteanu',   level: 'member' as const,  jobTitle: 'Analist Date',      passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_RADU_ID },
+    { id: TV_ALEX_ID,    tenantId: TV_TENANT_ID, email: 'alex@techvibe.example.com',    firstName: 'Alexandru', lastName: 'Vasile',     level: 'member' as const,  jobTitle: 'DevOps Engineer',   passwordHash: TEST_PASSWORD_HASH, isActive: true, managerId: TV_RADU_ID },
   ];
 
   for (const user of tvUsers) {
@@ -1830,51 +1753,13 @@ async function seedTechvibe() {
           email: sql`excluded.email`,
           firstName: sql`excluded.first_name`,
           lastName: sql`excluded.last_name`,
-          role: sql`excluded.role`,
+          level: sql`excluded.level`,
           jobTitle: sql`excluded.job_title`,
           passwordHash: sql`excluded.password_hash`,
           managerId: sql`excluded.manager_id`,
           isActive: sql`excluded.is_active`,
           updatedAt: sql`now()`,
         },
-      });
-  }
-
-  // --------------------------------------------------------------------------
-  // Teams
-  // --------------------------------------------------------------------------
-  await db
-    .insert(schema.teams)
-    .values([
-      { id: TV_TEAM_PRODUS_ID, tenantId: TV_TENANT_ID, name: 'Produs & Engineering', description: 'Echipa de produs și inginerie', managerId: TV_CIPRIAN_ID },
-      { id: TV_TEAM_OPS_ID,    tenantId: TV_TENANT_ID, name: 'Operațiuni',           description: 'Echipa de operațiuni și analiză', managerId: TV_RADU_ID },
-    ])
-    .onConflictDoUpdate({
-      target: schema.teams.id,
-      set: {
-        name: sql`excluded.name`,
-        description: sql`excluded.description`,
-        managerId: sql`excluded.manager_id`,
-        updatedAt: sql`now()`,
-      },
-    });
-
-  const tvTeamMembers = [
-    { id: TV_TM_CIPRIAN, teamId: TV_TEAM_PRODUS_ID, userId: TV_CIPRIAN_ID, role: 'lead' as const },
-    { id: TV_TM_ANDREI,  teamId: TV_TEAM_PRODUS_ID, userId: TV_ANDREI_ID,  role: 'member' as const },
-    { id: TV_TM_MARIA,   teamId: TV_TEAM_PRODUS_ID, userId: TV_MARIA_ID,   role: 'member' as const },
-    { id: TV_TM_RADU,    teamId: TV_TEAM_OPS_ID,    userId: TV_RADU_ID,    role: 'lead' as const },
-    { id: TV_TM_IOANA,   teamId: TV_TEAM_OPS_ID,    userId: TV_IOANA_ID,   role: 'member' as const },
-    { id: TV_TM_ALEX_TV, teamId: TV_TEAM_OPS_ID,    userId: TV_ALEX_ID,    role: 'member' as const },
-  ];
-
-  for (const member of tvTeamMembers) {
-    await db
-      .insert(schema.teamMembers)
-      .values(member)
-      .onConflictDoUpdate({
-        target: schema.teamMembers.id,
-        set: { teamId: sql`excluded.team_id`, userId: sql`excluded.user_id`, role: sql`excluded.role` },
       });
   }
 
@@ -2943,7 +2828,6 @@ async function seed() {
 
   await seedTenants();
   await seedUsers();
-  await seedTeams();
   await seedTemplates();
   await seedMeetingSeries();
   await seedSessions();
@@ -2957,9 +2841,9 @@ async function seed() {
   await seedAliceData();
 
   console.log('\nSeed complete!');
-  console.log(`  Acme Corp      (${ACME_TENANT_ID}): 7 users, 2 teams, 2 templates, 4 series, 9 sessions`);
-  console.log(`  Beta Inc       (${BETA_TENANT_ID}): 3 users, 0 teams, 1 template, 1 series, 0 sessions`);
-  console.log(`  Techvibe SRL   (${TV_TENANT_ID}): 7 users, 2 teams, 2 templates, 5 series, 15 sessions`);
+  console.log(`  Acme Corp      (${ACME_TENANT_ID}): 7 users, 2 templates, 4 series, 9 sessions`);
+  console.log(`  Beta Inc       (${BETA_TENANT_ID}): 3 users, 1 template, 1 series, 0 sessions`);
+  console.log(`  Techvibe SRL   (${TV_TENANT_ID}): 7 users, 2 templates, 5 series, 15 sessions`);
 
   await pool.end();
 }

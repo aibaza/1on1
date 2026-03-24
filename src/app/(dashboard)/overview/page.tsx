@@ -41,10 +41,10 @@ export default async function OverviewPage() {
           myOnly: true,
           userId: user.id,
         }),
-        getOverdueActionItems(tx, user.id, user.role),
-        getQuickStats(tx, user.id, user.role),
-        getRecentSessions(tx, user.id, user.role),
-        getStatsTrends(tx, user.id, user.role),
+        getOverdueActionItems(tx, user.id, user.level),
+        getQuickStats(tx, user.id, user.level),
+        getRecentSessions(tx, user.id, user.level),
+        getStatsTrends(tx, user.id, user.level),
       ]);
       return { upcoming, overdue, stats, recent, trends };
     }),
@@ -57,7 +57,7 @@ export default async function OverviewPage() {
       <>
         {!user.emailVerified && <EmailVerificationBanner />}
         <EditorialDashboard
-          user={{ id: user.id, name: user.name, role: user.role }}
+          user={{ id: user.id, name: user.name, level: user.level }}
           tenantName={tenant?.name ?? null}
           stats={dashboardData.stats}
           trends={dashboardData.trends}
@@ -80,7 +80,7 @@ export default async function OverviewPage() {
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {tenant?.name ?? t("welcomeFallback")} &middot;{" "}
-          <span className="capitalize">{user.role}</span>
+          <span className="capitalize">{user.level}</span>
         </p>
       </div>
 

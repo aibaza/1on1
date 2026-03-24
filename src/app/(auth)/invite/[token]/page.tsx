@@ -99,7 +99,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
       token={token}
       email={invite.email}
       organizationName={tenant?.name || "your organization"}
-      role={invite.role}
+      role={invite.level}
       inviterName={inviterName}
     />
   );

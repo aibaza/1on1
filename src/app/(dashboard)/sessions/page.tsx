@@ -20,12 +20,12 @@ export default async function SessionsPage() {
     session.user.tenantId,
     session.user.id,
     async (tx) => getSeriesCardData(tx, session.user.tenantId, {
-      role: session.user.role,
+      level: session.user.level,
       userId: session.user.id,
     })
   );
 
-  const showCreateButton = canManageSeries(session.user.role);
+  const showCreateButton = canManageSeries(session.user.level);
   const designPref = await getDesignPreference();
   const isEditorial = designPref === "editorial";
 
@@ -68,13 +68,13 @@ export default async function SessionsPage() {
         <EditorialSeriesList
           initialSeries={seriesData}
           currentUserId={session.user.id}
-          userRole={session.user.role}
+          userLevel={session.user.level}
         />
       ) : (
         <SeriesList
           initialSeries={seriesData}
           currentUserId={session.user.id}
-          userRole={session.user.role}
+          userLevel={session.user.level}
         />
       )}
     </div>

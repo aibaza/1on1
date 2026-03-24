@@ -1,12 +1,18 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { canManageTemplates } from "@/lib/auth/rbac";
-import { labelSchema } from "@/lib/validations/template";
-import { templateLabels } from "@/lib/db/schema";
+import { requireLevel } from "@/lib/auth/rbac";
+import { logAuditEvent } from "@/lib/audit/log";
+import { createJobRoleSchema } from "@/lib/validations/role";
+import { jobRoles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function GET(request: Request) {
+/**
+ * GET /api/roles
+ *
+ * List all job roles for the tenant.
+ */
+export async function GET() {
   const session = await auth();
   if (!session?.user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -19,35 +25,40 @@ export async function GET(request: Request) {
       async (tx) => {
         return tx
           .select({
-            id: templateLabels.id,
-            name: templateLabels.name,
-            color: templateLabels.color,
-            createdAt: templateLabels.createdAt,
+            id: jobRoles.id,
+            name: jobRoles.name,
+            description: jobRoles.description,
+            createdAt: jobRoles.createdAt,
           })
-          .from(templateLabels)
-          .where(eq(templateLabels.tenantId, session.user.tenantId));
+          .from(jobRoles)
+          .where(eq(jobRoles.tenantId, session.user.tenantId))
+          .orderBy(jobRoles.name);
       }
     );
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Failed to fetch labels:", error);
+    console.error("Failed to fetch roles:", error);
     return NextResponse.json(
-      { error: "Failed to fetch labels" },
+      { error: "Failed to fetch roles" },
       { status: 500 }
     );
   }
 }
 
+/**
+ * POST /api/roles
+ *
+ * Create a new job role. Admin only.
+ */
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!canManageTemplates(session.user.level)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const levelError = requireLevel(session.user.level, "admin");
+  if (levelError) return levelError;
 
   let body: unknown;
   try {
@@ -57,22 +68,31 @@ export async function POST(request: Request) {
   }
 
   try {
-    const data = labelSchema.parse(body);
+    const data = createJobRoleSchema.parse(body);
 
     const result = await withTenantContext(
       session.user.tenantId,
       session.user.id,
       async (tx) => {
-        const [label] = await tx
-          .insert(templateLabels)
+        const [role] = await tx
+          .insert(jobRoles)
           .values({
             tenantId: session.user.tenantId,
             name: data.name,
-            color: data.color ?? null,
+            description: data.description ?? null,
           })
           .returning();
 
-        return label;
+        await logAuditEvent(tx, {
+          tenantId: session.user.tenantId,
+          actorId: session.user.id,
+          action: "job_role_created",
+          resourceType: "job_role",
+          resourceId: role.id,
+          metadata: { name: data.name },
+        });
+
+        return role;
       }
     );
 
@@ -84,16 +104,9 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    // Handle unique constraint violation
-    if (error instanceof Error && error.message.includes("unique")) {
-      return NextResponse.json(
-        { error: "A label with this name already exists" },
-        { status: 409 }
-      );
-    }
-    console.error("Failed to create label:", error);
+    console.error("Failed to create role:", error);
     return NextResponse.json(
-      { error: "Failed to create label" },
+      { error: "Failed to create role" },
       { status: 500 }
     );
   }

@@ -62,7 +62,7 @@ export async function POST(
         }
 
         const isManagerOnSeries = session.user.id === series.managerId;
-        const isAdmin = session.user.role === "admin";
+        const isAdmin = session.user.level === "admin";
 
         if (!isManagerOnSeries && !isAdmin) {
           return { error: "FORBIDDEN" as const };

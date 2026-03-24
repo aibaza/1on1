@@ -77,25 +77,25 @@ function isSettingsActive(pathname: string, items: NavItem[]): boolean {
   return items.some((item) => isPathActive(pathname, item));
 }
 
-function canSeeItem(role: string, item: NavItem): boolean {
+function canSeeItem(level: string, item: NavItem): boolean {
   if (!item.minRole) return true;
-  if (item.minRole === "admin") return role === "admin";
-  if (item.minRole === "manager") return role === "admin" || role === "manager";
+  if (item.minRole === "admin") return level === "admin";
+  if (item.minRole === "manager") return level === "admin" || level === "manager";
   return true;
 }
 
 export function TopNav() {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const userRole = session?.user?.role ?? "member";
+  const userLevel = session?.user?.level ?? "member";
   const [mobileOpen, setMobileOpen] = useState(false);
   const t = useTranslations("navigation");
 
   const primaryNavItems = getPrimaryNavItems(t);
   const settingsNavItems = getSettingsNavItems(t);
 
-  const visiblePrimary = primaryNavItems.filter((item) => canSeeItem(userRole, item));
-  const visibleSettings = settingsNavItems.filter((item) => canSeeItem(userRole, item));
+  const visiblePrimary = primaryNavItems.filter((item) => canSeeItem(userLevel, item));
+  const visibleSettings = settingsNavItems.filter((item) => canSeeItem(userLevel, item));
   const settingsActive = isSettingsActive(pathname, visibleSettings);
 
   return (

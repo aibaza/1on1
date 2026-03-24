@@ -12,7 +12,7 @@ export async function GET() {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (session.user.role !== "admin") {
+  if (session.user.level !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -59,7 +59,7 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (session.user.role !== "admin") {
+  if (session.user.level !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

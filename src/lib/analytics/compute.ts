@@ -160,7 +160,7 @@ export async function computeSessionSnapshot(
         and(
           eq(analyticsSnapshots.tenantId, tenantId),
           eq(analyticsSnapshots.userId, reportId),
-          isNull(analyticsSnapshots.teamId),
+          isNull(analyticsSnapshots.managerId),
           eq(analyticsSnapshots.seriesId, seriesId),
           eq(analyticsSnapshots.periodType, "month"),
           eq(analyticsSnapshots.periodStart, periodStart),
@@ -171,7 +171,7 @@ export async function computeSessionSnapshot(
     await tx.insert(analyticsSnapshots).values({
       tenantId,
       userId: reportId,
-      teamId: null,
+      managerId: null,
       seriesId,
       periodType: "month",
       periodStart,

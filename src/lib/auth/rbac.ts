@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server";
 
-const ROLE_HIERARCHY = { admin: 3, manager: 2, member: 1 } as const;
-export type Role = keyof typeof ROLE_HIERARCHY;
+const LEVEL_HIERARCHY = { admin: 3, manager: 2, member: 1 } as const;
+export type Level = keyof typeof LEVEL_HIERARCHY;
 
 /**
- * Returns a 403 response if the user's role is below the required level.
+ * Returns a 403 response if the user's level is below the required minimum.
  * Returns null if authorized.
  */
-export function requireRole(
-  userRole: string,
-  minimumRole: Role
+export function requireLevel(
+  userLevel: string,
+  minimumLevel: Level
 ): NextResponse | null {
-  const userLevel = ROLE_HIERARCHY[userRole as Role] ?? 0;
-  const requiredLevel = ROLE_HIERARCHY[minimumRole];
+  const current = LEVEL_HIERARCHY[userLevel as Level] ?? 0;
+  const required = LEVEL_HIERARCHY[minimumLevel];
 
-  if (userLevel < requiredLevel) {
+  if (current < required) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   return null;
@@ -23,22 +23,22 @@ export function requireRole(
 /**
  * Check if user can manage teams (admin or manager).
  */
-export function canManageTeams(role: string): boolean {
-  return role === "admin" || role === "manager";
+export function canManageTeams(level: string): boolean {
+  return level === "admin" || level === "manager";
 }
 
 /**
  * Check if user can manage templates (admin or manager).
  */
-export function canManageTemplates(role: string): boolean {
-  return role === "admin" || role === "manager";
+export function canManageTemplates(level: string): boolean {
+  return level === "admin" || level === "manager";
 }
 
 /**
  * Check if user can manage meeting series (admin or manager).
  */
-export function canManageSeries(role: string): boolean {
-  return role === "admin" || role === "manager";
+export function canManageSeries(level: string): boolean {
+  return level === "admin" || level === "manager";
 }
 
 /**
@@ -54,8 +54,8 @@ export function isSeriesParticipant(
 /**
  * Check if user can perform admin-only actions.
  */
-export function isAdmin(role: string): boolean {
-  return role === "admin";
+export function isAdmin(level: string): boolean {
+  return level === "admin";
 }
 
 /**
@@ -67,9 +67,9 @@ export function isAdmin(role: string): boolean {
  */
 export function canCorrectSession(
   userId: string,
-  userRole: string,
+  userLevel: string,
   series: { managerId: string }
 ): boolean {
-  if (isAdmin(userRole)) return true;
-  return userRole === "manager" && userId === series.managerId;
+  if (isAdmin(userLevel)) return true;
+  return userLevel === "manager" && userId === series.managerId;
 }

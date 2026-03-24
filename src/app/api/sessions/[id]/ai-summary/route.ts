@@ -73,14 +73,14 @@ export async function GET(
 
         // Authorization: participant or admin
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           !isSeriesParticipant(session.user.id, series)
         ) {
           return { error: "FORBIDDEN" as const };
         }
 
         const isManager = session.user.id === series.managerId;
-        const userIsAdmin = isAdmin(session.user.role);
+        const userIsAdmin = isAdmin(session.user.level);
 
         // Detect stuck sessions and auto-reset to "failed" so the UI shows the retry button.
         // Covers both "generating" (pipeline started but died) and "pending" (pipeline never started,

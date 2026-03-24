@@ -41,7 +41,7 @@ export async function POST(
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!isAdmin(session.user.role)) {
+  if (!isAdmin(session.user.level)) {
     return NextResponse.json(
       { error: "Only admins can revert corrections" },
       { status: 403 }

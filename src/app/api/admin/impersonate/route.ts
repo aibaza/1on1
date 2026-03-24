@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   if (!session?.user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
-  if (session.user.role !== "admin") {
+  if (session.user.level !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   const targetUser = await adminDb.query.users.findFirst({
     where: (u, { eq, and }) =>
       and(eq(u.id, userId), eq(u.tenantId, session.user.tenantId)),
-    columns: { id: true, role: true, isActive: true },
+    columns: { id: true, level: true, isActive: true },
   });
 
   if (!targetUser) {
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   if (!targetUser.isActive) {
     return NextResponse.json({ error: "User is not active" }, { status: 400 });
   }
-  if (targetUser.role === "admin") {
+  if (targetUser.level === "admin") {
     return NextResponse.json(
       { error: "Cannot impersonate another admin" },
       { status: 400 }

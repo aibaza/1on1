@@ -81,7 +81,7 @@ export async function POST(request: Request) {
             name: `${firstName} ${lastName}`,
             firstName,
             lastName,
-            role: invite.role,
+            level: invite.level,
             jobTitle: jobTitle || null,
             passwordHash,
             isActive: true,
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
             emailVerified: new Date(),
             firstName,
             lastName,
-            role: invite.role,
+            level: invite.level,
             jobTitle: jobTitle || null,
             passwordHash,
             isActive: true,
@@ -131,7 +131,7 @@ export async function POST(request: Request) {
         action: "invite_accepted",
         resourceType: "user",
         resourceId: newUser.id,
-        metadata: { email: invite.email, role: invite.role },
+        metadata: { email: invite.email, level: invite.level },
         ipAddress,
       });
 

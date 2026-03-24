@@ -16,7 +16,7 @@ export async function PUT(request: Request, { params }: RouteContext) {
   }
 
   // Only admins can set org default (not managers)
-  if (!isAdmin(session.user.role)) {
+  if (!isAdmin(session.user.level)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

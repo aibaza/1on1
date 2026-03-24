@@ -79,7 +79,7 @@ export async function PUT(
         }
 
         if (
-          !isAdmin(session.user.role) &&
+          !isAdmin(session.user.level) &&
           !isSeriesParticipant(session.user.id, seriesRows[0])
         ) {
           return { error: "FORBIDDEN" as const };

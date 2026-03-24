@@ -18,7 +18,7 @@ interface Series {
   preferredDay: string | null;
   preferredTime: string | null;
   manager: { id: string; firstName: string; lastName: string };
-  report: { id: string; firstName: string; lastName: string; avatarUrl: string | null; role: string };
+  report: { id: string; firstName: string; lastName: string; avatarUrl: string | null; level: string };
   latestSession: {
     id: string; status: string; sessionNumber: number;
     sessionScore: string | null; scheduledAt: string | null; talkingPointCount: number;
@@ -31,7 +31,7 @@ interface Series {
 interface EditorialSeriesListProps {
   initialSeries: Series[];
   currentUserId: string;
-  userRole: string;
+  userLevel: string;
 }
 
 function EditorialSeriesGrid({
@@ -213,7 +213,7 @@ function EditorialManagerSections({
   );
 }
 
-export function EditorialSeriesList({ initialSeries, currentUserId, userRole }: EditorialSeriesListProps) {
+export function EditorialSeriesList({ initialSeries, currentUserId, userLevel }: EditorialSeriesListProps) {
   const t = useTranslations("sessions");
   const [archivedOpen, setArchivedOpen] = useState(false);
 
@@ -254,13 +254,13 @@ export function EditorialSeriesList({ initialSeries, currentUserId, userRole }: 
     <div className="space-y-8">
       {activeSeries.length > 0 && (
         <>
-          {userRole === "admin" ? (
+          {userLevel === "admin" ? (
             <EditorialAdminGrouped
               activeSeries={activeSeries}
               currentUserId={currentUserId}
               t={t}
             />
-          ) : userRole === "manager" ? (
+          ) : userLevel === "manager" ? (
             <EditorialManagerSections
               activeSeries={activeSeries}
               currentUserId={currentUserId}

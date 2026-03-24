@@ -12,7 +12,6 @@ import {
 import { relations } from "drizzle-orm";
 import { tenants } from "./tenants";
 import { users } from "./users";
-import { teams } from "./teams";
 import { meetingSeries } from "./series";
 import { periodTypeEnum } from "./enums";
 
@@ -24,7 +23,7 @@ export const analyticsSnapshots = pgTable(
       .notNull()
       .references(() => tenants.id),
     userId: uuid("user_id").references(() => users.id),
-    teamId: uuid("team_id").references(() => teams.id),
+    managerId: uuid("manager_id").references(() => users.id),
     seriesId: uuid("series_id").references(() => meetingSeries.id),
     periodType: periodTypeEnum("period_type").notNull(),
     periodStart: date("period_start").notNull(),
@@ -43,16 +42,16 @@ export const analyticsSnapshots = pgTable(
       table.metricName,
       table.periodStart
     ),
-    index("analytics_tenant_team_metric_idx").on(
+    index("analytics_tenant_manager_metric_idx").on(
       table.tenantId,
-      table.teamId,
+      table.managerId,
       table.metricName,
       table.periodStart
     ),
     uniqueIndex("analytics_unique_snapshot_idx").on(
       table.tenantId,
       table.userId,
-      table.teamId,
+      table.managerId,
       table.seriesId,
       table.periodType,
       table.periodStart,
@@ -72,9 +71,9 @@ export const analyticsSnapshotsRelations = relations(
       fields: [analyticsSnapshots.userId],
       references: [users.id],
     }),
-    team: one(teams, {
-      fields: [analyticsSnapshots.teamId],
-      references: [teams.id],
+    manager: one(users, {
+      fields: [analyticsSnapshots.managerId],
+      references: [users.id],
     }),
     series: one(meetingSeries, {
       fields: [analyticsSnapshots.seriesId],
