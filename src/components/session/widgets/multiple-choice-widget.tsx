@@ -27,7 +27,7 @@ export function MultipleChoiceWidget({
           disabled={disabled}
           onClick={() => onChange({ answerJson: { selected: option } })}
           className={cn(
-            "flex items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm transition-colors",
+            "flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             "disabled:pointer-events-none disabled:opacity-50",
             selectedValue === option

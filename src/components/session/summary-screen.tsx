@@ -208,14 +208,14 @@ export function SummaryScreen({
       <div className="mx-auto max-w-3xl px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold">{t("title")}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight font-headline">{t("title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {t("reviewDesc")}
           </p>
         </div>
 
         {/* Score card */}
-        <div className="mb-8 rounded-lg border p-6 text-center bg-muted/30">
+        <div className="mb-8 rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 p-6 text-center bg-[var(--editorial-surface-container-low,var(--muted))]/30 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
           <div className="flex justify-center">
             <StarRating score={sessionScore} size="lg" />
           </div>
@@ -239,7 +239,7 @@ export function SummaryScreen({
             <div key={category.name} className="mb-8">
               {/* Category header with edit button */}
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">{catLabel}</h2>
+                <h2 className="text-lg font-bold font-headline">{catLabel}</h2>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -265,7 +265,7 @@ export function SummaryScreen({
                     question.isRequired && !isAnswered;
 
                   return (
-                    <div key={question.id} className="rounded-md border px-4 py-3">
+                    <div key={question.id} className="rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 px-4 py-3">
                       <div className="flex items-start justify-between gap-2">
                         <p className="text-sm font-medium">
                           {question.questionText}
@@ -397,8 +397,8 @@ export function SummaryScreen({
           </Button>
 
           {isManager && (
-            <Button
-              size="lg"
+            <button
+              type="button"
               onClick={() => {
                 // Validate all required questions are answered
                 const unanswered: string[] = [];
@@ -420,7 +420,8 @@ export function SummaryScreen({
                 completeSession.mutate();
               }}
               disabled={completeSession.isPending}
-              className="gap-2"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold font-headline text-sm text-white shadow-md hover:shadow-lg transition-all active:scale-95 disabled:opacity-60"
+              style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
             >
               {completeSession.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -428,7 +429,7 @@ export function SummaryScreen({
                 <CheckCircle2 className="h-4 w-4" />
               )}
               {t("completeSession")}
-            </Button>
+            </button>
           )}
         </div>
       </div>

@@ -19,7 +19,7 @@ export function YesNoWidget({ value, onChange, disabled }: YesNoWidgetProps) {
         disabled={disabled}
         onClick={() => onChange({ answerNumeric: 1 })}
         className={cn(
-          "flex-1 rounded-lg border-2 px-6 py-3 text-sm font-medium transition-colors",
+          "flex-1 rounded-xl border-2 px-6 py-3 text-sm font-medium transition-colors active:scale-95",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           "disabled:pointer-events-none disabled:opacity-50",
           value === 1
@@ -34,7 +34,7 @@ export function YesNoWidget({ value, onChange, disabled }: YesNoWidgetProps) {
         disabled={disabled}
         onClick={() => onChange({ answerNumeric: 0 })}
         className={cn(
-          "flex-1 rounded-lg border-2 px-6 py-3 text-sm font-medium transition-colors",
+          "flex-1 rounded-xl border-2 px-6 py-3 text-sm font-medium transition-colors active:scale-95",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           "disabled:pointer-events-none disabled:opacity-50",
           value === 0

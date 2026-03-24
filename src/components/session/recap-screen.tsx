@@ -3,7 +3,6 @@
 import { useTranslations, useFormatter } from "next-intl";
 import { contentToHtml } from "@/lib/session/tiptap-render";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, CheckCircle2, Circle, Clock } from "lucide-react";
 import { StarRating } from "@/components/ui/star-rating";
 
@@ -53,7 +52,7 @@ export function RecapScreen({
     <div className="flex-1 overflow-y-auto">
       <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold tracking-tight">
+          <h2 className="text-2xl font-extrabold tracking-tight font-headline">
             {t("title")}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -64,25 +63,25 @@ export function RecapScreen({
         </div>
 
         {!hasPrevious ? (
-          <Card>
-            <CardContent className="flex flex-col items-center py-12 text-center">
+          <div className="bg-card rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+            <div className="flex flex-col items-center py-12 text-center px-6">
               <Calendar className="mb-4 h-12 w-12 text-muted-foreground/40" />
-              <h3 className="text-lg font-medium">{t("firstSessionTitle")}</h3>
+              <h3 className="text-lg font-bold font-headline">{t("firstSessionTitle")}</h3>
               <p className="mt-2 max-w-sm text-sm text-muted-foreground">
                 {t("firstSessionDesc", { name: reportName })}
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ) : (
           <>
             {/* Last session summary */}
             {lastSession && (
-              <Card>
-                <CardHeader>
+              <div className="bg-card rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+                <div className="px-6 pt-6 pb-2">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-base">
+                    <h3 className="text-base font-bold font-headline">
                       Session #{lastSession.sessionNumber}
-                    </CardTitle>
+                    </h3>
                     <div className="flex items-center gap-2">
                       <StarRating score={lastSession.sessionScore} size="sm" />
                       <span className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -97,8 +96,8 @@ export function RecapScreen({
                       </span>
                     </div>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                </div>
+                <div className="px-6 pb-6 space-y-4">
                   {lastSession.sharedNotes &&
                     Object.entries(lastSession.sharedNotes).length > 0 && (
                       <div className="space-y-3">
@@ -133,23 +132,23 @@ export function RecapScreen({
                     </div>
                   )}
 
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
             {openActionItems.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">
+              <div className="bg-card rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+                <div className="px-6 pt-6 pb-2">
+                  <h3 className="text-base font-bold font-headline">
                     {t("openActionItems")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </h3>
+                </div>
+                <div className="px-6 pb-6">
                   <ul className="space-y-2">
                     {openActionItems.map((item) => (
                       <li key={item.id} className="flex items-start gap-2">
                         {item.status === "in_progress" ? (
-                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                         ) : (
                           <Circle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                         )}
@@ -188,8 +187,8 @@ export function RecapScreen({
                       </li>
                     ))}
                   </ul>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
           </>
         )}

@@ -25,7 +25,7 @@ export function Rating110Widget({
           disabled={disabled}
           onClick={() => onChange({ answerNumeric: rating })}
           className={cn(
-            "flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-medium transition-colors",
+            "flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-medium transition-colors",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             "disabled:pointer-events-none disabled:opacity-50",
             value === rating

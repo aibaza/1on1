@@ -15,11 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
-import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -124,35 +119,31 @@ function WidgetCard({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <Card className="overflow-hidden">
-      <CardHeader
-        className="cursor-pointer p-0"
+    <div className="bg-card rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden">
+      <button
+        type="button"
+        className="flex w-full items-center gap-2 px-3 py-2.5 text-sm font-semibold font-headline hover:bg-[var(--editorial-surface-container,var(--muted))]/50 transition-colors cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <button
-          type="button"
-          className="flex w-full items-center gap-2 px-3 py-2.5 text-sm font-medium hover:bg-muted/50 transition-colors"
-        >
-          {isOpen ? (
-            <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
-          ) : (
-            <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
-          )}
-          <Icon className="size-3.5 shrink-0 text-muted-foreground" />
-          <span className="flex-1 text-left">{title}</span>
-          {count !== undefined && count > 0 && (
-            <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-normal">
-              {count}
-            </Badge>
-          )}
-        </button>
-      </CardHeader>
+        {isOpen ? (
+          <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+        ) : (
+          <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
+        )}
+        <Icon className="size-3.5 shrink-0 text-muted-foreground" />
+        <span className="flex-1 text-left">{title}</span>
+        {count !== undefined && count > 0 && (
+          <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-normal">
+            {count}
+          </Badge>
+        )}
+      </button>
       {isOpen && (
-        <CardContent className="px-3 pb-3 pt-0">
+        <div className="px-3 pb-3">
           {children}
-        </CardContent>
+        </div>
       )}
-    </Card>
+    </div>
   );
 }
 
@@ -224,7 +215,7 @@ function ActionItemsWidget({
                     <li
                       key={item.id}
                       className={cn(
-                        "flex items-start gap-2 rounded-md border px-2 py-1.5 text-xs",
+                        "flex items-start gap-2 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 px-2 py-1.5 text-xs",
                         overdue && "border-l-2 border-l-destructive/60"
                       )}
                     >
@@ -339,7 +330,7 @@ function PreviousAnswersWidget({
           {previousAnswers.map((answer) => (
             <li
               key={answer.questionId}
-              className="rounded-md border px-2 py-2 text-xs"
+              className="rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 px-2 py-2 text-xs"
             >
               <div className="flex items-start justify-between gap-1">
                 <p className="font-medium leading-tight text-foreground">
@@ -392,14 +383,14 @@ function SummaryStatsWidget({
   return (
     <WidgetCard icon={Clock} title={t("context.summaryTitle")}>
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-md border p-2 text-center">
-          <p className="text-lg font-semibold tabular-nums">
+        <div className="rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 p-2 text-center">
+          <p className="text-lg font-bold font-headline tabular-nums">
             {stats.totalSessions}
           </p>
           <p className="text-[10px] text-muted-foreground">{t("context.pastSessions")}</p>
         </div>
-        <div className="rounded-md border p-2 text-center">
-          <p className="text-lg font-semibold tabular-nums">
+        <div className="rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 p-2 text-center">
+          <p className="text-lg font-bold font-headline tabular-nums">
             {stats.avgScore !== null ? format.number(stats.avgScore, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : "--"}
           </p>
           <p className="text-[10px] text-muted-foreground">{t("context.avgScore")}</p>
@@ -487,7 +478,7 @@ export function FloatingContextWidgets(props: FloatingContextWidgetsProps) {
     <>
       {/* Desktop (lg+): rendered inline as a column by the parent */}
       <div className="hidden lg:block">
-        <h2 className="text-sm font-semibold mb-3">
+        <h2 className="text-sm font-bold font-headline mb-3">
           {contextTitle}
         </h2>
         <WidgetContent {...props} />
