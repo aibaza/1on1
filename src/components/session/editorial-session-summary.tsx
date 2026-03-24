@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations, useFormatter } from "next-intl";
 import Link from "next/link";
 import {
@@ -16,6 +17,7 @@ import {
   ChevronRight,
   Lock,
   Check,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StarRating } from "@/components/ui/star-rating";
@@ -124,14 +126,27 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
     sessionNumber, scheduledAt, completedAt, sessionScore, durationMinutes,
     categories, isManager, seriesId, sessionId, aiSummary, aiAddendum,
     managerName, reportName, managerTeam, reportTeam,
-    correctionsByAnswerId, sessionHistory,
+    correctionsByAnswerId, sessionHistory, isAdmin,
   } = props;
 
   const t = useTranslations("sessions");
   const format = useFormatter();
+  const queryClient = useQueryClient();
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(
     () => Object.fromEntries(categories.map((c, i) => [c.name, i === 0]))
   );
+
+  const regenerateMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/ai-retry`, { method: "POST" });
+      if (!res.ok) throw new Error("Failed to retry AI pipeline");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ai-summary", sessionId] });
+      window.location.reload();
+    },
+  });
 
   const displayName = isManager ? reportName : managerName;
   const displayTeam = isManager ? reportTeam : managerTeam;
@@ -195,7 +210,18 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
       <div className="grid grid-cols-12 gap-6 mb-10">
         {/* AI Summary Hero */}
         <div className="col-span-12 lg:col-span-8 bg-card rounded-xl p-8 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4">
+          <div className="absolute top-0 right-0 p-4 flex items-center gap-2">
+            {(isManager || isAdmin) && aiSummary && (
+              <button
+                type="button"
+                onClick={() => regenerateMutation.mutate()}
+                disabled={regenerateMutation.isPending}
+                className="flex items-center gap-1.5 bg-muted/80 hover:bg-muted px-3 py-1.5 rounded-lg text-[10px] font-bold text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors disabled:opacity-50"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${regenerateMutation.isPending ? "animate-spin" : ""}`} />
+                {regenerateMutation.isPending ? t("aiSummary.retrying") : t("aiSummary.regenerate")}
+              </button>
+            )}
             <div className="flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-lg">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{t("editorial.generatedByAi")}</span>

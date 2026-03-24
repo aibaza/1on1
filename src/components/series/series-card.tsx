@@ -320,7 +320,9 @@ export function SeriesCard({ series, currentUserId, showManagerName }: SeriesCar
   const score =
     series.latestSession?.sessionScore && series.latestSession.status === "completed"
       ? parseFloat(series.latestSession.sessionScore)
-      : null;
+      : series.assessmentHistory.length > 0
+        ? series.assessmentHistory[series.assessmentHistory.length - 1]
+        : null;
 
   const reportFullName = `${series.report.firstName} ${series.report.lastName}`;
   const managerFullName = `${series.manager.firstName} ${series.manager.lastName}`;

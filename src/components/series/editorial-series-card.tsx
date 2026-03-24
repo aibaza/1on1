@@ -110,7 +110,11 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
   const isManager = series.managerId === currentUserId;
   const reportName = `${series.report.firstName} ${series.report.lastName}`;
   const managerName = `${series.manager.firstName} ${series.manager.lastName}`;
-  const score = series.latestSession?.sessionScore ? parseFloat(series.latestSession.sessionScore) : null;
+  const score = series.latestSession?.sessionScore
+    ? parseFloat(series.latestSession.sessionScore)
+    : series.assessmentHistory.length > 0
+      ? series.assessmentHistory[series.assessmentHistory.length - 1]
+      : null;
   const isInProgress = series.latestSession?.status === "in_progress";
   const isOverdue = series.nextSessionAt && new Date(series.nextSessionAt).getTime() < Date.now();
   const sentiment = series.latestSummary?.sentiment ?? "";
