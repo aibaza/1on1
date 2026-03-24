@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { scoreBadgeColor, scoreDotColor, scoreTextColor, sparkBarColor, trendIconColor, trendBadgeColor, DISTRIBUTION_COLORS, LEGEND_DOT_COLORS } from "@/lib/analytics/colors";
 import { HealthScoreCard } from "@/components/analytics/health-score-card";
 import { ActionItemsCard } from "@/components/analytics/action-items-card";
+import { SessionCompletionCard } from "@/components/analytics/session-completion-card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ------------------------------------------------------------------ */
@@ -271,25 +272,12 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
           people={people}
         />
 
-        {/* Card 2 — Completion */}
-        <div className="bg-card p-6 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">{t("completion")} <InfoTip tooltipKey="completionTooltip" t={t} /></span>
-            <CheckCircle2 className="w-4 h-4 text-muted-foreground" />
-          </div>
-          <div className="text-3xl font-headline font-extrabold text-foreground mb-3">
-            {kpis.completionRate}%
-          </div>
-          <div className="w-full h-2 rounded-full bg-muted overflow-hidden mb-2">
-            <div
-              className="h-full rounded-full bg-emerald-500 transition-all"
-              style={{ width: `${kpis.completionRate}%` }}
-            />
-          </div>
-          <span className="text-xs text-muted-foreground">
-            {t("xOfYSessions", { completed: completedSessions, total: kpis.totalSessions })}
-          </span>
-        </div>
+        {/* Card 2 — Completion (shared component) */}
+        <SessionCompletionCard
+          completionRate={kpis.completionRate}
+          completedSessions={completedSessions}
+          totalSessions={kpis.totalSessions}
+        />
 
         {/* Card 3 — Action Items (shared component) */}
         <ActionItemsCard actionItemRate={kpis.actionItemRate} />

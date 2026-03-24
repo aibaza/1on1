@@ -83,6 +83,8 @@
       "completionTooltip": "Procentul sesiunilor completate din totalul sesiunilor programate, anulate sau ratate în ultimele 90 de zile.",
       "actionItems": "Acțiuni",
       "actionItemsTooltip": "Procentul acțiunilor marcate ca finalizate din totalul acțiunilor ne-anulate create în timpul sesiunilor.",
+      "completedLabel": "Finalizate",
+      "missedLabel": "Ratate / Anulate",
       "actionCompleted": "Finalizate",
       "actionInProgress": "În progres",
       "actionOverdue": "Întârziate",
