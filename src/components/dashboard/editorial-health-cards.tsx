@@ -91,37 +91,19 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
     staleTime: 5 * 60_000,
   });
 
-  if (isLoading) {
-    return (
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-36 bg-card rounded-xl border border-border/50 animate-pulse" />
-        ))}
-      </section>
-    );
-  }
-
   const [signalsOpen, setSignalsOpen] = useState(false);
 
-  if (!data?.kpis) return null;
-
-  const { kpis, distribution, alerts } = data;
-  const totalDist = distribution
-    ? distribution.healthy + distribution.attention + distribution.critical + distribution.noData
-    : 0;
-
-  // Build sparkline entries from available score history
+  // Build sparkline entries — must be before early returns (rules of hooks)
   const sparkEntries = useMemo(() => {
+    if (!data) return [];
     const MAX_BARS = 20;
     const raw: { score: number; date: string }[] = [];
 
     if (data.scoreHistory) {
-      // Member: personal score history
       for (const h of data.scoreHistory) {
         if (h.score > 0) raw.push({ score: h.score, date: h.date });
       }
     } else if (data.members) {
-      // Admin/Manager: aggregate from all members' score histories
       for (const m of data.members) {
         for (const h of m.scoreHistory) {
           if (h.score > 0 && h.date) raw.push({ score: h.score, date: h.date });
@@ -136,6 +118,24 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
     raw.sort((a, b) => a.date.localeCompare(b.date));
     return raw.slice(-MAX_BARS);
   }, [data]);
+
+  // Early returns AFTER all hooks
+  if (isLoading) {
+    return (
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-36 bg-card rounded-xl border border-border/50 animate-pulse" />
+        ))}
+      </section>
+    );
+  }
+
+  if (!data?.kpis) return null;
+
+  const { kpis, distribution, alerts } = data;
+  const totalDist = distribution
+    ? distribution.healthy + distribution.attention + distribution.critical + distribution.noData
+    : 0;
 
   const scopeLabel =
     userLevel === "admin" ? t("orgScope") : userLevel === "manager" ? t("teamScope") : t("personalScope");
