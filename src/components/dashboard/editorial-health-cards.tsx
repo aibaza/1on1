@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import {
   scoreTextColor,
+  sparkBarColor,
   alertBadgeColor,
   DISTRIBUTION_COLORS,
   LEGEND_DOT_COLORS,
@@ -53,6 +54,15 @@ interface HealthResponse {
     personName: string;
     detail: string;
   }>;
+  // For sparkline — different APIs return different shapes
+  members?: Array<{
+    firstName: string;
+    lastName: string;
+    scoreHistory: { score: number; date: string }[];
+  }>;
+  teamScoreHistory?: { score: number; date: string }[];
+  // Individual analytics response
+  scoreHistory?: { score: number; date: string; sessionId: string }[];
 }
 
 interface EditorialHealthCardsProps {
@@ -100,6 +110,33 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
     ? distribution.healthy + distribution.attention + distribution.critical + distribution.noData
     : 0;
 
+  // Build sparkline entries from available score history
+  const sparkEntries = useMemo(() => {
+    const MAX_BARS = 20;
+    const raw: { score: number; date: string }[] = [];
+
+    if (data.scoreHistory) {
+      // Member: personal score history
+      for (const h of data.scoreHistory) {
+        if (h.score > 0) raw.push({ score: h.score, date: h.date });
+      }
+    } else if (data.members) {
+      // Admin/Manager: aggregate from all members' score histories
+      for (const m of data.members) {
+        for (const h of m.scoreHistory) {
+          if (h.score > 0 && h.date) raw.push({ score: h.score, date: h.date });
+        }
+      }
+    } else if (data.teamScoreHistory) {
+      for (const h of data.teamScoreHistory) {
+        if (h.score > 0) raw.push({ score: h.score, date: h.date });
+      }
+    }
+
+    raw.sort((a, b) => a.date.localeCompare(b.date));
+    return raw.slice(-MAX_BARS);
+  }, [data]);
+
   const scopeLabel =
     userLevel === "admin" ? t("orgScope") : userLevel === "manager" ? t("teamScope") : t("personalScope");
 
@@ -138,6 +175,24 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
             <p className={cn("text-xs font-semibold mt-1", kpis.scoreTrend > 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400")}>
               {kpis.scoreTrend > 0 ? "+" : ""}{kpis.scoreTrend.toFixed(1)} {t("fromLastPeriod")}
             </p>
+          )}
+          {/* Sparkline bars */}
+          {sparkEntries.length > 0 && (
+            <div className="flex items-end gap-px h-8 w-full mt-3">
+              {sparkEntries.map((e, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    "flex-1 min-w-[2px] max-w-2 rounded-t-sm",
+                    sparkBarColor(e.score),
+                  )}
+                  style={{
+                    height: `${Math.max(10, (e.score / 5) * 100)}%`,
+                    opacity: 0.3 + (i / sparkEntries.length) * 0.7,
+                  }}
+                />
+              ))}
+            </div>
           )}
         </div>
 
