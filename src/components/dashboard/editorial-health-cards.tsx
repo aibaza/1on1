@@ -138,11 +138,6 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
                 {t("actions")}
               </span>
             </div>
-            {kpis.actionItemRate > 0 && (
-              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                +{kpis.actionItemRate.toFixed(1)}
-              </span>
-            )}
           </div>
           <div className="text-3xl font-extrabold tabular-nums text-foreground mb-3">
             {kpis.actionItemRate}%
