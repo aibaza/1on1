@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
-  Target,
   AlertTriangle,
   Activity,
   ChevronRight,
@@ -16,6 +15,7 @@ import {
   LEGEND_DOT_COLORS,
 } from "@/lib/analytics/colors";
 import { HealthScoreCard } from "@/components/analytics/health-score-card";
+import { ActionItemsCard } from "@/components/analytics/action-items-card";
 import {
   Sheet,
   SheetContent,
@@ -140,27 +140,8 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
           personalScoreHistory={data.scoreHistory}
         />
 
-        {/* Card 2: Actions (matches /analytics "Actiuni" card) */}
-        <div className="bg-card p-5 rounded-xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10">
-                <Target className="h-4 w-4 text-primary" />
-              </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                {t("actions")}
-              </span>
-            </div>
-          </div>
-          <div className="text-3xl font-extrabold tabular-nums text-foreground mb-3">
-            {kpis.actionItemRate}%
-          </div>
-          <div className="flex w-full h-1.5 rounded-full overflow-hidden bg-muted">
-            <div className="h-full bg-emerald-500" style={{ width: `${kpis.actionItemRate}%` }} />
-            <div className="h-full bg-amber-400" style={{ width: `${Math.max(0, 100 - kpis.actionItemRate) * 0.3}%` }} />
-            <div className="h-full bg-red-400 flex-1" />
-          </div>
-        </div>
+        {/* Card 2: Actions (shared component from analytics) */}
+        <ActionItemsCard actionItemRate={kpis.actionItemRate} />
 
         {/* Card 3: Health Distribution (matches /analytics "Distribuție sănătate") */}
         {distribution && totalDist > 0 ? (

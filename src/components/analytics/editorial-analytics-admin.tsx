@@ -22,6 +22,7 @@ import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 import { scoreBadgeColor, scoreDotColor, scoreTextColor, sparkBarColor, trendIconColor, trendBadgeColor, DISTRIBUTION_COLORS, LEGEND_DOT_COLORS } from "@/lib/analytics/colors";
 import { HealthScoreCard } from "@/components/analytics/health-score-card";
+import { ActionItemsCard } from "@/components/analytics/action-items-card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ------------------------------------------------------------------ */
@@ -290,21 +291,8 @@ export default function EditorialAnalyticsAdmin({ data }: EditorialAnalyticsAdmi
           </span>
         </div>
 
-        {/* Card 3 — Action Items */}
-        <div className="bg-card p-6 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">{t("actionItems")} <InfoTip tooltipKey="actionItemsTooltip" t={t} /></span>
-            {trendBadge(kpis.actionItemRate)}
-          </div>
-          <div className="text-3xl font-headline font-extrabold text-foreground mb-3">
-            {kpis.actionItemRate}%
-          </div>
-          <div className="flex w-full h-2 rounded-full overflow-hidden bg-muted">
-            <div className="h-full bg-emerald-500" style={{ width: `${kpis.actionItemRate}%` }} />
-            <div className="h-full bg-amber-400" style={{ width: `${Math.max(0, 100 - kpis.actionItemRate) * 0.3}%` }} />
-            <div className="h-full bg-red-400 flex-1" />
-          </div>
-        </div>
+        {/* Card 3 — Action Items (shared component) */}
+        <ActionItemsCard actionItemRate={kpis.actionItemRate} />
 
         {/* Card 4 — Series */}
         <div className="bg-card p-6 rounded-xl shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
