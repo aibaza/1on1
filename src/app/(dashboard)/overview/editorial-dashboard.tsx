@@ -18,6 +18,7 @@ import type { SeriesCardData } from "@/lib/queries/series";
 import { EditorialHealthCards } from "@/components/dashboard/editorial-health-cards";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarUrl } from "@/lib/avatar";
+import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { StarRating } from "@/components/ui/star-rating";
 
 interface EditorialDashboardProps {
@@ -113,7 +114,7 @@ export function EditorialDashboard({
                 <div className="text-[10px] font-bold uppercase tracking-wider mb-3">{t("editorial.nextSession")}</div>
                 <div className="flex items-center gap-3 mb-3">
                   <Avatar className="h-10 w-10 border-2 border-white/20">
-                    <AvatarImage src={getAvatarUrl(personName, person.avatarUrl)} alt={personName} />
+                    <ThemedAvatarImage name={personName} uploadedUrl={person.avatarUrl} role={person.level} />
                     <AvatarFallback className="text-xs bg-white/20 text-white">
                       {getInitials(personName)}
                     </AvatarFallback>
@@ -177,7 +178,7 @@ export function EditorialDashboard({
                     >
                       <div className="flex items-center space-x-4">
                         <Avatar className={`h-12 w-12 ${!isNext ? "grayscale group-hover:grayscale-0 transition-all" : ""}`}>
-                          <AvatarImage src={getAvatarUrl(reportName, series.report.avatarUrl, null, series.report.level)} alt={reportName} />
+                          <ThemedAvatarImage name={reportName} uploadedUrl={series.report.avatarUrl} role={series.report.level} />
                           <AvatarFallback>{getInitials(reportName)}</AvatarFallback>
                         </Avatar>
                         <div>
