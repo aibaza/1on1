@@ -15,6 +15,8 @@ export interface SeriesCardData {
     id: string;
     firstName: string;
     lastName: string;
+    avatarUrl: string | null;
+    jobTitle: string | null;
     level: string;
   };
   report: {
@@ -22,6 +24,7 @@ export interface SeriesCardData {
     firstName: string;
     lastName: string;
     avatarUrl: string | null;
+    jobTitle: string | null;
     level: string;
   };
   latestSession: {
@@ -129,6 +132,7 @@ export async function getSeriesCardData(
       firstName: users.firstName,
       lastName: users.lastName,
       avatarUrl: users.avatarUrl,
+      jobTitle: users.jobTitle,
       level: users.level,
     })
     .from(users)
@@ -143,6 +147,8 @@ export async function getSeriesCardData(
       id: users.id,
       firstName: users.firstName,
       lastName: users.lastName,
+      avatarUrl: users.avatarUrl,
+      jobTitle: users.jobTitle,
       level: users.level,
     })
     .from(users)
@@ -306,6 +312,8 @@ export async function getSeriesCardData(
         id: s.managerId,
         firstName: managerMap.get(s.managerId)?.firstName ?? "",
         lastName: managerMap.get(s.managerId)?.lastName ?? "",
+        avatarUrl: managerMap.get(s.managerId)?.avatarUrl ?? null,
+        jobTitle: managerMap.get(s.managerId)?.jobTitle ?? null,
         level: managerMap.get(s.managerId)?.level ?? "manager",
       },
       report: {
@@ -313,6 +321,7 @@ export async function getSeriesCardData(
         firstName: report?.firstName ?? "",
         lastName: report?.lastName ?? "",
         avatarUrl: report?.avatarUrl ?? null,
+        jobTitle: report?.jobTitle ?? null,
         level: report?.level ?? "member",
       },
       latestSession: latest

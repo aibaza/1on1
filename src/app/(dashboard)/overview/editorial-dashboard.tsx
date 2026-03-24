@@ -92,36 +92,53 @@ export function EditorialDashboard({
             <ChevronRight className="h-4 w-4 ml-1" />
           </Link>
         </div>
-        {/* Next session card (right-aligned) */}
-        {nextSession && (
-          <Link
-            href={nextSession.latestSession?.status === "in_progress" ? `/wizard/${nextSession.latestSession.id}` : `/sessions/${nextSession.id}`}
-            className="text-white px-5 py-4 rounded-xl shadow-md relative overflow-hidden group hover:shadow-lg transition-all block max-w-xs"
-            style={{ background: "linear-gradient(135deg, #29407d 0%, #425797 100%)" }}
-          >
-            <div className="absolute -right-3 -bottom-3 opacity-10">
-              <Clock className="h-16 w-16" />
-            </div>
-            <div className="relative z-10">
-              <div className="text-[10px] font-bold uppercase tracking-wider mb-1">{t("editorial.nextSession")}</div>
-              <div className="text-base font-bold">
-                {nextSession.report.id === user.id
-                  ? `${nextSession.manager.firstName} ${nextSession.manager.lastName}`
-                  : `${nextSession.report.firstName} ${nextSession.report.lastName}`}
+        {/* Next session card (right-aligned, matches health card width) */}
+        {nextSession && (() => {
+          const isSelf = nextSession.report.id === user.id;
+          const person = isSelf
+            ? nextSession.manager
+            : nextSession.report;
+          const personName = `${person.firstName} ${person.lastName}`;
+
+          return (
+            <Link
+              href={nextSession.latestSession?.status === "in_progress" ? `/wizard/${nextSession.latestSession.id}` : `/sessions/${nextSession.id}`}
+              className="text-white p-5 rounded-xl shadow-md relative overflow-hidden group hover:shadow-lg transition-all block w-full md:w-[calc(25%-12px)]"
+              style={{ background: "linear-gradient(135deg, #29407d 0%, #425797 100%)" }}
+            >
+              <div className="absolute -right-3 -bottom-3 opacity-10">
+                <Clock className="h-16 w-16" />
               </div>
-              <div className="flex items-center justify-between mt-1">
-                <span className="text-xs opacity-80">
-                  {nextSession.nextSessionAt
-                    ? format.relativeTime(new Date(nextSession.nextSessionAt))
-                    : t("editorial.scheduled")}
-                </span>
-                <span className="flex items-center gap-1 text-[10px] font-bold opacity-60 group-hover:opacity-100 transition-opacity">
-                  <Play className="h-2.5 w-2.5 fill-current" /> Start
-                </span>
+              <div className="relative z-10">
+                <div className="text-[10px] font-bold uppercase tracking-wider mb-3">{t("editorial.nextSession")}</div>
+                <div className="flex items-center gap-3 mb-3">
+                  <Avatar className="h-10 w-10 border-2 border-white/20">
+                    <AvatarImage src={getAvatarUrl(personName, person.avatarUrl)} alt={personName} />
+                    <AvatarFallback className="text-xs bg-white/20 text-white">
+                      {getInitials(personName)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <div className="text-base font-bold truncate">{personName}</div>
+                    {person.jobTitle && (
+                      <div className="text-xs opacity-70 truncate">{person.jobTitle}</div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs opacity-80">
+                    {nextSession.nextSessionAt
+                      ? format.relativeTime(new Date(nextSession.nextSessionAt))
+                      : t("editorial.scheduled")}
+                  </span>
+                  <span className="flex items-center gap-1 text-[10px] font-bold opacity-60 group-hover:opacity-100 transition-opacity">
+                    <Play className="h-2.5 w-2.5 fill-current" /> Start
+                  </span>
+                </div>
               </div>
-            </div>
-          </Link>
-        )}
+            </Link>
+          );
+        })()}
       </section>
 
       {/* 2. Health Overview Cards */}
