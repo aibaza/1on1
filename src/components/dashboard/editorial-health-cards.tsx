@@ -10,14 +10,10 @@ import {
   Activity,
   ChevronRight,
   TrendingUp,
-  TrendingDown,
-  Clock,
-  BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   sparkBarColor,
-  alertBadgeColor,
   DISTRIBUTION_COLORS,
   LEGEND_DOT_COLORS,
 } from "@/lib/analytics/colors";
@@ -344,7 +340,6 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
         <SheetContent className="overflow-y-auto">
           <SheetHeader className="text-left mb-6">
             <SheetTitle className="flex items-center gap-2 text-xl font-headline">
-              <AlertTriangle className="h-5 w-5 text-red-500" />
               {t("signals")}
               <span className="text-sm font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full">
                 {alerts.length}
@@ -355,41 +350,25 @@ export function EditorialHealthCards({ userLevel, userId }: EditorialHealthCards
             </SheetDescription>
           </SheetHeader>
 
-          <div className="space-y-3 px-4 pb-4">
+          <div className="divide-y divide-border px-4 pb-4">
             {alerts.map((alert, i) => {
-              const iconType = alert.type === "declining" || alert.type === "critical_score"
-                ? "score"
-                : alert.type === "stale" ? "stale" : "action";
+              const isCritical = alert.type === "critical_score";
+              const statusLabel = alert.type === "declining" ? t("signalDeclining")
+                : alert.type === "critical_score" ? t("signalCritical")
+                : alert.type === "stale" ? t("signalStale")
+                : alert.type === "low_action_rate" ? t("signalLowActions")
+                : alert.type;
+              const statusColor = isCritical
+                ? "text-red-600 dark:text-red-400"
+                : "text-amber-600 dark:text-amber-400";
 
               return (
-                <div
-                  key={i}
-                  className={cn(
-                    "p-4 rounded-xl border-l-4",
-                    alertBadgeColor(alert.type),
-                  )}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 bg-background/50">
-                      {iconType === "score" ? (
-                        <TrendingDown className="h-4 w-4" />
-                      ) : iconType === "stale" ? (
-                        <Clock className="h-4 w-4" />
-                      ) : (
-                        <BarChart3 className="h-4 w-4" />
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-bold text-sm">{alert.personName}</p>
-                      <p className="text-xs mt-0.5 opacity-80">{alert.detail}</p>
-                      <span className="inline-block mt-2 text-[10px] font-bold uppercase tracking-wider opacity-60">
-                        {alert.type === "declining" && t("signalDeclining")}
-                        {alert.type === "critical_score" && t("signalCritical")}
-                        {alert.type === "stale" && t("signalStale")}
-                        {alert.type === "low_action_rate" && t("signalLowActions")}
-                      </span>
-                    </div>
-                  </div>
+                <div key={i} className="py-3">
+                  <p className="font-semibold text-sm text-foreground">{alert.personName}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{alert.detail}</p>
+                  <span className={cn("text-[10px] font-bold uppercase tracking-wider mt-1 inline-block", statusColor)}>
+                    {statusLabel}
+                  </span>
                 </div>
               );
             })}
