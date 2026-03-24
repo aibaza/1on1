@@ -1,14 +1,12 @@
 "use client";
 
-import { logoutAction } from "@/lib/auth/actions";
+import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 
 export function LogoutButton() {
   return (
-    <form action={logoutAction}>
-      <Button variant="outline" type="submit">
-        Sign out
-      </Button>
-    </form>
+    <Button variant="outline" onClick={() => signOut({ callbackUrl: "/login" })}>
+      Sign out
+    </Button>
   );
 }

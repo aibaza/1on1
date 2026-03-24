@@ -1,11 +1,10 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { LogOut, Globe, Check, Paintbrush, User } from "lucide-react";
 import Link from "next/link";
 import { DESIGN_PREF_COOKIE, type DesignPreference } from "@/lib/design-preference";
-import { logoutAction } from "@/lib/auth/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarUrl } from "@/lib/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -166,14 +165,13 @@ export function UserMenu({ renderTrigger }: UserMenuProps = {}) {
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
-        <form action={logoutAction}>
-          <DropdownMenuItem asChild>
-            <button type="submit" className="w-full cursor-pointer">
-              <LogOut className="mr-2 h-4 w-4" />
-              {t("signOut")}
-            </button>
-          </DropdownMenuItem>
-        </form>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => signOut({ callbackUrl: "/login" })}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          {t("signOut")}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
