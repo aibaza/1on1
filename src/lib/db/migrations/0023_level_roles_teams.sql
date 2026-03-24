@@ -8,11 +8,15 @@
 -- Step 1: Create new enum
 CREATE TYPE "user_level" AS ENUM ('admin', 'manager', 'member');
 
--- Step 2: Add level column to user table
-ALTER TABLE "user" ADD COLUMN "level" "user_level" NOT NULL DEFAULT 'member';
+-- Step 2: Add level column to user table (nullable first, then backfill)
+ALTER TABLE "user" ADD COLUMN "level" "user_level";
 
 -- Step 3: Backfill level from role
 UPDATE "user" SET "level" = "role"::text::"user_level";
+
+-- Step 3b: Make level NOT NULL with default
+ALTER TABLE "user" ALTER COLUMN "level" SET NOT NULL;
+ALTER TABLE "user" ALTER COLUMN "level" SET DEFAULT 'member'::"user_level";
 
 -- Step 4: Add team_name column
 ALTER TABLE "user" ADD COLUMN "team_name" varchar(200);
@@ -77,8 +81,10 @@ CREATE UNIQUE INDEX "analytics_unique_snapshot_idx"
 ALTER TABLE "analytics_snapshot" DROP COLUMN "team_id";
 
 -- Step 11: Rename invite_token.role to level
+ALTER TABLE "invite_token" ALTER COLUMN "role" DROP DEFAULT;
 ALTER TABLE "invite_token" RENAME COLUMN "role" TO "level";
 ALTER TABLE "invite_token" ALTER COLUMN "level" TYPE "user_level" USING "level"::text::"user_level";
+ALTER TABLE "invite_token" ALTER COLUMN "level" SET DEFAULT 'member'::"user_level";
 
 -- Step 12: Update user indexes
 DROP INDEX IF EXISTS "user_tenant_role_idx";
