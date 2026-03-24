@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { RefreshCw, Shield, Check, Eye, EyeOff } from "lucide-react";
@@ -24,6 +25,7 @@ interface AccountClientProps {
 export function AccountClient({ user, canEditJobTitle }: AccountClientProps) {
   const t = useTranslations("account");
   const router = useRouter();
+  const { update: updateSession } = useSession();
   const fullName = `${user.firstName} ${user.lastName}`;
 
   // Avatar state
@@ -64,6 +66,8 @@ export function AccountClient({ user, canEditJobTitle }: AccountClientProps) {
         await new Promise((r) => setTimeout(r, 50));
         setAvatarFading(false);
         toast.success(t("avatar.regenerated"));
+        // Update the NextAuth session so user-menu picks up the new avatar
+        await updateSession();
         // Refresh server components so all avatars across the app update
         router.refresh();
       }

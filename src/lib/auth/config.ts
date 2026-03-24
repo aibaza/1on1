@@ -63,6 +63,7 @@ const config = {
           id: user.id,
           email: user.email,
           name: `${user.firstName} ${user.lastName}`,
+          image: user.avatarUrl ?? null,
           tenantId: user.tenantId,
           level: user.level,
           emailVerified: user.emailVerified,
@@ -116,14 +117,15 @@ const config = {
         token.level = (token as Record<string, unknown>).role as string;
       }
 
-      // Support language switching without re-login
+      // Support language switching and avatar updates without re-login
       if (trigger === "update" && token.userId) {
         const dbUser = await adminDb.query.users.findFirst({
           where: (u, { eq }) => eq(u.id, token.userId),
-          columns: { language: true, tenantId: true },
+          columns: { language: true, tenantId: true, avatarUrl: true },
         });
         if (dbUser) {
           token.uiLanguage = dbUser.language ?? "en";
+          token.picture = dbUser.avatarUrl ?? null;
           const tenant = await adminDb.query.tenants.findFirst({
             where: (t, { eq }) => eq(t.id, dbUser.tenantId),
             columns: { settings: true },
@@ -153,6 +155,7 @@ const config = {
       session.user.emailVerified = token.emailVerified;
       session.user.uiLanguage = token.uiLanguage;
       session.user.contentLanguage = token.contentLanguage;
+      session.user.image = (token.picture as string) ?? null;
 
       // Overlay session with impersonated user when admin has set the cookie
       if (token.level === "admin") {
