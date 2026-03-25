@@ -28,6 +28,14 @@ e2e/.auth-uat/
 e2e/reports/
 e2e/screenshots/
 screenshots/
+e2e/avatar-debug.spec.ts
+e2e/avatar-screenshot.spec.ts
+e2e/*audit*.config.ts
+e2e/*audit*.spec.ts
+e2e/reaudit*.config.ts
+e2e/reaudit*.spec.ts
+e2e/smoke-vercel.config.ts
+e2e/smoke-vercel.spec.ts
 
 # env files
 .env
