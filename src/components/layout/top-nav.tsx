@@ -84,7 +84,7 @@ function canSeeItem(level: string, item: NavItem): boolean {
   return true;
 }
 
-export function TopNav() {
+export function TopNav({ avatarUrl }: { avatarUrl?: string | null }) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const userLevel = session?.user?.level ?? "member";
@@ -233,7 +233,7 @@ export function TopNav() {
       <div className="ml-auto flex items-center gap-1">
         <SearchTrigger />
         <ThemeToggle />
-        <UserMenu />
+        <UserMenu avatarUrl={avatarUrl} />
       </div>
     </header>
   );
