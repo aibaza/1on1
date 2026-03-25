@@ -18,7 +18,7 @@ interface Series {
   preferredDay: string | null;
   preferredTime: string | null;
   manager: { id: string; firstName: string; lastName: string };
-  report: { id: string; firstName: string; lastName: string; avatarUrl: string | null; level: string };
+  report: { id: string; firstName: string; lastName: string; avatarUrl: string | null; jobTitle?: string | null; level: string };
   latestSession: {
     id: string; status: string; sessionNumber: number;
     sessionScore: string | null; scheduledAt: string | null; talkingPointCount: number;

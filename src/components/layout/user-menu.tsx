@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useId } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { LogOut, Globe, Check, Paintbrush, User } from "lucide-react";
@@ -52,13 +53,16 @@ export function UserMenu({ renderTrigger, avatarUrl: serverAvatarUrl }: UserMenu
   // useLocale reads the actual rendered locale (source of truth)
   const currentLang = useLocale();
 
-  // Read design preference from cookie (client-side)
-  const currentDesign: DesignPreference =
-    (typeof document !== "undefined" &&
-      document.cookie
-        .split("; ")
-        .find((c) => c.startsWith(`${DESIGN_PREF_COOKIE}=`))
-        ?.split("=")[1] as DesignPreference) || "classic";
+  // Read design preference from cookie after mount (avoids hydration mismatch)
+  const [currentDesign, setCurrentDesign] = useState<DesignPreference>("editorial");
+  useEffect(() => {
+    const match = document.cookie
+      .split("; ")
+      .find((c) => c.startsWith(`${DESIGN_PREF_COOKIE}=`));
+    if (match) {
+      setCurrentDesign(match.split("=")[1] as DesignPreference);
+    }
+  }, []);
 
   async function switchLanguage(lang: "en" | "ro") {
     if (lang === currentLang) return;
@@ -80,6 +84,11 @@ export function UserMenu({ renderTrigger, avatarUrl: serverAvatarUrl }: UserMenu
     // 4. Reload to re-render with new translations (server-side message loading)
     window.location.reload();
   }
+
+  // Avoid hydration mismatch: session is null on server, defined on client
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return <div className="h-8 w-8" />;
 
   return (
     <DropdownMenu>
@@ -141,27 +150,6 @@ export function UserMenu({ renderTrigger, avatarUrl: serverAvatarUrl }: UserMenu
           >
             <span className="flex-1">{lang.label}</span>
             {currentLang === lang.code && (
-              <Check className="h-4 w-4 text-primary" />
-            )}
-          </DropdownMenuItem>
-        ))}
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Paintbrush className="h-3.5 w-3.5" />
-          Design
-        </DropdownMenuLabel>
-        {DESIGNS.map((design) => (
-          <DropdownMenuItem
-            key={design.code}
-            onClick={() => {
-              if (design.code === currentDesign) return;
-              document.cookie = `${DESIGN_PREF_COOKIE}=${design.code};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
-              window.location.reload();
-            }}
-            className="cursor-pointer"
-          >
-            <span className="flex-1">{design.label}</span>
-            {currentDesign === design.code && (
               <Check className="h-4 w-4 text-primary" />
             )}
           </DropdownMenuItem>

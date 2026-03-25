@@ -6,6 +6,8 @@ import { DESIGN_PREF_COOKIE, type DesignPreference } from "./design-preference";
  * Returns "classic" if no cookie is set or value is invalid.
  */
 export async function getDesignPreference(): Promise<DesignPreference> {
+  // Editorial is default for all users.
+  // Classic only accessible via secret: /api/design?theme=classic (sets cookie)
   const store = await cookies();
   const value = store.get(DESIGN_PREF_COOKIE)?.value;
   return value === "classic" ? "classic" : "editorial";

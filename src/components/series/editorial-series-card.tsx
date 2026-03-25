@@ -27,7 +27,7 @@ interface EditorialSeriesCardProps {
     preferredDay: string | null;
     preferredTime: string | null;
     manager: { id: string; firstName: string; lastName: string };
-    report: { id: string; firstName: string; lastName: string; avatarUrl: string | null; level: string };
+    report: { id: string; firstName: string; lastName: string; avatarUrl: string | null; jobTitle?: string | null; level: string };
     latestSession: {
       id: string;
       status: string;
@@ -379,7 +379,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
           sessionId={agendaSessionId}
           personName={reportName}
           personAvatarUrl={series.report.avatarUrl}
-          personJobTitle={null}
+          personJobTitle={series.report.jobTitle}
           personLevel={series.report.level}
           sessionNumber={agendaSessionNumber}
           sessionDate={series.latestSession?.scheduledAt ?? series.nextSessionAt ?? ""}
