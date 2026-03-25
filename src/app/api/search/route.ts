@@ -57,6 +57,15 @@ interface SearchResults {
 
 // --- Helpers ---
 
+/** Map app content language to PostgreSQL text search config */
+function getTsConfig(contentLanguage: string): string {
+  switch (contentLanguage) {
+    case "ro": return "romanian";
+    case "en": return "english";
+    default: return "simple";
+  }
+}
+
 /**
  * Get IDs of all series the user participates in (or all if admin).
  */
@@ -94,7 +103,8 @@ async function searchSessions(
   query: string,
   tenantId: string,
   seriesIds: string[],
-  limit: number
+  limit: number,
+  tsConfig: string
 ): Promise<SessionSearchResult[]> {
   if (seriesIds.length === 0) return [];
 
@@ -105,14 +115,14 @@ async function searchSessions(
       s.session_number,
       s.series_id,
       s.scheduled_at,
-      ts_headline('english', tp.content, websearch_to_tsquery('english', ${query}),
+      ts_headline(${sql.raw(`'${tsConfig}'`)}, tp.content, websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query}),
         'MaxWords=20,MinWords=10,MaxFragments=1') AS snippet,
-      ts_rank(to_tsvector('english', tp.content), websearch_to_tsquery('english', ${query})) AS rank
+      ts_rank(to_tsvector(${sql.raw(`'${tsConfig}'`)}, tp.content), websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})) AS rank
     FROM talking_point tp
     JOIN session s ON tp.session_id = s.id
     WHERE s.tenant_id = ${tenantId}
-      AND s.series_id = ANY(${seriesIds})
-      AND to_tsvector('english', tp.content) @@ websearch_to_tsquery('english', ${query})
+      AND s.series_id IN ${seriesIds}
+      AND to_tsvector(${sql.raw(`'${tsConfig}'`)}, tp.content) @@ websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
     ORDER BY rank DESC
     LIMIT ${limit * 3}
   `);
@@ -124,15 +134,15 @@ async function searchSessions(
       s.session_number,
       s.series_id,
       s.scheduled_at,
-      ts_headline('english', sa.answer_text, websearch_to_tsquery('english', ${query}),
+      ts_headline(${sql.raw(`'${tsConfig}'`)}, sa.answer_text, websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query}),
         'MaxWords=20,MinWords=10,MaxFragments=1') AS snippet,
-      ts_rank(to_tsvector('english', coalesce(sa.answer_text, '')), websearch_to_tsquery('english', ${query})) AS rank
+      ts_rank(to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce(sa.answer_text, '')), websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})) AS rank
     FROM session_answer sa
     JOIN session s ON sa.session_id = s.id
     WHERE s.tenant_id = ${tenantId}
-      AND s.series_id = ANY(${seriesIds})
+      AND s.series_id IN ${seriesIds}
       AND sa.answer_text IS NOT NULL
-      AND to_tsvector('english', coalesce(sa.answer_text, '')) @@ websearch_to_tsquery('english', ${query})
+      AND to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce(sa.answer_text, '')) @@ websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
     ORDER BY rank DESC
     LIMIT ${limit * 3}
   `);
@@ -144,21 +154,21 @@ async function searchSessions(
       s.session_number,
       s.series_id,
       s.scheduled_at,
-      ts_headline('english',
+      ts_headline(${sql.raw(`'${tsConfig}'`)},
         (SELECT string_agg(value, ' ') FROM jsonb_each_text(s.shared_notes)),
-        websearch_to_tsquery('english', ${query}),
+        websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query}),
         'MaxWords=20,MinWords=10,MaxFragments=1') AS snippet,
       ts_rank(
-        to_tsvector('english', coalesce((SELECT string_agg(value, ' ') FROM jsonb_each_text(s.shared_notes)), '')),
-        websearch_to_tsquery('english', ${query})
+        to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce((SELECT string_agg(value, ' ') FROM jsonb_each_text(s.shared_notes)), '')),
+        websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
       ) AS rank
     FROM session s
     WHERE s.tenant_id = ${tenantId}
-      AND s.series_id = ANY(${seriesIds})
+      AND s.series_id IN ${seriesIds}
       AND s.shared_notes IS NOT NULL
       AND s.shared_notes::text <> 'null'
-      AND to_tsvector('english', coalesce((SELECT string_agg(value, ' ') FROM jsonb_each_text(s.shared_notes)), ''))
-        @@ websearch_to_tsquery('english', ${query})
+      AND to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce((SELECT string_agg(value, ' ') FROM jsonb_each_text(s.shared_notes)), ''))
+        @@ websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
     ORDER BY rank DESC
     LIMIT ${limit * 3}
   `);
@@ -192,7 +202,7 @@ async function searchSessions(
         sessionId,
         sessionNumber: Number(row.session_number),
         seriesId: row.series_id as string,
-        scheduledAt: (row.scheduled_at as Date).toISOString(),
+        scheduledAt: row.scheduled_at instanceof Date ? row.scheduled_at.toISOString() : String(row.scheduled_at),
         snippet: (row.snippet as string) || "",
         rank,
       });
@@ -257,7 +267,8 @@ async function searchActionItems(
   query: string,
   tenantId: string,
   seriesIds: string[],
-  limit: number
+  limit: number,
+  tsConfig: string
 ): Promise<ActionItemSearchResult[]> {
   if (seriesIds.length === 0) return [];
 
@@ -268,20 +279,20 @@ async function searchActionItems(
       ai.status,
       ai.session_id,
       s.series_id,
-      ts_headline('english',
+      ts_headline(${sql.raw(`'${tsConfig}'`)},
         coalesce(ai.title, '') || ' ' || coalesce(ai.description, ''),
-        websearch_to_tsquery('english', ${query}),
+        websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query}),
         'MaxWords=20,MinWords=10,MaxFragments=1') AS snippet,
       ts_rank(
-        to_tsvector('english', coalesce(ai.title, '') || ' ' || coalesce(ai.description, '')),
-        websearch_to_tsquery('english', ${query})
+        to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce(ai.title, '') || ' ' || coalesce(ai.description, '')),
+        websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
       ) AS rank
     FROM action_item ai
     JOIN session s ON ai.session_id = s.id
     WHERE ai.tenant_id = ${tenantId}
-      AND s.series_id = ANY(${seriesIds})
-      AND to_tsvector('english', coalesce(ai.title, '') || ' ' || coalesce(ai.description, ''))
-        @@ websearch_to_tsquery('english', ${query})
+      AND s.series_id IN ${seriesIds}
+      AND to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce(ai.title, '') || ' ' || coalesce(ai.description, ''))
+        @@ websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
     ORDER BY rank DESC
     LIMIT ${limit}
   `);
@@ -432,11 +443,14 @@ export async function GET(request: NextRequest) {
           session.user.level
         );
 
+        // Use tenant content language for full-text search config
+        const tsConfig = getTsConfig(session.user.contentLanguage);
+
         // Run all searches in parallel
         const [sessionResults, actionItemResults, templateResults, peopleResults] =
           await Promise.all([
-            searchSessions(tx, q, session.user.tenantId, seriesIds, limit),
-            searchActionItems(tx, q, session.user.tenantId, seriesIds, limit),
+            searchSessions(tx, q, session.user.tenantId, seriesIds, limit, tsConfig),
+            searchActionItems(tx, q, session.user.tenantId, seriesIds, limit, tsConfig),
             searchTemplates(tx, q, session.user.tenantId, limit),
             searchPeople(tx, q, session.user.tenantId, limit),
           ]);

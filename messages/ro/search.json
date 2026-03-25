@@ -4,7 +4,7 @@
     "description": "Caută în sesiuni, acțiuni, șabloane și persoane",
     "placeholder": "Caută sesiuni, acțiuni, șabloane, persoane...",
     "searching": "Se caută...",
-    "noResults": "Niciun rezultat pentru '{query}'. Încearcă alte cuvinte cheie.",
+    "noResults": "Niciun rezultat pentru \"{query}\". Încearcă alte cuvinte cheie.",
     "sessions": "Sesiuni",
     "actionItems": "Acțiuni",
     "templates": "Șabloane",

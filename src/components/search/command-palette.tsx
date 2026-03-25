@@ -68,6 +68,8 @@ export function CommandPalette() {
   const t = useTranslations("search");
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResults | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -156,6 +158,8 @@ export function CommandPalette() {
     completed: "default",
   };
 
+  if (!mounted) return null;
+
   return (
     <CommandDialog
       open={open}
@@ -163,6 +167,7 @@ export function CommandPalette() {
       title={t("title")}
       description={t("description")}
       showCloseButton={false}
+      shouldFilter={false}
     >
       <CommandInput
         placeholder={t("placeholder")}
@@ -188,7 +193,7 @@ export function CommandPalette() {
             {results.sessions.map((s) => (
               <CommandItem
                 key={s.sessionId}
-                value={`session-${s.sessionId}`}
+                value={`session-${s.sessionId}-${s.reportName}-${s.snippet}`}
                 onSelect={() =>
                   handleSelect(`/sessions/${s.sessionId}/summary`)
                 }
@@ -223,7 +228,7 @@ export function CommandPalette() {
             {results.actionItems.map((item) => (
               <CommandItem
                 key={item.id}
-                value={`action-${item.id}`}
+                value={`action-${item.id}-${item.title}`}
                 onSelect={() => handleSelect("/action-items")}
               >
                 <CheckCircle2 className="mr-2 h-4 w-4 shrink-0" />
@@ -259,7 +264,7 @@ export function CommandPalette() {
             {results.templates.map((t) => (
               <CommandItem
                 key={t.id}
-                value={`template-${t.id}`}
+                value={`template-${t.id}-${t.name}`}
                 onSelect={() => handleSelect(`/templates/${t.id}`)}
               >
                 <FileText className="mr-2 h-4 w-4 shrink-0" />
@@ -288,7 +293,7 @@ export function CommandPalette() {
             {results.people.map((p) => (
               <CommandItem
                 key={p.id}
-                value={`person-${p.id}`}
+                value={`person-${p.id}-${p.firstName}-${p.lastName}`}
                 onSelect={() => handleSelect(`/people/${p.id}`)}
               >
                 <User className="mr-2 h-4 w-4 shrink-0" />
