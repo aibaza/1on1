@@ -18,6 +18,7 @@
       "inDays": "In {count} days",
       "daysAgo": "{count} days ago",
       "notScheduled": "Not scheduled",
+      "atTime": "at {time}",
       "resume": "Resume",
       "start": "Start",
       "inProgress": "Session #{number} in progress",
@@ -47,7 +48,10 @@
       "tooltipTemplate": "Meeting template",
       "tooltipNextSession": "Next scheduled session",
       "tooltipSchedule": "Meeting cadence",
-      "tooltipAgenda": "Talking points & agenda"
+      "tooltipAgenda": "Talking points & agenda",
+      "tooltipOverdue": "This session is overdue",
+      "tooltipPaused": "Series is paused",
+      "tooltipArchived": "Series is archived"
     },
     "sections": {
       "myTeam": "My Team",
@@ -189,7 +193,17 @@
       "statusOpen": "open"
     },
     "agenda": {
-      "sessionLabel": "Session {number}",
+      "sessionLabel": "Session #{number}",
+      "upcoming": "Upcoming",
+      "talkingPoints": "Talking Points",
+      "itemCount": "{count} Items",
+      "carriedForward": "Carried forward",
+      "addPlaceholder": "Add a talking point...",
+      "insightsTitle": "Insights & Actions",
+      "actionItems": "Action Items",
+      "overdueCount": "{count} overdue",
+      "lastScore": "Last Score",
+      "startMeeting": "Start Meeting",
       "emptyHeading": "No agenda items yet",
       "emptyBody": "Add talking points to prepare for your upcoming meeting.",
       "loadError": "Could not load agenda items. Please try again."

@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import {
   Layers,
@@ -8,10 +9,13 @@ import {
   Clock,
   ChevronRight,
   CalendarPlus,
+  CalendarDays,
   Play,
   ListChecks,
+  ListTodo,
   Calendar,
 } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { useTranslations, useFormatter } from "next-intl";
 import type { QuickStats, StatsTrends, OverdueGroup, RecentSession } from "@/lib/queries/dashboard";
 import type { SeriesCardData } from "@/lib/queries/series";
@@ -19,6 +23,7 @@ import { EditorialHealthCards } from "@/components/dashboard/editorial-health-ca
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { StarRating } from "@/components/ui/star-rating";
+import { EditorialAgendaDrawer } from "@/components/series/editorial-agenda-drawer";
 
 interface EditorialDashboardProps {
   user: {
@@ -57,10 +62,26 @@ export function EditorialDashboard({
   recent,
 }: EditorialDashboardProps) {
   const t = useTranslations("dashboard");
+  const ts = useTranslations("sessions");
   const format = useFormatter();
 
   const firstName = user.name?.split(" ")[0] ?? "there";
   const totalOverdue = overdue.reduce((sum, g) => sum + g.items.length, 0);
+
+  // Agenda sheet state for next session card
+  const [agendaOpen, setAgendaOpen] = useState(false);
+  const [agendaSessionId, setAgendaSessionId] = useState<string | null>(null);
+  const [agendaSessionNumber, setAgendaSessionNumber] = useState(0);
+  const [agendaPersonName, setAgendaPersonName] = useState("");
+  const [agendaSessionDate, setAgendaSessionDate] = useState("");
+
+  const ensureSession = useMutation({
+    mutationFn: async (seriesId: string) => {
+      const res = await fetch(`/api/series/${seriesId}/ensure-session`, { method: "POST" });
+      if (!res.ok) throw new Error("Failed to ensure session");
+      return res.json() as Promise<{ sessionId: string; sessionNumber: number }>;
+    },
+  });
 
   // Find the nearest upcoming session
   const nextSession = useMemo(() => {
@@ -100,18 +121,83 @@ export function EditorialDashboard({
             : nextSession.report;
           const personName = `${person.firstName} ${person.lastName}`;
 
+          const isOverdue = nextSession.nextSessionAt && new Date(nextSession.nextSessionAt).getTime() < Date.now();
+          const nextTime = nextSession.preferredTime?.slice(0, 5) ?? null;
+          const nextDateRel = nextSession.nextSessionAt
+            ? (() => {
+                const date = new Date(nextSession.nextSessionAt!);
+                const diffMs = date.getTime() - Date.now();
+                const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+                if (diffDays === 0) return ts("series.today");
+                if (diffDays === 1) return ts("series.tomorrow");
+                if (diffDays === -1) return ts("series.yesterday");
+                if (diffDays > 0 && diffDays <= 7) return ts("series.inDays", { count: diffDays });
+                if (diffDays < 0 && diffDays >= -7) return ts("series.daysAgo", { count: Math.abs(diffDays) });
+                return format.dateTime(date, { month: "short", day: "numeric" });
+              })()
+            : t("editorial.scheduled");
+          const nextDateFull = nextTime
+            ? `${nextDateRel.charAt(0).toUpperCase() + nextDateRel.slice(1)} ${ts("series.atTime", { time: nextTime })}`
+            : nextDateRel.charAt(0).toUpperCase() + nextDateRel.slice(1);
+          const tpCount = nextSession.latestSession?.talkingPointCount ?? 0;
+
           return (
-            <Link
-              href={nextSession.latestSession?.status === "in_progress" ? `/wizard/${nextSession.latestSession.id}` : `/sessions/${nextSession.id}`}
-              className="text-white p-5 rounded-xl shadow-md relative overflow-hidden group hover:shadow-lg transition-all block w-full md:w-[calc(25%-12px)]"
+            <div
+              className="text-white p-5 rounded-xl shadow-md relative overflow-hidden group hover:shadow-lg transition-all w-full md:w-[calc(25%-12px)]"
               style={{ background: "linear-gradient(135deg, #29407d 0%, #425797 100%)" }}
             >
               <div className="absolute -right-3 -bottom-3 opacity-10">
                 <Clock className="h-16 w-16" />
               </div>
               <div className="relative z-10">
-                <div className="text-[10px] font-bold uppercase tracking-wider mb-3">{t("editorial.nextSession")}</div>
-                <div className="flex items-center gap-3 mb-3">
+                {/* Header: title + agenda button */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-[10px] font-bold uppercase tracking-wider">{t("editorial.nextSession")}</div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold text-white/70 hover:text-white hover:bg-white/10 transition-all"
+                        onClick={() => {
+                          const openSession = nextSession.latestSession?.status !== "completed" && nextSession.latestSession?.status !== "cancelled"
+                            ? nextSession.latestSession : null;
+                          if (openSession) {
+                            setAgendaSessionId(openSession.id);
+                            setAgendaSessionNumber(openSession.sessionNumber);
+                            setAgendaPersonName(personName);
+                            setAgendaSessionDate(openSession.scheduledAt ?? nextSession.nextSessionAt ?? "");
+                            setAgendaOpen(true);
+                          } else {
+                            ensureSession.mutate(nextSession.id, {
+                              onSuccess: (data) => {
+                                setAgendaSessionId(data.sessionId);
+                                setAgendaSessionNumber(data.sessionNumber);
+                                setAgendaPersonName(personName);
+                                setAgendaSessionDate(nextSession.nextSessionAt ?? "");
+                                setAgendaOpen(true);
+                              },
+                            });
+                          }
+                        }}
+                      >
+                        <ListTodo className="h-3 w-3" />
+                        <span>{ts("series.agenda")}</span>
+                        {tpCount > 0 && (
+                          <span className="flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-white/20 text-white text-[8px] font-bold px-0.5">
+                            {tpCount}
+                          </span>
+                        )}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>{ts("series.tooltipAgenda")}</TooltipContent>
+                  </Tooltip>
+                </div>
+
+                {/* Person */}
+                <Link
+                  href={nextSession.latestSession?.status === "in_progress" ? `/wizard/${nextSession.latestSession.id}` : `/sessions/${nextSession.id}`}
+                  className="flex items-center gap-3 mb-3"
+                >
                   <Avatar className="h-10 w-10 border-2 border-white/20">
                     <ThemedAvatarImage name={personName} uploadedUrl={person.avatarUrl} role={person.level} />
                     <AvatarFallback className="text-xs bg-white/20 text-white">
@@ -124,21 +210,37 @@ export function EditorialDashboard({
                       <div className="text-xs opacity-70 truncate">{person.jobTitle}</div>
                     )}
                   </div>
-                </div>
+                </Link>
+
+                {/* Date + action */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs opacity-80">
-                    {nextSession.nextSessionAt
-                      ? format.relativeTime(new Date(nextSession.nextSessionAt))
-                      : t("editorial.scheduled")}
-                  </span>
-                  <span className="flex items-center gap-1 text-[10px] font-bold opacity-60 group-hover:opacity-100 transition-opacity">
+                  <div className={`flex items-center gap-1.5 text-xs font-medium ${
+                    isOverdue ? "text-red-300" : "text-emerald-300"
+                  }`}>
+                    <CalendarDays className="h-3 w-3" />
+                    <span>{nextDateFull}</span>
+                  </div>
+                  <Link
+                    href={nextSession.latestSession?.status === "in_progress" ? `/wizard/${nextSession.latestSession.id}` : `/sessions/${nextSession.id}`}
+                    className="flex items-center gap-1 text-[10px] font-bold opacity-60 group-hover:opacity-100 transition-opacity"
+                  >
                     <Play className="h-2.5 w-2.5 fill-current" /> Start
-                  </span>
+                  </Link>
                 </div>
               </div>
-            </Link>
+            </div>
           );
         })()}
+        {agendaSessionId && (
+          <EditorialAgendaDrawer
+            open={agendaOpen}
+            onOpenChange={setAgendaOpen}
+            sessionId={agendaSessionId}
+            personName={agendaPersonName}
+            sessionNumber={agendaSessionNumber}
+            sessionDate={agendaSessionDate}
+          />
+        )}
       </section>
 
       {/* 2. Health Overview Cards */}

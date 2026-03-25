@@ -18,6 +18,7 @@
       "inDays": "În {count} zile",
       "daysAgo": "acum {count} zile",
       "notScheduled": "Neprogramat",
+      "atTime": "la {time}",
       "resume": "Continuă",
       "start": "Începe",
       "inProgress": "Sesiunea #{number} în desfășurare",
@@ -47,7 +48,10 @@
       "tooltipTemplate": "Template-ul discuției",
       "tooltipNextSession": "Următoarea sesiune programată",
       "tooltipSchedule": "Cadența întâlnirilor",
-      "tooltipAgenda": "Puncte de discuție & agendă"
+      "tooltipAgenda": "Puncte de discuție & agendă",
+      "tooltipOverdue": "Sesiune restantă",
+      "tooltipPaused": "Serie în pauză",
+      "tooltipArchived": "Serie arhivată"
     },
     "sections": {
       "myTeam": "Echipa mea",
@@ -189,7 +193,17 @@
       "statusOpen": "deschis"
     },
     "agenda": {
-      "sessionLabel": "Sesiunea {number}",
+      "sessionLabel": "Sesiunea #{number}",
+      "upcoming": "Programata",
+      "talkingPoints": "Puncte de discutie",
+      "itemCount": "{count} puncte",
+      "carriedForward": "Reportat",
+      "addPlaceholder": "Adauga un punct de discutie...",
+      "insightsTitle": "Informatii si actiuni",
+      "actionItems": "Actiuni deschise",
+      "overdueCount": "{count} intarziate",
+      "lastScore": "Ultimul scor",
+      "startMeeting": "Incepe sedinta",
       "emptyHeading": "Niciun punct pe agenda",
       "emptyBody": "Adauga puncte de discutie pentru a te pregati pentru intalnire.",
       "loadError": "Nu s-au putut incarca punctele de pe agenda. Incearca din nou."

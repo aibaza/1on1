@@ -19,9 +19,9 @@ import {
   Pause,
   Settings,
   Archive,
-  MessageSquarePlus,
+  ListTodo,
 } from "lucide-react";
-import { AgendaSheet } from "./agenda-sheet";
+import { EditorialAgendaDrawer } from "./editorial-agenda-drawer";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { StarRating } from "@/components/ui/star-rating";
@@ -176,7 +176,7 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
                   onClick={() => setAgendaOpen(true)}
                   className="px-4 py-2.5 bg-muted text-foreground font-semibold rounded-xl hover:bg-accent transition-colors flex items-center gap-2 text-sm"
                 >
-                  <MessageSquarePlus className="h-4 w-4" /> {t("series.agenda")}
+                  <ListTodo className="h-4 w-4" /> {t("series.agenda")}
                 </button>
               )}
               <button
@@ -358,15 +358,21 @@ export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeries
         </div>
       </section>
 
-      {/* Talking Points Agenda Sheet */}
+      {/* Talking Points Agenda Drawer */}
       {agendaSession && (
-        <AgendaSheet
+        <EditorialAgendaDrawer
           open={agendaOpen}
           onOpenChange={setAgendaOpen}
           sessionId={agendaSession.id}
           personName={personName}
+          personAvatarUrl={person?.avatarUrl}
+          personLevel={person?.level}
           sessionNumber={agendaSession.sessionNumber}
           sessionDate={agendaSession.scheduledAt}
+          seriesId={series.id}
+          cadence={series.cadence}
+          lastScore={series.latestSessionScore}
+          aiSnippet={series.latestAiSummary?.cardBlurb ?? null}
         />
       )}
     </div>

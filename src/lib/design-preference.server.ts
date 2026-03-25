@@ -8,5 +8,5 @@ import { DESIGN_PREF_COOKIE, type DesignPreference } from "./design-preference";
 export async function getDesignPreference(): Promise<DesignPreference> {
   const store = await cookies();
   const value = store.get(DESIGN_PREF_COOKIE)?.value;
-  return value === "editorial" ? "editorial" : "classic";
+  return value === "classic" ? "classic" : "editorial";
 }

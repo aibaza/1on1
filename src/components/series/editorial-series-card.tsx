@@ -14,7 +14,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 import { CalendarDays, ChevronRight, ListTodo, Play, RotateCcw, UserCog, UserCheck } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
 import { hashSeriesColor } from "@/lib/chart-colors";
-import { AgendaSheet } from "./agenda-sheet";
+import { EditorialAgendaDrawer } from "./editorial-agenda-drawer";
 
 interface EditorialSeriesCardProps {
   series: {
@@ -120,10 +120,16 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
   const sentiment = series.latestSummary?.sentiment ?? "";
   const sentimentClass = sentimentBorderClass[sentiment] ?? "";
 
-  const nextDateText = series.nextSessionAt
-    ? formatRelativeDate(series.nextSessionAt, t, format)
-    : t("series.notScheduled");
-  const scheduleText = formatSchedule(series.cadence, series.preferredDay, series.preferredTime, t);
+  // Date + time combined: "Mâine la 14:00"
+  const nextDateText = (() => {
+    if (!series.nextSessionAt) return t("series.notScheduled");
+    const relDate = formatRelativeDate(series.nextSessionAt, t, format);
+    const time = series.preferredTime ? series.preferredTime.slice(0, 5) : null;
+    const text = time ? `${relDate} ${t("series.atTime", { time })}` : relDate;
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  })();
+  // Cadence without time: "La fiecare 2 săptămâni, vinerea"
+  const scheduleText = formatSchedule(series.cadence, series.preferredDay, null, t);
 
   // Sparkline data
   const { chartData, sparkDomain } = useMemo(() => {
@@ -233,14 +239,14 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
               <TooltipTrigger asChild>
                 <button
                   type="button"
-                  className="relative z-10 p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-[var(--editorial-surface-container,var(--muted))] transition-all"
+                  className="relative z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-muted-foreground hover:text-primary hover:bg-accent transition-all"
                   onClick={handleAgendaClick}
                   disabled={ensureSession.isPending}
-                  aria-label={`${reportName} ${t("series.agenda")}`}
                 >
-                  <ListTodo className="h-4 w-4" />
+                  <ListTodo className="h-3.5 w-3.5" />
+                  <span>{t("series.agenda")}</span>
                   {(series.latestSession?.talkingPointCount ?? 0) > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-white text-[9px] font-bold px-1">
+                    <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-white text-[9px] font-bold px-1">
                       {series.latestSession!.talkingPointCount}
                     </span>
                   )}
@@ -248,21 +254,6 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
               </TooltipTrigger>
               <TooltipContent>{t("series.tooltipAgenda")}</TooltipContent>
             </Tooltip>
-          )}
-
-          {/* Status badge */}
-          {isOverdue ? (
-            <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--color-warning,#f59e0b)] bg-[var(--color-warning,#f59e0b)]/10 px-2 py-0.5 rounded-md">
-              {t("editorial.overdue")}
-            </span>
-          ) : series.status !== "active" ? (
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-[var(--editorial-surface-container,var(--muted))] px-2 py-0.5 rounded-md">
-              {series.status === "paused" ? t("series.statusPaused") : t("series.statusArchived")}
-            </span>
-          ) : (
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-success)] bg-[var(--color-success)]/10 px-2 py-0.5 rounded-md">
-              {t("editorial.active")}
-            </span>
           )}
         </div>
       </div>
@@ -333,25 +324,39 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
 
       {/* Footer: Date + Schedule + Action */}
       <div className="flex items-end justify-between pt-4 border-t border-[var(--editorial-outline-variant,var(--border))]/50 relative z-[1]">
-        <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-            <CalendarDays className="h-3 w-3" />
-            <span>{nextDateText}</span>
-          </div>
-          <span className="text-[10px] text-muted-foreground/50">{scheduleText}</span>
-        </div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex flex-col gap-0.5 cursor-default">
+              <div className={`flex items-center gap-1.5 text-xs font-medium ${
+                isOverdue
+                  ? "text-destructive"
+                  : series.status === "active"
+                    ? "text-[var(--color-success)]"
+                    : "text-muted-foreground"
+              }`}>
+                <CalendarDays className="h-3 w-3" />
+                <span>{nextDateText}</span>
+              </div>
+              <span className="text-[10px] text-muted-foreground/50">{scheduleText}</span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            {isOverdue
+              ? t("series.tooltipOverdue")
+              : series.status === "paused"
+                ? t("series.tooltipPaused")
+                : series.status === "archived"
+                  ? t("series.tooltipArchived")
+                  : t("series.tooltipNextSession")}
+          </TooltipContent>
+        </Tooltip>
 
         {isManager && series.status === "active" ? (
           <button
             type="button"
             onClick={handleAction}
             disabled={startMutation.isPending}
-            className={`relative z-10 flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all active:scale-95 disabled:opacity-50 ${
-              isInProgress
-                ? "text-white shadow-sm"
-                : "text-primary hover:bg-primary/5"
-            }`}
-            style={isInProgress ? { background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" } : undefined}
+            className="relative z-10 flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold text-primary hover:bg-primary/5 transition-all active:scale-95 disabled:opacity-50"
           >
             {isInProgress ? (
               <><RotateCcw className="h-3.5 w-3.5" /> {t("series.resume")}</>
@@ -366,15 +371,23 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
         )}
       </div>
 
-      {/* Agenda Sheet */}
+      {/* Agenda Drawer */}
       {agendaSessionId && (
-        <AgendaSheet
+        <EditorialAgendaDrawer
           open={agendaOpen}
           onOpenChange={setAgendaOpen}
           sessionId={agendaSessionId}
           personName={reportName}
+          personAvatarUrl={series.report.avatarUrl}
+          personJobTitle={null}
+          personLevel={series.report.level}
           sessionNumber={agendaSessionNumber}
           sessionDate={series.latestSession?.scheduledAt ?? series.nextSessionAt ?? ""}
+          seriesId={series.id}
+          cadence={series.cadence}
+          preferredTime={null}
+          lastScore={score}
+          aiSnippet={series.latestSummary?.blurb ?? null}
         />
       )}
     </div>
