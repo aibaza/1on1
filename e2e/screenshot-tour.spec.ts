@@ -123,7 +123,7 @@ async function login(page: Page, email: string, password: string): Promise<void>
   await page.goto("/login", { waitUntil: "domcontentloaded", timeout: 30_000 });
   await page.waitForTimeout(400);
   await page.getByLabel(/email/i).fill(email);
-  await page.getByLabel(/password/i).fill(password);
+  await page.locator('input[name="password"]').fill(password);
   await page.getByRole("button", { name: /sign in/i }).click();
   await page.waitForURL(/\/(dashboard|overview)/i, { timeout: 20_000 });
   // Reload so next-themes applies the class from localStorage
@@ -156,7 +156,7 @@ test("screenshot tour", async ({ browser }) => {
 
       await nav(page, "/login");
       await page.getByLabel(/email/i).fill("alice@acme.example.com").catch(() => {});
-      await page.getByLabel(/password/i).fill("••••••••••••").catch(() => {});
+      await page.locator('input[name="password"]').fill("••••••••••••").catch(() => {});
       await shot(page, dir, "auth-login");
 
       await nav(page, "/register");

@@ -25,7 +25,7 @@ test.describe("Authentication", () => {
     try {
       await page.goto("/login");
       await page.getByLabel(/email/i).fill("alice@acme.example.com");
-      await page.getByLabel(/password/i).fill("password123");
+      await page.locator('input[name="password"]').fill("password123");
       await page.getByRole("button", { name: /sign in/i }).click();
       await page.waitForURL(/\/overview/i, { timeout: 20_000 });
       await expect(page.getByText(/welcome/i)).toBeVisible({ timeout: 10_000 });
@@ -44,7 +44,7 @@ test.describe("Authentication", () => {
     try {
       await page.goto("/login");
       await page.getByLabel(/email/i).fill("bob@acme.example.com");
-      await page.getByLabel(/password/i).fill("password123");
+      await page.locator('input[name="password"]').fill("password123");
       await page.getByRole("button", { name: /sign in/i }).click();
       await page.waitForURL(/\/overview/i, { timeout: 20_000 });
       await expect(page.getByText(/welcome/i)).toBeVisible({ timeout: 10_000 });
@@ -61,7 +61,7 @@ test.describe("Authentication", () => {
     try {
       await page.goto("/login");
       await page.getByLabel(/email/i).fill("dave@acme.example.com");
-      await page.getByLabel(/password/i).fill("password123");
+      await page.locator('input[name="password"]').fill("password123");
       await page.getByRole("button", { name: /sign in/i }).click();
       await page.waitForURL(/\/overview/i, { timeout: 20_000 });
       await expect(page.getByText(/welcome/i)).toBeVisible({ timeout: 10_000 });
@@ -78,7 +78,7 @@ test.describe("Authentication", () => {
     try {
       await page.goto("/login");
       await page.getByLabel(/email/i).fill("alice@acme.example.com");
-      await page.getByLabel(/password/i).fill("wrongpassword");
+      await page.locator('input[name="password"]').fill("wrongpassword");
       await page.getByRole("button", { name: /sign in/i }).click();
       // Auth.js redirects back to /login?error=CredentialsSignin on failure
       await page.waitForTimeout(3_000);

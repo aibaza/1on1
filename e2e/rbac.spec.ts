@@ -14,7 +14,7 @@ async function loginAs(
 
   await page.goto("/login");
   await page.getByLabel(/email/i).fill(email);
-  await page.getByLabel(/password/i).fill(password);
+  await page.locator('input[name="password"]').fill(password);
   await page.getByRole("button", { name: /sign in/i }).click();
 
   // Wait for redirect to dashboard

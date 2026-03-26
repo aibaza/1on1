@@ -128,7 +128,7 @@ test.describe("Critical Path", () => {
 
     await page.goto("/login");
     await page.getByLabel(/email/i).fill("bob@acme.example.com");
-    await page.getByLabel(/password/i).fill("password123");
+    await page.locator('input[name="password"]').fill("password123");
     await page.getByRole("button", { name: /sign in/i }).click();
 
     // Wait for redirect to dashboard
