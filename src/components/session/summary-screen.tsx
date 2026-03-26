@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTranslations, useFormatter } from "next-intl";
 import { useMutation } from "@tanstack/react-query";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 import { toast } from "sonner";
 import { useApiErrorToast } from "@/lib/i18n/api-error-toast";
 import {
@@ -296,7 +297,7 @@ export function SummaryScreen({
                 {catNotes && catNotes !== "<p></p>" ? (
                   <div
                     className="prose prose-sm dark:prose-invert max-w-none rounded-md border bg-muted/20 px-4 py-3"
-                    dangerouslySetInnerHTML={{ __html: catNotes }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(catNotes) }}
                   />
                 ) : (
                   <p className="text-sm text-muted-foreground italic">

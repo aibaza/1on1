@@ -10,6 +10,8 @@ export async function GET() {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
+  const level = session.user.level;
+
   try {
     const result = await withTenantContext(
       session.user.tenantId,
@@ -35,6 +37,16 @@ export async function GET() {
           .from(users)
           .where(eq(users.tenantId, session.user.tenantId))
           .orderBy(users.lastName, users.firstName);
+
+        // Members only get minimal user info (for dropdowns/display)
+        if (level !== "admin" && level !== "manager") {
+          return allUsers.map((u) => ({
+            id: u.id,
+            firstName: u.firstName,
+            lastName: u.lastName,
+            avatarUrl: u.avatarUrl,
+          }));
+        }
 
         // Build a map of user ID -> name for manager names
         const userMap = new Map(

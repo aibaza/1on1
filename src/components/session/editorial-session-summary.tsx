@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations, useFormatter } from "next-intl";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -437,7 +438,7 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
               </h3>
               <div className="bg-accent p-6 rounded-xl border border-border/30">
                 {allPrivateNotes.map((note) => (
-                  <div key={note.id} className="text-sm text-muted-foreground leading-relaxed mb-4 last:mb-0" dangerouslySetInnerHTML={{ __html: note.content }} />
+                  <div key={note.id} className="text-sm text-muted-foreground leading-relaxed mb-4 last:mb-0" dangerouslySetInnerHTML={{ __html: sanitizeHtml(note.content) }} />
                 ))}
               </div>
             </div>

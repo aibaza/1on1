@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- XSS protection: `sanitizeHtml` utility using `isomorphic-dompurify` — all 11 `dangerouslySetInnerHTML` sites now sanitized
+- Rate limiting middleware (`src/middleware.ts`) — per-IP limits on auth (10/min), invites (10/min), AI (20/min), general API (100/min)
+- Authorization flow tests covering all 7 RBAC functions + composite patterns (participant-or-admin, owner-or-admin)
+- Sanitization unit tests (XSS vectors, tag allowlist, attribute stripping)
+- Rate limiter unit tests (limits, window reset, key isolation)
+
+### Fixed
+- `GET /api/users` information disclosure — members now receive minimal user data (id, name, avatar) instead of full directory with emails, levels, and manager assignments
+
 ### Changed
 - Renamed "role" (admin/manager/member) to "level" across entire codebase — DB schema, auth system (JWT/session), RBAC functions, API routes (~55 files), UI components (~30 files), i18n translations (EN/RO)
 - Teams are now derived from manager assignments (users.managerId) instead of explicit team/team_member tables — a manager's direct reports automatically form their team

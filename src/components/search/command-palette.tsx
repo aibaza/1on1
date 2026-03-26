@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 import {
   CommandDialog,
   CommandInput,
@@ -210,7 +211,7 @@ export function CommandPalette() {
                   </div>
                   <p
                     className="truncate text-xs text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: s.snippet }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(s.snippet) }}
                   />
                 </div>
               </CommandItem>
@@ -246,7 +247,7 @@ export function CommandPalette() {
                   </div>
                   <p
                     className="truncate text-xs text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: item.snippet }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.snippet) }}
                   />
                 </div>
               </CommandItem>

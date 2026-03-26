@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations, useFormatter } from "next-intl";
 import Link from "next/link";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -323,7 +324,7 @@ export function SessionSummaryView({
                     <div
                       className="prose prose-sm dark:prose-invert max-w-none rounded-md border bg-muted/20 px-4 py-3"
                       dangerouslySetInnerHTML={{
-                        __html: category.sharedNotes,
+                        __html: sanitizeHtml(category.sharedNotes),
                       }}
                     />
                   ) : (
@@ -433,7 +434,7 @@ export function SessionSummaryView({
                         </div>
                         <div
                           className="prose prose-sm dark:prose-invert max-w-none"
-                          dangerouslySetInnerHTML={{ __html: note.content }}
+                          dangerouslySetInnerHTML={{ __html: sanitizeHtml(note.content) }}
                         />
                       </div>
                     ))}

@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo, useRef } from "react";
 import { useTranslations, useFormatter } from "next-intl";
 import Link from "next/link";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -427,7 +428,7 @@ export function HistoryPage({
                     </div>
                     <p
                       className="mt-1 truncate text-xs text-muted-foreground"
-                      dangerouslySetInnerHTML={{ __html: r.snippet }}
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(r.snippet) }}
                     />
                   </div>
                 </div>

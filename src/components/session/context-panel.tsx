@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations, useFormatter } from "next-intl";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 import {
   ChevronDown,
   ChevronRight,
@@ -345,7 +346,7 @@ function CategoryContent({
             {previousNotes ? (
               <div
                 className="prose prose-sm prose-neutral dark:prose-invert max-w-none text-xs leading-relaxed [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1"
-                dangerouslySetInnerHTML={{ __html: previousNotes }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(previousNotes) }}
               />
             ) : (
               <EmptyState message={t("noPreviousNotes")} />

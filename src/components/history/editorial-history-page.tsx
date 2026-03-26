@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo, useRef } from "react";
 import { useTranslations, useFormatter } from "next-intl";
 import Link from "next/link";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Search,
@@ -435,7 +436,7 @@ export function EditorialHistoryPage({
                       </p>
                       <p
                         className="text-xs text-muted-foreground truncate"
-                        dangerouslySetInnerHTML={{ __html: r.snippet }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeHtml(r.snippet) }}
                       />
                     </div>
                     <span className="text-xs text-muted-foreground shrink-0">

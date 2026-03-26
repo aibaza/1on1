@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations, useFormatter } from "next-intl";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 import {
   ChevronDown,
   ChevronRight,
@@ -277,7 +278,7 @@ function PreviousNotesWidget({
         <div>
           <div
             className="prose prose-sm prose-neutral dark:prose-invert max-w-none text-xs leading-relaxed [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1"
-            dangerouslySetInnerHTML={{ __html: previousNotes }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(previousNotes) }}
           />
           {lastSession && (
             <p className="mt-1 text-[10px] text-muted-foreground">

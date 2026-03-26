@@ -2,6 +2,7 @@
 
 import { useTranslations, useFormatter } from "next-intl";
 import { contentToHtml } from "@/lib/session/tiptap-render";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, CheckCircle2, Circle, Clock } from "lucide-react";
 import { StarRating } from "@/components/ui/star-rating";
@@ -113,7 +114,7 @@ export function RecapScreen({
                               </p>
                               <div
                                 className="prose prose-sm max-w-none dark:prose-invert"
-                                dangerouslySetInnerHTML={{ __html: contentToHtml(content) }}
+                                dangerouslySetInnerHTML={{ __html: sanitizeHtml(contentToHtml(content)) }}
                               />
                             </div>
                           )
