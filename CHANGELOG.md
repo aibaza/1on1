@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Sanitization unit tests (XSS vectors, tag allowlist, attribute stripping)
 - Rate limiter unit tests (limits, window reset, key isolation)
 - E2E tests now run as CI gate on PRs to main and pushes to develop (GitHub Actions)
+- Business logic tests: `computeNextSessionDate` (31 tests), `evaluateCondition` (34 tests), analytics colors (47 tests), `periodToDateRange` (9 tests)
 
 ### Fixed
 - `GET /api/users` information disclosure — members now receive minimal user data (id, name, avatar) instead of full directory with emails, levels, and manager assignments
