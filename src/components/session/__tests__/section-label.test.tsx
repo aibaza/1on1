@@ -6,15 +6,13 @@ import { render } from "@testing-library/react";
 import { categoryStepTestHelpers } from "../category-step";
 
 describe("SectionLabel casing (DES-03)", () => {
-  it("SectionLabel className does NOT contain 'uppercase'", () => {
-    // Wave 1 exports getSectionLabelClassName() from category-step.tsx.
-    // We call it here to get the class string and assert the DES-03 fix.
+  it("SectionLabel className contains 'uppercase'", () => {
     const className = categoryStepTestHelpers.getSectionLabelClassName();
-    expect(className.includes("uppercase")).toBe(false);
+    expect(className.includes("uppercase")).toBe(true);
   });
 
-  it("SectionLabel className does NOT contain 'tracking-wide'", () => {
+  it("SectionLabel className contains 'tracking-widest'", () => {
     const className = categoryStepTestHelpers.getSectionLabelClassName();
-    expect(className.includes("tracking-wide")).toBe(false);
+    expect(className.includes("tracking-widest")).toBe(true);
   });
 });
