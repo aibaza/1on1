@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Impersonation cookie now always sets `secure: true` + proper deletion with matching attributes
 - Auth config refactored from 199 → 42 lines: callbacks and providers extracted to separate files
 - Fixed stale section-label tests (expected `uppercase`/`tracking-widest` to be absent, but component has them)
+- Fixed CI: added migrations 0021-0023 to Drizzle journal (were missing, causing seed to fail on `level` column)
 
 ### Changed
 - Renamed "role" (admin/manager/member) to "level" across entire codebase — DB schema, auth system (JWT/session), RBAC functions, API routes (~55 files), UI components (~30 files), i18n translations (EN/RO)

@@ -148,6 +148,27 @@
       "when": 1773953800000,
       "tag": "0020_template_versions",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1774000000000,
+      "tag": "0021_unified_ai_scale",
+      "breakpoints": false
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1774100000000,
+      "tag": "0022_avatar_seed",
+      "breakpoints": false
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1774200000000,
+      "tag": "0023_level_roles_teams",
+      "breakpoints": false
     }
   ]
 }
