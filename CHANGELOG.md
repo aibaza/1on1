@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - `GET /api/users` information disclosure — members now receive minimal user data (id, name, avatar) instead of full directory with emails, levels, and manager assignments
+- Impersonation cookie now always sets `secure: true` + proper deletion with matching attributes
 
 ### Changed
 - Renamed "role" (admin/manager/member) to "level" across entire codebase — DB schema, auth system (JWT/session), RBAC functions, API routes (~55 files), UI components (~30 files), i18n translations (EN/RO)
