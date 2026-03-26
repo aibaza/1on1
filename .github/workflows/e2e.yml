@@ -1,12 +1,15 @@
 name: Playwright E2E Tests
 
 on:
-  # Disabled: E2E tests run locally via pre-push hook
-  # push:
-  #   branches: [main]
-  # pull_request:
-  #   branches: [main]
-  workflow_dispatch: # manual trigger only
+  pull_request:
+    branches: [main]
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   e2e:
