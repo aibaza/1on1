@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Authorization flow tests covering all 7 RBAC functions + composite patterns (participant-or-admin, owner-or-admin)
 - Sanitization unit tests (XSS vectors, tag allowlist, attribute stripping)
 - Rate limiter unit tests (limits, window reset, key isolation)
-- E2E tests now run as CI gate on PRs to main and pushes to develop (GitHub Actions)
+- E2E tests reverted to manual-only dispatch (cost concerns with auto-trigger on push/PR)
 - Business logic tests: `computeNextSessionDate` (31 tests), `evaluateCondition` (34 tests), analytics colors (47 tests), `periodToDateRange` (9 tests)
 
 ### Fixed
