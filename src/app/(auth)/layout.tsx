@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Logo } from "@/components/logo";
 import { getDesignPreference } from "@/lib/design-preference.server";
+import { LanguageSwitcher } from "@/app/(marketing)/_components/language-switcher";
 
 export default async function AuthLayout({
   children,
@@ -21,7 +22,8 @@ export default async function AuthLayout({
   if (designPref === "editorial") {
     return (
       <div className="relative min-h-screen bg-[var(--background)]">
-        <div className="absolute right-4 top-4 z-50">
+        <div className="absolute right-4 top-4 z-50 flex items-center gap-2">
+          <LanguageSwitcher />
           <ThemeToggle />
         </div>
         {children}

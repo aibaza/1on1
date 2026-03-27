@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ro"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Creează organizația ta | The Editorial Connection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "inverse-on-surface": "#eff1f2",
+                "secondary-fixed-dim": "#b7c7e9",
+                "on-primary-container": "#c5d1ff",
+                "outline": "#757684",
+                "background": "#f8fafb",
+                "surface-variant": "#e1e3e4",
+                "surface-tint": "#465c9b",
+                "on-secondary-container": "#505f7d",
+                "tertiary": "#004c47",
+                "surface-container-high": "#e6e8e9",
+                "surface-dim": "#d8dadb",
+                "surface-container-low": "#f2f4f5",
+                "on-tertiary-fixed": "#00201d",
+                "on-background": "#191c1d",
+                "error": "#ba1a1a",
+                "on-error-container": "#93000a",
+                "surface-container-lowest": "#ffffff",
+                "secondary-fixed": "#d7e3ff",
+                "on-tertiary": "#ffffff",
+                "on-error": "#ffffff",
+                "tertiary-fixed": "#8ef4e9",
+                "surface-container-highest": "#e1e3e4",
+                "on-secondary-fixed": "#0b1b35",
+                "inverse-surface": "#2e3132",
+                "secondary": "#505f7c",
+                "primary-container": "#425797",
+                "error-container": "#ffdad6",
+                "on-primary": "#ffffff",
+                "on-secondary": "#ffffff",
+                "inverse-primary": "#b4c5ff",
+                "on-surface": "#191c1d",
+                "surface-container": "#eceeef",
+                "primary-fixed-dim": "#b4c5ff",
+                "tertiary-container": "#00665f",
+                "on-secondary-fixed-variant": "#384763",
+                "on-primary-fixed-variant": "#2d4381",
+                "secondary-container": "#cbdafd",
+                "primary": "#29407d",
+                "outline-variant": "#c5c5d4",
+                "on-surface-variant": "#454652",
+                "surface-bright": "#f8fafb",
+                "on-tertiary-fixed-variant": "#00504a",
+                "on-tertiary-container": "#7ee4d9",
+                "on-primary-fixed": "#00174b",
+                "surface": "#f8fafb",
+                "primary-fixed": "#dbe1ff",
+                "tertiary-fixed-dim": "#71d7cd"
+              },
+              fontFamily: {
+                "headline": ["Manrope", "sans-serif"],
+                "body": ["Inter", "sans-serif"],
+                "label": ["Inter", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .font-editorial { font-family: 'Manrope', sans-serif; }
+        /* Tonal depth without borders as per Design System */
+        .tonal-transition { transition: background-color 0.3s ease; }
+        .no-border { border: none !important; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Top Navigation Suppression: Not rendered for transactional/sign-up screen as per Semantic Shell Mandate -->
+<main class="min-h-screen flex flex-col md:flex-row items-stretch">
+<!-- Left Side: Editorial Content & Value Proposition -->
+<section class="hidden md:flex w-2/5 bg-surface-container-low p-16 flex-col justify-between items-start sticky top-0 h-screen">
+<div class="space-y-12">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+</div>
+<span class="font-editorial font-extrabold tracking-tighter text-2xl text-primary">The Editorial Connection</span>
+</div>
+<div class="space-y-6">
+<h1 class="font-editorial font-extrabold text-5xl text-on-surface leading-tight tracking-tight">
+                        Construiește cultura <br/><span class="text-primary italic">performanței</span> prin dialog.
+                    </h1>
+<p class="font-body text-on-surface-variant text-lg max-w-md leading-relaxed">
+                        Configurarea corectă a organizației tale este primul pas către întâlniri 1:1 mai productive și o echipă mai aliniată.
+                    </p>
+</div>
+<div class="space-y-8 mt-12">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div>
+<h3 class="font-editorial font-bold text-on-surface">Structură Clară</h3>
+<p class="font-body text-sm text-on-surface-variant">Definește ierarhiile și fluxurile de lucru natural.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div>
+<h3 class="font-editorial font-bold text-on-surface">Obiective Aliniate</h3>
+<p class="font-body text-sm text-on-surface-variant">Conectează misiunea organizației cu obiectivele individuale.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full rounded-2xl overflow-hidden shadow-2xl shadow-on-surface/5">
+<img class="w-full h-48 object-cover" data-alt="Modern minimal office workspace with clean desk, architectural lighting, and plants, representing professional clarity and focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGHbzkmucgS5ot-87xWf2vIgSGGXOiNmTG1nDdqjBt5sNI2nUTCT-9CB40m_E20uKlJP2dWRPKNLZWtRgQXbe_XPhXpuk9CsemfmPgkzeRxvhwydnozmrkb-udfoKv9ndHH2ZPDlVEzSDdv7VPBu7G_hXye2wL1VGvt2_cpMv5XKfqdX8DTAr_sBi5DxS0pgrcharqK4wJNqx8ikxEFOx6Qxp1BvtwkdMfG2U3FKpt2U2pNpFYPl-kmp7D2UmCZdQxdh9jH7YHuvZr"/>
+</div>
+</section>
+<!-- Right Side: The Form Canvas -->
+<section class="flex-1 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-surface">
+<div class="w-full max-w-xl">
+<!-- Mobile Logo -->
+<div class="md:hidden flex items-center gap-2 mb-8">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+<span class="font-editorial font-extrabold tracking-tighter text-xl text-primary">The Editorial Connection</span>
+</div>
+<div class="mb-10">
+<h2 class="font-editorial font-extrabold text-3xl md:text-4xl text-on-surface mb-2">Creează organizația ta</h2>
+<p class="font-body text-on-surface-variant">Începe să transformi modul în care echipa ta comunică.</p>
+</div>
+<form class="space-y-8">
+<!-- Organization Type: Custom Toggles -->
+<div class="space-y-4">
+<label class="font-editorial font-bold text-sm text-on-surface-variant tracking-wide block uppercase">Tipul organizației</label>
+<div class="grid grid-cols-2 gap-4">
+<label class="relative flex flex-col items-center justify-center p-5 rounded-xl bg-surface-container-low cursor-pointer transition-all duration-300 hover:bg-surface-container group border-2 border-transparent has-[:checked]:border-primary-container has-[:checked]:bg-surface-container-lowest shadow-sm">
+<input checked="" class="sr-only" name="org_type" type="radio" value="for-profit"/>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:scale-110 transition-transform mb-2">business</span>
+<span class="font-body font-semibold text-on-surface">For-profit</span>
+</label>
+<label class="relative flex flex-col items-center justify-center p-5 rounded-xl bg-surface-container-low cursor-pointer transition-all duration-300 hover:bg-surface-container group border-2 border-transparent has-[:checked]:border-primary-container has-[:checked]:bg-surface-container-lowest shadow-sm">
+<input class="sr-only" name="org_type" type="radio" value="non-profit"/>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:scale-110 transition-transform mb-2">volunteer_activism</span>
+<span class="font-body font-semibold text-on-surface">Non-profit</span>
+</label>
+</div>
+</div>
+<!-- Input Grid -->
+<div class="space-y-6">
+<div class="group">
+<label class="font-editorial font-bold text-xs text-on-surface-variant tracking-widest block mb-2 uppercase" for="company_name">Numele companiei</label>
+<input class="w-full bg-surface-container-low border-0 rounded-xl px-5 py-4 font-body text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-surface-tint focus:bg-surface-container-lowest transition-all outline-none" id="company_name" placeholder="Ex. Design Studio S.R.L." type="text"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="group">
+<label class="font-editorial font-bold text-xs text-on-surface-variant tracking-widest block mb-2 uppercase" for="first_name">Prenume</label>
+<input class="w-full bg-surface-container-low border-0 rounded-xl px-5 py-4 font-body text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-surface-tint focus:bg-surface-container-lowest transition-all outline-none" id="first_name" placeholder="Ion" type="text"/>
+</div>
+<div class="group">
+<label class="font-editorial font-bold text-xs text-on-surface-variant tracking-widest block mb-2 uppercase" for="last_name">Nume</label>
+<input class="w-full bg-surface-container-low border-0 rounded-xl px-5 py-4 font-body text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-surface-tint focus:bg-surface-container-lowest transition-all outline-none" id="last_name" placeholder="Popescu" type="text"/>
+</div>
+</div>
+<div class="group">
+<label class="font-editorial font-bold text-xs text-on-surface-variant tracking-widest block mb-2 uppercase" for="email">Email de serviciu</label>
+<input class="w-full bg-surface-container-low border-0 rounded-xl px-5 py-4 font-body text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-surface-tint focus:bg-surface-container-lowest transition-all outline-none" id="email" placeholder="nume@companie.ro" type="email"/>
+</div>
+<div class="group">
+<label class="font-editorial font-bold text-xs text-on-surface-variant tracking-widest block mb-2 uppercase" for="password">Parolă</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border-0 rounded-xl px-5 py-4 font-body text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-surface-tint focus:bg-surface-container-lowest transition-all outline-none" id="password" placeholder="Minim 8 caractere" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 hover:text-on-surface" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full py-5 px-8 bg-gradient-to-r from-primary to-primary-container text-on-primary font-editorial font-bold text-lg rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:translate-y-[-1px] active:scale-[0.98] transition-all duration-200" type="submit">
+                            Creează cont
+                        </button>
+</div>
+<div class="flex flex-col items-center gap-6 pt-6">
+<div class="flex items-center gap-4 w-full">
+<div class="h-[1px] bg-outline-variant/30 flex-1"></div>
+<span class="font-body text-xs text-on-surface-variant font-medium uppercase tracking-widest">sau</span>
+<div class="h-[1px] bg-outline-variant/30 flex-1"></div>
+</div>
+<a class="font-body text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2 group" href="#">
+                            Ai deja cont? <span class="font-bold text-primary group-hover:underline underline-offset-4">Autentifică-te</span>
+</a>
+</div>
+</form>
+<footer class="mt-16 pt-8 border-t border-outline-variant/10 text-center">
+<p class="font-body text-[10px] text-on-surface-variant/50 uppercase tracking-[0.2em]">
+                        © 2024 The Editorial Connection. Toate drepturile rezervate.
+                    </p>
+</footer>
+</div>
+</section>
+</main>
+<!-- BottomNavBar Suppression: Transactional Screen Rule applied -->
+</body></html>
