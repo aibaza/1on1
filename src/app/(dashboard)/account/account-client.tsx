@@ -1,13 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { RefreshCw, Shield, Check, Eye, EyeOff } from "lucide-react";
+import { RefreshCw, Shield, Check, Eye, EyeOff, Calendar, Unlink } from "lucide-react";
 import { getAvatarUrl } from "@/lib/avatar";
 import { useIsDarkMode } from "@/lib/hooks/use-dark-mode";
+
+interface CalendarConnectionProps {
+  provider: string;
+  email: string | null;
+  enabled: boolean;
+}
 
 interface AccountClientProps {
   user: {
@@ -21,13 +27,31 @@ interface AccountClientProps {
     emailVerified: boolean;
   };
   canEditJobTitle: boolean;
+  calendarConnection?: CalendarConnectionProps | null;
 }
 
-export function AccountClient({ user, canEditJobTitle }: AccountClientProps) {
+export function AccountClient({ user, canEditJobTitle, calendarConnection }: AccountClientProps) {
   const t = useTranslations("account");
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { update: updateSession } = useSession();
   const fullName = `${user.firstName} ${user.lastName}`;
+
+  // Calendar connection state
+  const [disconnecting, setDisconnecting] = useState(false);
+
+  // Handle calendar callback query params (toast on mount)
+  useEffect(() => {
+    const calendarStatus = searchParams.get("calendar");
+    if (!calendarStatus) return;
+    if (calendarStatus === "connected") toast.success(t("calendar.connectSuccess"));
+    else if (calendarStatus === "denied") toast.error(t("calendar.connectDenied"));
+    else if (calendarStatus === "error") toast.error(t("calendar.connectError"));
+    // Clean URL
+    const url = new URL(window.location.href);
+    url.searchParams.delete("calendar");
+    window.history.replaceState({}, "", url.pathname);
+  }, [searchParams, t]);
 
   // Avatar state
   const [avatarSeed, setAvatarSeed] = useState(user.avatarSeed);
@@ -127,6 +151,21 @@ export function AccountClient({ user, canEditJobTitle }: AccountClientProps) {
       }
     } finally {
       setChangingPassword(false);
+    }
+  }
+
+  async function disconnectCalendar() {
+    setDisconnecting(true);
+    try {
+      const res = await fetch("/api/calendar/disconnect", { method: "POST" });
+      if (res.ok) {
+        toast.success(t("calendar.disconnected"));
+        router.refresh();
+      } else {
+        toast.error(t("calendar.disconnectError"));
+      }
+    } finally {
+      setDisconnecting(false);
     }
   }
 
@@ -250,89 +289,148 @@ export function AccountClient({ user, canEditJobTitle }: AccountClientProps) {
         </div>
       </section>
 
-      {/* Security Sidebar — 4 cols */}
-      <section className="lg:col-span-4 bg-card rounded-xl p-8 shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-destructive/10 rounded-lg flex items-center justify-center">
-            <Shield className="h-5 w-5 text-destructive" />
+      {/* Connected Calendars — 4 cols */}
+      <section className="lg:col-span-4 space-y-6">
+        <div className="bg-card rounded-xl p-8 shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+              <Calendar className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="font-headline font-bold text-lg">{t("calendar.title")}</h3>
+              <p className="text-[11px] text-muted-foreground">{t("calendar.description")}</p>
+            </div>
           </div>
-          <h3 className="font-headline font-bold text-xl">{t("password.title")}</h3>
+
+          {/* Google Calendar */}
+          <div className="flex items-center justify-between gap-4 py-4 border-t border-[var(--editorial-surface-container-low,var(--border))]">
+            <div className="flex items-center gap-3 min-w-0">
+              <svg className="h-6 w-6 shrink-0" viewBox="0 0 24 24">
+                <path d="M18.316 5.684H24v12.632h-5.684V5.684z" fill="#1a73e8"/>
+                <path d="M5.684 24v-5.684h12.632V24H5.684z" fill="#1a73e8"/>
+                <path d="M18.316 5.684V0H5.684v5.684h12.632z" fill="#ea4335"/>
+                <path d="M5.684 18.316H0V5.684h5.684v12.632z" fill="#34a853"/>
+                <path d="M5.684 5.684H0V0h5.684v5.684z" fill="#fbbc04"/>
+                <path d="M18.316 5.684H24V0h-5.684v5.684z" fill="#4285f4"/>
+                <path d="M18.316 18.316H24V24h-5.684v-5.684z" fill="#188038"/>
+                <path d="M5.684 18.316v5.684H0v-5.684h5.684z" fill="#1a73e8"/>
+                <path d="M8.5 9.2h1.3v5.6H8.5V9.2zm2.8 0h1.3l1.6 3.4V9.2h1.3v5.6h-1.3l-1.6-3.4v3.4h-1.3V9.2z" fill="#1a73e8"/>
+              </svg>
+              <div className="min-w-0">
+                <p className="text-sm font-medium">{t("calendar.google")}</p>
+                {calendarConnection?.email && (
+                  <p className="text-[11px] text-muted-foreground truncate">
+                    {t("calendar.connectedAs", { email: calendarConnection.email })}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div>
+              {calendarConnection ? (
+                <button
+                  onClick={disconnectCalendar}
+                  disabled={disconnecting}
+                  className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-destructive hover:bg-destructive/10 rounded-full transition-colors disabled:opacity-50"
+                >
+                  <Unlink className="h-3.5 w-3.5" />
+                  {disconnecting ? t("calendar.disconnecting") : t("calendar.disconnect")}
+                </button>
+              ) : (
+                <a
+                  href="/api/calendar/connect"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-primary text-primary-foreground rounded-full text-xs font-bold hover:bg-primary/90 transition-colors"
+                >
+                  {t("calendar.connect")}
+                </a>
+              )}
+            </div>
+          </div>
         </div>
 
-        <form onSubmit={changePassword} className="space-y-6">
-          <div className="space-y-2">
-            <label className={labelClass}>{t("password.currentPassword")}</label>
-            <div className="relative">
-              <input
-                type={showCurrent ? "text" : "password"}
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
-                placeholder="••••••••"
-                className={inputClass}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setShowCurrent(!showCurrent)}
-              >
-                {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+        {/* Security Card */}
+        <div className="bg-card rounded-xl p-8 shadow-sm border border-[var(--editorial-outline-variant,var(--border))]/10">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 bg-destructive/10 rounded-lg flex items-center justify-center">
+              <Shield className="h-5 w-5 text-destructive" />
             </div>
+            <h3 className="font-headline font-bold text-xl">{t("password.title")}</h3>
           </div>
 
-          <div className="space-y-2">
-            <label className={labelClass}>{t("password.newPassword")}</label>
-            <div className="relative">
-              <input
-                type={showNew ? "text" : "password"}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                minLength={8}
-                placeholder="••••••••"
-                className={inputClass}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setShowNew(!showNew)}
-              >
-                {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+          <form onSubmit={changePassword} className="space-y-6">
+            <div className="space-y-2">
+              <label className={labelClass}>{t("password.currentPassword")}</label>
+              <div className="relative">
+                <input
+                  type={showCurrent ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
+                  placeholder="••••••••"
+                  className={inputClass}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => setShowCurrent(!showCurrent)}
+                >
+                  {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <label className={labelClass}>{t("password.confirmPassword")}</label>
-            <div className="relative">
-              <input
-                type={showConfirm ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                minLength={8}
-                placeholder="••••••••"
-                className={inputClass}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setShowConfirm(!showConfirm)}
-              >
-                {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+            <div className="space-y-2">
+              <label className={labelClass}>{t("password.newPassword")}</label>
+              <div className="relative">
+                <input
+                  type={showNew ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  placeholder="••••••••"
+                  className={inputClass}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => setShowNew(!showNew)}
+                >
+                  {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={changingPassword}
-            className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-headline font-bold text-sm shadow-md active:scale-95 transition-transform mt-4 disabled:opacity-50"
-          >
-            {changingPassword ? t("password.submitting") : t("password.submit")}
-          </button>
-        </form>
+            <div className="space-y-2">
+              <label className={labelClass}>{t("password.confirmPassword")}</label>
+              <div className="relative">
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  placeholder="••••••••"
+                  className={inputClass}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                >
+                  {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={changingPassword}
+              className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-headline font-bold text-sm shadow-md active:scale-95 transition-transform mt-4 disabled:opacity-50"
+            >
+              {changingPassword ? t("password.submitting") : t("password.submit")}
+            </button>
+          </form>
+        </div>
       </section>
     </div>
   );

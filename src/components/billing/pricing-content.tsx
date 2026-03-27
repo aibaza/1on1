@@ -29,7 +29,7 @@ const PRO_FEATURES: PlanFeature[] = [
   { key: "prioritySupport", value: false as const },
 ];
 
-const BUSINESS_FEATURES: PlanFeature[] = [
+const ENTERPRISE_FEATURES: PlanFeature[] = [
   { key: "managers", value: "Unlimited" },
   { key: "reportsPerManager", value: "Unlimited" },
   { key: "templates", value: "Unlimited" },
@@ -80,11 +80,11 @@ export function PricingContent() {
             popular
           />
           <PlanCard
-            slug="business"
+            slug="enterprise"
             monthlyPrice={5}
             yearlyPrice={4}
             isYearly={isYearly}
-            features={BUSINESS_FEATURES}
+            features={ENTERPRISE_FEATURES}
           />
         </div>
       </section>

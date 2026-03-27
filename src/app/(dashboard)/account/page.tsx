@@ -2,8 +2,9 @@ import { auth } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { users, calendarConnections } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
+import { adminDb } from "@/lib/db";
 import { AccountClient } from "./account-client";
 
 export default async function AccountPage() {
@@ -12,26 +13,45 @@ export default async function AccountPage() {
 
   const t = await getTranslations("account");
 
-  const [user] = await withTenantContext(
-    session.user.tenantId,
-    session.user.id,
-    async (tx) => {
-      return tx
-        .select({
-          firstName: users.firstName,
-          lastName: users.lastName,
-          email: users.email,
-          jobTitle: users.jobTitle,
-          avatarUrl: users.avatarUrl,
-          avatarSeed: users.avatarSeed,
-          level: users.level,
-          emailVerified: users.emailVerified,
-        })
-        .from(users)
-        .where(eq(users.id, session.user.id))
-        .limit(1);
-    }
-  );
+  const [user, calendarConn] = await Promise.all([
+    withTenantContext(
+      session.user.tenantId,
+      session.user.id,
+      async (tx) => {
+        const rows = await tx
+          .select({
+            firstName: users.firstName,
+            lastName: users.lastName,
+            email: users.email,
+            jobTitle: users.jobTitle,
+            avatarUrl: users.avatarUrl,
+            avatarSeed: users.avatarSeed,
+            level: users.level,
+            emailVerified: users.emailVerified,
+          })
+          .from(users)
+          .where(eq(users.id, session.user.id))
+          .limit(1);
+        return rows[0] ?? null;
+      }
+    ),
+    // Calendar connections are not tenant-scoped — query with adminDb
+    adminDb
+      .select({
+        provider: calendarConnections.provider,
+        providerEmail: calendarConnections.providerEmail,
+        enabled: calendarConnections.enabled,
+      })
+      .from(calendarConnections)
+      .where(
+        and(
+          eq(calendarConnections.userId, session.user.id),
+          eq(calendarConnections.provider, "google")
+        )
+      )
+      .limit(1)
+      .then((rows) => rows[0] ?? null),
+  ]);
 
   if (!user) redirect("/login");
 
@@ -58,6 +78,15 @@ export default async function AccountPage() {
           emailVerified: !!user.emailVerified,
         }}
         canEditJobTitle={session.user.level === "admin" || session.user.level === "manager"}
+        calendarConnection={
+          calendarConn
+            ? {
+                provider: calendarConn.provider,
+                email: calendarConn.providerEmail,
+                enabled: calendarConn.enabled,
+              }
+            : null
+        }
       />
     </div>
   );

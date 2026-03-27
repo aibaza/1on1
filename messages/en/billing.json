@@ -41,8 +41,8 @@
           "name": "Pro",
           "description": "For growing teams"
         },
-        "business": {
-          "name": "Business",
+        "enterprise": {
+          "name": "Enterprise",
           "description": "For organizations at scale"
         }
       },
@@ -141,7 +141,7 @@
     "gate": {
       "upgradeRequired": "Upgrade required",
       "featureRequiresPro": "This feature is available on the Pro plan",
-      "featureRequiresBusiness": "This feature is available on the Business plan",
+      "featureRequiresEnterprise": "This feature is available on the Enterprise plan",
       "upgrade": "Upgrade",
       "seatLimitReached": "You've reached your plan's user limit",
       "seatLimitDescription": "Upgrade to add more team members"

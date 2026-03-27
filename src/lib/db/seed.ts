@@ -416,8 +416,8 @@ async function seedPlans() {
         },
       },
       {
-        slug: 'business',
-        name: 'Business',
+        slug: 'enterprise',
+        name: 'Enterprise',
         paddleProductId: 'pro_01kmr1r5491n5763e0nczgrbnj',
         paddlePriceIdMonthly: 'pri_01kmr29w8ea8q3148r5yyfm05p',
         paddlePriceIdYearly: 'pri_01kmr2aqbxvkeed54pynzhveb9',

@@ -176,6 +176,13 @@
       "when": 1774300000000,
       "tag": "0024_billing_schema",
       "breakpoints": false
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1774400000000,
+      "tag": "0025_calendar_integration",
+      "breakpoints": false
     }
   ]
 }

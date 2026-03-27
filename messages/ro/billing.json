@@ -41,8 +41,8 @@
           "name": "Pro",
           "description": "Pentru echipe în creștere"
         },
-        "business": {
-          "name": "Business",
+        "enterprise": {
+          "name": "Enterprise",
           "description": "Pentru organizații la scară largă"
         }
       },
@@ -141,7 +141,7 @@
     "gate": {
       "upgradeRequired": "Upgrade necesar",
       "featureRequiresPro": "Aceasta funcționalitate este disponibilă pe planul Pro",
-      "featureRequiresBusiness": "Aceasta funcționalitate este disponibilă pe planul Business",
+      "featureRequiresEnterprise": "Aceasta funcționalitate este disponibilă pe planul Enterprise",
       "upgrade": "Upgrade",
       "seatLimitReached": "Ai atins limita de utilizatori a planului tău",
       "seatLimitDescription": "Fă upgrade pentru a adăuga mai mulți membri"

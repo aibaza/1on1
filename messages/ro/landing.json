@@ -92,8 +92,8 @@
         },
         "cta": "Încearcă Pro"
       },
-      "business": {
-        "name": "Business",
+      "enterprise": {
+        "name": "Enterprise",
         "price": "5",
         "period": "/utilizator /lună",
         "features": {
@@ -102,7 +102,7 @@
           "api": "Acces API",
           "support": "Suport dedicat"
         },
-        "cta": "Începe Business"
+        "cta": "Începe Enterprise"
       }
     },
     "faq": {

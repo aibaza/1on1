@@ -30,8 +30,8 @@ export function UpgradePrompt({ feature, compact }: UpgradePromptProps) {
   // Determine which plan is needed based on feature
   const needsPlan = getRequiredPlan(feature);
   const description =
-    needsPlan === "business"
-      ? t("featureRequiresBusiness")
+    needsPlan === "enterprise"
+      ? t("featureRequiresEnterprise")
       : t("featureRequiresPro");
 
   if (compact) {
@@ -74,11 +74,11 @@ export function UpgradePrompt({ feature, compact }: UpgradePromptProps) {
  * Maps feature keys to the minimum plan that includes them.
  * Used to show the right plan name in the upgrade prompt.
  */
-function getRequiredPlan(feature: keyof PlanFeatures): "starter" | "business" {
+function getRequiredPlan(feature: keyof PlanFeatures): "starter" | "enterprise" {
   switch (feature) {
     case "branding":
     case "api":
-      return "business";
+      return "enterprise";
     default:
       return "starter";
   }

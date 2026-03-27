@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+- Renamed "Business" plan to "Enterprise" across entire codebase to align with DB enum (`plan: free, starter, pro, enterprise`)
+  - Updated billing plan slug, seed data, migration SQL, i18n (EN + RO), pricing components, landing page, registration flow, feature comparison, upgrade prompts, founder controls, auth validation, and test descriptions
+
+### Added
+- Google Calendar integration foundation (Phase 1)
+  - `CalendarProvider` abstraction with `GoogleCalendarProvider` implementation (recurring events, single-instance overrides, RRULE support)
+  - `calendar_connection` table for storing per-user OAuth tokens (separate from login OAuth)
+  - `calendar_event` junction table mapping series/sessions to external calendar event IDs per user
+  - `calendar_provider` and `calendar_sync_status` enums
+  - Google OAuth connect/disconnect flow (`/api/calendar/connect`, `/api/calendar/callback`, `/api/calendar/disconnect`, `/api/calendar/status`)
+  - Token refresh utility with automatic disable on revocation
+  - "Connected Calendars" section in Account page with Google Calendar connect/disconnect UI
+  - Calendar i18n strings (EN + RO)
+  - Migration 0025_calendar_integration
+
 ## [2.0.0] — 2026-03-27
 
 ### Added

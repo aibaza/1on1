@@ -117,6 +117,17 @@ export const invoiceStatusEnum = pgEnum("invoice_status", [
   "draft", "open", "paid", "past_due", "canceled",
 ]);
 
+export const calendarProviderEnum = pgEnum("calendar_provider", [
+  "google",
+  "microsoft",
+]);
+
+export const calendarSyncStatusEnum = pgEnum("calendar_sync_status", [
+  "synced",
+  "pending",
+  "error",
+]);
+
 export const billingEventTypeEnum = pgEnum("billing_event_type", [
   "subscription_created", "subscription_updated", "subscription_canceled",
   "payment_succeeded", "payment_failed",

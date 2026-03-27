@@ -99,7 +99,7 @@ export async function registerAction(formData: FormData) {
 
     // All new tenants get a 7-day trial with all features unlocked
     const trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    const isTrialPlan = data.plan === "pro" || data.plan === "business";
+    const isTrialPlan = data.plan === "pro" || data.plan === "enterprise";
 
     // Create tenant + admin user in single transaction
     const result = await adminDb.transaction(async (tx) => {

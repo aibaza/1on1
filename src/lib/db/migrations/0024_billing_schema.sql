@@ -125,7 +125,7 @@ VALUES
    '{"maxUsers": 2, "maxSeries": 2, "aiNudges": false, "analytics": "basic", "templates": "default", "support": "community"}'::jsonb),
   ('pro', 'Pro', 1500, 14400, 'eur', 1,
    '{"maxUsers": 25, "maxSeries": -1, "aiNudges": true, "analytics": "full", "templates": "all", "support": "email"}'::jsonb),
-  ('business', 'Business', 2500, 24000, 'eur', 2,
+  ('enterprise', 'Enterprise', 2500, 24000, 'eur', 2,
    '{"maxUsers": -1, "maxSeries": -1, "aiNudges": true, "analytics": "full", "templates": "all", "support": "priority", "sso": true, "audit": true}'::jsonb)
 ON CONFLICT ("slug") DO UPDATE SET
   "name" = EXCLUDED."name",

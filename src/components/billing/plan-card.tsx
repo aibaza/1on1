@@ -22,7 +22,7 @@ export interface PlanFeature {
 }
 
 interface PlanCardProps {
-  slug: "free" | "pro" | "business";
+  slug: "free" | "pro" | "enterprise";
   monthlyPrice: number;
   yearlyPrice: number;
   isYearly: boolean;
@@ -45,14 +45,14 @@ export function PlanCard({
 
   const ctaLabel = isFree
     ? t("getStarted")
-    : slug === "business"
+    : slug === "enterprise"
       ? t("contactSales")
       : t("startTrial");
 
   const ctaHref = isFree
     ? "/register"
-    : slug === "business"
-      ? "/register?plan=business"
+    : slug === "enterprise"
+      ? "/register?plan=enterprise"
       : `/register?plan=${slug}`;
 
   return (

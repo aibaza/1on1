@@ -20,6 +20,21 @@
       "jobTitleSaved": "Job title updated",
       "save": "Save"
     },
+    "calendar": {
+      "title": "Connected Calendars",
+      "description": "Sync your 1on1 meetings with your calendar",
+      "google": "Google Calendar",
+      "connect": "Connect",
+      "disconnect": "Disconnect",
+      "connected": "Connected",
+      "connectedAs": "Connected as {email}",
+      "connectSuccess": "Google Calendar connected successfully",
+      "connectDenied": "Calendar access was denied",
+      "connectError": "Failed to connect Google Calendar",
+      "disconnected": "Google Calendar disconnected",
+      "disconnectError": "Failed to disconnect",
+      "disconnecting": "Disconnecting..."
+    },
     "password": {
       "title": "Security",
       "description": "Update your password to keep your account secure",

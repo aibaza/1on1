@@ -15,3 +15,4 @@ export * from "./analytics";
 export * from "./audit-log";
 export * from "./template-versions";
 export * from "./billing";
+export * from "./calendar";

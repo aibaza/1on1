@@ -77,7 +77,7 @@ describe("enforce decision logic: canAccessFeature", () => {
     ).toBe(false);
   });
 
-  it("returns false for starter plan AI (AI only on business/enterprise)", () => {
+  it("returns false for starter plan AI (AI only on enterprise)", () => {
     expect(
       canAccessFeature(
         {
@@ -91,7 +91,7 @@ describe("enforce decision logic: canAccessFeature", () => {
     ).toBe(false);
   });
 
-  it("returns false for pro plan AI (AI only on business/enterprise)", () => {
+  it("returns false for pro plan AI (AI only on enterprise)", () => {
     expect(
       canAccessFeature(
         {

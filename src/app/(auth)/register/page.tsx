@@ -25,7 +25,7 @@ export default function RegisterPage() {
 
     try {
       formData.set("orgType", orgType);
-      if (planParam && (planParam === "pro" || planParam === "business")) {
+      if (planParam && (planParam === "pro" || planParam === "enterprise")) {
         formData.set("plan", planParam);
       }
       const result = await registerAction(formData);

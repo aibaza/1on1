@@ -19,18 +19,18 @@ interface FeatureRow {
   key: FeatureKey;
   free: CellValue;
   pro: CellValue;
-  business: CellValue;
+  enterprise: CellValue;
 }
 
 const features: FeatureRow[] = [
-  { key: "managers", free: "1", pro: "unlimited", business: "unlimited" },
-  { key: "reportsPerManager", free: "3", pro: "unlimited", business: "unlimited" },
-  { key: "templates", free: "3", pro: "unlimited", business: "unlimited" },
-  { key: "aiSummaries", free: false, pro: true, business: true },
-  { key: "analytics", free: "basic", pro: "full", business: "full" },
-  { key: "customBranding", free: false, pro: false, business: true },
-  { key: "apiAccess", free: false, pro: false, business: true },
-  { key: "prioritySupport", free: false, pro: false, business: true },
+  { key: "managers", free: "1", pro: "unlimited", enterprise: "unlimited" },
+  { key: "reportsPerManager", free: "3", pro: "unlimited", enterprise: "unlimited" },
+  { key: "templates", free: "3", pro: "unlimited", enterprise: "unlimited" },
+  { key: "aiSummaries", free: false, pro: true, enterprise: true },
+  { key: "analytics", free: "basic", pro: "full", enterprise: "full" },
+  { key: "customBranding", free: false, pro: false, enterprise: true },
+  { key: "apiAccess", free: false, pro: false, enterprise: true },
+  { key: "prioritySupport", free: false, pro: false, enterprise: true },
 ];
 
 function CellContent({ value, t }: { value: CellValue; t: ReturnType<typeof useTranslations<"billing.pricing">> }) {
@@ -68,7 +68,7 @@ export function FeatureComparison() {
               {t("plans.pro.name")}
             </th>
             <th className="px-6 py-4 text-sm font-bold text-foreground">
-              {t("plans.business.name")}
+              {t("plans.enterprise.name")}
             </th>
           </tr>
         </thead>
@@ -88,7 +88,7 @@ export function FeatureComparison() {
                 <CellContent value={row.pro} t={t} />
               </td>
               <td className="px-6 py-4">
-                <CellContent value={row.business} t={t} />
+                <CellContent value={row.enterprise} t={t} />
               </td>
             </tr>
           ))}

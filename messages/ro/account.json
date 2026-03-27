@@ -20,6 +20,21 @@
       "jobTitleSaved": "Funcția a fost actualizată",
       "save": "Salvează"
     },
+    "calendar": {
+      "title": "Calendare conectate",
+      "description": "Sincronizeaza sedintele 1on1 cu calendarul tau",
+      "google": "Google Calendar",
+      "connect": "Conecteaza",
+      "disconnect": "Deconecteaza",
+      "connected": "Conectat",
+      "connectedAs": "Conectat ca {email}",
+      "connectSuccess": "Google Calendar a fost conectat",
+      "connectDenied": "Accesul la calendar a fost refuzat",
+      "connectError": "Conectarea la Google Calendar a esuat",
+      "disconnected": "Google Calendar a fost deconectat",
+      "disconnectError": "Deconectarea a esuat",
+      "disconnecting": "Se deconecteaza..."
+    },
     "password": {
       "title": "Securitate",
       "description": "Actualizeaza parola pentru a-ti mentine contul securizat",

@@ -217,7 +217,7 @@ export async function POST(
     }
 
     // Fire-and-forget: run AI pipeline only if tenant has AI access
-    // (Business plan, Founder, or active trial)
+    // (Enterprise plan, Founder, or active trial)
     const aiDenied = await requireFeature(session.user.tenantId, "ai");
     if (!aiDenied) {
       waitUntil(

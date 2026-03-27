@@ -390,42 +390,42 @@ export default async function LandingPage() {
                 {t("pricing.pro.cta")}
               </Link>
             </div>
-            {/* Tier 3: Business */}
+            {/* Tier 3: Enterprise */}
             <div className="bg-[var(--editorial-surface-container-low)] p-8 rounded-2xl flex flex-col h-full border border-border/5">
               <div className="mb-8">
                 <h3 className="text-lg font-bold font-[family-name:var(--font-manrope)] mb-2">
-                  {t("pricing.business.name")}
+                  {t("pricing.enterprise.name")}
                 </h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold">&euro;{t("pricing.business.price")}</span>
+                  <span className="text-4xl font-extrabold">&euro;{t("pricing.enterprise.price")}</span>
                   <span className="text-muted-foreground text-sm">
-                    {t("pricing.business.period")}
+                    {t("pricing.enterprise.period")}
                   </span>
                 </div>
               </div>
               <ul className="space-y-4 mb-10 flex-grow">
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  {t("pricing.business.features.everything")}
+                  {t("pricing.enterprise.features.everything")}
                 </li>
                 <li className="flex items-center gap-3 text-sm font-bold text-[var(--editorial-tertiary)]">
                   <Sparkles className="h-5 w-5 flex-shrink-0" />
-                  {t("pricing.business.features.ai")}
+                  {t("pricing.enterprise.features.ai")}
                 </li>
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  {t("pricing.business.features.api")}
+                  {t("pricing.enterprise.features.api")}
                 </li>
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  {t("pricing.business.features.support")}
+                  {t("pricing.enterprise.features.support")}
                 </li>
               </ul>
               <Link
-                href="/register?plan=business"
+                href="/register?plan=enterprise"
                 className="w-full py-3 rounded-lg border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-colors text-center block"
               >
-                {t("pricing.business.cta")}
+                {t("pricing.enterprise.cta")}
               </Link>
             </div>
           </div>

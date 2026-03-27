@@ -92,8 +92,8 @@
         },
         "cta": "Try Pro Trial"
       },
-      "business": {
-        "name": "Business",
+      "enterprise": {
+        "name": "Enterprise",
         "price": "5",
         "period": "/user /month",
         "features": {
@@ -102,7 +102,7 @@
           "api": "API access",
           "support": "Dedicated Support"
         },
-        "cta": "Start Business Trial"
+        "cta": "Start Enterprise Trial"
       }
     },
     "faq": {

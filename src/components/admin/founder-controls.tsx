@@ -26,7 +26,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const PLANS = ["free", "pro", "business"] as const;
+const PLANS = ["free", "pro", "enterprise"] as const;
 
 interface FounderControlsProps {
   tenantId: string;
