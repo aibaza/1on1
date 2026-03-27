@@ -18,7 +18,10 @@ EXCEPTION WHEN duplicate_column THEN NULL;
 END $$;
 
 -- Step 3: Backfill level from role
-UPDATE "user" SET "level" = "role"::text::"user_level" WHERE "level" IS NULL AND "role" IS NOT NULL;
+DO $$ BEGIN
+  UPDATE "user" SET "level" = "role"::text::"user_level" WHERE "level" IS NULL AND "role" IS NOT NULL;
+EXCEPTION WHEN undefined_column THEN NULL;
+END $$;
 
 -- Step 3b: Make level NOT NULL with default
 ALTER TABLE "user" ALTER COLUMN "level" SET NOT NULL;
