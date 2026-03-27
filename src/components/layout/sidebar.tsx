@@ -81,12 +81,6 @@ function getSettingsNavItems(t: ReturnType<typeof useTranslations<"navigation">>
       icon: ScrollText,
       adminOnly: true,
     },
-    {
-      label: t("adminBilling"),
-      href: "/admin/billing",
-      icon: ShieldCheck,
-      adminOnly: true,
-    },
   ];
 }
 

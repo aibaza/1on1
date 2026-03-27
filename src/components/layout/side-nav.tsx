@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { isSuperAdmin } from "@/lib/auth/super-admin";
 import {
   LayoutDashboard,
   CalendarDays,
@@ -152,7 +153,6 @@ export function SideNav() {
     { label: t("teams"), href: "/teams", icon: UsersRound, matchAlso: ["/teams"], minRole: "manager" },
     { label: t("company"), href: "/settings/company", icon: Settings, minRole: "admin" },
     { label: t("billing"), href: "/settings/billing", icon: CreditCard, minRole: "admin" },
-    { label: t("adminBilling"), href: "/admin/billing", icon: ShieldCheck, minRole: "admin" },
   ];
 
   const visibleMain = mainNavItems.filter((item) => canSeeItem(userLevel, item));
@@ -237,6 +237,39 @@ export function SideNav() {
           {visibleBottom.map((item) => (
             <NavLink key={item.href} item={item} pathname={pathname} collapsed={collapsed} />
           ))}
+          {isSuperAdmin(user?.email) && (
+            collapsed ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href="/admin/billing"
+                    className={cn(
+                      "flex items-center justify-center py-3 rounded-lg transition-all",
+                      pathname === "/admin/billing"
+                        ? "bg-primary/10 text-primary"
+                        : "text-amber-500 hover:text-amber-400 hover:bg-amber-500/10"
+                    )}
+                  >
+                    <ShieldCheck className="h-5 w-5 shrink-0" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right" sideOffset={8}>{t("adminBilling")}</TooltipContent>
+              </Tooltip>
+            ) : (
+              <Link
+                href="/admin/billing"
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all border border-dashed",
+                  pathname === "/admin/billing"
+                    ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                    : "text-amber-500/70 hover:text-amber-500 hover:bg-amber-500/10 border-amber-500/20"
+                )}
+              >
+                <ShieldCheck className="h-5 w-5 shrink-0" />
+                {t("adminBilling")}
+              </Link>
+            )
+          )}
           {collapsed ? (
             <Tooltip>
               <TooltipTrigger asChild>
