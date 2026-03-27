@@ -161,7 +161,7 @@ function EditorialManagerSections({
               {t("sections.myOneOnOnes")}
             </h3>
           </div>
-          {/* Featured wide card layout for My 1:1s */}
+          {/* Featured wide card layout for My 1on1s */}
           <div className="space-y-4">
             {myOneOnOnes.map((series) => {
               const managerName = `${series.manager.firstName} ${series.manager.lastName}`;

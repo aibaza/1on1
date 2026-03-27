@@ -1,7 +1,7 @@
 {
   "spec": {
     "pageTitle": "Schema și documentație șabloane",
-    "pageDescription": "Documentație de referință pentru formatul JSON al șabloanelor 1:1, principii metodologice și sistemul de ponderi pentru scoruri.",
+    "pageDescription": "Documentație de referință pentru formatul JSON al șabloanelor 1on1, principii metodologice și sistemul de ponderi pentru scoruri.",
     "tabs": {
       "schema": "Schema JSON",
       "methodology": "Metodologie",
@@ -17,8 +17,8 @@
       "schemaDocsLink": "Vezi în lista de șabloane"
     },
     "methodology": {
-      "title": "Principii pentru ședințele 1:1",
-      "intro": "Ședințele 1:1 eficiente urmează o structură consistentă care construiește încredere, identifică blocajele timpuriu și creează responsabilitate. Aceste principii ghidează modul în care ar trebui concepute șabloanele.",
+      "title": "Principii pentru ședințele 1on1",
+      "intro": "Ședințele 1on1 eficiente urmează o structură consistentă care construiește încredere, identifică blocajele timpuriu și creează responsabilitate. Aceste principii ghidează modul în care ar trebui concepute șabloanele.",
       "principles": {
         "continuity": {
           "title": "Continuitate în locul completitudinii",
@@ -53,12 +53,12 @@
     },
     "promptKit": {
       "title": "Kit de Prompt DIY",
-      "intro": "Lipește aceasta în Claude, ChatGPT sau orice asistent AI pentru a genera un șablon de 1:1 adaptat echipei tale.",
+      "intro": "Lipește aceasta în Claude, ChatGPT sau orice asistent AI pentru a genera un șablon de 1on1 adaptat echipei tale.",
       "copy": "Copiază Kitul de Prompt",
       "copied": "Copiat!",
       "sections": {
         "schema": "Specificația JSON Schema",
-        "methodology": "Principiile Metodologiei 1:1",
+        "methodology": "Principiile Metodologiei 1on1",
         "weights": "Sistemul de Ponderi",
         "example": "Șablon Exemplu Complet"
       }

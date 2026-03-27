@@ -101,9 +101,9 @@ const PROMPT_KIT_EXAMPLE = JSON.stringify(
   {
     schemaVersion: 1,
     language: "en",
-    name: "Engineering 1:1 Template",
+    name: "Engineering 1on1 Template",
     description:
-      "A balanced weekly 1:1 for engineering teams. Designed for 30-minute meetings.",
+      "A balanced weekly 1on1 for engineering teams. Designed for 30-minute meetings.",
     sections: [
       {
         name: "Check-in & Wellbeing",
@@ -219,7 +219,7 @@ const PROMPT_KIT_EXAMPLE = JSON.stringify(
             conditionalValue: null,
           },
           {
-            questionText: "What are your top 1-2 priorities before our next 1:1?",
+            questionText: "What are your top 1-2 priorities before our next 1on1?",
             helpText: "Shared commitments we'll follow up on next session.",
             answerType: "text",
             answerConfig: {},

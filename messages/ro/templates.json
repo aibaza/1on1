@@ -1,7 +1,7 @@
 {
   "templates": {
     "title": "Șabloane",
-    "description": "Gestionează șabloanele de chestionare pentru sesiunile 1:1",
+    "description": "Gestionează șabloanele de chestionare pentru sesiunile 1on1",
     "createTemplate": "Creează șablon",
     "empty": "Niciun șablon",
     "emptyDesc": "Creează primul șablon pentru a începe.",
@@ -13,7 +13,7 @@
     "edit": "Editează",
     "create": {
       "title": "Creează șablon",
-      "description": "Creează un nou șablon de chestionar pentru sesiunile 1:1.",
+      "description": "Creează un nou șablon de chestionar pentru sesiunile 1on1.",
       "nameLabel": "Numele șablonului",
       "namePlaceholder": "ex. Check-in săptămânal",
       "descLabel": "Descriere",
@@ -256,7 +256,7 @@
         "send": "Trimite",
         "thinking": "Se gândește...",
         "errorToast": "Generarea AI a eșuat. Încearcă din nou.",
-        "greetingNew": "Bună! Sunt aici să te ajut să construiești un șablon de 1:1 adaptat echipei tale.\n\nPe cine ai aceste 1:1-uri? Spune-mi câte ceva despre rolul lor și dimensiunea echipei.",
+        "greetingNew": "Bună! Sunt aici să te ajut să construiești un șablon de 1on1 adaptat echipei tale.\n\nPe cine ai aceste 1on1-uri? Spune-mi câte ceva despre rolul lor și dimensiunea echipei.",
         "greetingExisting": "Bună! Îți văd șablonul curent. Pot sugera îmbunătățiri, adăuga sau elimina întrebări ori restructura secțiunile.\n\nCe ai vrea să schimbi — sau să arunc eu o privire și să îți dau recomandările mele?"
       },
       "saveSuccess": "Șablon salvat",
@@ -265,7 +265,7 @@
         "editWithAI": "Editează cu AI"
       },
       "guidelines": {
-        "title": "Sfaturi pentru șabloane 1:1 de calitate",
+        "title": "Sfaturi pentru șabloane 1on1 de calitate",
         "length": {
           "title": "Păstrează-l scurt",
           "body": "8–12 întrebări per sesiune este ideal. Un șablon completat de fiecare dată valorează mai mult decât unul cuprinzător abandonat la jumătate."

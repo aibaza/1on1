@@ -1,7 +1,7 @@
 {
   "templates": {
     "title": "Templates",
-    "description": "Manage questionnaire templates for your 1:1 sessions",
+    "description": "Manage questionnaire templates for your 1on1 sessions",
     "createTemplate": "Create Template",
     "empty": "No templates yet",
     "emptyDesc": "Create your first template to get started.",
@@ -13,7 +13,7 @@
     "edit": "Edit",
     "create": {
       "title": "Create Template",
-      "description": "Create a new questionnaire template for your 1:1 sessions.",
+      "description": "Create a new questionnaire template for your 1on1 sessions.",
       "nameLabel": "Template Name",
       "namePlaceholder": "e.g. Weekly Check-in",
       "descLabel": "Description",
@@ -256,7 +256,7 @@
         "send": "Send",
         "thinking": "Thinking...",
         "errorToast": "AI generation failed. Please try again.",
-        "greetingNew": "Hi! I'm here to help you build a 1:1 template tailored to your team.\n\nTo get started — who are you having these 1:1s with? Tell me a bit about their role and the size of your team.",
+        "greetingNew": "Hi! I'm here to help you build a 1on1 template tailored to your team.\n\nTo get started — who are you having these 1on1s with? Tell me a bit about their role and the size of your team.",
         "greetingExisting": "Hi! I can see your current template. I can suggest improvements, add or remove questions, or restructure sections.\n\nWhat would you like to change — or should I take a look and give you my recommendations?"
       },
       "saveSuccess": "Template saved",
@@ -265,7 +265,7 @@
         "editWithAI": "Edit with AI"
       },
       "guidelines": {
-        "title": "Tips for great 1:1 templates",
+        "title": "Tips for great 1on1 templates",
         "length": {
           "title": "Keep it short",
           "body": "8–12 questions per session is ideal. A template that gets completed every time beats a comprehensive one that gets abandoned halfway."

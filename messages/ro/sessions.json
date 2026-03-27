@@ -1,14 +1,14 @@
 {
   "sessions": {
     "title": "Sesiuni",
-    "description": "Gestionează seriile de întâlniri 1:1 și sesiunile.",
+    "description": "Gestionează seriile de întâlniri 1on1 și sesiunile.",
     "newSeries": "Serie nouă",
     "newSeriesTitle": "Serie nouă de întâlniri",
-    "newSeriesDesc": "Configurează o întâlnire 1:1 recurentă cu un membru al echipei.",
+    "newSeriesDesc": "Configurează o întâlnire 1on1 recurentă cu un membru al echipei.",
     "noTeam": "Fără echipă",
     "series": {
       "empty": "Nicio serie de întâlniri",
-      "emptyDesc": "Creează prima serie 1:1 pentru a programa sesiuni.",
+      "emptyDesc": "Creează prima serie 1on1 pentru a programa sesiuni.",
       "create": "Creează serie",
       "showArchived": "Arată arhivate ({count})",
       "hideArchived": "Ascunde arhivate",
@@ -55,11 +55,11 @@
     },
     "sections": {
       "myTeam": "Echipa mea",
-      "myOneOnOnes": "Intalnirile mele 1:1",
+      "myOneOnOnes": "Intalnirile mele 1on1",
       "youSuffix": "(Tu)"
     },
     "detail": {
-      "oneOnOneWith": "1:1 cu {name}",
+      "oneOnOneWith": "1on1 cu {name}",
       "startSession": "Începe sesiunea",
       "resumeSession": "Continuă sesiunea",
       "pause": "Pauză",
@@ -96,7 +96,7 @@
     },
     "form": {
       "report": "Raport",
-      "reportDesc": "Membrul echipei cu care vei avea întâlniri 1:1.",
+      "reportDesc": "Membrul echipei cu care vei avea întâlniri 1on1.",
       "reportPlaceholder": "Selectează un membru al echipei",
       "cadence": "Cadență",
       "weekly": "Săptămânal",
@@ -181,7 +181,7 @@
       "reviewLast": "Revizuiește ce s-a întâmplat în ultima sesiune cu {name}",
       "firstSession": "Aceasta este prima sesiune cu {name}",
       "firstSessionTitle": "Prima sesiune",
-      "firstSessionDesc": "Aceasta este prima sesiune 1:1 cu {name}. Profită de ocazie pentru a stabili tonul și așteptările.",
+      "firstSessionDesc": "Aceasta este prima sesiune 1on1 cu {name}. Profită de ocazie pentru a stabili tonul și așteptările.",
       "score": "Scor: {score}",
       "notCompleted": "Nefinalizată",
       "notes": "Note",
@@ -379,7 +379,7 @@
       "nextSessionNudges": "Sugestii pentru sesiunea următoare",
       "sessionHistory": "Istoricul sesiunilor",
       "noSessions": "Nicio sesiune încă",
-      "noCompletedSessions": "Nicio sesiune finalizată — începe prima discuție 1:1 pentru a vedea analiza AI.",
+      "noCompletedSessions": "Nicio sesiune finalizată — începe prima discuție 1on1 pentru a vedea analiza AI.",
       "aiNotAvailable": "Rezumatul AI nu este încă disponibil.",
       "aiUpgradeTitle": "Deblochează analiza AI",
       "aiUpgradeDescription": "Obține rezumate AI, analiză de sentiment și recomandări acționabile pentru sesiuni.",

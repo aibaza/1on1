@@ -22,9 +22,9 @@
       "footer": "Linkul expiră în 1 oră. Dacă nu ai solicitat resetarea parolei, poți ignora acest email."
     },
     "sessionSummary": {
-      "subject": "Rezumat ședință 1:1 #{sessionNumber}",
+      "subject": "Rezumat ședință 1on1 #{sessionNumber}",
       "heading": "Rezumat ședință #{sessionNumber}",
-      "greeting": "Salut {recipientName}, iată rezumatul ședinței tale 1:1 cu {otherPartyName}.",
+      "greeting": "Salut {recipientName}, iată rezumatul ședinței tale 1on1 cu {otherPartyName}.",
       "score": "Scor: {score} / 5.0",
       "sessionScore": "Scor sesiune",
       "outOf": "/ 5.0",
@@ -46,19 +46,19 @@
       "footer": "Acest email a fost trimis de 1on1"
     },
     "preMeeting": {
-      "subject": "Ședință 1:1 cu {otherPartyName} — memento",
-      "heading": "Ședință 1:1 în curând",
+      "subject": "Ședință 1on1 cu {otherPartyName} — memento",
+      "heading": "Ședință 1on1 în curând",
       "greeting": "Salut {recipientName},",
-      "body": "Ai o ședință 1:1 cu {otherPartyName} pe {meetingDate} la ora {meetingTime}.",
+      "body": "Ai o ședință 1on1 cu {otherPartyName} pe {meetingDate} la ora {meetingTime}.",
       "button": "Deschide seria de ședințe",
       "footer": "Acest email a fost trimis de 1on1"
     },
     "agendaPrep": {
-      "subject": "Pregătire ședință 1:1 cu {otherPartyName}",
-      "heading": "Pregătire ședință 1:1",
+      "subject": "Pregătire ședință 1on1 cu {otherPartyName}",
+      "heading": "Pregătire ședință 1on1",
       "greeting": "Salut {recipientName},",
-      "bodyReport": "Ședința ta 1:1 cu {otherPartyName} este pe {meetingDate}. Ia un moment pentru a adăuga punctele tale pe agendă.",
-      "bodyManager": "Ședința ta 1:1 cu {otherPartyName} este pe {meetingDate}. Iată câteva aspecte de luat în considerare înainte de sesiune.",
+      "bodyReport": "Ședința ta 1on1 cu {otherPartyName} este pe {meetingDate}. Ia un moment pentru a adăuga punctele tale pe agendă.",
+      "bodyManager": "Ședința ta 1on1 cu {otherPartyName} este pe {meetingDate}. Iată câteva aspecte de luat în considerare înainte de sesiune.",
       "aiNudges": "Sugestii de coaching AI",
       "buttonManager": "Deschide seria de ședințe",
       "buttonReport": "Adaugă puncte pe agendă",
@@ -68,7 +68,7 @@
       "subject": "Un răspuns din sesiune a fost corectat",
       "heading": "Răspuns din sesiune corectat",
       "greeting": "Salut {recipientName},",
-      "body": "Un răspuns din ședința ta 1:1 #{sessionNumber} cu {otherPartyName} a fost corectat. Conținutul răspunsului nu este inclus în acest email din motive de confidențialitate — apasă mai jos pentru a vizualiza sesiunea.",
+      "body": "Un răspuns din ședința ta 1on1 #{sessionNumber} cu {otherPartyName} a fost corectat. Conținutul răspunsului nu este inclus în acest email din motive de confidențialitate — apasă mai jos pentru a vizualiza sesiunea.",
       "buttonLabel": "Vezi sesiunea",
       "footer": "Acest email a fost trimis de 1on1"
     }

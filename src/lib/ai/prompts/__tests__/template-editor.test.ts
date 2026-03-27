@@ -12,8 +12,8 @@ import type { TemplateExport } from '../../../templates/export-schema';
 const SAMPLE_TEMPLATE: TemplateExport = {
   schemaVersion: 1,
   language: 'en',
-  name: 'Engineering 1:1',
-  description: 'A structured template for engineering 1:1 meetings',
+  name: 'Engineering 1on1',
+  description: 'A structured template for engineering 1on1 meetings',
   sections: [
     {
       name: 'Check-in',
@@ -64,13 +64,13 @@ describe('buildTemplateEditorSystemPrompt', () => {
   it('embeds the template JSON in the prompt when existingTemplate is provided', () => {
     const prompt = buildTemplateEditorSystemPrompt(SAMPLE_TEMPLATE);
     // The template name should appear in the serialized JSON
-    expect(prompt).toContain('Engineering 1:1');
+    expect(prompt).toContain('Engineering 1on1');
   });
 
   // Test 5: without existingTemplate — does NOT contain a template JSON block
   it('does not contain a template JSON block when no existingTemplate is provided', () => {
     const prompt = buildTemplateEditorSystemPrompt();
     // The sample template's name should NOT appear
-    expect(prompt).not.toContain('Engineering 1:1');
+    expect(prompt).not.toContain('Engineering 1on1');
   });
 });

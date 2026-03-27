@@ -21,7 +21,7 @@ import { MobileNav } from "./_components/mobile-nav";
 import { LanguageSwitcher } from "./_components/language-switcher";
 
 export const metadata: Metadata = {
-  title: "1on1 | Transform your 1:1 culture",
+  title: "1on1 | Transform your 1on1 culture",
   description:
     "Empower your managers with structured sessions, AI-driven insights, and seamless action tracking.",
 };

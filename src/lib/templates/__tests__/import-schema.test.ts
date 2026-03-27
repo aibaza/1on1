@@ -93,7 +93,7 @@ function makeTemplate(sections: ReturnType<typeof makeSection>[], overrides: Par
   return {
     id: UUID_TEMPLATE,
     tenantId: UUID_TENANT,
-    name: 'Standard 1:1',
+    name: 'Standard 1on1',
     description: null,
     isPublished: true,
     isDefault: false,
@@ -322,9 +322,9 @@ describe('Language mismatch detection (IMP-05 convention)', () => {
 describe('Copy suffix convention (IMP-04)', () => {
   // Test 10: appending " (copy)" documents the naming convention
   it('appending " (copy)" to a template name produces the expected string', () => {
-    const name = 'Standard 1:1';
+    const name = 'Standard 1on1';
     const copyName = `${name} (copy)`;
-    expect(copyName).toBe('Standard 1:1 (copy)');
+    expect(copyName).toBe('Standard 1on1 (copy)');
   });
 });
 
@@ -359,8 +359,8 @@ describe('Round-trip: buildExportPayload → templateImportSchema', () => {
 const DIY_WORKED_EXAMPLE = {
   schemaVersion: 1 as const,
   language: 'en',
-  name: 'Engineering 1:1 Template',
-  description: 'A structured template for weekly engineering 1:1 meetings.',
+  name: 'Engineering 1on1 Template',
+  description: 'A structured template for weekly engineering 1on1 meetings.',
   sections: [
     {
       name: 'Check-in & Wellbeing',
@@ -411,7 +411,7 @@ const DIY_WORKED_EXAMPLE = {
       sortOrder: 1,
       questions: [
         {
-          questionText: 'What did you accomplish since our last 1:1?',
+          questionText: 'What did you accomplish since our last 1on1?',
           helpText: 'List 1-3 key things you completed or moved forward.',
           answerType: 'text' as const,
           answerConfig: {},

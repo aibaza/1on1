@@ -1,14 +1,14 @@
 {
   "sessions": {
     "title": "Sessions",
-    "description": "Manage your 1:1 meeting series and sessions.",
+    "description": "Manage your 1on1 meeting series and sessions.",
     "newSeries": "New Series",
     "newSeriesTitle": "New Meeting Series",
-    "newSeriesDesc": "Set up a recurring 1:1 meeting with a team member.",
+    "newSeriesDesc": "Set up a recurring 1on1 meeting with a team member.",
     "noTeam": "No Team",
     "series": {
       "empty": "No meeting series yet",
-      "emptyDesc": "Create your first 1:1 series to start scheduling sessions.",
+      "emptyDesc": "Create your first 1on1 series to start scheduling sessions.",
       "create": "Create Series",
       "showArchived": "Show archived ({count})",
       "hideArchived": "Hide archived",
@@ -55,11 +55,11 @@
     },
     "sections": {
       "myTeam": "My Team",
-      "myOneOnOnes": "My 1:1s",
+      "myOneOnOnes": "My 1on1s",
       "youSuffix": "(You)"
     },
     "detail": {
-      "oneOnOneWith": "1:1 with {name}",
+      "oneOnOneWith": "1on1 with {name}",
       "startSession": "Start Session",
       "resumeSession": "Resume Session",
       "pause": "Pause",
@@ -96,7 +96,7 @@
     },
     "form": {
       "report": "Report",
-      "reportDesc": "The team member you will have 1:1s with.",
+      "reportDesc": "The team member you will have 1on1s with.",
       "reportPlaceholder": "Select a team member",
       "cadence": "Cadence",
       "weekly": "Weekly",
@@ -181,7 +181,7 @@
       "reviewLast": "Review what happened in your last session with {name}",
       "firstSession": "This is your first session with {name}",
       "firstSessionTitle": "First Session",
-      "firstSessionDesc": "This is your first 1:1 session with {name}. Take this opportunity to set the tone and establish expectations.",
+      "firstSessionDesc": "This is your first 1on1 session with {name}. Take this opportunity to set the tone and establish expectations.",
       "score": "Score: {score}",
       "notCompleted": "Not completed",
       "notes": "Notes",
@@ -379,7 +379,7 @@
       "nextSessionNudges": "Next Session Nudges",
       "sessionHistory": "Session History",
       "noSessions": "No sessions yet",
-      "noCompletedSessions": "No completed sessions yet — start your first 1:1 to see AI insights here.",
+      "noCompletedSessions": "No completed sessions yet — start your first 1on1 to see AI insights here.",
       "aiNotAvailable": "AI summary not yet available.",
       "aiUpgradeTitle": "Unlock AI Insights",
       "aiUpgradeDescription": "Get AI-powered session summaries, sentiment analysis, and actionable recommendations.",

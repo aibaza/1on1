@@ -8,9 +8,9 @@
       "getStarted": "Get Started"
     },
     "hero": {
-      "badge": "AI-Powered 1:1 Meetings",
+      "badge": "AI-Powered 1on1 Meetings",
       "title": "Transform your",
-      "titleHighlight": "1:1 culture",
+      "titleHighlight": "1on1 culture",
       "subtitle": "Stop dreading the \"Check-in.\" Empower your managers with curated structured sessions, AI-driven insights, and seamless action tracking.",
       "cta": "Start Free Trial",
       "ctaSecondary": "See Pricing"
@@ -39,11 +39,11 @@
       },
       "actionItems": {
         "title": "Action items that don't disappear",
-        "description": "Shared visibility ensures that every promise made in a 1:1 is tracked and resolved. No more \"what did we agree on?\""
+        "description": "Shared visibility ensures that every promise made in a 1on1 is tracked and resolved. No more \"what did we agree on?\""
       },
       "teamHealth": {
         "title": "Team health at a glance",
-        "description": "Heatmaps of engagement and 1:1 frequency help leaders spot flight risks and high-performing managers early."
+        "description": "Heatmaps of engagement and 1on1 frequency help leaders spot flight risks and high-performing managers early."
       },
       "security": {
         "title": "Built for real teams",

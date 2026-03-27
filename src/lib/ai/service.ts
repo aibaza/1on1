@@ -136,7 +136,7 @@ export async function validateCorrectionReason(
   language?: string
 ): Promise<ReasonValidationResult> {
   const systemPrompt = withLanguageInstruction(
-    "You are a correction reason validator for a 1:1 meeting tool. " +
+    "You are a correction reason validator for a 1on1 meeting tool. " +
     "Evaluate whether the provided correction reason is specific, professional, and clearly explains " +
     "why an answer needs to be corrected. A good reason identifies what was wrong and why the new answer is more accurate. " +
     "A poor reason is vague (e.g., 'I made a mistake'), unrelated to the answer, or too brief.",

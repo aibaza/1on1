@@ -58,7 +58,7 @@ const XENA_ID = 'bbbbbbbb-0003-4000-b000-000000000003'; // member (Yuri's report
 const WEEKLY_TEMPLATE_ID = 'dddddddd-0001-4000-a000-000000000001';
 const CAREER_TEMPLATE_ID = 'dddddddd-0002-4000-a000-000000000002';
 
-// Structured 1:1 Template (Acme default)
+// Structured 1on1 Template (Acme default)
 const STRUCTURED_TEMPLATE_ID = 'dddddddd-0004-4000-a000-000000000004';
 
 // Beta Template
@@ -73,7 +73,7 @@ const SEC_WEEKLY_CHECKIN_ID = 'aaaabbbb-0003-4000-ab00-000000000003';
 const SEC_CAREER_GOALS_ID = 'aaaabbbb-0004-4000-ab00-000000000004';
 const SEC_CAREER_FEEDBACK_ID = 'aaaabbbb-0005-4000-ab00-000000000005';
 
-// Structured 1:1 Sections
+// Structured 1on1 Sections
 const SEC_S11_FOLLOWUP_ID = 'aaaabbbb-0010-4000-ab00-000000000010';
 const SEC_S11_ENERGY_ID = 'aaaabbbb-0011-4000-ab00-000000000011';
 const SEC_S11_PROGRESS_ID = 'aaaabbbb-0012-4000-ab00-000000000012';
@@ -82,7 +82,7 @@ const SEC_S11_COLLAB_ID = 'aaaabbbb-0014-4000-ab00-000000000014';
 const SEC_S11_LEARNING_ID = 'aaaabbbb-0015-4000-ab00-000000000015';
 const SEC_S11_CAPACITY_ID = 'aaaabbbb-0016-4000-ab00-000000000016';
 
-// Structured 1:1 Questions
+// Structured 1on1 Questions
 const Q_S11_RESOLVE_SCORE_ID = 'eeeeeeee-0020-4000-a000-000000000020';
 const Q_S11_RESOLVE_COMMENT_ID = 'eeeeeeee-0021-4000-a000-000000000021';
 const Q_S11_ENERGY_SCORE_ID = 'eeeeeeee-0022-4000-a000-000000000022';
@@ -706,14 +706,14 @@ async function seedTemplates() {
       },
     });
 
-  // Structured 1:1 Template (Acme)
+  // Structured 1on1 Template (Acme)
   await db
     .insert(schema.questionnaireTemplates)
     .values({
       id: STRUCTURED_TEMPLATE_ID,
       tenantId: ACME_TENANT_ID,
-      name: 'Structured 1:1',
-      description: 'Comprehensive weekly 1:1 covering follow-up, energy, progress, blockers, collaboration, learning, and capacity',
+      name: 'Structured 1on1',
+      description: 'Comprehensive weekly 1on1 covering follow-up, energy, progress, blockers, collaboration, learning, and capacity',
       isDefault: false,
       isPublished: true,
       createdBy: ALICE_ID,
@@ -731,7 +731,7 @@ async function seedTemplates() {
     .values([
       { id: LABEL_CHECKIN_ID, tenantId: ACME_TENANT_ID, name: 'Check-in', color: '#3b82f6' },
       { id: LABEL_CAREER_ID, tenantId: ACME_TENANT_ID, name: 'Career', color: '#8b5cf6' },
-      { id: LABEL_STRUCTURED_ID, tenantId: ACME_TENANT_ID, name: '1:1 Structurat', color: '#10b981' },
+      { id: LABEL_STRUCTURED_ID, tenantId: ACME_TENANT_ID, name: '1on1 Structurat', color: '#10b981' },
     ])
     .onConflictDoUpdate({
       target: schema.templateLabels.id,
@@ -908,7 +908,7 @@ async function seedTemplates() {
     },
   ];
 
-  // Structured 1:1 Questions
+  // Structured 1on1 Questions
   const structuredQuestions = [
     // Section 1: Follow-up
     {
@@ -1219,7 +1219,7 @@ async function seedSessions() {
       startedAt: threeWeeksAgo,
       completedAt: new Date(threeWeeksAgo.getTime() + 30 * 60 * 1000),
       status: 'completed' as const,
-      sharedNotes: { general: 'First 1:1 session. Dave is settling in well. Discussed project priorities for the sprint.' },
+      sharedNotes: { general: 'First 1on1 session. Dave is settling in well. Discussed project priorities for the sprint.' },
       durationMinutes: 30,
       sessionScore: '3.75',
     },
@@ -2738,7 +2738,7 @@ async function seedAliceData() {
       assigneeId: ALICE_ID,
       createdById: ALICE_ID,
       title: 'Schedule skip-level meetings with Dave and Eve',
-      description: 'Set up monthly skip-level 1:1s to get direct signal from Bob team members.',
+      description: 'Set up monthly skip-level 1on1s to get direct signal from Bob team members.',
       category: 'check_in',
       dueDate: inFiveDays.toISOString().split('T')[0],
       status: 'open' as const,
@@ -2831,7 +2831,7 @@ async function seedAliceData() {
       aiSummary: {
         cardBlurb: 'Good first session. Dave settling in well and eager to contribute.',
         keyTakeaways: ['Dave adapting quickly to codebase', 'Needs staging access', 'Sprint priorities aligned'],
-        discussionHighlights: [{ category: 'Check In', summary: 'First 1:1. Dave positive about team culture and project scope.' }],
+        discussionHighlights: [{ category: 'Check In', summary: 'First 1on1. Dave positive about team culture and project scope.' }],
         followUpItems: ['Set up staging access', 'Pair Dave with senior on first feature'],
         overallSentiment: 'positive' as const,
       },

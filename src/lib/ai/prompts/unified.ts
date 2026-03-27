@@ -22,7 +22,7 @@ export function buildUnifiedSystemPrompt(language?: string): string {
 - followUpPriority: how urgently to follow up
 
 RULES:
-- ATTRIBUTION: In a 1:1, the manager records answers about the report's experience. Unnamed subjects ("I", "we", or no subject) = the REPORT. Only attribute to the manager if explicitly named.
+- ATTRIBUTION: In a 1on1, the manager records answers about the report's experience. Unnamed subjects ("I", "we", or no subject) = the REPORT. Only attribute to the manager if explicitly named.
 - Private notes are CONFIDENTIAL — use them only for the manager addendum, never in public summary.
 - Output must be proportional to input. Short session → short analysis.
 - Never pad, never add filler.`;

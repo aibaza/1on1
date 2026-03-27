@@ -15,7 +15,7 @@ interface PreMeetingReminderEmailProps {
   // Translated string props
   heading: string;
   greeting: string;
-  body: string;              // pre-interpolated: "You have a 1:1 with {name} on {date} at {time}."
+  body: string;              // pre-interpolated: "You have a 1on1 with {name} on {date} at {time}."
   buttonLabel: string;
   footer: string;
 }

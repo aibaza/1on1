@@ -31,7 +31,7 @@ const STRUCTURED_TEMPLATE_ID = 'dddddddd-0004-4000-a000-000000000004';
 // Existing user IDs (from base seed)
 const ALICE_ID = 'aaaaaaaa-0001-4000-a000-000000000001';
 
-// Question IDs from the Structured 1:1 template (from base seed)
+// Question IDs from the Structured 1on1 template (from base seed)
 const Q_S11_RESOLVE_SCORE_ID = 'eeeeeeee-0020-4000-a000-000000000020';
 const Q_S11_RESOLVE_COMMENT_ID = 'eeeeeeee-0021-4000-a000-000000000021';
 const Q_S11_ENERGY_SCORE_ID = 'eeeeeeee-0022-4000-a000-000000000022';

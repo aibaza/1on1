@@ -1,7 +1,7 @@
 {
   "actionItems": {
     "title": "Action Items",
-    "description": "Track and manage action items across all your 1:1 sessions.",
+    "description": "Track and manage action items across all your 1on1 sessions.",
     "empty": "No open action items",
     "emptyDesc": "Create them during your next session.",
     "goToSessions": "Go to Sessions",

@@ -22,9 +22,9 @@
       "footer": "This link expires in 1 hour. If you did not request a password reset, you can safely ignore this email."
     },
     "sessionSummary": {
-      "subject": "1:1 Session #{sessionNumber} Summary",
+      "subject": "1on1 Session #{sessionNumber} Summary",
       "heading": "Session #{sessionNumber} Summary",
-      "greeting": "Hi {recipientName}, here is the summary of your 1:1 with {otherPartyName}.",
+      "greeting": "Hi {recipientName}, here is the summary of your 1on1 with {otherPartyName}.",
       "score": "Score: {score} / 5.0",
       "sessionScore": "Session Score",
       "outOf": "/ 5.0",
@@ -46,19 +46,19 @@
       "footer": "This email was sent by 1on1"
     },
     "preMeeting": {
-      "subject": "Upcoming 1:1 with {otherPartyName}",
-      "heading": "Upcoming 1:1 Meeting",
+      "subject": "Upcoming 1on1 with {otherPartyName}",
+      "heading": "Upcoming 1on1 Meeting",
       "greeting": "Hi {recipientName},",
-      "body": "You have a 1:1 meeting with {otherPartyName} coming up on {meetingDate} at {meetingTime}.",
+      "body": "You have a 1on1 meeting with {otherPartyName} coming up on {meetingDate} at {meetingTime}.",
       "button": "Open Meeting Series",
       "footer": "This email was sent by 1on1"
     },
     "agendaPrep": {
-      "subject": "Prepare for your 1:1 with {otherPartyName}",
-      "heading": "Prepare for Your 1:1",
+      "subject": "Prepare for your 1on1 with {otherPartyName}",
+      "heading": "Prepare for Your 1on1",
       "greeting": "Hi {recipientName},",
-      "bodyReport": "Your 1:1 with {otherPartyName} is on {meetingDate}. Take a moment to add your talking points before the meeting.",
-      "bodyManager": "Your 1:1 with {otherPartyName} is on {meetingDate}. Here are some things to consider before your session.",
+      "bodyReport": "Your 1on1 with {otherPartyName} is on {meetingDate}. Take a moment to add your talking points before the meeting.",
+      "bodyManager": "Your 1on1 with {otherPartyName} is on {meetingDate}. Here are some things to consider before your session.",
       "aiNudges": "AI Coaching Nudges",
       "buttonManager": "Open Meeting Series",
       "buttonReport": "Add Talking Points",
@@ -68,7 +68,7 @@
       "subject": "A session answer has been corrected",
       "heading": "Session Answer Corrected",
       "greeting": "Hi {recipientName},",
-      "body": "An answer in your 1:1 session #{sessionNumber} with {otherPartyName} has been corrected. No answer content is included in this email for privacy — click below to view the session.",
+      "body": "An answer in your 1on1 session #{sessionNumber} with {otherPartyName} has been corrected. No answer content is included in this email for privacy — click below to view the session.",
       "buttonLabel": "View Session",
       "footer": "This email was sent by 1on1"
     }

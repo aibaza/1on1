@@ -1,7 +1,7 @@
 {
   "history": {
     "title": "History",
-    "description": "Browse all past and current sessions across your 1:1 series.",
+    "description": "Browse all past and current sessions across your 1on1 series.",
     "searchPlaceholder": "Search...",
     "status": "Status",
     "from": "From",
@@ -21,7 +21,7 @@
     "noFilterResults": "No sessions match your filters",
     "noFilterResultsDesc": "Try adjusting your filters or clearing them.",
     "noSessions": "No sessions yet",
-    "noSessionsDesc": "Complete your first 1:1 session to see it here.",
+    "noSessionsDesc": "Complete your first 1on1 session to see it here.",
     "clearFilters": "Clear Filters",
     "goToSessions": "Go to Sessions",
     "loadMore": "Load more",

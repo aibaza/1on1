@@ -87,7 +87,7 @@ function makeTemplate(sections: ReturnType<typeof makeSection>[], overrides: Par
   return {
     id: UUID_TEMPLATE,
     tenantId: UUID_TENANT,
-    name: 'Standard 1:1',
+    name: 'Standard 1on1',
     description: null,
     isPublished: true,
     isDefault: false,

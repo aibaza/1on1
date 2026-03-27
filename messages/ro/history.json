@@ -1,7 +1,7 @@
 {
   "history": {
     "title": "Istoric",
-    "description": "Parcurge toate sesiunile trecute și curente din seriile 1:1.",
+    "description": "Parcurge toate sesiunile trecute și curente din seriile 1on1.",
     "searchPlaceholder": "Cauta...",
     "status": "Status",
     "from": "De la",
@@ -21,7 +21,7 @@
     "noFilterResults": "Nicio sesiune nu corespunde filtrelor",
     "noFilterResultsDesc": "Încearcă să ajustezi filtrele sau să le ștergi.",
     "noSessions": "Nicio sesiune",
-    "noSessionsDesc": "Finalizează prima sesiune 1:1 pentru a o vedea aici.",
+    "noSessionsDesc": "Finalizează prima sesiune 1on1 pentru a o vedea aici.",
     "clearFilters": "Șterge filtrele",
     "goToSessions": "Mergi la sesiuni",
     "loadMore": "Încarcă mai multe",

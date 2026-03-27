@@ -25,7 +25,7 @@ describe('templateChatResponseSchema', () => {
       templateJson: {
         schemaVersion: 1,
         language: 'en',
-        name: 'Engineering 1:1',
+        name: 'Engineering 1on1',
         description: null,
         sections: [
           {

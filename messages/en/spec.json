@@ -17,8 +17,8 @@
       "schemaDocsLink": "View in template list"
     },
     "methodology": {
-      "title": "1:1 Meeting Principles",
-      "intro": "Effective 1:1 meetings follow a consistent structure that builds trust, surfaces blockers early, and creates accountability. These principles guide how templates should be designed.",
+      "title": "1on1 Meeting Principles",
+      "intro": "Effective 1on1 meetings follow a consistent structure that builds trust, surfaces blockers early, and creates accountability. These principles guide how templates should be designed.",
       "principles": {
         "continuity": {
           "title": "Continuity over completeness",
@@ -58,7 +58,7 @@
       "copied": "Copied!",
       "sections": {
         "schema": "JSON Schema Spec",
-        "methodology": "1:1 Methodology Principles",
+        "methodology": "1on1 Methodology Principles",
         "weights": "Score Weight System",
         "example": "Worked Example Template"
       }
