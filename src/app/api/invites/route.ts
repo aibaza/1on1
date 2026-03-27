@@ -4,6 +4,7 @@ import { isNull } from "drizzle-orm";
 import { render } from "@react-email/render";
 import { auth } from "@/lib/auth/config";
 import { requireLevel } from "@/lib/auth/rbac";
+import { checkSeatLimit } from "@/lib/billing/enforce";
 import { inviteUsersSchema } from "@/lib/validations/user";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { adminDb } from "@/lib/db";
@@ -45,6 +46,10 @@ export async function POST(request: Request) {
   const { emails, level } = parsed.data;
   const tenantId = session.user.tenantId;
   const inviterId = session.user.id;
+
+  // Check seat limit before sending invites
+  const seatError = await checkSeatLimit(tenantId);
+  if (seatError) return seatError;
 
   // Get tenant name, content language, and inviter name for the email
   const tenant = await adminDb.query.tenants.findFirst({

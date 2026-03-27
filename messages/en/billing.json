@@ -111,6 +111,40 @@
         "select": "Select",
         "selected": "Selected"
       }
+    },
+    "admin": {
+      "title": "Billing Administration",
+      "metrics": {
+        "mrr": "MRR",
+        "arr": "ARR",
+        "activeCustomers": "Active",
+        "trialingCustomers": "Trialing",
+        "pastDue": "Past Due",
+        "founders": "Founders"
+      },
+      "customers": "Customers",
+      "search": "Search companies...",
+      "allStatuses": "All statuses",
+      "noCustomers": "No customers found",
+      "detail": {
+        "subscription": "Subscription",
+        "invoices": "Invoices",
+        "events": "Billing Events",
+        "founder": "Founder Status",
+        "founderDescription": "Founder customers receive a discount on their subscription",
+        "discount": "Discount",
+        "saveChanges": "Save Changes",
+        "noSubscription": "No active subscription",
+        "noEvents": "No billing events"
+      }
+    },
+    "gate": {
+      "upgradeRequired": "Upgrade required",
+      "featureRequiresPro": "This feature is available on the Pro plan",
+      "featureRequiresBusiness": "This feature is available on the Business plan",
+      "upgrade": "Upgrade",
+      "seatLimitReached": "You've reached your plan's user limit",
+      "seatLimitDescription": "Upgrade to add more team members"
     }
   }
 }

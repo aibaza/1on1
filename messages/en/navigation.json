@@ -23,6 +23,7 @@
     "scheduleMeeting": "Schedule 1:1",
     "support": "Support",
     "collapse": "Collapse",
-    "searchRecords": "Search records..."
+    "searchRecords": "Search records...",
+    "adminBilling": "Admin Billing"
   }
 }

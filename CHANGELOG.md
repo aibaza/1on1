@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Feature gating enforcement: `requireActivePlan`, `checkSeatLimit`, `requireFeature` server-side guards (`src/lib/billing/enforce.ts`)
+- Client-side entitlement hook: `useEntitlement` for plan-aware UI rendering (`src/lib/hooks/use-entitlement.ts`)
+- `FeatureGate` component with hide/blur/upgrade modes for gating UI features by plan
+- `UpgradePrompt` component with lock icon, plan-specific messaging, and upgrade CTA
+- Seat limit enforcement on POST `/api/invites` — returns 402 when limit reached
+- AI feature gating on POST `/api/sessions/[id]/ai-retry` and POST `/api/templates/ai-chat` — returns 402 for plans without AI
+- Feature gate i18n keys (EN + RO) for upgrade prompts and seat limit messages
+- 13 enforce decision logic tests covering payment requirements, feature access, and seat limits
 - Paddle checkout integration: `@paddle/paddle-js` client SDK with `usePaddleCheckout` hook (overlay mode, SSR-safe)
 - Billing settings page (`/settings/billing`) — current plan card, seats usage, billing cycle, founder badge, invoice history, plan selector modal
 - Billing API routes: `/api/billing/checkout` (validates price IDs), `/api/billing/portal` (Paddle subscription management URLs)

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { waitUntil } from "@vercel/functions";
 import { auth } from "@/lib/auth/config";
+import { requireFeature } from "@/lib/billing/enforce";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { runAIPipelineDirect } from "@/lib/ai/pipeline";
 import { sessions, meetingSeries } from "@/lib/db/schema";
@@ -22,6 +23,10 @@ export async function POST(
   }
 
   const { id: sessionId } = await params;
+
+  // Check AI feature entitlement
+  const featureError = await requireFeature(session.user.tenantId, "ai");
+  if (featureError) return featureError;
 
   try {
     const result = await withTenantContext(

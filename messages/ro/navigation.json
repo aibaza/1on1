@@ -23,6 +23,7 @@
     "scheduleMeeting": "Programează 1:1",
     "support": "Asistență",
     "collapse": "Restrânge",
-    "searchRecords": "Caută înregistrări..."
+    "searchRecords": "Caută înregistrări...",
+    "adminBilling": "Admin facturare"
   }
 }

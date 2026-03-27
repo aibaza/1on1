@@ -111,6 +111,40 @@
         "select": "Selectează",
         "selected": "Selectat"
       }
+    },
+    "admin": {
+      "title": "Administrare facturare",
+      "metrics": {
+        "mrr": "MRR",
+        "arr": "ARR",
+        "activeCustomers": "Activi",
+        "trialingCustomers": "In probă",
+        "pastDue": "Restanță",
+        "founders": "Fondatori"
+      },
+      "customers": "Clienți",
+      "search": "Caută companii...",
+      "allStatuses": "Toate statusurile",
+      "noCustomers": "Niciun client găsit",
+      "detail": {
+        "subscription": "Abonament",
+        "invoices": "Facturi",
+        "events": "Evenimente facturare",
+        "founder": "Status fondator",
+        "founderDescription": "Clienții fondatori primesc o reducere la abonament",
+        "discount": "Reducere",
+        "saveChanges": "Salvează modificările",
+        "noSubscription": "Niciun abonament activ",
+        "noEvents": "Niciun eveniment de facturare"
+      }
+    },
+    "gate": {
+      "upgradeRequired": "Upgrade necesar",
+      "featureRequiresPro": "Aceasta funcționalitate este disponibilă pe planul Pro",
+      "featureRequiresBusiness": "Aceasta funcționalitate este disponibilă pe planul Business",
+      "upgrade": "Upgrade",
+      "seatLimitReached": "Ai atins limita de utilizatori a planului tău",
+      "seatLimitDescription": "Fă upgrade pentru a adăuga mai mulți membri"
     }
   }
 }
