@@ -1,0 +1,59 @@
+{
+  "billing": {
+    "pricing": {
+      "title": "Prețuri simple și transparente",
+      "subtitle": "Începe gratuit, fă upgrade când ești pregătit. Fără costuri ascunse.",
+      "monthly": "Lunar",
+      "yearly": "Anual",
+      "savePercent": "Economisești {percent}%",
+      "perUserMonth": "/utilizator/lună",
+      "perUserYear": "/utilizator/an",
+      "billedAnnually": "facturat anual",
+      "free": "Gratuit",
+      "getStarted": "Începe gratuit",
+      "startTrial": "Începe perioada de probă",
+      "contactSales": "Contactează vânzări",
+      "mostPopular": "Cel mai popular",
+      "currentPlan": "Planul curent",
+      "features": {
+        "managers": "Manageri",
+        "reportsPerManager": "Rapoarte per manager",
+        "templates": "Șabloane",
+        "aiSummaries": "Rezumate și insight-uri AI",
+        "analytics": "Analize",
+        "customBranding": "Branding personalizat",
+        "apiAccess": "Acces API",
+        "prioritySupport": "Suport prioritar"
+      },
+      "plans": {
+        "free": {
+          "name": "Gratuit",
+          "description": "Pentru a încerca întâlnirile 1on1"
+        },
+        "pro": {
+          "name": "Pro",
+          "description": "Pentru echipe în creștere"
+        },
+        "business": {
+          "name": "Business",
+          "description": "Pentru organizații la scară largă"
+        }
+      },
+      "unlimited": "Nelimitat",
+      "basic": "De bază",
+      "full": "Complet",
+      "compareFeatures": "Compară toate funcționalitățile",
+      "faq": {
+        "title": "Întrebări frecvente",
+        "q1": "Ce se întâmplă după perioada de probă gratuită?",
+        "a1": "După 7 zile, vei fi rugat să alegi un plan. Datele tale sunt întotdeauna în siguranță — nu ștergem niciodată nimic.",
+        "q2": "Pot schimba planul mai târziu?",
+        "a2": "Da, fă upgrade sau downgrade oricând. Modificările intră în vigoare imediat, cu facturare proporțională.",
+        "q3": "Cum funcționează prețul per utilizator?",
+        "a3": "Ești taxat pentru fiecare utilizator activ din organizația ta. Utilizatorii dezactivați nu sunt incluși.",
+        "q4": "Oferiți reduceri pentru ONG-uri?",
+        "a4": "Da! Contactează-ne pentru prețuri speciale pentru organizații non-profit."
+      }
+    }
+  }
+}

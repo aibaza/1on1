@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Subscription service: getEffectivePlan, isTrialExpired, needsPayment, canAccessFeature
 - Plan features config: seats/managers/templates/AI limits per plan (free/starter/pro/enterprise)
 - 46 billing unit tests (plan features, subscription logic, founder overrides, trial expiry)
+- Paddle webhook handler (`/api/webhooks/paddle`) — subscription sync, invoice tracking, idempotent event processing
+- Paddle SDK integration (`src/lib/billing/paddle.ts`) — singleton client with sandbox/production support
+- Pricing page (`/pricing`) — 3 plans (Free/Pro/Business), monthly/yearly toggle, feature comparison, FAQ
+- Billing i18n (EN + RO) for pricing page
 - XSS protection: `sanitizeHtml` utility using `isomorphic-dompurify` — all 11 `dangerouslySetInnerHTML` sites now sanitized
 - Rate limiting middleware (`src/middleware.ts`) — per-IP limits on auth (10/min), invites (10/min), AI (20/min), general API (100/min)
 - Authorization flow tests covering all 7 RBAC functions + composite patterns (participant-or-admin, owner-or-admin)

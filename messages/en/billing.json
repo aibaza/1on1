@@ -1,0 +1,59 @@
+{
+  "billing": {
+    "pricing": {
+      "title": "Simple, transparent pricing",
+      "subtitle": "Start free, upgrade when you're ready. No hidden fees.",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "savePercent": "Save {percent}%",
+      "perUserMonth": "/user/month",
+      "perUserYear": "/user/year",
+      "billedAnnually": "billed annually",
+      "free": "Free",
+      "getStarted": "Get Started Free",
+      "startTrial": "Start Free Trial",
+      "contactSales": "Contact Sales",
+      "mostPopular": "Most Popular",
+      "currentPlan": "Current Plan",
+      "features": {
+        "managers": "Managers",
+        "reportsPerManager": "Reports per manager",
+        "templates": "Templates",
+        "aiSummaries": "AI summaries & insights",
+        "analytics": "Analytics",
+        "customBranding": "Custom branding",
+        "apiAccess": "API access",
+        "prioritySupport": "Priority support"
+      },
+      "plans": {
+        "free": {
+          "name": "Free",
+          "description": "For trying out 1on1 meetings"
+        },
+        "pro": {
+          "name": "Pro",
+          "description": "For growing teams"
+        },
+        "business": {
+          "name": "Business",
+          "description": "For organizations at scale"
+        }
+      },
+      "unlimited": "Unlimited",
+      "basic": "Basic",
+      "full": "Full",
+      "compareFeatures": "Compare all features",
+      "faq": {
+        "title": "Frequently asked questions",
+        "q1": "What happens after my free trial?",
+        "a1": "After 7 days, you'll be asked to choose a plan. Your data is always safe — we never delete anything.",
+        "q2": "Can I change plans later?",
+        "a2": "Yes, upgrade or downgrade anytime. Changes take effect immediately, with prorated billing.",
+        "q3": "How does per-user pricing work?",
+        "a3": "You're charged for each active user in your organization. Deactivated users don't count.",
+        "q4": "Do you offer discounts for non-profits?",
+        "a4": "Yes! Contact us for special non-profit pricing."
+      }
+    }
+  }
+}

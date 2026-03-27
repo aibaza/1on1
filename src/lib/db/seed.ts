@@ -399,6 +399,9 @@ async function seedPlans() {
       {
         slug: 'pro',
         name: 'Pro',
+        paddleProductId: 'pro_01kmr1qf9bxwfqj3v5hnvhfbh8',
+        paddlePriceIdMonthly: 'pri_01kmr20hprwe7d6cr0201z7w26',
+        paddlePriceIdYearly: 'pri_01kmr27xm3dpgy1cq9tgp4h6fh',
         priceMonthly: 1500,
         priceYearly: 14400,
         currency: 'eur',
@@ -415,6 +418,9 @@ async function seedPlans() {
       {
         slug: 'business',
         name: 'Business',
+        paddleProductId: 'pro_01kmr1r5491n5763e0nczgrbnj',
+        paddlePriceIdMonthly: 'pri_01kmr29w8ea8q3148r5yyfm05p',
+        paddlePriceIdYearly: 'pri_01kmr2aqbxvkeed54pynzhveb9',
         priceMonthly: 2500,
         priceYearly: 24000,
         currency: 'eur',
@@ -435,6 +441,9 @@ async function seedPlans() {
       target: schema.plans.slug,
       set: {
         name: sql`excluded.name`,
+        paddleProductId: sql`excluded.paddle_product_id`,
+        paddlePriceIdMonthly: sql`excluded.paddle_price_id_monthly`,
+        paddlePriceIdYearly: sql`excluded.paddle_price_id_yearly`,
         priceMonthly: sql`excluded.price_monthly_cents`,
         priceYearly: sql`excluded.price_yearly_cents`,
         features: sql`excluded.features`,
