@@ -59,12 +59,12 @@ export default function RegisterPage() {
       >
         <div className="relative z-10 space-y-12">
           {/* Logo + brand */}
-          <div className="flex items-center gap-3" style={{ ["--logo-color" as string]: "#dbe1ff" }}>
+          <Link href="/" className="flex items-center gap-3" style={{ ["--logo-color" as string]: "#dbe1ff" }}>
             <Logo className="h-8" />
             <span className="font-headline font-extrabold tracking-tighter text-2xl" style={{ color: "#dbe1ff" }}>
               1on1
             </span>
-          </div>
+          </Link>
 
           {/* Headline */}
           <div className="space-y-6">
@@ -145,12 +145,12 @@ export default function RegisterPage() {
       <section className="flex-1 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-[var(--background)]">
         <div className="w-full max-w-xl">
           {/* Mobile logo */}
-          <div className="md:hidden flex items-center gap-2 mb-8">
+          <Link href="/" className="md:hidden flex items-center gap-2 mb-8">
             <Logo className="h-6" />
             <span className="font-headline font-extrabold tracking-tighter text-xl text-[var(--foreground)]">
               1on1
             </span>
-          </div>
+          </Link>
 
           {/* Title */}
           <div className="mb-10">

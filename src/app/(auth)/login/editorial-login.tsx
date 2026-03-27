@@ -108,9 +108,9 @@ export function EditorialLogin() {
       <section className="flex-1 flex flex-col justify-center px-6 md:px-24 py-12 bg-[var(--background)]">
         <div className="max-w-md w-full mx-auto">
           {/* Brand anchor */}
-          <div className="mb-12">
+          <Link href="/" className="mb-12 block">
             <Logo className="h-8" />
-          </div>
+          </Link>
 
           <div className="mb-10">
             <h3 className="font-headline text-3xl font-extrabold text-[var(--foreground)] tracking-tight mb-2">
