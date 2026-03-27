@@ -18,11 +18,12 @@ import { auth } from "@/lib/auth/config";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileNav } from "./_components/mobile-nav";
+import { LanguageSwitcher } from "./_components/language-switcher";
 
 export const metadata: Metadata = {
   title: "1on1 | Transform your 1:1 culture",
   description:
-    "Empower your managers with structured sessions, AI-driven insights, and seamless action tracking. The editorial approach to management.",
+    "Empower your managers with structured sessions, AI-driven insights, and seamless action tracking.",
 };
 
 export default async function LandingPage() {
@@ -62,6 +63,7 @@ export default async function LandingPage() {
             </a>
           </div>
           <div className="hidden md:flex items-center gap-4">
+            <LanguageSwitcher />
             <ThemeToggle />
             <Link
               href="/login"
