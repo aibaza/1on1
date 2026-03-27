@@ -169,6 +169,13 @@
       "when": 1774200000000,
       "tag": "0023_level_roles_teams",
       "breakpoints": false
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1774300000000,
+      "tag": "0024_billing_schema",
+      "breakpoints": false
     }
   ]
 }

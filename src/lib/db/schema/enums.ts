@@ -106,3 +106,20 @@ export const aiStatusEnum = pgEnum("ai_status", [
   "completed",
   "failed",
 ]);
+
+export const subscriptionStatusEnum = pgEnum("subscription_status", [
+  "trialing", "active", "past_due", "unpaid", "canceled", "paused",
+]);
+
+export const billingCycleEnum = pgEnum("billing_cycle", ["monthly", "yearly"]);
+
+export const invoiceStatusEnum = pgEnum("invoice_status", [
+  "draft", "open", "paid", "past_due", "canceled",
+]);
+
+export const billingEventTypeEnum = pgEnum("billing_event_type", [
+  "subscription_created", "subscription_updated", "subscription_canceled",
+  "payment_succeeded", "payment_failed",
+  "trial_started", "trial_ended", "trial_converted",
+  "plan_changed", "refund_issued",
+]);

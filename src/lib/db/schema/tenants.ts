@@ -4,6 +4,8 @@ import {
   varchar,
   jsonb,
   timestamp,
+  boolean,
+  integer,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { orgTypeEnum, planEnum } from "./enums";
@@ -25,6 +27,11 @@ export const tenants = pgTable("tenant", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
+  paddleCustomerId: varchar("paddle_customer_id", { length: 100 }),
+  isFounder: boolean("is_founder").notNull().default(false),
+  founderDiscountPct: integer("founder_discount_pct").notNull().default(0),
+  trialEndsAt: timestamp("trial_ends_at", { withTimezone: true }),
+  billingEmail: varchar("billing_email", { length: 255 }),
 });
 
 export const tenantsRelations = relations(tenants, ({ many }) => ({

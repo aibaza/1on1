@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Billing schema: plans, subscriptions, invoices, billing_events tables + migration 0024
+- Founder Customer system: is_founder + founder_discount_pct on tenants (0-100%, 100% = free forever)
+- Subscription service: getEffectivePlan, isTrialExpired, needsPayment, canAccessFeature
+- Plan features config: seats/managers/templates/AI limits per plan (free/starter/pro/enterprise)
+- 46 billing unit tests (plan features, subscription logic, founder overrides, trial expiry)
 - XSS protection: `sanitizeHtml` utility using `isomorphic-dompurify` — all 11 `dangerouslySetInnerHTML` sites now sanitized
 - Rate limiting middleware (`src/middleware.ts`) — per-IP limits on auth (10/min), invites (10/min), AI (20/min), general API (100/min)
 - Authorization flow tests covering all 7 RBAC functions + composite patterns (participant-or-admin, owner-or-admin)

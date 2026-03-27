@@ -375,6 +375,75 @@ const TV_NOTE_2 = '44440000-0002-4000-a400-eeeeeeeeeeee';
 // Seed functions
 // =============================================================================
 
+async function seedPlans() {
+  console.log('  Seeding plans...');
+  await db
+    .insert(schema.plans)
+    .values([
+      {
+        slug: 'free',
+        name: 'Free',
+        priceMonthly: 0,
+        priceYearly: 0,
+        currency: 'eur',
+        sortOrder: 0,
+        features: {
+          maxUsers: 2,
+          maxSeries: 2,
+          aiNudges: false,
+          analytics: 'basic',
+          templates: 'default',
+          support: 'community',
+        },
+      },
+      {
+        slug: 'pro',
+        name: 'Pro',
+        priceMonthly: 1500,
+        priceYearly: 14400,
+        currency: 'eur',
+        sortOrder: 1,
+        features: {
+          maxUsers: 25,
+          maxSeries: -1,
+          aiNudges: true,
+          analytics: 'full',
+          templates: 'all',
+          support: 'email',
+        },
+      },
+      {
+        slug: 'business',
+        name: 'Business',
+        priceMonthly: 2500,
+        priceYearly: 24000,
+        currency: 'eur',
+        sortOrder: 2,
+        features: {
+          maxUsers: -1,
+          maxSeries: -1,
+          aiNudges: true,
+          analytics: 'full',
+          templates: 'all',
+          support: 'priority',
+          sso: true,
+          audit: true,
+        },
+      },
+    ])
+    .onConflictDoUpdate({
+      target: schema.plans.slug,
+      set: {
+        name: sql`excluded.name`,
+        priceMonthly: sql`excluded.price_monthly_cents`,
+        priceYearly: sql`excluded.price_yearly_cents`,
+        features: sql`excluded.features`,
+        sortOrder: sql`excluded.sort_order`,
+        updatedAt: sql`now()`,
+      },
+    });
+}
+
 async function seedTenants() {
   console.log('  Seeding tenants...');
   await db
@@ -2826,6 +2895,7 @@ async function seedAliceData() {
 async function seed() {
   console.log('Seeding database...\n');
 
+  await seedPlans();
   await seedTenants();
   await seedUsers();
   await seedTemplates();
