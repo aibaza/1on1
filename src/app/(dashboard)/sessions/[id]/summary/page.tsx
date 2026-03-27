@@ -2,6 +2,9 @@ import { auth } from "@/lib/auth/config";
 import { redirect, notFound } from "next/navigation";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { isSeriesParticipant, isAdmin } from "@/lib/auth/rbac";
+import { adminDb } from "@/lib/db";
+import { tenants } from "@/lib/db/schema";
+import { canAccessFeature } from "@/lib/billing/subscription";
 import {
   sessions,
   meetingSeries,
@@ -510,9 +513,22 @@ export default async function SessionSummaryPage({
     };
   });
 
+  // Check if tenant has AI access (for showing upgrade CTA vs "loading" message)
+  const [tenantRow] = await adminDb
+    .select({
+      plan: tenants.plan,
+      isFounder: tenants.isFounder,
+      founderDiscountPct: tenants.founderDiscountPct,
+      trialEndsAt: tenants.trialEndsAt,
+    })
+    .from(tenants)
+    .where(eq(tenants.id, session.user.tenantId));
+  const hasAiAccess = tenantRow ? canAccessFeature(tenantRow, "ai") : false;
+
   if (designPref === "editorial") {
     return (
       <EditorialSessionSummary
+        hasAiAccess={hasAiAccess}
         sessionId={data.sessionId}
         sessionNumber={data.sessionNumber}
         scheduledAt={data.scheduledAt}

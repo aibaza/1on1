@@ -71,6 +71,7 @@ interface SessionHistoryItem {
 }
 
 export interface EditorialSessionSummaryProps {
+  hasAiAccess?: boolean;
   sessionNumber: number;
   scheduledAt: string;
   completedAt: string | null;
@@ -127,7 +128,7 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
     sessionNumber, scheduledAt, completedAt, sessionScore, durationMinutes,
     categories, isManager, seriesId, sessionId, aiSummary, aiAddendum,
     managerName, reportName, managerTeam, reportTeam,
-    correctionsByAnswerId, sessionHistory, isAdmin,
+    correctionsByAnswerId, sessionHistory, isAdmin, hasAiAccess = true,
   } = props;
 
   const t = useTranslations("sessions");
@@ -274,6 +275,15 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
                 </div>
               )}
             </div>
+          ) : !hasAiAccess ? (
+            <div className="rounded-xl border border-dashed border-primary/30 bg-primary/5 p-6 text-center">
+              <Sparkles className="h-8 w-8 text-primary/50 mx-auto mb-3" />
+              <p className="text-sm font-medium text-foreground mb-1">{t("editorial.aiUpgradeTitle")}</p>
+              <p className="text-xs text-muted-foreground mb-4">{t("editorial.aiUpgradeDescription")}</p>
+              <Link href="/pricing" className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
+                {t("editorial.aiUpgradeButton")}
+              </Link>
+            </div>
           ) : (
             <p className="text-muted-foreground italic">{t("editorial.aiNotAvailable")}</p>
           )}
@@ -319,6 +329,8 @@ export function EditorialSessionSummary(props: EditorialSessionSummaryProps) {
               </div>
               {cat.highlight ? (
                 <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-3">{cat.highlight}</p>
+              ) : !hasAiAccess ? (
+                <p className="text-[11px] text-primary/60 italic">{t("editorial.aiUpgradeShort")}</p>
               ) : (
                 <p className="text-[11px] text-muted-foreground italic">{t("editorial.noAiHighlights")}</p>
               )}
