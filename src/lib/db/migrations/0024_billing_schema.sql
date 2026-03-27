@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS "subscription" (
   CONSTRAINT "subscription_tenant_id_unique" UNIQUE ("tenant_id")
 );
 
-CREATE INDEX "subscription_tenant_idx" ON "subscription" ("tenant_id");
-CREATE INDEX "subscription_status_idx" ON "subscription" ("status");
+CREATE INDEX IF NOT EXISTS "subscription_tenant_idx" ON "subscription" ("tenant_id");
+CREATE INDEX IF NOT EXISTS "subscription_status_idx" ON "subscription" ("status");
 
 -- =============================================================================
 -- Invoices table
@@ -101,8 +101,8 @@ CREATE TABLE IF NOT EXISTS "invoice" (
   "created_at" timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX "invoice_tenant_idx" ON "invoice" ("tenant_id");
-CREATE INDEX "invoice_status_idx" ON "invoice" ("status");
+CREATE INDEX IF NOT EXISTS "invoice_tenant_idx" ON "invoice" ("tenant_id");
+CREATE INDEX IF NOT EXISTS "invoice_status_idx" ON "invoice" ("status");
 
 -- =============================================================================
 -- Billing events table (webhook audit log)
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS "billing_event" (
   "created_at" timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX "billing_event_tenant_idx" ON "billing_event" ("tenant_id");
+CREATE INDEX IF NOT EXISTS "billing_event_tenant_idx" ON "billing_event" ("tenant_id");
 
 -- =============================================================================
 -- Extend tenant table with billing columns
