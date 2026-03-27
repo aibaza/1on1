@@ -58,7 +58,7 @@ export default async function CompanySettingsPage() {
 
   if (isEditorial) {
     return (
-      <div>
+      <div className="mx-auto max-w-3xl">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <h1 className="text-3xl font-extrabold text-foreground tracking-tight font-headline">
