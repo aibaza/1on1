@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [2.0.0] — 2026-03-27
 
 ### Added
 - Feature gating enforcement: `requireActivePlan`, `checkSeatLimit`, `requireFeature` server-side guards (`src/lib/billing/enforce.ts`)
