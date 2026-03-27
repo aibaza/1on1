@@ -16,6 +16,7 @@ import { tenants, users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getDesignPreference } from "@/lib/design-preference.server";
 import { isInTrial, isTrialExpired, trialDaysRemaining } from "@/lib/billing/subscription";
+import { isSuperAdmin } from "@/lib/auth/super-admin";
 
 export default async function DashboardLayout({
   children,
@@ -93,7 +94,7 @@ export default async function DashboardLayout({
                 <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:text-sm focus:font-bold">
                   Skip to content
                 </a>
-                <SideNav />
+                <SideNav isSuperAdmin={isSuperAdmin(session.user?.email)} />
                 <div className="md:ml-[var(--sidebar-width,256px)] transition-[margin] duration-300">
                   <EditorialTopBar avatarUrl={userAvatarUrl} />
                   <main id="main-content" className="pt-20 md:pt-24 pb-20 px-4 md:px-10">

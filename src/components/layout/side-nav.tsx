@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { isSuperAdmin } from "@/lib/auth/super-admin";
 import {
   LayoutDashboard,
   CalendarDays,
@@ -102,7 +101,7 @@ function NavLink({
   return link;
 }
 
-export function SideNav() {
+export function SideNav({ isSuperAdmin: isSuperAdminUser = false }: { isSuperAdmin?: boolean } = {}) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const user = session?.user;
@@ -237,7 +236,7 @@ export function SideNav() {
           {visibleBottom.map((item) => (
             <NavLink key={item.href} item={item} pathname={pathname} collapsed={collapsed} />
           ))}
-          {isSuperAdmin(user?.email) && (
+          {isSuperAdminUser && (
             collapsed ? (
               <Tooltip>
                 <TooltipTrigger asChild>
