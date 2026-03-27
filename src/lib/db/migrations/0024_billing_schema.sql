@@ -110,11 +110,31 @@ CREATE INDEX "billing_event_tenant_idx" ON "billing_event" ("tenant_id");
 -- =============================================================================
 -- Extend tenant table with billing columns
 -- =============================================================================
-ALTER TABLE "tenant" ADD COLUMN "paddle_customer_id" varchar(100);
-ALTER TABLE "tenant" ADD COLUMN "is_founder" boolean NOT NULL DEFAULT false;
-ALTER TABLE "tenant" ADD COLUMN "founder_discount_pct" integer NOT NULL DEFAULT 0;
-ALTER TABLE "tenant" ADD COLUMN "trial_ends_at" timestamptz;
-ALTER TABLE "tenant" ADD COLUMN "billing_email" varchar(255);
+DO $$ BEGIN
+  ALTER TABLE "tenant" ADD COLUMN "paddle_customer_id" varchar(100);
+EXCEPTION WHEN duplicate_column OR undefined_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "tenant" ADD COLUMN "is_founder" boolean NOT NULL DEFAULT false;
+EXCEPTION WHEN duplicate_column OR undefined_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "tenant" ADD COLUMN "founder_discount_pct" integer NOT NULL DEFAULT 0;
+EXCEPTION WHEN duplicate_column OR undefined_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "tenant" ADD COLUMN "trial_ends_at" timestamptz;
+EXCEPTION WHEN duplicate_column OR undefined_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "tenant" ADD COLUMN "billing_email" varchar(255);
+EXCEPTION WHEN duplicate_column OR undefined_object THEN NULL;
+END $$;
+
 
 -- =============================================================================
 -- Seed default plans
