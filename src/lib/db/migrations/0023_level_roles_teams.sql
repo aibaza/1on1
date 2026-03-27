@@ -86,11 +86,14 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_column THEN NULL;
 END $$;
 
-UPDATE "analytics_snapshot" AS a
-SET "manager_id" = t."manager_id"
-FROM "team" t
-WHERE a."team_id" = t."id"
-  AND a."manager_id" IS NULL;
+DO $$ BEGIN
+  UPDATE "analytics_snapshot" AS a
+  SET "manager_id" = t."manager_id"
+  FROM "team" t
+  WHERE a."team_id" = t."id"
+    AND a."manager_id" IS NULL;
+EXCEPTION WHEN undefined_table THEN NULL;
+END $$;
 
 DROP INDEX IF EXISTS "analytics_tenant_team_metric_idx";
 CREATE INDEX IF NOT EXISTS "analytics_tenant_manager_metric_idx"
