@@ -6,6 +6,7 @@ import { logAuditEvent } from "@/lib/audit/log";
 import { computeSessionScore } from "@/lib/utils/scoring";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
 import { runAIPipelineDirect } from "@/lib/ai/pipeline";
+import { requireFeature } from "@/lib/billing/enforce";
 import { scheduleSeriesNotifications } from "@/lib/notifications/scheduler";
 import {
   sessions,
@@ -215,20 +216,22 @@ export async function POST(
       }
     }
 
-    // Fire-and-forget: run AI pipeline directly
-    // waitUntil keeps the Vercel function alive until the pipeline completes
-    // without blocking the HTTP response
-    waitUntil(
-      runAIPipelineDirect({
-        sessionId: result.sessionId,
-        seriesId: result.seriesId,
-        tenantId: session.user.tenantId,
-        managerId: result.managerId,
-        reportId: result.reportId,
-      }).catch((err) =>
-        console.error("Failed to run AI pipeline:", err)
-      )
-    );
+    // Fire-and-forget: run AI pipeline only if tenant has AI access
+    // (Business plan, Founder, or active trial)
+    const aiDenied = await requireFeature(session.user.tenantId, "ai");
+    if (!aiDenied) {
+      waitUntil(
+        runAIPipelineDirect({
+          sessionId: result.sessionId,
+          seriesId: result.seriesId,
+          tenantId: session.user.tenantId,
+          managerId: result.managerId,
+          reportId: result.reportId,
+        }).catch((err) =>
+          console.error("Failed to run AI pipeline:", err)
+        )
+      );
+    }
 
     // Schedule notifications for the next session (non-blocking)
     scheduleSeriesNotifications({

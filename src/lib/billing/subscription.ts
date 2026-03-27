@@ -56,11 +56,14 @@ export function needsPayment(tenant: Tenant): boolean {
 
 /**
  * Check if a tenant can access a specific feature based on their plan.
+ * During trial, all features are unlocked regardless of plan.
  */
 export function canAccessFeature(
   tenant: Tenant,
   feature: string
 ): boolean {
+  if (tenant.isFounder) return true;
+  if (isInTrial(tenant)) return true;
   const plan = getEffectivePlan(tenant);
   const features = getPlanFeatures(plan);
   return feature in features

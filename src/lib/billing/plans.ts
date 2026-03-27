@@ -20,14 +20,14 @@ export const PLAN_FEATURES: Record<string, PlanFeatures> = {
     seats: 10,
     managers: 3,
     templates: 10,
-    ai: true,
+    ai: false,
     analytics: "full",
   },
   pro: {
     seats: 50,
     managers: -1,
     templates: -1,
-    ai: true,
+    ai: false,
     analytics: "full",
   },
   enterprise: {

@@ -202,8 +202,8 @@ describe("subscription", () => {
       expect(canAccessFeature(makeTenant({ plan: "free" }), "ai")).toBe(false);
     });
 
-    it("returns true for pro plan + ai", () => {
-      expect(canAccessFeature(makeTenant({ plan: "pro" }), "ai")).toBe(true);
+    it("returns false for pro plan + ai (AI only on business/enterprise)", () => {
+      expect(canAccessFeature(makeTenant({ plan: "pro" }), "ai")).toBe(false);
     });
 
     it("returns true for enterprise + branding", () => {

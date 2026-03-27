@@ -97,11 +97,9 @@ export async function registerAction(formData: FormData) {
     // Hash password with cost factor 12
     const passwordHash = await bcrypt.hash(data.password, 12);
 
-    // Determine trial settings based on selected plan
+    // All new tenants get a 7-day trial with all features unlocked
+    const trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     const isTrialPlan = data.plan === "pro" || data.plan === "business";
-    const trialEndsAt = isTrialPlan
-      ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
-      : null;
 
     // Create tenant + admin user in single transaction
     const result = await adminDb.transaction(async (tx) => {

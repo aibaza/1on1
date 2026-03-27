@@ -84,3 +84,5 @@ next-env.d.ts
 *.pem
 .env.sentry-build-plugin
 .claude/agent-memory/
+.env.dev
+.env.preview

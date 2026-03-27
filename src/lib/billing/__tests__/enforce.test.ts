@@ -77,7 +77,7 @@ describe("enforce decision logic: canAccessFeature", () => {
     ).toBe(false);
   });
 
-  it("returns true for starter plan AI", () => {
+  it("returns false for starter plan AI (AI only on business/enterprise)", () => {
     expect(
       canAccessFeature(
         {
@@ -88,10 +88,10 @@ describe("enforce decision logic: canAccessFeature", () => {
         },
         "ai"
       )
-    ).toBe(true);
+    ).toBe(false);
   });
 
-  it("returns true for pro plan AI", () => {
+  it("returns false for pro plan AI (AI only on business/enterprise)", () => {
     expect(
       canAccessFeature(
         {
@@ -102,7 +102,7 @@ describe("enforce decision logic: canAccessFeature", () => {
         },
         "ai"
       )
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it("returns false for free plan branding", () => {

@@ -21,7 +21,7 @@ describe("getPlanFeatures", () => {
     expect(f.seats).toBe(10);
     expect(f.managers).toBe(3);
     expect(f.templates).toBe(10);
-    expect(f.ai).toBe(true);
+    expect(f.ai).toBe(false);
     expect(f.analytics).toBe("full");
   });
 
@@ -30,7 +30,7 @@ describe("getPlanFeatures", () => {
     expect(f.seats).toBe(50);
     expect(f.managers).toBe(-1);
     expect(f.templates).toBe(-1);
-    expect(f.ai).toBe(true);
+    expect(f.ai).toBe(false);
     expect(f.analytics).toBe("full");
   });
 
@@ -59,8 +59,12 @@ describe("hasFeature", () => {
     expect(hasFeature("free", "ai")).toBe(false);
   });
 
-  it("returns true for boolean feature that is on (pro + ai)", () => {
-    expect(hasFeature("pro", "ai")).toBe(true);
+  it("returns false for boolean feature that is off (pro + ai)", () => {
+    expect(hasFeature("pro", "ai")).toBe(false);
+  });
+
+  it("returns true for boolean feature that is on (enterprise + ai)", () => {
+    expect(hasFeature("enterprise", "ai")).toBe(true);
   });
 
   it("returns true for numeric feature with positive value (free + seats)", () => {
