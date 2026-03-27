@@ -4,27 +4,39 @@
 -- =============================================================================
 -- New enums
 -- =============================================================================
-CREATE TYPE "subscription_status" AS ENUM (
-  'trialing', 'active', 'past_due', 'unpaid', 'canceled', 'paused'
-);
+DO $$ BEGIN
+  CREATE TYPE "subscription_status" AS ENUM (
+    'trialing', 'active', 'past_due', 'unpaid', 'canceled', 'paused'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TYPE "billing_cycle" AS ENUM ('monthly', 'yearly');
+DO $$ BEGIN
+  CREATE TYPE "billing_cycle" AS ENUM ('monthly', 'yearly');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TYPE "invoice_status" AS ENUM (
-  'draft', 'open', 'paid', 'past_due', 'canceled'
-);
+DO $$ BEGIN
+  CREATE TYPE "invoice_status" AS ENUM (
+    'draft', 'open', 'paid', 'past_due', 'canceled'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TYPE "billing_event_type" AS ENUM (
-  'subscription_created', 'subscription_updated', 'subscription_canceled',
-  'payment_succeeded', 'payment_failed',
-  'trial_started', 'trial_ended', 'trial_converted',
-  'plan_changed', 'refund_issued'
-);
+DO $$ BEGIN
+  CREATE TYPE "billing_event_type" AS ENUM (
+    'subscription_created', 'subscription_updated', 'subscription_canceled',
+    'payment_succeeded', 'payment_failed',
+    'trial_started', 'trial_ended', 'trial_converted',
+    'plan_changed', 'refund_issued'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- =============================================================================
 -- Plans table (not tenant-scoped — global catalog)
 -- =============================================================================
-CREATE TABLE "billing_plan" (
+CREATE TABLE IF NOT EXISTS "billing_plan" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "name" varchar(100) NOT NULL,
   "slug" varchar(50) NOT NULL UNIQUE,
@@ -44,7 +56,7 @@ CREATE TABLE "billing_plan" (
 -- =============================================================================
 -- Subscriptions table (one per tenant)
 -- =============================================================================
-CREATE TABLE "subscription" (
+CREATE TABLE IF NOT EXISTS "subscription" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "tenant_id" uuid NOT NULL REFERENCES "tenant"("id"),
   "paddle_subscription_id" varchar(100) UNIQUE,
@@ -71,7 +83,7 @@ CREATE INDEX "subscription_status_idx" ON "subscription" ("status");
 -- =============================================================================
 -- Invoices table
 -- =============================================================================
-CREATE TABLE "invoice" (
+CREATE TABLE IF NOT EXISTS "invoice" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "tenant_id" uuid NOT NULL REFERENCES "tenant"("id"),
   "subscription_id" uuid REFERENCES "subscription"("id"),
@@ -95,7 +107,7 @@ CREATE INDEX "invoice_status_idx" ON "invoice" ("status");
 -- =============================================================================
 -- Billing events table (webhook audit log)
 -- =============================================================================
-CREATE TABLE "billing_event" (
+CREATE TABLE IF NOT EXISTS "billing_event" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "tenant_id" uuid NOT NULL REFERENCES "tenant"("id"),
   "subscription_id" uuid REFERENCES "subscription"("id"),
