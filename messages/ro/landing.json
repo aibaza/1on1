@@ -1,0 +1,135 @@
+{
+  "landing": {
+    "nav": {
+      "features": "Funcționalități",
+      "methodology": "Metodologie",
+      "pricing": "Prețuri",
+      "signIn": "Autentificare",
+      "getStarted": "Începe acum"
+    },
+    "hero": {
+      "badge": "Abordarea editorială a managementului",
+      "title": "Transformă-ți",
+      "titleHighlight": "cultura 1:1",
+      "subtitle": "Nu mai amâna discuțiile importante. Oferă-le managerilor tăi sesiuni structurate, perspective generate de AI și urmărire eficientă a acțiunilor.",
+      "cta": "Începe perioada de probă",
+      "ctaSecondary": "Vezi prețurile"
+    },
+    "heroCard": {
+      "title": "Aliniere săptămânală",
+      "subtitle": "Jordan Doe - Inginerie",
+      "badge": "Live acum",
+      "outcomeLabel": "Rezultatul ultimei sesiuni",
+      "outcomeText": "Scalarea infrastructurii pentru creșterea din Q4. Status:",
+      "outcomeStatus": "Pe drumul cel bun",
+      "aiTitle": "Recomandare AI",
+      "aiText": "Jordan a menționat riscuri de burnout. Ia în considerare discutarea redistribuirii sarcinilor sau o zi liberă vinerea."
+    },
+    "features": {
+      "title": "Proiectat pentru conexiune umană",
+      "subtitle": "Am eliminat complexitatea uneltelor tradiționale de HR pentru a ne concentra pe ceea ce contează: calitatea conversației.",
+      "structured": {
+        "title": "Sesiuni structurate care chiar au loc",
+        "description": "Nu mai improviza agenda. Folosește șabloane create de experți pentru dezvoltare profesională, performanță sau check-in-uri de wellbeing. Remindere automate pentru toată echipa."
+      },
+      "ai": {
+        "title": "AI care face fiecare conversație să conteze",
+        "description": "AI-ul nostru contextual rezumă sesiunile, detectează tendințe de sentiment și sugerează prompturi de coaching bazate pe discuțiile anterioare.",
+        "sentimentLabel": "Analiză de sentiment"
+      },
+      "actionItems": {
+        "title": "Acțiuni care nu se pierd",
+        "description": "Vizibilitate partajată care asigură că fiecare promisiune dintr-un 1:1 este urmărită și rezolvată. Fără \"ce am stabilit de fapt?\""
+      },
+      "teamHealth": {
+        "title": "Sănătatea echipei dintr-o privire",
+        "description": "Hărți de angajament și frecvență a sesiunilor 1:1 care ajută liderii să identifice riscurile de plecare și managerii performanți."
+      },
+      "security": {
+        "title": "Construit pentru echipe reale",
+        "description": "Securitate de nivel enterprise cu controlul strict al accesului bazat pe roluri. Notele rămân private între manager și subordonat."
+      }
+    },
+    "howItWorks": {
+      "title": "Bucla succesului în 3 pași",
+      "step1": {
+        "title": "Configurare",
+        "description": "Invită echipa și alege din zeci de șabloane pentru a-ți defini stilul de sesiune. 1on1 se ocupă de logistică."
+      },
+      "step2": {
+        "title": "Desfășurare",
+        "description": "Poartă conversații productive cu note în timp real, acțiuni partajate și note private care mențin discuția pe drumul cel bun."
+      },
+      "step3": {
+        "title": "Perspective",
+        "description": "Analizează rezumatele sesiunilor și tendințele de angajament pe termen lung pentru îmbunătățirea continuă a culturii echipei."
+      }
+    },
+    "pricing": {
+      "title": "Creștere scalabilă pentru orice echipă",
+      "subtitle": "Prețuri simple și transparente. Fără costuri ascunse.",
+      "free": {
+        "name": "Gratuit",
+        "price": "0",
+        "period": "/lună",
+        "features": {
+          "users": "Până la 4 utilizatori",
+          "templates": "3 șabloane de start",
+          "actionItems": "Acțiuni partajate"
+        },
+        "cta": "Începe gratuit"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "2",
+        "period": "/utilizator /lună",
+        "badge": "Cel mai popular",
+        "features": {
+          "users": "Utilizatori nelimitați",
+          "templates": "Șabloane nelimitate",
+          "analytics": "Analize complete de angajament",
+          "engagementAnalytics": "Analize de angajament"
+        },
+        "cta": "Încearcă Pro"
+      },
+      "business": {
+        "name": "Business",
+        "price": "5",
+        "period": "/utilizator /lună",
+        "features": {
+          "everything": "Tot ce e în Pro",
+          "ai": "Pachet complet AI Insights",
+          "api": "Acces API",
+          "support": "Suport dedicat"
+        },
+        "cta": "Începe Business"
+      }
+    },
+    "faq": {
+      "title": "Întrebări frecvente",
+      "q1": {
+        "question": "Datele mele sunt securizate și private?",
+        "answer": "Da. 1on1 folosește criptare AES-256 conform standardelor industriei. Notele de sesiune sunt accesibile doar participanților, cu excepția cazurilor în care sunt distribuite explicit către HR/conducere."
+      },
+      "q2": {
+        "question": "Putem importa șabloanele existente?",
+        "answer": "Absolut. Editorul nostru îți permite să inserezi șabloanele curente în format markdown sau rich text și să le convertești instant în sesiuni 1on1 interactive."
+      },
+      "q3": {
+        "question": "Cum funcționează analiza de sentiment AI?",
+        "answer": "După finalizarea fiecărei sesiuni, AI-ul nostru analizează răspunsurile și notele pentru a genera rezumate, perspective de sentiment și recomandări acționabile. Învață din istoricul sesiunilor pentru a oferi sugestii de coaching din ce în ce mai relevante."
+      }
+    },
+    "finalCta": {
+      "title": "Pregătit să îmbunătățești sănătatea echipei?",
+      "subtitle": "Alătură-te liderilor care construiesc echipe mai performante și mai fericite prin conexiune structurată.",
+      "cta": "Începe gratuit — 7 zile, fără card"
+    },
+    "footer": {
+      "copyright": "2026 1on1 Editorial Management. Toate drepturile rezervate.",
+      "privacy": "Politica de confidențialitate",
+      "terms": "Termeni și condiții",
+      "security": "Securitate"
+    }
+  }
+}

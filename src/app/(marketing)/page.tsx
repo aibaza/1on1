@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import {
   Sparkles,
   Calendar,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 import { auth } from "@/lib/auth/config";
 import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileNav } from "./_components/mobile-nav";
 
 export const metadata: Metadata = {
@@ -29,6 +31,8 @@ export default async function LandingPage() {
     redirect("/overview");
   }
 
+  const t = await getTranslations("landing");
+
   return (
     <div className="bg-[var(--background)] font-[family-name:var(--font-inter)] text-foreground antialiased">
       {/* Navigation */}
@@ -42,33 +46,34 @@ export default async function LandingPage() {
               className="text-foreground font-semibold border-b-2 border-primary font-[family-name:var(--font-manrope)] text-sm tracking-tight transition-colors duration-200"
               href="#features"
             >
-              Features
+              {t("nav.features")}
             </a>
             <a
               className="text-muted-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:text-primary transition-colors duration-200"
               href="#methodology"
             >
-              Methodology
+              {t("nav.methodology")}
             </a>
             <a
               className="text-muted-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:text-primary transition-colors duration-200"
               href="#pricing"
             >
-              Pricing
+              {t("nav.pricing")}
             </a>
           </div>
           <div className="hidden md:flex items-center gap-4">
+            <ThemeToggle />
             <Link
               href="/login"
               className="text-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:opacity-80 transition-all"
             >
-              Sign In
+              {t("nav.signIn")}
             </Link>
             <Link
               href="/register"
               className="editorial-gradient text-white px-6 py-2.5 rounded-lg font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:scale-95 duration-150 shadow-md"
             >
-              Get Started
+              {t("nav.getStarted")}
             </Link>
           </div>
           <MobileNav />
@@ -81,29 +86,27 @@ export default async function LandingPage() {
           <div className="w-full md:w-1/2 text-left">
             <div className="inline-flex items-center px-3 py-1 rounded-full bg-[var(--editorial-tertiary-container)]/10 text-[var(--editorial-tertiary)] mb-6 font-[family-name:var(--font-inter)] text-sm font-medium">
               <Sparkles className="h-4 w-4 mr-2" />
-              The Editorial Approach to Management
+              {t("hero.badge")}
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold font-[family-name:var(--font-manrope)] text-foreground leading-[1.1] mb-6 tracking-tight">
-              Transform your <br />
-              <span className="text-primary italic">1:1 culture</span>
+              {t("hero.title")} <br />
+              <span className="text-primary italic">{t("hero.titleHighlight")}</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-xl mb-10 leading-relaxed">
-              Stop dreading the &ldquo;Check-in.&rdquo; Empower your managers
-              with curated structured sessions, AI-driven insights, and seamless
-              action tracking.
+              {t("hero.subtitle")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/register"
                 className="editorial-gradient text-white px-8 py-4 rounded-xl font-[family-name:var(--font-manrope)] font-bold text-lg shadow-xl shadow-primary/20 hover:scale-95 transition-transform duration-200 text-center"
               >
-                Start Free Trial
+                {t("hero.cta")}
               </Link>
               <a
                 href="#pricing"
                 className="bg-[var(--editorial-surface-container-high)] text-foreground px-8 py-4 rounded-xl font-[family-name:var(--font-manrope)] font-bold text-lg hover:bg-[var(--editorial-surface-container)] transition-colors text-center"
               >
-                See Pricing
+                {t("hero.ctaSecondary")}
               </a>
             </div>
           </div>
@@ -112,7 +115,7 @@ export default async function LandingPage() {
               <div className="absolute -top-10 -right-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
               <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-[var(--editorial-tertiary)]/5 rounded-full blur-3xl" />
               {/* Editorial Canvas Card */}
-              <div className="bg-card rounded-2xl p-6 shadow-2xl relative border border-border/10">
+              <div className="bg-card rounded-2xl p-6 shadow-2xl dark:shadow-none dark:ring-1 dark:ring-white/10 relative border border-border/10">
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-[var(--editorial-primary-container)] flex items-center justify-center text-white font-bold">
@@ -120,26 +123,26 @@ export default async function LandingPage() {
                     </div>
                     <div>
                       <div className="text-sm font-bold text-foreground">
-                        Weekly Alignment
+                        {t("heroCard.title")}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        Jordan Doe - Engineering
+                        {t("heroCard.subtitle")}
                       </div>
                     </div>
                   </div>
                   <div className="text-[var(--editorial-tertiary)] font-[family-name:var(--font-inter)] text-xs font-bold uppercase tracking-widest px-2 py-1 bg-[var(--editorial-tertiary-container)]/10 rounded">
-                    Live Now
+                    {t("heroCard.badge")}
                   </div>
                 </div>
                 <div className="space-y-4">
                   <div className="p-4 rounded-xl bg-[var(--editorial-surface-container-low)] border-l-4 border-primary">
                     <div className="text-xs font-bold text-primary uppercase mb-1">
-                      Last Meeting Outcome
+                      {t("heroCard.outcomeLabel")}
                     </div>
                     <div className="text-sm text-foreground font-medium">
-                      Scale infrastructure for Q4 surge. Status:{" "}
+                      {t("heroCard.outcomeText")}{" "}
                       <span className="text-[var(--editorial-tertiary)] font-bold">
-                        On Track
+                        {t("heroCard.outcomeStatus")}
                       </span>
                     </div>
                   </div>
@@ -148,11 +151,10 @@ export default async function LandingPage() {
                       <Lightbulb className="h-6 w-6 text-primary flex-shrink-0" />
                       <div>
                         <div className="text-sm font-bold text-foreground">
-                          AI Recommendation
+                          {t("heroCard.aiTitle")}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                          Jordan mentioned burnout risks. Consider discussing
-                          workload redistribution or taking a Friday off.
+                          {t("heroCard.aiText")}
                         </p>
                       </div>
                     </div>
@@ -169,52 +171,47 @@ export default async function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="mb-16 text-center max-w-3xl mx-auto">
             <h2 className="text-4xl font-[family-name:var(--font-manrope)] font-extrabold mb-6">
-              Designed for Human Connection
+              {t("features.title")}
             </h2>
             <p className="text-muted-foreground text-lg">
-              We&apos;ve stripped away the complexity of traditional HR tools to
-              focus on what matters: the quality of the conversation.
+              {t("features.subtitle")}
             </p>
           </div>
           {/* Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
             {/* Feature 1 */}
-            <div className="md:col-span-3 bg-card p-8 rounded-2xl shadow-sm border border-border/10 group hover:shadow-xl transition-all">
+            <div className="md:col-span-3 bg-card p-8 rounded-2xl shadow-sm dark:shadow-none border border-border/10 dark:border-white/5 group hover:shadow-xl dark:hover:border-white/10 transition-all">
               <div className="w-14 h-14 bg-[var(--editorial-primary-container)] rounded-xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform">
                 <Calendar className="h-7 w-7" />
               </div>
               <h3 className="text-2xl font-[family-name:var(--font-manrope)] font-bold mb-4">
-                Structured meetings that actually happen
+                {t("features.structured.title")}
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                Never scramble for an agenda again. Use expert-crafted templates
-                for career growth, performance, or wellness check-ins. Automated
-                reminders keep everyone sync&apos;d.
+                {t("features.structured.description")}
               </p>
               <div className="h-32 bg-[var(--editorial-surface-container)] rounded-lg relative overflow-hidden">
-                <div className="absolute top-4 left-4 right-4 h-6 bg-white rounded-md shadow-sm" />
-                <div className="absolute top-14 left-4 right-12 h-6 bg-white rounded-md shadow-sm" />
-                <div className="absolute top-24 left-4 right-8 h-6 bg-white rounded-md shadow-sm" />
+                <div className="absolute top-4 left-4 right-4 h-6 bg-white dark:bg-white/10 rounded-md shadow-sm dark:shadow-none" />
+                <div className="absolute top-14 left-4 right-12 h-6 bg-white dark:bg-white/10 rounded-md shadow-sm dark:shadow-none" />
+                <div className="absolute top-24 left-4 right-8 h-6 bg-white dark:bg-white/10 rounded-md shadow-sm dark:shadow-none" />
               </div>
             </div>
             {/* Feature 2 */}
-            <div className="md:col-span-3 bg-card p-8 rounded-2xl shadow-sm border border-border/10 group hover:shadow-xl transition-all">
+            <div className="md:col-span-3 bg-card p-8 rounded-2xl shadow-sm dark:shadow-none border border-border/10 dark:border-white/5 group hover:shadow-xl dark:hover:border-white/10 transition-all">
               <div className="w-14 h-14 bg-[var(--editorial-tertiary-container)] rounded-xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform">
                 <Brain className="h-7 w-7" />
               </div>
               <h3 className="text-2xl font-[family-name:var(--font-manrope)] font-bold mb-4">
-                AI that makes every conversation count
+                {t("features.ai.title")}
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                Our context-aware AI summarizes meetings, detects sentiment
-                trends, and suggests coaching prompts based on historical
-                discussion points.
+                {t("features.ai.description")}
               </p>
               <div className="p-4 bg-[var(--editorial-tertiary-container)]/10 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-2 h-2 rounded-full bg-[var(--editorial-tertiary)]" />
                   <div className="text-[10px] font-bold text-[var(--editorial-tertiary)] uppercase">
-                    Sentiment Analysis
+                    {t("features.ai.sentimentLabel")}
                   </div>
                 </div>
                 <div className="w-full bg-[var(--editorial-tertiary)]/20 h-2 rounded-full overflow-hidden">
@@ -226,34 +223,30 @@ export default async function LandingPage() {
             <div className="md:col-span-2 bg-[var(--editorial-surface-container-low)] p-8 rounded-2xl group hover:bg-card transition-colors">
               <CheckCircle className="h-10 w-10 text-primary mb-4" />
               <h3 className="text-xl font-[family-name:var(--font-manrope)] font-bold mb-2">
-                Action items that don&apos;t disappear
+                {t("features.actionItems.title")}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Shared visibility ensures that every promise made in a 1:1 is
-                tracked and resolved. No more &ldquo;what did we agree
-                on?&rdquo;
+                {t("features.actionItems.description")}
               </p>
             </div>
             {/* Feature 4 */}
             <div className="md:col-span-2 bg-[var(--editorial-surface-container-low)] p-8 rounded-2xl group hover:bg-card transition-colors">
               <BarChart3 className="h-10 w-10 text-[var(--editorial-tertiary)] mb-4" />
               <h3 className="text-xl font-[family-name:var(--font-manrope)] font-bold mb-2">
-                Team health at a glance
+                {t("features.teamHealth.title")}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Heatmaps of engagement and 1:1 frequency help leaders spot
-                flight risks and high-performing managers early.
+                {t("features.teamHealth.description")}
               </p>
             </div>
             {/* Feature 5 */}
             <div className="md:col-span-2 bg-[var(--editorial-surface-container-low)] p-8 rounded-2xl group hover:bg-card transition-colors">
               <Shield className="h-10 w-10 text-primary mb-4" />
               <h3 className="text-xl font-[family-name:var(--font-manrope)] font-bold mb-2">
-                Built for real teams
+                {t("features.security.title")}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Enterprise-grade security with strict role-based access controls.
-                Notes stay private between manager and report.
+                {t("features.security.description")}
               </p>
             </div>
           </div>
@@ -267,46 +260,43 @@ export default async function LandingPage() {
       >
         <div className="max-w-7xl mx-auto">
           <h2 className="text-center text-4xl font-[family-name:var(--font-manrope)] font-extrabold mb-20">
-            The 3-Step Success Loop
+            {t("howItWorks.title")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
             {/* Step 1 */}
             <div className="relative z-10 text-center md:text-left">
-              <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl mb-6 mx-auto md:mx-0">
+              <div className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-xl mb-6 mx-auto md:mx-0">
                 1
               </div>
               <h3 className="text-2xl font-[family-name:var(--font-manrope)] font-bold mb-4">
-                Setup
+                {t("howItWorks.step1.title")}
               </h3>
               <p className="text-muted-foreground leading-relaxed">
-                Invite your team and choose from dozens of templates to define
-                your meeting style. 1on1 handles the logistics.
+                {t("howItWorks.step1.description")}
               </p>
             </div>
             {/* Step 2 */}
             <div className="relative z-10 text-center md:text-left">
-              <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl mb-6 mx-auto md:mx-0">
+              <div className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-xl mb-6 mx-auto md:mx-0">
                 2
               </div>
               <h3 className="text-2xl font-[family-name:var(--font-manrope)] font-bold mb-4">
-                Conduct
+                {t("howItWorks.step2.title")}
               </h3>
               <p className="text-muted-foreground leading-relaxed">
-                Have meaningful conversations with real-time notes, shared
-                action items, and private notes to keep discussions on track.
+                {t("howItWorks.step2.description")}
               </p>
             </div>
             {/* Step 3 */}
             <div className="relative z-10 text-center md:text-left">
-              <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl mb-6 mx-auto md:mx-0">
+              <div className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-xl mb-6 mx-auto md:mx-0">
                 3
               </div>
               <h3 className="text-2xl font-[family-name:var(--font-manrope)] font-bold mb-4">
-                Insights
+                {t("howItWorks.step3.title")}
               </h3>
               <p className="text-muted-foreground leading-relaxed">
-                Review session summaries and long-term engagement trends to
-                drive continuous improvement for your team culture.
+                {t("howItWorks.step3.description")}
               </p>
             </div>
           </div>
@@ -318,10 +308,10 @@ export default async function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-[family-name:var(--font-manrope)] font-extrabold mb-4">
-              Scalable Growth for Every Team
+              {t("pricing.title")}
             </h2>
             <p className="text-muted-foreground">
-              Simple, transparent pricing. No hidden fees.
+              {t("pricing.subtitle")}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -329,111 +319,111 @@ export default async function LandingPage() {
             <div className="bg-[var(--editorial-surface-container-low)] p-8 rounded-2xl flex flex-col h-full border border-border/5">
               <div className="mb-8">
                 <h3 className="text-lg font-bold font-[family-name:var(--font-manrope)] mb-2">
-                  Free
+                  {t("pricing.free.name")}
                 </h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold">&euro;0</span>
-                  <span className="text-muted-foreground text-sm">/month</span>
+                  <span className="text-4xl font-extrabold">&euro;{t("pricing.free.price")}</span>
+                  <span className="text-muted-foreground text-sm">{t("pricing.free.period")}</span>
                 </div>
               </div>
               <ul className="space-y-4 mb-10 flex-grow">
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  Up to 4 users
+                  {t("pricing.free.features.users")}
                 </li>
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  3 starter templates
+                  {t("pricing.free.features.templates")}
                 </li>
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  Shared action items
+                  {t("pricing.free.features.actionItems")}
                 </li>
               </ul>
               <Link
                 href="/register"
                 className="w-full py-3 rounded-lg border-2 border-[var(--editorial-outline)] font-bold hover:bg-[var(--editorial-surface-container-high)] transition-colors text-center block"
               >
-                Start for Free
+                {t("pricing.free.cta")}
               </Link>
             </div>
             {/* Tier 2: Pro */}
-            <div className="bg-card p-8 rounded-2xl flex flex-col h-full border-2 border-primary shadow-xl relative scale-100 md:scale-105 z-10">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-full">
-                Most Popular
+            <div className="bg-card p-8 rounded-2xl flex flex-col h-full border-2 border-primary shadow-xl dark:shadow-none dark:ring-1 dark:ring-primary/30 relative scale-100 md:scale-105 z-10">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-full">
+                {t("pricing.pro.badge")}
               </div>
               <div className="mb-8">
                 <h3 className="text-lg font-bold font-[family-name:var(--font-manrope)] mb-2">
-                  Pro
+                  {t("pricing.pro.name")}
                 </h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold">&euro;2</span>
+                  <span className="text-4xl font-extrabold">&euro;{t("pricing.pro.price")}</span>
                   <span className="text-muted-foreground text-sm">
-                    /user /month
+                    {t("pricing.pro.period")}
                   </span>
                 </div>
               </div>
               <ul className="space-y-4 mb-10 flex-grow">
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  Unlimited users
+                  {t("pricing.pro.features.users")}
                 </li>
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  Unlimited templates
+                  {t("pricing.pro.features.templates")}
                 </li>
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  Full engagement analytics
+                  {t("pricing.pro.features.analytics")}
                 </li>
                 <li className="flex items-center gap-3 text-sm font-bold text-primary">
                   <Check className="h-5 w-5 flex-shrink-0" />
-                  Engagement Analytics
+                  {t("pricing.pro.features.engagementAnalytics")}
                 </li>
               </ul>
               <Link
                 href="/register?plan=pro"
                 className="w-full py-3 rounded-lg editorial-gradient text-white font-bold shadow-lg shadow-primary/20 text-center block"
               >
-                Try Pro Trial
+                {t("pricing.pro.cta")}
               </Link>
             </div>
             {/* Tier 3: Business */}
             <div className="bg-[var(--editorial-surface-container-low)] p-8 rounded-2xl flex flex-col h-full border border-border/5">
               <div className="mb-8">
                 <h3 className="text-lg font-bold font-[family-name:var(--font-manrope)] mb-2">
-                  Business
+                  {t("pricing.business.name")}
                 </h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold">&euro;5</span>
+                  <span className="text-4xl font-extrabold">&euro;{t("pricing.business.price")}</span>
                   <span className="text-muted-foreground text-sm">
-                    /user /month
+                    {t("pricing.business.period")}
                   </span>
                 </div>
               </div>
               <ul className="space-y-4 mb-10 flex-grow">
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  Everything in Pro
+                  {t("pricing.business.features.everything")}
                 </li>
                 <li className="flex items-center gap-3 text-sm font-bold text-[var(--editorial-tertiary)]">
                   <Sparkles className="h-5 w-5 flex-shrink-0" />
-                  Full AI Insights Package
+                  {t("pricing.business.features.ai")}
                 </li>
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  API access
+                  {t("pricing.business.features.api")}
                 </li>
                 <li className="flex items-center gap-3 text-sm text-foreground">
                   <Check className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  Dedicated Support
+                  {t("pricing.business.features.support")}
                 </li>
               </ul>
               <Link
                 href="/register?plan=business"
                 className="w-full py-3 rounded-lg border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-colors text-center block"
               >
-                Start Business Trial
+                {t("pricing.business.cta")}
               </Link>
             </div>
           </div>
@@ -444,38 +434,31 @@ export default async function LandingPage() {
       <section className="py-24 px-8 bg-[var(--editorial-surface-container-low)]">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-[family-name:var(--font-manrope)] font-extrabold mb-12 text-center">
-            Frequently Asked Questions
+            {t("faq.title")}
           </h2>
           <div className="space-y-6">
-            <div className="bg-card p-6 rounded-xl">
+            <div className="bg-card p-6 rounded-xl shadow-sm dark:shadow-none border border-transparent dark:border-white/5">
               <h4 className="font-bold text-foreground mb-2">
-                Is my data secure and private?
+                {t("faq.q1.question")}
               </h4>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Yes. 1on1 uses industry-standard AES-256 encryption. Meeting
-                notes are restricted only to the participants unless explicitly
-                shared with HR/Leadership.
+                {t("faq.q1.answer")}
               </p>
             </div>
-            <div className="bg-card p-6 rounded-xl">
+            <div className="bg-card p-6 rounded-xl shadow-sm dark:shadow-none border border-transparent dark:border-white/5">
               <h4 className="font-bold text-foreground mb-2">
-                Can we import our existing templates?
+                {t("faq.q2.question")}
               </h4>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Absolutely. Our editor allows you to paste your current markdown
-                or rich text templates and convert them into interactive 1on1
-                sessions instantly.
+                {t("faq.q2.answer")}
               </p>
             </div>
-            <div className="bg-card p-6 rounded-xl">
+            <div className="bg-card p-6 rounded-xl shadow-sm dark:shadow-none border border-transparent dark:border-white/5">
               <h4 className="font-bold text-foreground mb-2">
-                How does the AI sentiment analysis work?
+                {t("faq.q3.question")}
               </h4>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                After each session is completed, our AI analyzes the responses
-                and notes to generate summaries, sentiment insights, and
-                actionable recommendations. It learns from session history to
-                provide increasingly relevant coaching suggestions.
+                {t("faq.q3.answer")}
               </p>
             </div>
           </div>
@@ -496,18 +479,17 @@ export default async function LandingPage() {
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-[family-name:var(--font-manrope)] font-extrabold text-white mb-8">
-            Ready to improve your team health?
+            {t("finalCta.title")}
           </h2>
           <p className="text-[var(--editorial-primary-fixed-dim)] text-xl mb-12 max-w-2xl mx-auto">
-            Join leaders who are building higher-performing, happier teams
-            through structured connection.
+            {t("finalCta.subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6">
             <Link
               href="/register"
               className="bg-white text-primary px-10 py-5 rounded-xl font-[family-name:var(--font-manrope)] font-extrabold text-xl shadow-2xl hover:scale-105 transition-all text-center"
             >
-              Start Free Trial — 7 days, no card required
+              {t("finalCta.cta")}
             </Link>
           </div>
         </div>
@@ -519,27 +501,27 @@ export default async function LandingPage() {
           <div className="flex flex-col gap-4 items-center md:items-start">
             <Logo className="h-6" />
             <p className="font-[family-name:var(--font-inter)] text-xs text-slate-500 dark:text-slate-400">
-              &copy; 2026 1on1 Editorial Management. All rights reserved.
+              &copy; {t("footer.copyright")}
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             <a
-              className="font-[family-name:var(--font-inter)] text-xs text-slate-500 hover:text-primary transition-all hover:opacity-80"
+              className="font-[family-name:var(--font-inter)] text-xs text-slate-500 dark:text-slate-400 hover:text-primary transition-all hover:opacity-80"
               href="#"
             >
-              Privacy Policy
+              {t("footer.privacy")}
             </a>
             <a
-              className="font-[family-name:var(--font-inter)] text-xs text-slate-500 hover:text-primary transition-all hover:opacity-80"
+              className="font-[family-name:var(--font-inter)] text-xs text-slate-500 dark:text-slate-400 hover:text-primary transition-all hover:opacity-80"
               href="#"
             >
-              Terms of Service
+              {t("footer.terms")}
             </a>
             <a
-              className="font-[family-name:var(--font-inter)] text-xs text-slate-500 hover:text-primary transition-all hover:opacity-80"
+              className="font-[family-name:var(--font-inter)] text-xs text-slate-500 dark:text-slate-400 hover:text-primary transition-all hover:opacity-80"
               href="#"
             >
-              Security
+              {t("footer.security")}
             </a>
           </div>
           <div className="flex gap-4">
