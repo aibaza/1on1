@@ -81,8 +81,11 @@ export function CorrectionHistoryPanel({
   const [historyOpen, setHistoryOpen] = useState(hasCorrectionHistory);
   const [revertState, setRevertState] = useState<RevertState | null>(null);
 
-  // Ensure the panel opens if corrections arrive after initial render (streaming hydration)
+  // Ensure the panel opens if corrections arrive after initial render (streaming hydration).
+  // This syncs local UI state from a prop-derived value — cannot be replaced with useMemo
+  // because `historyOpen` is independently togglable by the user via the collapsible trigger.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- safe: one-way sync from prop change, not cascading from own render
     if (hasCorrectionHistory) setHistoryOpen(true);
   }, [hasCorrectionHistory]);
 

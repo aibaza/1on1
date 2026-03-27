@@ -64,6 +64,7 @@ export function EditorialDashboard({
   const t = useTranslations("dashboard");
   const ts = useTranslations("sessions");
   const format = useFormatter();
+  const [now] = useState(() => Date.now());
 
   const firstName = user.name?.split(" ")[0] ?? "there";
   const totalOverdue = overdue.reduce((sum, g) => sum + g.items.length, 0);
@@ -121,12 +122,12 @@ export function EditorialDashboard({
             : nextSession.report;
           const personName = `${person.firstName} ${person.lastName}`;
 
-          const isOverdue = nextSession.nextSessionAt && new Date(nextSession.nextSessionAt).getTime() < Date.now();
+          const isOverdue = nextSession.nextSessionAt && new Date(nextSession.nextSessionAt).getTime() < now;
           const nextTime = nextSession.preferredTime?.slice(0, 5) ?? null;
           const nextDateRel = nextSession.nextSessionAt
             ? (() => {
                 const date = new Date(nextSession.nextSessionAt!);
-                const diffMs = date.getTime() - Date.now();
+                const diffMs = date.getTime() - now;
                 const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
                 if (diffDays === 0) return ts("series.today");
                 if (diffDays === 1) return ts("series.tomorrow");
@@ -441,7 +442,7 @@ export function EditorialDashboard({
                 let timeLabel = t("editorial.onTrack");
 
                 if (series.nextSessionAt) {
-                  const diff = new Date(series.nextSessionAt).getTime() - Date.now();
+                  const diff = new Date(series.nextSessionAt).getTime() - now;
                   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                   if (days < 0) {
                     dotColor = "var(--destructive)";
@@ -458,7 +459,7 @@ export function EditorialDashboard({
                   }
                 }
 
-                const isOverdue = series.nextSessionAt && new Date(series.nextSessionAt).getTime() < Date.now();
+                const isOverdue = series.nextSessionAt && new Date(series.nextSessionAt).getTime() < now;
                 return (
                   <div key={series.id} className="flex items-center justify-between p-2 group rounded-lg hover:bg-muted/50 transition-colors">
                     <div className="flex items-center space-x-3">

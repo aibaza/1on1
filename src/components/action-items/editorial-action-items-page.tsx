@@ -84,6 +84,7 @@ export function EditorialActionItemsPage({
 }: EditorialActionItemsPageProps) {
   const t = useTranslations("actionItems");
   const format = useFormatter();
+  const [now] = useState(() => Date.now());
   const queryClient = useQueryClient();
   const [editItem, setEditItem] = useState<ActionItemRow | null>(null);
 
@@ -298,7 +299,7 @@ export function EditorialActionItemsPage({
     if (!dueDate) return null;
     if (itemOverdue) {
       const daysOverdue = Math.floor(
-        (Date.now() - new Date(dueDate).getTime()) / 86400000
+        (now - new Date(dueDate).getTime()) / 86400000
       );
       return t("dueAgo", { count: daysOverdue });
     }

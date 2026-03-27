@@ -22,6 +22,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Fixed stale section-label tests (expected `uppercase`/`tracking-widest` to be absent, but component has them)
 - Fixed CI: added migrations 0021-0023 to Drizzle journal (were missing, causing seed to fail on `level` column)
 - Fixed E2E: password field selector changed from `getByLabel(/password/i)` to `input[name="password"]` (strict mode violation with "Show password" button)
+- Fixed all 18 pre-existing lint errors: Date.now() purity, setState-in-effect, require imports, explicit any, prefer-const
+- Lint restored as CI gate (0 errors, warnings only)
 
 ### Changed
 - Renamed "role" (admin/manager/member) to "level" across entire codebase — DB schema, auth system (JWT/session), RBAC functions, API routes (~55 files), UI components (~30 files), i18n translations (EN/RO)

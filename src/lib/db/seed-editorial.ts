@@ -557,10 +557,23 @@ const EXPLORE_TOPICS = [
 // Seed functions
 // =============================================================================
 
+interface SeedUser {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  level: string;
+  jobTitle: string;
+  teamName?: string;
+  managerId: string | null;
+  isActive: boolean;
+  isPending?: boolean;
+}
+
 async function seedUsers() {
   console.log('  Seeding editorial users...');
 
-  const users = [
+  const users: SeedUser[] = [
     // Managers (insert first due to FK constraints)
     {
       id: CIPRIAN_ID, email: 'ciprian@acme.example.com',
@@ -667,12 +680,12 @@ async function seedUsers() {
   ];
 
   for (const u of users) {
-    const isPending = (u as any).isPending;
+    const isPending = u.isPending;
     await sql`
       INSERT INTO "user" (id, tenant_id, email, first_name, last_name, level, job_title, team_name, password_hash, manager_id, is_active, invited_at, notification_preferences, language)
       VALUES (
         ${u.id}, ${ACME_TENANT_ID}, ${u.email}, ${u.firstName}, ${u.lastName},
-        ${u.level}, ${u.jobTitle}, ${(u as any).teamName ?? null},
+        ${u.level}, ${u.jobTitle}, ${u.teamName ?? null},
         ${isPending ? null : TEST_PASSWORD_HASH},
         ${u.managerId},
         ${u.isActive},
@@ -698,7 +711,7 @@ async function seedUsers() {
 async function seedSeriesAndSessions() {
   console.log('  Seeding meeting series and sessions...');
 
-  let actionIdx = 1;
+  const actionIdx = 1;
   let talkingPointIdx = 1;
   let snapshotIdx = 1;
 

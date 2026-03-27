@@ -12,12 +12,16 @@ const adminUrl = process.env.DATABASE_ADMIN_URL || dbUrl;
 function buildDb(connectionString: string) {
   if (isNeon(connectionString)) {
     // Production / Neon cloud: WebSocket pool (supports transactions + SET LOCAL)
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- conditional require: Neon vs pg driver chosen at runtime based on DATABASE_URL
     const { Pool } = require("@neondatabase/serverless") as typeof import("@neondatabase/serverless");
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { drizzle } = require("drizzle-orm/neon-serverless") as typeof import("drizzle-orm/neon-serverless");
     return drizzle(new Pool({ connectionString }), { schema });
   }
   // Local dev: standard pg Pool (TCP, no WebSocket proxy required)
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- conditional require: Neon vs pg driver chosen at runtime based on DATABASE_URL
   const { Pool } = require("pg") as typeof import("pg");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { drizzle } = require("drizzle-orm/node-postgres") as typeof import("drizzle-orm/node-postgres");
   return drizzle(new Pool({ connectionString }), { schema });
 }

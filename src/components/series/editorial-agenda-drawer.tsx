@@ -54,6 +54,7 @@ export function EditorialAgendaDrawer({
 }: EditorialAgendaDrawerProps) {
   const t = useTranslations("sessions");
   const format = useFormatter();
+  const [now] = useState(() => Date.now());
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
   const [newContent, setNewContent] = useState("");
@@ -133,7 +134,7 @@ export function EditorialAgendaDrawer({
   }
 
   // Format
-  const isOverdue = sessionDate && new Date(sessionDate).getTime() < Date.now();
+  const isOverdue = sessionDate && new Date(sessionDate).getTime() < now;
   const formattedDate = sessionDate
     ? format.dateTime(new Date(sessionDate), { weekday: "long", month: "short", day: "numeric" })
     : "";
@@ -144,7 +145,7 @@ export function EditorialAgendaDrawer({
   const nextDateText = (() => {
     if (!sessionDate) return t("series.notScheduled");
     const date = new Date(sessionDate);
-    const diffMs = date.getTime() - Date.now();
+    const diffMs = date.getTime() - now;
     const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
     let rel: string;
     if (diffDays === 0) rel = t("series.today");

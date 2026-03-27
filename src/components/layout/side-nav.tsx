@@ -129,8 +129,10 @@ export function SideNav() {
     });
   }, [startTransition]);
 
-  // Close mobile drawer on route change
+  // Close mobile drawer on route change — setState responding to external navigation
+  // event is the intended pattern here; no way to derive this from props alone.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- safe: reacting to route change, not cascading from own render
     setMobileOpen(false);
   }, [pathname]);
 

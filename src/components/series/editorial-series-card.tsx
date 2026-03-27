@@ -101,6 +101,7 @@ function formatSchedule(
 export function EditorialSeriesCard({ series, currentUserId, showManagerName }: EditorialSeriesCardProps) {
   const t = useTranslations("sessions");
   const format = useFormatter();
+  const [now] = useState(() => Date.now());
   const { showApiError } = useApiErrorToast();
   const router = useRouter();
   const [agendaOpen, setAgendaOpen] = useState(false);
@@ -116,7 +117,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
       ? series.assessmentHistory[series.assessmentHistory.length - 1]
       : null;
   const isInProgress = series.latestSession?.status === "in_progress";
-  const isOverdue = series.nextSessionAt && new Date(series.nextSessionAt).getTime() < Date.now();
+  const isOverdue = series.nextSessionAt && new Date(series.nextSessionAt).getTime() < now;
   const sentiment = series.latestSummary?.sentiment ?? "";
   const sentimentClass = sentimentBorderClass[sentiment] ?? "";
 

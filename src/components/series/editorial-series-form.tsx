@@ -118,8 +118,8 @@ export function EditorialSeriesForm({ userGroups, templates, editData }: Editori
   const [selectedTemplate, setSelectedTemplate] = useState<string>(editData?.defaultTemplateId ?? "");
   const [calendarOpen, setCalendarOpen] = useState(false);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const form = useForm<FormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- zodResolver with conditional schema produces incompatible Resolver type
     resolver: zodResolver(isEdit ? editFormSchema : createFormSchema) as any,
     defaultValues: {
       reportId: editData?.reportId ?? "",
