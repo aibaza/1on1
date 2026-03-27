@@ -16,7 +16,7 @@ import {
   billingEventTypeEnum,
 } from "./enums";
 
-export const plans = pgTable("plan", {
+export const plans = pgTable("billing_plan", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 100 }).notNull(),
   slug: varchar("slug", { length: 50 }).notNull().unique(),

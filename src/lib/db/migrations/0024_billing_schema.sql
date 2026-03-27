@@ -24,7 +24,7 @@ CREATE TYPE "billing_event_type" AS ENUM (
 -- =============================================================================
 -- Plans table (not tenant-scoped — global catalog)
 -- =============================================================================
-CREATE TABLE "plan" (
+CREATE TABLE "billing_plan" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "name" varchar(100) NOT NULL,
   "slug" varchar(50) NOT NULL UNIQUE,
@@ -49,7 +49,7 @@ CREATE TABLE "subscription" (
   "tenant_id" uuid NOT NULL REFERENCES "tenant"("id"),
   "paddle_subscription_id" varchar(100) UNIQUE,
   "paddle_customer_id" varchar(100),
-  "plan_id" uuid REFERENCES "plan"("id"),
+  "plan_id" uuid REFERENCES "billing_plan"("id"),
   "status" "subscription_status" NOT NULL DEFAULT 'trialing',
   "billing_cycle" "billing_cycle",
   "current_period_start" timestamptz,
@@ -119,7 +119,7 @@ ALTER TABLE "tenant" ADD COLUMN "billing_email" varchar(255);
 -- =============================================================================
 -- Seed default plans
 -- =============================================================================
-INSERT INTO "plan" ("slug", "name", "price_monthly_cents", "price_yearly_cents", "currency", "sort_order", "features")
+INSERT INTO "billing_plan" ("slug", "name", "price_monthly_cents", "price_yearly_cents", "currency", "sort_order", "features")
 VALUES
   ('free', 'Free', 0, 0, 'eur', 0,
    '{"maxUsers": 2, "maxSeries": 2, "aiNudges": false, "analytics": "basic", "templates": "default", "support": "community"}'::jsonb),
