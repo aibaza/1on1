@@ -15,6 +15,7 @@
         "@dnd-kit/utilities": "^3.2.2",
         "@hookform/resolvers": "^5.2.2",
         "@neondatabase/serverless": "^0.10.4",
+        "@paddle/paddle-js": "^1.6.2",
         "@paddle/paddle-node-sdk": "^3.6.1",
         "@react-email/components": "^1.0.8",
         "@react-email/render": "^2.0.4",
@@ -563,6 +564,8 @@
     "@opentelemetry/semantic-conventions": ["@opentelemetry/semantic-conventions@1.40.0", "", {}, "sha512-cifvXDhcqMwwTlTK04GBNeIe7yyo28Mfby85QXFe1Yk8nmi36Ab/5UQwptOx84SsoGNRg+EVSjwzfSZMy6pmlw=="],
 
     "@opentelemetry/sql-common": ["@opentelemetry/sql-common@0.41.2", "", { "dependencies": { "@opentelemetry/core": "^2.0.0" }, "peerDependencies": { "@opentelemetry/api": "^1.1.0" } }, "sha512-4mhWm3Z8z+i508zQJ7r6Xi7y4mmoJpdvH0fZPFRkWrdp5fq7hhZ2HhYokEOLkfqSMgPR4Z9EyB3DBkbKGOqZiQ=="],
+
+    "@paddle/paddle-js": ["@paddle/paddle-js@1.6.2", "", {}, "sha512-nx1NXCzwWUWjf0iaRDiXZlfWgFjNZ6996RFcTDk0G0ggzrh514Zsc6jGTPOUGdLB1sYJXVQiKKoNLoKoXhH+sA=="],
 
     "@paddle/paddle-node-sdk": ["@paddle/paddle-node-sdk@3.6.1", "", {}, "sha512-6lDUj27MSciKkoL7rX8Y5cwtJCFCUNZmQHT2DwGnqlMJxY6uhlUYW5AftsLEj12HvAZG+sdcbfA4BY1Rh1Q5ZQ=="],
 

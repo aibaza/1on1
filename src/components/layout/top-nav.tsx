@@ -14,6 +14,7 @@ import {
   Building2,
   ScrollText,
   Settings,
+  CreditCard,
   Menu,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -61,6 +62,7 @@ function getSettingsNavItems(t: ReturnType<typeof useTranslations<"navigation">>
     { label: t("people"), href: "/people", icon: Users, matchAlso: ["/teams"], minRole: "manager" },
     { label: t("templates"), href: "/templates", icon: FileText, minRole: "manager" },
     { label: t("company"), href: "/settings/company", icon: Building2, minRole: "admin" },
+    { label: t("billing"), href: "/settings/billing", icon: CreditCard, minRole: "admin" },
     { label: t("auditLog"), href: "/settings/audit-log", icon: ScrollText, minRole: "admin" },
   ];
 }

@@ -1,5 +1,12 @@
 {
   "billing": {
+    "trial": {
+      "daysLeft": "{days} days left in your trial",
+      "lastDay": "Last day of your trial",
+      "upgradeNow": "Upgrade Now",
+      "expired": "Your trial has ended",
+      "expiredDescription": "Upgrade to continue using Pro features."
+    },
     "pricing": {
       "title": "Simple, transparent pricing",
       "subtitle": "Start free, upgrade when you're ready. No hidden fees.",
@@ -53,6 +60,56 @@
         "a3": "You're charged for each active user in your organization. Deactivated users don't count.",
         "q4": "Do you offer discounts for non-profits?",
         "a4": "Yes! Contact us for special non-profit pricing."
+      }
+    },
+    "settings": {
+      "title": "Billing & Subscription",
+      "description": "Manage your plan, seats, and invoices",
+      "currentPlan": "Current Plan",
+      "founder": "Founder",
+      "founderDiscount": "{percent}% discount",
+      "seats": "Seats",
+      "seatsUsed": "{used} of {limit} seats used",
+      "seatsUnlimited": "{used} seats (unlimited)",
+      "billingCycle": "Billing cycle",
+      "nextRenewal": "Next renewal",
+      "changePlan": "Change Plan",
+      "manageSubscription": "Manage Subscription",
+      "invoices": "Invoices",
+      "noInvoices": "No invoices yet",
+      "date": "Date",
+      "amount": "Amount",
+      "status": "Status",
+      "download": "Download",
+      "paid": "Paid",
+      "open": "Open",
+      "pastDue": "Past Due",
+      "canceled": "Canceled",
+      "free": "Free",
+      "active": "Active",
+      "trialing": "Trial",
+      "paused": "Paused",
+      "unpaid": "Unpaid",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "perMonth": "/month",
+      "perYear": "/year",
+      "noPlan": "No active subscription",
+      "upgradeCta": "Upgrade to unlock more features",
+      "canceledInfo": "Your subscription has been canceled",
+      "checkout": {
+        "title": "Choose your plan",
+        "seats": "Number of seats",
+        "total": "Total",
+        "subscribe": "Subscribe",
+        "monthlyLabel": "Monthly",
+        "yearlyLabel": "Yearly"
+      },
+      "planSelector": {
+        "title": "Choose a Plan",
+        "current": "Current",
+        "select": "Select",
+        "selected": "Selected"
       }
     }
   }

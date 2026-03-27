@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { LayoutDashboard, Users, Building2, ScrollText, FileText, CalendarDays, ListChecks, History, BarChart3, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Building2, ScrollText, FileText, CalendarDays, ListChecks, History, BarChart3, LogOut, CreditCard } from "lucide-react";
 import { logoutAction } from "@/lib/auth/actions";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/logo";
@@ -67,6 +67,12 @@ function getSettingsNavItems(t: ReturnType<typeof useTranslations<"navigation">>
       label: t("company"),
       href: "/settings/company",
       icon: Building2,
+      adminOnly: true,
+    },
+    {
+      label: t("billing"),
+      href: "/settings/billing",
+      icon: CreditCard,
       adminOnly: true,
     },
     {

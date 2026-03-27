@@ -1,5 +1,12 @@
 {
   "billing": {
+    "trial": {
+      "daysLeft": "{days} zile rămase din perioada de probă",
+      "lastDay": "Ultima zi din perioada de probă",
+      "upgradeNow": "Fă upgrade acum",
+      "expired": "Perioada de probă s-a încheiat",
+      "expiredDescription": "Fă upgrade pentru a continua să folosești funcțiile Pro."
+    },
     "pricing": {
       "title": "Prețuri simple și transparente",
       "subtitle": "Începe gratuit, fă upgrade când ești pregătit. Fără costuri ascunse.",
@@ -53,6 +60,56 @@
         "a3": "Ești taxat pentru fiecare utilizator activ din organizația ta. Utilizatorii dezactivați nu sunt incluși.",
         "q4": "Oferiți reduceri pentru ONG-uri?",
         "a4": "Da! Contactează-ne pentru prețuri speciale pentru organizații non-profit."
+      }
+    },
+    "settings": {
+      "title": "Facturare și abonament",
+      "description": "Gestionează planul, locurile și facturile",
+      "currentPlan": "Planul curent",
+      "founder": "Fondator",
+      "founderDiscount": "{percent}% reducere",
+      "seats": "Locuri",
+      "seatsUsed": "{used} din {limit} locuri utilizate",
+      "seatsUnlimited": "{used} locuri (nelimitat)",
+      "billingCycle": "Ciclu de facturare",
+      "nextRenewal": "Următoarea reînnoire",
+      "changePlan": "Schimbă planul",
+      "manageSubscription": "Gestionează abonamentul",
+      "invoices": "Facturi",
+      "noInvoices": "Nicio factură încă",
+      "date": "Data",
+      "amount": "Sumă",
+      "status": "Status",
+      "download": "Descarcă",
+      "paid": "Plătit",
+      "open": "Deschis",
+      "pastDue": "Întârziat",
+      "canceled": "Anulat",
+      "free": "Gratuit",
+      "active": "Activ",
+      "trialing": "Perioadă de probă",
+      "paused": "Pauzat",
+      "unpaid": "Neplătit",
+      "monthly": "Lunar",
+      "yearly": "Anual",
+      "perMonth": "/lună",
+      "perYear": "/an",
+      "noPlan": "Niciun abonament activ",
+      "upgradeCta": "Fă upgrade pentru mai multe funcționalități",
+      "canceledInfo": "Abonamentul tău a fost anulat",
+      "checkout": {
+        "title": "Alege planul tău",
+        "seats": "Număr de locuri",
+        "total": "Total",
+        "subscribe": "Abonează-te",
+        "monthlyLabel": "Lunar",
+        "yearlyLabel": "Anual"
+      },
+      "planSelector": {
+        "title": "Alege un plan",
+        "current": "Curent",
+        "select": "Selectează",
+        "selected": "Selectat"
       }
     }
   }

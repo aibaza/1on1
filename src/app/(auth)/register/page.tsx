@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,8 @@ import { InlineAlert } from "@/components/ui/inline-alert";
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
+  const searchParams = useSearchParams();
+  const planParam = searchParams.get("plan");
   useZodI18nErrors();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,6 +35,9 @@ export default function RegisterPage() {
 
     try {
       formData.set("orgType", orgType);
+      if (planParam && (planParam === "pro" || planParam === "business")) {
+        formData.set("plan", planParam);
+      }
       const result = await registerAction(formData);
 
       if (result?.error) {

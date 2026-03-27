@@ -67,6 +67,7 @@ export async function registerAction(formData: FormData) {
       password: formData.get("password"),
       firstName: formData.get("firstName"),
       lastName: formData.get("lastName"),
+      plan: formData.get("plan") || undefined,
     });
 
     // Check if email already exists (any tenant)
@@ -96,6 +97,12 @@ export async function registerAction(formData: FormData) {
     // Hash password with cost factor 12
     const passwordHash = await bcrypt.hash(data.password, 12);
 
+    // Determine trial settings based on selected plan
+    const isTrialPlan = data.plan === "pro" || data.plan === "business";
+    const trialEndsAt = isTrialPlan
+      ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
+      : null;
+
     // Create tenant + admin user in single transaction
     const result = await adminDb.transaction(async (tx) => {
       const [tenant] = await tx
@@ -104,10 +111,12 @@ export async function registerAction(formData: FormData) {
           name: data.companyName,
           slug,
           orgType: data.orgType,
+          trialEndsAt,
           settings: {
             timezone: "UTC",
             defaultCadence: "biweekly",
             defaultDurationMinutes: 30,
+            ...(isTrialPlan ? { trialPlan: data.plan } : {}),
           },
         })
         .returning();

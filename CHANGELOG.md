@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Paddle checkout integration: `@paddle/paddle-js` client SDK with `usePaddleCheckout` hook (overlay mode, SSR-safe)
+- Billing settings page (`/settings/billing`) — current plan card, seats usage, billing cycle, founder badge, invoice history, plan selector modal
+- Billing API routes: `/api/billing/checkout` (validates price IDs), `/api/billing/portal` (Paddle subscription management URLs)
+- Plan selector modal component with monthly/yearly toggle and Paddle checkout trigger
+- Invoice table component with status badges and PDF download links
+- Billing navigation link in sidebar, side-nav, and top-nav (admin-only)
+- Billing i18n keys (EN + RO) for settings page, plan selector, invoices
 - Billing schema: plans, subscriptions, invoices, billing_events tables + migration 0024
 - Founder Customer system: is_founder + founder_discount_pct on tenants (0-100%, 100% = free forever)
 - Subscription service: getEffectivePlan, isTrialExpired, needsPayment, canAccessFeature

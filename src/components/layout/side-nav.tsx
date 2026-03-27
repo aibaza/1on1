@@ -20,6 +20,7 @@ import {
   UsersRound,
   ListChecks,
   History,
+  CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -149,6 +150,7 @@ export function SideNav() {
     { label: t("people"), href: "/people", icon: Users, minRole: "manager" },
     { label: t("teams"), href: "/teams", icon: UsersRound, matchAlso: ["/teams"], minRole: "manager" },
     { label: t("company"), href: "/settings/company", icon: Settings, minRole: "admin" },
+    { label: t("billing"), href: "/settings/billing", icon: CreditCard, minRole: "admin" },
   ];
 
   const visibleMain = mainNavItems.filter((item) => canSeeItem(userLevel, item));
