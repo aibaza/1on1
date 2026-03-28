@@ -14,6 +14,7 @@ import {
   templateSections,
 } from "@/lib/db/schema";
 import { eq, and, asc, sql } from "drizzle-orm";
+import { syncTalkingPointsToCalendar } from "@/lib/calendar/agenda";
 
 /**
  * GET /api/sessions/[id]/talking-points
@@ -256,6 +257,9 @@ export async function POST(
           );
       }
     }
+
+    // Sync agenda to calendar (non-blocking)
+    syncTalkingPointsToCalendar(sessionId).catch(() => {});
 
     return NextResponse.json(
       (result as { talkingPoint: unknown }).talkingPoint,
@@ -501,6 +505,9 @@ export async function DELETE(
           return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
     }
+
+    // Sync agenda to calendar (non-blocking)
+    syncTalkingPointsToCalendar(sessionId).catch(() => {});
 
     return NextResponse.json({ success: true });
   } catch (error) {

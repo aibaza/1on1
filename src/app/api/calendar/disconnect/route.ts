@@ -35,6 +35,22 @@ export async function POST() {
       );
     }
 
+    // Stop webhook channel (best effort)
+    if (conn.webhookChannelId && conn.webhookResourceId) {
+      try {
+        const { unregisterCalendarWebhook } = await import(
+          "@/lib/calendar/webhook"
+        );
+        await unregisterCalendarWebhook(
+          conn.accessToken,
+          conn.webhookChannelId,
+          conn.webhookResourceId
+        );
+      } catch {
+        // Channel may already be expired
+      }
+    }
+
     // Revoke the token at Google (best effort)
     try {
       const oauth2 = new google.auth.OAuth2(

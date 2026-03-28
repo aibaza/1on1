@@ -9,6 +9,7 @@ import { cancelSeriesNotifications } from "@/lib/notifications/queries";
 import { meetingSeries, sessions, users } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
+import { syncSeriesUpdated, syncSeriesArchived } from "@/lib/calendar";
 
 export async function GET(
   request: Request,
@@ -328,6 +329,26 @@ export async function PATCH(
       console.error("Failed to update notifications for series:", notifError);
     }
 
+    // Sync calendar when timing/cadence changes
+    if (
+      data.cadence ||
+      data.preferredDay !== undefined ||
+      data.preferredTime !== undefined ||
+      data.defaultDurationMinutes !== undefined
+    ) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:4300";
+      syncSeriesUpdated(id, appUrl).catch((err) =>
+        console.error("Calendar sync failed for series update:", err)
+      );
+    }
+
+    // Delete calendar events when series is archived/paused
+    if (data.status === "archived") {
+      syncSeriesArchived(id).catch((err) =>
+        console.error("Calendar cleanup failed for archived series:", err)
+      );
+    }
+
     return NextResponse.json(result);
   } catch (error) {
     if (error instanceof Error && error.name === "ZodError") {
@@ -419,6 +440,11 @@ export async function DELETE(
     } catch (notifError) {
       console.error("Failed to cancel notifications for archived series:", notifError);
     }
+
+    // Clean up calendar events
+    syncSeriesArchived(id).catch((err) =>
+      console.error("Calendar cleanup failed for archived series:", err)
+    );
 
     return NextResponse.json(result);
   } catch (error) {

@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth/config";
 import { adminDb } from "@/lib/db";
 import { calendarConnections } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { registerCalendarWebhook } from "@/lib/calendar/webhook";
 
 /**
  * GET /api/calendar/callback
@@ -95,6 +96,35 @@ export async function GET(request: Request) {
         refreshToken: tokens.refresh_token,
         expiresAt,
       });
+    }
+
+    // Register push notification webhook for inbound sync (non-blocking)
+    const connId = existing.length > 0 ? existing[0].id : undefined;
+    if (connId && tokens.access_token) {
+      registerCalendarWebhook(connId, tokens.access_token, "primary").catch(
+        (err) => console.error("Failed to register calendar webhook:", err)
+      );
+    } else if (tokens.access_token) {
+      // Newly inserted — fetch the ID
+      const [newConn] = await adminDb
+        .select({ id: calendarConnections.id })
+        .from(calendarConnections)
+        .where(
+          and(
+            eq(calendarConnections.userId, session.user.id),
+            eq(calendarConnections.provider, "google")
+          )
+        )
+        .limit(1);
+      if (newConn) {
+        registerCalendarWebhook(
+          newConn.id,
+          tokens.access_token,
+          "primary"
+        ).catch((err) =>
+          console.error("Failed to register calendar webhook:", err)
+        );
+      }
     }
 
     return NextResponse.redirect(

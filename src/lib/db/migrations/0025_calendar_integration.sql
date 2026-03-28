@@ -59,6 +59,40 @@ CREATE INDEX IF NOT EXISTS "calendar_event_series_idx"
 CREATE INDEX IF NOT EXISTS "calendar_event_external_id_idx"
   ON "calendar_event" ("external_event_id");
 
--- RLS policies: calendar_connection is NOT tenant-scoped (user-level data)
--- but calendar_event should be visible only to the owning user
--- For now, these tables are accessed via adminDb (bypasses RLS)
+-- Calendar change request enums
+DO $$ BEGIN
+  CREATE TYPE "public"."calendar_change_type" AS ENUM('reschedule', 'cancel');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "public"."calendar_change_status" AS ENUM('pending', 'approved', 'rejected', 'expired');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+-- Calendar change requests: tracks proposed changes needing approval
+CREATE TABLE IF NOT EXISTS "calendar_change_request" (
+  "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  "series_id" uuid NOT NULL REFERENCES "meeting_series"("id") ON DELETE CASCADE,
+  "session_id" uuid REFERENCES "session"("id") ON DELETE CASCADE,
+  "requested_by_user_id" uuid NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+  "approver_user_id" uuid NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+  "change_type" "calendar_change_type" NOT NULL,
+  "status" "calendar_change_status" NOT NULL DEFAULT 'pending',
+  "proposed_start_time" timestamp with time zone,
+  "original_start_time" timestamp with time zone,
+  "responded_at" timestamp with time zone,
+  "created_at" timestamp with time zone NOT NULL DEFAULT now(),
+  "expires_at" timestamp with time zone NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS "calendar_change_request_approver_idx"
+  ON "calendar_change_request" ("approver_user_id", "status");
+
+CREATE INDEX IF NOT EXISTS "calendar_change_request_series_idx"
+  ON "calendar_change_request" ("series_id");
+
+-- RLS policies: calendar tables are NOT tenant-scoped (user-level data)
+-- accessed via adminDb (bypasses RLS)

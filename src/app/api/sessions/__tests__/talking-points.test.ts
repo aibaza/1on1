@@ -14,6 +14,9 @@ vi.mock("@/lib/auth/config", () => ({ auth: vi.fn() }));
 vi.mock("@/lib/db/tenant-context", () => ({
   withTenantContext: vi.fn(),
 }));
+vi.mock("@/lib/calendar/agenda", () => ({
+  syncTalkingPointsToCalendar: vi.fn().mockResolvedValue(undefined),
+}));
 
 /**
  * TDD RED tests for Phase 24 Plan 00.

@@ -11,14 +11,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - Updated billing plan slug, seed data, migration SQL, i18n (EN + RO), pricing components, landing page, registration flow, feature comparison, upgrade prompts, founder controls, auth validation, and test descriptions
 
 ### Added
-- Google Calendar integration foundation (Phase 1)
-  - `CalendarProvider` abstraction with `GoogleCalendarProvider` implementation (recurring events, single-instance overrides, RRULE support)
-  - `calendar_connection` table for storing per-user OAuth tokens (separate from login OAuth)
-  - `calendar_event` junction table mapping series/sessions to external calendar event IDs per user
-  - `calendar_provider` and `calendar_sync_status` enums
-  - Google OAuth connect/disconnect flow (`/api/calendar/connect`, `/api/calendar/callback`, `/api/calendar/disconnect`, `/api/calendar/status`)
-  - Token refresh utility with automatic disable on revocation
-  - "Connected Calendars" section in Account page with Google Calendar connect/disconnect UI
+- "Sign in with Google" button on login page (OAuth provider was configured but UI button was missing)
+- Google Calendar integration (full bidirectional sync)
+  - **Phase 1 — Foundation**: `CalendarProvider` abstraction, `GoogleCalendarProvider` (RRULE recurring events, instance overrides), `calendar_connection` + `calendar_event` tables, Google OAuth connect/disconnect flow, token refresh with auto-disable, "Connected Calendars" UI in Account page
+  - **Phase 2 — Outbound sync (App → Calendar)**: Series create → recurring event on both participants' calendars, series update → RRULE update, series archive → delete events, talking points → auto-sync to event description as agenda
+  - **Phase 3 — Inbound sync (Calendar → App)**: Google push notification webhook, `calendar_change_request` table for approval flow, change request API (list/approve/reject), 48h auto-expiry, webhook auto-registration on connect
+  - **Phase 4 — Polish**: Retry utility for failed syncs, per-series sync status API endpoint, webhook renewal utility
+  - New API routes: `/api/calendar/*` (connect, callback, disconnect, status, webhook, changes, series-status)
   - Calendar i18n strings (EN + RO)
   - Migration 0025_calendar_integration
 

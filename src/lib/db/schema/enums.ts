@@ -128,6 +128,18 @@ export const calendarSyncStatusEnum = pgEnum("calendar_sync_status", [
   "error",
 ]);
 
+export const calendarChangeTypeEnum = pgEnum("calendar_change_type", [
+  "reschedule",
+  "cancel",
+]);
+
+export const calendarChangeStatusEnum = pgEnum("calendar_change_status", [
+  "pending",
+  "approved",
+  "rejected",
+  "expired",
+]);
+
 export const billingEventTypeEnum = pgEnum("billing_event_type", [
   "subscription_created", "subscription_updated", "subscription_canceled",
   "payment_succeeded", "payment_failed",

@@ -8,6 +8,7 @@ import { scheduleSeriesNotifications } from "@/lib/notifications/scheduler";
 import { meetingSeries, sessions, users, sessionAnswers, templateQuestions, talkingPoints, questionnaireTemplates } from "@/lib/db/schema";
 import { eq, and, asc, sql, ne } from "drizzle-orm";
 import { computeNextSessionDate } from "@/lib/utils/scheduling";
+import { syncSeriesCreated } from "@/lib/calendar";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -407,6 +408,12 @@ export async function POST(request: Request) {
         console.error("Failed to schedule notifications for new series:", err)
       );
     }
+
+    // Sync to Google Calendar (non-blocking)
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:4300";
+    syncSeriesCreated(result.id, appUrl).catch((err) =>
+      console.error("Calendar sync failed for new series:", err)
+    );
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {

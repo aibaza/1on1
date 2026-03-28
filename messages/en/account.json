@@ -33,7 +33,15 @@
       "connectError": "Failed to connect Google Calendar",
       "disconnected": "Google Calendar disconnected",
       "disconnectError": "Failed to disconnect",
-      "disconnecting": "Disconnecting..."
+      "disconnecting": "Disconnecting...",
+      "pendingChanges": "{count, plural, one {# pending change} other {# pending changes}}",
+      "changeReschedule": "{name} wants to reschedule to {date}",
+      "changeCancel": "{name} wants to cancel the meeting on {date}",
+      "approve": "Approve",
+      "reject": "Reject",
+      "approved": "Change approved",
+      "rejected": "Change rejected",
+      "expired": "Change request expired"
     },
     "password": {
       "title": "Security",

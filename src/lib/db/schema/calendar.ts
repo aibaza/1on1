@@ -13,7 +13,12 @@ import { relations } from "drizzle-orm";
 import { users } from "./users";
 import { meetingSeries } from "./series";
 import { sessions } from "./sessions";
-import { calendarProviderEnum, calendarSyncStatusEnum } from "./enums";
+import {
+  calendarProviderEnum,
+  calendarSyncStatusEnum,
+  calendarChangeTypeEnum,
+  calendarChangeStatusEnum,
+} from "./enums";
 
 /**
  * Stores OAuth connections to external calendar providers.
@@ -113,6 +118,78 @@ export const calendarEvents = pgTable(
     index("calendar_event_series_idx").on(table.seriesId),
     index("calendar_event_external_id_idx").on(table.externalEventId),
   ]
+);
+
+/**
+ * Tracks proposed changes from external calendars that need approval.
+ * When someone moves a single event instance in Google Calendar,
+ * a change request is created for the other party to approve/reject.
+ */
+export const calendarChangeRequests = pgTable(
+  "calendar_change_request",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    seriesId: uuid("series_id")
+      .notNull()
+      .references(() => meetingSeries.id, { onDelete: "cascade" }),
+    sessionId: uuid("session_id").references(() => sessions.id, {
+      onDelete: "cascade",
+    }),
+    // Who made the change in their calendar
+    requestedByUserId: uuid("requested_by_user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    // Who needs to approve
+    approverUserId: uuid("approver_user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    changeType: calendarChangeTypeEnum("change_type").notNull(),
+    status: calendarChangeStatusEnum("status").notNull().default("pending"),
+    // For reschedule: the proposed new time
+    proposedStartTime: timestamp("proposed_start_time", {
+      withTimezone: true,
+    }),
+    originalStartTime: timestamp("original_start_time", {
+      withTimezone: true,
+    }),
+    // Response
+    respondedAt: timestamp("responded_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  },
+  (table) => [
+    index("calendar_change_request_approver_idx").on(
+      table.approverUserId,
+      table.status
+    ),
+    index("calendar_change_request_series_idx").on(table.seriesId),
+  ]
+);
+
+export const calendarChangeRequestsRelations = relations(
+  calendarChangeRequests,
+  ({ one }) => ({
+    series: one(meetingSeries, {
+      fields: [calendarChangeRequests.seriesId],
+      references: [meetingSeries.id],
+    }),
+    session: one(sessions, {
+      fields: [calendarChangeRequests.sessionId],
+      references: [sessions.id],
+    }),
+    requestedBy: one(users, {
+      fields: [calendarChangeRequests.requestedByUserId],
+      references: [users.id],
+      relationName: "calendarChangeRequester",
+    }),
+    approver: one(users, {
+      fields: [calendarChangeRequests.approverUserId],
+      references: [users.id],
+      relationName: "calendarChangeApprover",
+    }),
+  })
 );
 
 export const calendarEventsRelations = relations(

@@ -33,7 +33,15 @@
       "connectError": "Conectarea la Google Calendar a esuat",
       "disconnected": "Google Calendar a fost deconectat",
       "disconnectError": "Deconectarea a esuat",
-      "disconnecting": "Se deconecteaza..."
+      "disconnecting": "Se deconecteaza...",
+      "pendingChanges": "{count, plural, one {# modificare in asteptare} other {# modificari in asteptare}}",
+      "changeReschedule": "{name} doreste sa reprogrameze la {date}",
+      "changeCancel": "{name} doreste sa anuleze sedinta din {date}",
+      "approve": "Aproba",
+      "reject": "Respinge",
+      "approved": "Modificare aprobata",
+      "rejected": "Modificare respinsa",
+      "expired": "Cererea de modificare a expirat"
     },
     "password": {
       "title": "Securitate",
