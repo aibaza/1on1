@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import Link from "next/link";
-import { PricingContent } from "@/components/billing/pricing-content";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/app/(marketing)/_components/language-switcher";
+import { MarketingFooter } from "@/app/(marketing)/_components/marketing-footer";
+import { MobileNav } from "@/app/(marketing)/_components/mobile-nav";
+import { PricingContent } from "@/components/billing/pricing-content";
 
 export const metadata: Metadata = {
   title: "Pricing | 1on1",
@@ -12,28 +15,68 @@ export const metadata: Metadata = {
 };
 
 export default async function PricingPage() {
-  const t = await getTranslations("auth");
+  const t = await getTranslations("landing");
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 md:px-12">
-        <Link href="/">
-          <Logo className="h-8" />
-        </Link>
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-          <Link
-            href="/login"
-            className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t("login.title")}
+    <div className="min-h-screen bg-[var(--background)] flex flex-col">
+      {/* Full marketing nav */}
+      <nav className="w-full bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm dark:shadow-none z-50">
+        <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
+          <Link href="/">
+            <Logo className="h-8" />
           </Link>
+          <div className="hidden md:flex items-center space-x-8">
+            <Link
+              className="text-muted-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:text-primary transition-colors"
+              href="/#features"
+            >
+              {t("nav.features")}
+            </Link>
+            <span className="text-foreground font-semibold font-[family-name:var(--font-manrope)] text-sm tracking-tight">
+              {t("nav.pricing")}
+            </span>
+            <Link
+              className="text-muted-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:text-primary transition-colors"
+              href="/security"
+            >
+              {t("nav.security")}
+            </Link>
+            <a
+              className="text-muted-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:text-primary transition-colors"
+              href="https://github.com/aibaza/1on1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("nav.openSource")}
+            </a>
+          </div>
+          <div className="hidden md:flex items-center gap-4">
+            <LanguageSwitcher />
+            <ThemeToggle />
+            <Link
+              href="/login"
+              className="text-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:opacity-80 transition-all"
+            >
+              {t("nav.signIn")}
+            </Link>
+            <Link
+              href="/register"
+              className="editorial-gradient text-white px-5 py-2.5 rounded-xl font-[family-name:var(--font-manrope)] text-sm font-semibold shadow-lg shadow-primary/20 hover:scale-95 duration-150 transition-transform"
+            >
+              {t("nav.getStarted")}
+            </Link>
+          </div>
+          <MobileNav />
         </div>
-      </header>
+      </nav>
 
       {/* Pricing content */}
-      <PricingContent />
+      <div className="flex-1">
+        <PricingContent />
+      </div>
+
+      {/* Footer */}
+      <MarketingFooter />
     </div>
   );
 }

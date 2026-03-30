@@ -2,134 +2,173 @@
   "landing": {
     "nav": {
       "features": "Features",
-      "methodology": "Methodology",
       "pricing": "Pricing",
+      "security": "Security",
+      "openSource": "Open Source",
       "signIn": "Sign In",
       "getStarted": "Get Started"
     },
     "hero": {
-      "badge": "AI-Powered 1on1 Meetings",
-      "title": "Transform your",
-      "titleHighlight": "1on1 culture",
-      "subtitle": "Stop dreading the \"Check-in.\" Empower your managers with curated structured sessions, AI-driven insights, and seamless action tracking.",
+      "title": "Turn unstructured check-ins into",
+      "titleHighlight": "guided, AI-enhanced",
+      "titleEnd": "conversations.",
+      "subtitle": "Stop dreading the blank agenda. 1on1 curates every meeting into a meaningful growth session with real-time sentiment analysis and actionable outcomes.",
       "cta": "Start Free Trial",
-      "ctaSecondary": "See Pricing"
+      "ctaSecondary": "View on GitHub"
     },
     "heroCard": {
-      "title": "Weekly Alignment",
-      "subtitle": "Jordan Doe - Engineering",
-      "badge": "Live Now",
-      "outcomeLabel": "Last Meeting Outcome",
-      "outcomeText": "Scale infrastructure for Q4 surge. Status:",
-      "outcomeStatus": "On Track",
-      "aiTitle": "AI Recommendation",
-      "aiText": "Jordan mentioned burnout risks. Consider discussing workload redistribution or taking a Friday off."
+      "name": "Sarah Chen",
+      "role": "Senior Engineer",
+      "score": "4.2",
+      "pulseLabel": "Team Pulse",
+      "sentimentLabel": "Weekly Sentiment",
+      "sentimentTrend": "+12% vs last week",
+      "aiTitle": "AI Insight",
+      "aiText": "Sarah mentioned \"bottlenecks in PR review\" twice. Suggest discussing workload redistribution."
     },
-    "features": {
-      "title": "Designed for Human Connection",
-      "subtitle": "We've stripped away the complexity of traditional HR tools to focus on what matters: the quality of the conversation.",
-      "structured": {
-        "title": "Structured meetings that actually happen",
-        "description": "Never scramble for an agenda again. Use expert-crafted templates for career growth, performance, or wellness check-ins. Automated reminders keep everyone sync'd."
+    "showcase": {
+      "wizard": {
+        "title": "The Wizard",
+        "description": "A curated 4-step framework that ensures no vital topic is ever left unaddressed.",
+        "stepLabel": "Wellbeing",
+        "question": "Rate your current work-life balance this week.",
+        "nextStep": "Next Step"
       },
       "ai": {
-        "title": "AI that makes every conversation count",
-        "description": "Our context-aware AI summarizes meetings, detects sentiment trends, and suggests coaching prompts based on historical discussion points.",
-        "sentimentLabel": "Sentiment Analysis"
+        "title": "AI Insights",
+        "description": "Real-time coaching prompts that turn silent concerns into productive dialogues.",
+        "suggestion1Label": "Growth Suggestion",
+        "suggestion1Text": "Bridge the gap to Staff Engineer by leading the API migration project.",
+        "suggestion2Label": "Workload Alert",
+        "suggestion2Text": "12 active tasks assigned this week. High risk of burnout detected.",
+        "accept": "Accept",
+        "skip": "Skip"
+      },
+      "dashboard": {
+        "title": "Team Dashboard",
+        "description": "High-level visibility into team health across all managed reporting lines.",
+        "healthLabel": "Health",
+        "healthValue": "4.1",
+        "actionsLabel": "Actions",
+        "actionsValue": "72%",
+        "alertText": "Jamie Park: Low sentiment alert"
+      }
+    },
+    "features": {
+      "title": "Features built for human connection",
+      "subtitle": "We've removed the technical friction so you can focus on the person across the screen.",
+      "guided": {
+        "title": "Guided, not blank",
+        "description": "Dynamic templates that adapt to the history of your previous 1:1 sessions automatically."
+      },
+      "ai": {
+        "title": "AI that coaches",
+        "description": "Passive listener that identifies patterns and suggests growth opportunities for your team."
       },
       "actionItems": {
-        "title": "Action items that don't disappear",
-        "description": "Shared visibility ensures that every promise made in a 1on1 is tracked and resolved. No more \"what did we agree on?\""
+        "title": "Action items with teeth",
+        "description": "Integrated task tracking that follows up on promises made during the meeting."
+      },
+      "security": {
+        "title": "Your data, your rules",
+        "description": "End-to-end encryption with the ability to self-host for complete data sovereignty."
       },
       "teamHealth": {
         "title": "Team health at a glance",
-        "description": "Heatmaps of engagement and 1on1 frequency help leaders spot flight risks and high-performing managers early."
-      },
-      "security": {
-        "title": "Built for real teams",
-        "description": "Enterprise-grade security with strict role-based access controls. Notes stay private between manager and report."
+        "description": "Aggregated metrics that help you spot systemic issues before they lead to churn."
       }
     },
     "howItWorks": {
-      "title": "The 3-Step Success Loop",
+      "title": "Three steps to better meetings",
       "step1": {
-        "title": "Setup",
-        "description": "Invite your team and choose from dozens of templates to define your meeting style. 1on1 handles the logistics."
+        "title": "Set up",
+        "description": "Import your team and define your recurring cadence. Choose from expert-crafted templates or create your own."
       },
       "step2": {
-        "title": "Conduct",
-        "description": "Have meaningful conversations with real-time notes, shared action items, and private notes to keep discussions on track."
+        "title": "Run sessions",
+        "description": "Follow the guided agenda and capture notes with AI assistance in real-time."
       },
       "step3": {
-        "title": "Insights",
-        "description": "Review session summaries and long-term engagement trends to drive continuous improvement for your team culture."
+        "title": "Track results",
+        "description": "Review progress trends and follow up on automated action items across your team."
       }
     },
     "pricing": {
-      "title": "Scalable Growth for Every Team",
-      "subtitle": "Simple, transparent pricing. No hidden fees.",
+      "title": "Transparent pricing for every scale",
+      "subtitle": "Choose the plan that fits your leadership style.",
       "free": {
         "name": "Free",
         "price": "0",
-        "period": "/month",
         "features": {
-          "users": "Up to 4 users",
-          "templates": "3 starter templates",
-          "actionItems": "Shared action items"
+          "users": "Up to 5 direct reports",
+          "templates": "Basic agenda templates",
+          "noAi": "No AI Insights"
         },
-        "cta": "Start for Free"
+        "cta": "Get Started"
       },
       "pro": {
         "name": "Pro",
         "price": "2",
-        "period": "/user /month",
-        "badge": "Most Popular",
+        "period": "/user/mo",
+        "badge": "Popular",
         "features": {
-          "users": "Unlimited users",
-          "templates": "Unlimited templates",
-          "analytics": "Full engagement analytics",
-          "engagementAnalytics": "Engagement Analytics"
+          "users": "Unlimited reports",
+          "ai": "Full AI Analysis Suite",
+          "sentiment": "Sentiment History"
         },
-        "cta": "Try Pro Trial"
+        "cta": "Go Pro"
       },
       "enterprise": {
         "name": "Enterprise",
         "price": "5",
-        "period": "/user /month",
+        "period": "/user/mo",
         "features": {
-          "everything": "Everything in Pro",
-          "ai": "Full AI Insights Package",
-          "api": "API access",
-          "support": "Dedicated Support"
+          "selfHost": "Self-hosting (Docker)",
+          "sso": "SSO & SAML",
+          "retention": "Custom Data Retention"
         },
-        "cta": "Start Enterprise Trial"
+        "cta": "Contact Sales"
       }
     },
     "faq": {
-      "title": "Frequently Asked Questions",
+      "title": "Frequently asked questions",
       "q1": {
-        "question": "Is my data secure and private?",
-        "answer": "Yes. 1on1 uses industry-standard AES-256 encryption. Meeting notes are restricted only to the participants unless explicitly shared with HR/Leadership."
+        "question": "How secure is my data?",
+        "answer": "We use end-to-end encryption for all meeting notes. For high-compliance environments, our Enterprise tier allows you to host the entire stack on your own servers."
       },
       "q2": {
-        "question": "Can we import our existing templates?",
-        "answer": "Absolutely. Our editor allows you to paste your current markdown or rich text templates and convert them into interactive 1on1 sessions instantly."
+        "question": "Can I self-host the open-source version?",
+        "answer": "Yes, our core engine is open source on GitHub. Enterprise users get priority support and Docker containers optimized for production environments."
       },
       "q3": {
-        "question": "How does the AI sentiment analysis work?",
-        "answer": "After each session is completed, our AI analyzes the responses and notes to generate summaries, sentiment insights, and actionable recommendations. It learns from session history to provide increasingly relevant coaching suggestions."
+        "question": "How does AI sentiment work?",
+        "answer": "Our AI analyzes responses and linguistic markers to detect shifts in morale over time, alerting you to potential burnout before it happens."
       }
     },
     "finalCta": {
       "title": "Ready to improve your team health?",
-      "subtitle": "Join leaders who are building higher-performing, happier teams through structured connection.",
-      "cta": "Start Free Trial — 7 days, no card required"
+      "subtitle": "Join managers who use 1on1 to build high-performance cultures through structured connection.",
+      "cta": "Create My Account",
+      "ctaSecondary": "Talk to an Expert"
     },
     "footer": {
+      "tagline": "The open-source platform for structured one-on-one meetings.",
       "copyright": "2026 1on1. All rights reserved.",
-      "privacy": "Privacy Policy",
-      "terms": "Terms of Service",
-      "security": "Security"
+      "product": "Product",
+      "productFeatures": "Features",
+      "productSecurity": "Security",
+      "productPricing": "Pricing",
+      "productChangelog": "Changelog",
+      "resources": "Resources",
+      "resourcesDocs": "Documentation",
+      "resourcesGithub": "GitHub",
+      "resourcesCommunity": "Community",
+      "resourcesBlog": "Blog",
+      "company": "Company",
+      "companyAbout": "About",
+      "companyContact": "Contact",
+      "companyPrivacy": "Privacy",
+      "companyTerms": "Terms"
     }
   }
 }

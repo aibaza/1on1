@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - Updated billing plan slug, seed data, migration SQL, i18n (EN + RO), pricing components, landing page, registration flow, feature comparison, upgrade prompts, founder controls, auth validation, and test descriptions
 
 ### Added
+- Redesigned homepage with competitive positioning, product showcase panels (Wizard, AI Insights, Team Dashboard), new feature cards, expanded FAQ, and 4-column footer
+- `MarketingFooter` shared component (Product, Resources, Company columns + social links)
+- `PublicNav` minimal navigation bar for auth pages (logo, back link, language switcher, theme toggle)
+- Navigation and footer on all public pages: login, register, forgot-password, reset-password, verify-email, invite, pricing
 - "Sign in with Google" button on login page (OAuth provider was configured but UI button was missing)
 - Google Calendar integration (full bidirectional sync)
   - **Phase 1 — Foundation**: `CalendarProvider` abstraction, `GoogleCalendarProvider` (RRULE recurring events, instance overrides), `calendar_connection` + `calendar_event` tables, Google OAuth connect/disconnect flow, token refresh with auto-disable, "Connected Calendars" UI in Account page

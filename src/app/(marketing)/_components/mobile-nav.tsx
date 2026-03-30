@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "./language-switcher";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -12,12 +13,18 @@ export function MobileNav() {
 
   const NAV_LINKS = [
     { href: "#features", label: t("features") },
-    { href: "#methodology", label: t("methodology") },
     { href: "#pricing", label: t("pricing") },
+    { href: "/security", label: t("security"), isLink: true },
+    {
+      href: "https://github.com/aibaza/1on1",
+      label: t("openSource"),
+      external: true,
+    },
   ];
 
   return (
     <div className="md:hidden flex items-center gap-2">
+      <LanguageSwitcher />
       <ThemeToggle />
       <button
         onClick={() => setOpen(!open)}
@@ -30,16 +37,38 @@ export function MobileNav() {
       {open && (
         <div className="absolute top-20 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-border/50 shadow-lg dark:shadow-none z-50">
           <div className="flex flex-col px-8 py-6 gap-4">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="font-[family-name:var(--font-manrope)] text-sm font-medium text-foreground/80 hover:text-foreground transition-colors py-2"
-              >
-                {link.label}
-              </a>
-            ))}
+            {NAV_LINKS.map((link) =>
+              link.external ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="font-[family-name:var(--font-manrope)] text-sm font-medium text-foreground/80 hover:text-foreground transition-colors py-2"
+                >
+                  {link.label}
+                </a>
+              ) : link.isLink ? (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="font-[family-name:var(--font-manrope)] text-sm font-medium text-foreground/80 hover:text-foreground transition-colors py-2"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="font-[family-name:var(--font-manrope)] text-sm font-medium text-foreground/80 hover:text-foreground transition-colors py-2"
+                >
+                  {link.label}
+                </a>
+              )
+            )}
             <hr className="border-border/30" />
             <Link
               href="/login"

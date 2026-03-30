@@ -44,10 +44,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-[calc(100vh-140px)]">
       {/* Left Panel — Value Proposition (desktop only) */}
       <section
-        className="hidden md:flex md:w-2/5 relative overflow-hidden flex-col justify-between p-16 sticky top-0 h-screen"
+        className="hidden md:flex md:w-2/5 relative overflow-hidden flex-col justify-between p-16"
         style={{
           backgroundColor: "#29407d",
           backgroundImage: [

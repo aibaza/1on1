@@ -44,7 +44,7 @@ export function EditorialLogin() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-[calc(100vh-140px)]">
       {/* Visual Column */}
       <section className="hidden md:flex md:w-1/2 relative overflow-hidden items-center justify-center p-12"
         style={{
