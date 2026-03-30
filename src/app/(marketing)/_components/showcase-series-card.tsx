@@ -7,8 +7,8 @@ import { EditorialSeriesCard } from "@/components/series/editorial-series-card";
 
 /**
  * Wraps the real EditorialSeriesCard with mock data for the landing page.
- * Provides its own QueryClient since marketing pages don't have one.
- * All clicks are intercepted to prevent navigation.
+ * Uses demo={true} to disable navigation and API calls while keeping
+ * all visual elements and hover states intact.
  */
 export function ShowcaseSeriesCard() {
   const [queryClient] = useState(() => new QueryClient());
@@ -54,15 +54,11 @@ export function ShowcaseSeriesCard() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div
-          className="[&_a]:pointer-events-none [&_button]:pointer-events-none"
-          onClick={(e) => e.preventDefault()}
-        >
-          <EditorialSeriesCard
-            series={mockSeries}
-            currentUserId="showcase-manager-001"
-          />
-        </div>
+        <EditorialSeriesCard
+          series={mockSeries}
+          currentUserId="showcase-manager-001"
+          demo
+        />
       </TooltipProvider>
     </QueryClientProvider>
   );

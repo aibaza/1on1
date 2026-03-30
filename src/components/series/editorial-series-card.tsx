@@ -42,6 +42,8 @@ interface EditorialSeriesCardProps {
   };
   currentUserId: string;
   showManagerName?: boolean;
+  /** When true, renders identically but disables all navigation and API calls. Used on landing page. */
+  demo?: boolean;
 }
 
 function getInitials(first: string, last: string): string {
@@ -98,7 +100,7 @@ function formatSchedule(
   return t("series.scheduleNone", { cadence: cadenceLabel });
 }
 
-export function EditorialSeriesCard({ series, currentUserId, showManagerName }: EditorialSeriesCardProps) {
+export function EditorialSeriesCard({ series, currentUserId, showManagerName, demo }: EditorialSeriesCardProps) {
   const t = useTranslations("sessions");
   const format = useFormatter();
   const [now] = useState(() => Date.now());
@@ -150,7 +152,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
     return { chartData: data, sparkDomain: [minVal, maxVal] as [number, number] };
   }, [series.assessmentHistory, series.questionHistories]);
 
-  // Mutations
+  // Mutations — disabled in demo mode
   const startMutation = useMutation({
     mutationFn: async () => {
       const res = await fetch(`/api/series/${series.id}/start`, { method: "POST" });
@@ -181,6 +183,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
   const handleAgendaClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (demo) return;
     const openSession = series.latestSession?.status !== "completed" && series.latestSession?.status !== "cancelled"
       ? series.latestSession : null;
     if (openSession) {
@@ -195,6 +198,7 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
   const handleAction = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (demo) return;
     if (isInProgress && series.latestSession) {
       router.push(`/wizard/${series.latestSession.id}`);
     } else {
@@ -204,8 +208,8 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
 
   return (
     <div className={`group relative bg-card rounded-2xl p-6 flex flex-col h-full overflow-hidden border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05)] hover:-translate-y-0.5 hover:border-[var(--editorial-outline-variant,var(--border))]/80 ${sentimentClass} ${isOverdue ? "border-l-4 border-l-[var(--color-warning,#f59e0b)]" : ""}`}>
-      {/* Clickable overlay */}
-      <Link href={`/sessions/${series.id}`} className="absolute inset-0 z-0" />
+      {/* Clickable overlay — disabled in demo mode */}
+      {demo ? <span className="absolute inset-0 z-0" /> : <Link href={`/sessions/${series.id}`} className="absolute inset-0 z-0" />}
 
       {/* Header: Avatar + Name + Status + Agenda */}
       <div className="flex justify-between items-start mb-4 relative z-[1]">
@@ -372,8 +376,8 @@ export function EditorialSeriesCard({ series, currentUserId, showManagerName }: 
         )}
       </div>
 
-      {/* Agenda Drawer */}
-      {agendaSessionId && (
+      {/* Agenda Drawer — skip in demo mode */}
+      {!demo && agendaSessionId && (
         <EditorialAgendaDrawer
           open={agendaOpen}
           onOpenChange={setAgendaOpen}
