@@ -102,14 +102,14 @@ export function MarketingFooter() {
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-foreground transition-colors">
+              <Link href="/privacy" className="hover:text-foreground transition-colors">
                 {t("companyPrivacy")}
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-foreground transition-colors">
+              <Link href="/terms" className="hover:text-foreground transition-colors">
                 {t("companyTerms")}
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `MarketingFooter` shared component (Product, Resources, Company columns + social links)
 - `PublicNav` minimal navigation bar for auth pages (logo, back link, language switcher, theme toggle)
 - Navigation and footer on all public pages: login, register, forgot-password, reset-password, verify-email, invite, pricing
+- Privacy Policy page (`/privacy`) with full GDPR-compliant content (EN + RO)
+- Terms of Service page (`/terms`) with complete legal terms (EN + RO)
 - "Sign in with Google" button on login page (OAuth provider was configured but UI button was missing)
 - Google Calendar integration (full bidirectional sync)
   - **Phase 1 — Foundation**: `CalendarProvider` abstraction, `GoogleCalendarProvider` (RRULE recurring events, instance overrides), `calendar_connection` + `calendar_event` tables, Google OAuth connect/disconnect flow, token refresh with auto-disable, "Connected Calendars" UI in Account page

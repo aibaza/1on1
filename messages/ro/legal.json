@@ -1,0 +1,140 @@
+{
+  "legal": {
+    "lastUpdated": "Ultima actualizare: 30 martie 2026",
+    "privacy": {
+      "title": "Politica de confidențialitate",
+      "intro": "Această Politică de confidențialitate explică modul în care 1on1 (\"noi\") colectează, utilizează și protejează datele dumneavoastră personale atunci când folosiți platforma noastră la app.1on1.ro și serviciile asociate.",
+      "sections": {
+        "dataWeCollect": {
+          "title": "1. Datele pe care le colectăm",
+          "account": "Date de cont: numele, adresa de email, denumirea companiei, rolul și tipul organizației la înregistrare.",
+          "session": "Date de sesiune: notele de ședință, răspunsurile la întrebările din sesiune, acțiunile, punctele de discuție și notele private create în cadrul întâlnirilor 1:1.",
+          "ai": "Date procesate de AI: conținutul sesiunilor este trimis către furnizorul nostru de AI (Anthropic Claude) pentru generarea de rezumate, analiză de sentiment și sugestii de acțiuni. Nu folosim datele dumneavoastră pentru antrenarea modelelor AI.",
+          "calendar": "Date de calendar: dacă conectați Google Calendar, accesăm titlurile evenimentelor, orele și adresele de email ale participanților pentru sincronizarea programărilor. Stocăm token-urile OAuth în mod securizat.",
+          "usage": "Date de utilizare: paginile vizitate, funcționalitățile folosite, tipul de browser, adresa IP și informațiile despre dispozitiv pentru analiză și îmbunătățirea serviciului.",
+          "cookies": "Cookie-uri: cookie de sesiune de autentificare (HTTP-only, secure), cookie de preferință de limbă (NEXT_LOCALE) și preferință de temă."
+        },
+        "howWeUse": {
+          "title": "2. Cum folosim datele dumneavoastră",
+          "item1": "Pentru a furniza și opera platforma de management al întâlnirilor 1on1",
+          "item2": "Pentru a genera rezumate de sesiune, analiză de sentiment și sugestii de coaching bazate pe AI",
+          "item3": "Pentru a sincroniza programările cu furnizorul dumneavoastră de calendar",
+          "item4": "Pentru a trimite emailuri tranzacționale (invitații, resetare parolă, remindere de sesiune)",
+          "item5": "Pentru a calcula dashboard-urile de analiză (scoruri de sănătate a echipei, rate de finalizare a acțiunilor)",
+          "item6": "Pentru a aplica controlul accesului bazat pe roluri și izolarea tenant-urilor"
+        },
+        "dataProtection": {
+          "title": "3. Protecția datelor",
+          "encryption": "Criptare: notele private sunt criptate în repaus folosind AES-256-GCM cu chei per-tenant derivate prin HKDF. Toate datele în tranzit sunt criptate prin TLS 1.3.",
+          "isolation": "Izolarea tenant-urilor: fiecare interogare a bazei de date este filtrată după ID-ul tenant-ului organizației dumneavoastră. PostgreSQL Row-Level Security (RLS) oferă un nivel secundar de protecție.",
+          "access": "Controlul accesului: RBAC pe trei niveluri (admin, manager, membru) asigură că utilizatorii pot accesa doar datele relevante pentru rolul și relațiile lor de raportare."
+        },
+        "thirdParties": {
+          "title": "4. Servicii terțe",
+          "intro": "Partajăm date cu următorii procesatori, exclusiv pentru furnizarea serviciului:",
+          "vercel": "Vercel — hosting și distribuție edge",
+          "neon": "Neon — bază de date PostgreSQL gestionată (regiune UE disponibilă)",
+          "anthropic": "Anthropic — analiză AI a conținutului sesiunilor (rezumate, sentiment, sugestii)",
+          "google": "Google — autentificare OAuth și API Calendar (doar dacă vă conectați)",
+          "resend": "Resend / Nodemailer — livrare email tranzacțional"
+        },
+        "dataRetention": {
+          "title": "5. Retenția datelor",
+          "content": "Păstrăm datele dumneavoastră cât timp contul este activ. La ștergerea contului sau eliminarea organizației, toate datele asociate (sesiuni, note, acțiuni, analize) sunt șterse permanent în 30 de zile. Rezumatele generate de AI sunt șterse odată cu sesiunile sursă.",
+          "calendar": "Token-urile OAuth pentru Calendar sunt revocate și șterse imediat la deconectarea calendarului."
+        },
+        "gdpr": {
+          "title": "6. Drepturile dumneavoastră (GDPR)",
+          "intro": "Dacă vă aflați în Spațiul Economic European, aveți dreptul de a:",
+          "access": "Accesa datele dumneavoastră personale",
+          "rectify": "Rectifica datele inexacte",
+          "erase": "Solicita ștergerea datelor",
+          "port": "Exporta datele într-un format portabil",
+          "restrict": "Restricționa sau obiecta la procesare",
+          "contact": "Pentru exercitarea acestor drepturi, contactați-ne la privacy@1on1.ro. Vom răspunde în 30 de zile."
+        },
+        "selfHost": {
+          "title": "7. Self-hosting",
+          "content": "1on1 este open source (AGPL v3). Dacă găzduiți platforma pe servere proprii, sunteți operatorul de date și această politică de confidențialitate nu se aplică instanței dumneavoastră. Sunteți responsabil pentru propria conformitate cu protecția datelor."
+        },
+        "changes": {
+          "title": "8. Modificări ale acestei politici",
+          "content": "Putem actualiza această politică periodic. Modificările semnificative vor fi comunicate prin email sau notificare în aplicație. Utilizarea continuă după modificări constituie acceptare."
+        },
+        "contact": {
+          "title": "9. Contact",
+          "content": "Pentru întrebări legate de confidențialitate: privacy@1on1.ro"
+        }
+      }
+    },
+    "terms": {
+      "title": "Termeni și condiții",
+      "intro": "Acești Termeni și condiții (\"Termenii\") guvernează utilizarea platformei 1on1 operată de Surcod SRL (\"noi\"). Prin crearea unui cont sau utilizarea serviciului, acceptați acești Termeni.",
+      "sections": {
+        "service": {
+          "title": "1. Serviciul",
+          "content": "1on1 este o platformă de management al întâlnirilor pentru sesiuni structurate one-on-one între manageri și subordonați direcți. Serviciul include șabloane de ședință, urmărirea sesiunilor, perspective bazate pe AI, managementul acțiunilor, analize și integrare cu calendarul."
+        },
+        "accounts": {
+          "title": "2. Conturi și acces",
+          "item1": "Trebuie să furnizați informații corecte la crearea contului.",
+          "item2": "Persoana care înregistrează o organizație devine administratorul inițial și este responsabilă pentru gestionarea utilizatorilor și facturării.",
+          "item3": "Sunteți responsabil pentru păstrarea confidențialității credențialelor de autentificare.",
+          "item4": "Nu trebuie să partajați conturile între mai multe persoane."
+        },
+        "plans": {
+          "title": "3. Planuri și facturare",
+          "free": "Planul Gratuit include până la 5 utilizatori cu funcționalități de bază, fără costuri.",
+          "paid": "Planurile plătite (Pro, Enterprise) sunt facturate per utilizator pe lună. Prețurile sunt afișate pe pagina de prețuri și pot fi modificate cu 30 de zile preaviz.",
+          "trial": "Perioadele de probă gratuite, când sunt oferite, se convertesc în planul plătit selectat la sfârșitul perioadei de probă, cu excepția cazului în care sunt anulate.",
+          "refunds": "Nu oferim rambursări pentru perioade de facturare parțiale. Puteți anula oricând, iar accesul continuă până la sfârșitul perioadei de facturare curente."
+        },
+        "acceptable": {
+          "title": "4. Utilizare acceptabilă",
+          "intro": "Sunteți de acord să nu:",
+          "item1": "Utilizați serviciul în scopuri ilegale",
+          "item2": "Încercați să accesați date aparținând altor organizații",
+          "item3": "Faceți inginerie inversă sau extrageți codul sursă din serviciul găzduit (codul open-source este disponibil separat sub AGPL v3)",
+          "item4": "Utilizați instrumente automatizate pentru a extrage date sau supraîncărca serviciul",
+          "item5": "Încărcați conținut malițios sau încercați să exploatați vulnerabilități"
+        },
+        "data": {
+          "title": "5. Datele dumneavoastră",
+          "ownership": "Păstrați proprietatea asupra întregului conținut creat pe platformă (note de sesiune, acțiuni, șabloane etc.).",
+          "license": "Ne acordați o licență limitată de a procesa conținutul dumneavoastră exclusiv pentru furnizarea serviciului, inclusiv funcționalitățile AI pe care le activați.",
+          "export": "Puteți exporta datele oricând prin platformă sau contactând suportul.",
+          "deletion": "La ștergerea contului, datele sunt eliminate permanent în 30 de zile conform Politicii de confidențialitate."
+        },
+        "ai": {
+          "title": "6. Funcționalități AI",
+          "content": "Funcționalitățile noastre AI (rezumate de sesiune, analiză de sentiment, sugestii de acțiuni) sunt furnizate ca instrumente de asistență și nu trebuie tratate ca sfaturi profesionale. Rezultatele AI pot fi inexacte. Sunteți responsabil pentru revizuirea și aplicarea sugestiilor AI la propria discreție.",
+          "noTraining": "Nu folosim datele dumneavoastră pentru antrenarea modelelor AI. Conținutul sesiunilor este trimis către API-ul Anthropic Claude doar pentru procesare în timp real."
+        },
+        "openSource": {
+          "title": "7. Open source",
+          "content": "Codul sursă al platformei 1on1 este disponibil sub GNU Affero General Public License v3 (AGPL v3) la github.com/aibaza/1on1. Serviciul găzduit la app.1on1.ro include infrastructură suplimentară, suport și servicii gestionate care nu sunt acoperite de licența open-source."
+        },
+        "liability": {
+          "title": "8. Limitarea răspunderii",
+          "content": "Serviciul este furnizat \"ca atare\" fără garanții de orice fel. Nu suntem răspunzători pentru daune indirecte, incidentale sau consecvențiale rezultate din utilizarea serviciului. Răspunderea noastră totală este limitată la suma plătită în cele 12 luni anterioare reclamației."
+        },
+        "termination": {
+          "title": "9. Încetare",
+          "content": "Putem suspenda sau înceta accesul dumneavoastră dacă încălcați acești Termeni. Puteți înceta contul oricând din setările contului. La încetare, drepturile de utilizare a serviciului încetează imediat, iar ștergerea datelor urmează programul din Politica de confidențialitate."
+        },
+        "changes": {
+          "title": "10. Modificări ale acestor termeni",
+          "content": "Putem modifica acești Termeni oricând. Vă vom notifica despre modificările materiale prin email sau notificare în aplicație cu cel puțin 30 de zile înainte de intrarea în vigoare. Utilizarea continuă după data efectivă constituie acceptarea Termenilor actualizați."
+        },
+        "governing": {
+          "title": "11. Legea aplicabilă",
+          "content": "Acești Termeni sunt guvernați de legislația din România. Orice dispute vor fi soluționate în instanțele din București, România."
+        },
+        "contact": {
+          "title": "12. Contact",
+          "content": "Pentru întrebări despre acești Termeni: legal@1on1.ro"
+        }
+      }
+    }
+  }
+}

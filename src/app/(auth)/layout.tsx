@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
 import { getDesignPreference } from "@/lib/design-preference.server";
-import { PublicNav } from "@/app/(marketing)/_components/public-nav";
+import { MarketingNav } from "@/app/(marketing)/_components/marketing-nav";
 import { MarketingFooter } from "@/app/(marketing)/_components/marketing-footer";
 
 export default async function AuthLayout({
@@ -21,7 +21,7 @@ export default async function AuthLayout({
   if (designPref === "editorial") {
     return (
       <div className="relative min-h-screen bg-[var(--background)] flex flex-col">
-        <PublicNav />
+        <MarketingNav />
         <div className="flex-1">
           {children}
         </div>
@@ -33,7 +33,7 @@ export default async function AuthLayout({
   // Classic: centered card layout with nav + footer
   return (
     <div className="relative min-h-screen bg-background flex flex-col">
-      <PublicNav />
+      <MarketingNav />
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           {children}
