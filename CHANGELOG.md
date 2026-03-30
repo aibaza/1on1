@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Google/Microsoft OAuth login now links to existing accounts with the same email (was throwing "OAuthAccountNotLinked" for users who registered with email/password first)
+
 ### Changed
 - Renamed "Business" plan to "Enterprise" across entire codebase to align with DB enum (`plan: free, starter, pro, enterprise`)
   - Updated billing plan slug, seed data, migration SQL, i18n (EN + RO), pricing components, landing page, registration flow, feature comparison, upgrade prompts, founder controls, auth validation, and test descriptions

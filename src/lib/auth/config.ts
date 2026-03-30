@@ -31,7 +31,11 @@ const config = {
     signIn: "/login",
     error: "/login",
   },
-  providers: [Google, MicrosoftEntraID, credentialsProvider],
+  providers: [
+    Google({ allowDangerousEmailAccountLinking: true }),
+    MicrosoftEntraID({ allowDangerousEmailAccountLinking: true }),
+    credentialsProvider,
+  ],
   callbacks: {
     signIn: signInCallback,
     jwt: jwtCallback,
