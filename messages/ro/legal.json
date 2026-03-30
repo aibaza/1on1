@@ -3,7 +3,7 @@
     "lastUpdated": "Ultima actualizare: 30 martie 2026",
     "privacy": {
       "title": "Politica de confidențialitate",
-      "intro": "Această Politică de confidențialitate explică modul în care 1on1 (\"noi\") colectează, utilizează și protejează datele dumneavoastră personale atunci când folosiți platforma noastră la app.1on1.ro și serviciile asociate.",
+      "intro": "Această Politică de confidențialitate explică modul în care 1on1 (\"noi\") colectează, utilizează și protejează datele dumneavoastră personale atunci când folosiți platforma noastră la app.1on1.surcod.ro și serviciile asociate.",
       "sections": {
         "dataWeCollect": {
           "title": "1. Datele pe care le colectăm",
@@ -51,7 +51,7 @@
           "erase": "Solicita ștergerea datelor",
           "port": "Exporta datele într-un format portabil",
           "restrict": "Restricționa sau obiecta la procesare",
-          "contact": "Pentru exercitarea acestor drepturi, contactați-ne la privacy@1on1.ro. Vom răspunde în 30 de zile."
+          "contact": "Pentru exercitarea acestor drepturi, contactați-ne la privacy@1on1.surcod.ro. Vom răspunde în 30 de zile."
         },
         "selfHost": {
           "title": "7. Self-hosting",
@@ -63,7 +63,7 @@
         },
         "contact": {
           "title": "9. Contact",
-          "content": "Pentru întrebări legate de confidențialitate: privacy@1on1.ro"
+          "content": "Pentru întrebări legate de confidențialitate: privacy@1on1.surcod.ro"
         }
       }
     },
@@ -112,7 +112,7 @@
         },
         "openSource": {
           "title": "7. Open source",
-          "content": "Codul sursă al platformei 1on1 este disponibil sub GNU Affero General Public License v3 (AGPL v3) la github.com/aibaza/1on1. Serviciul găzduit la app.1on1.ro include infrastructură suplimentară, suport și servicii gestionate care nu sunt acoperite de licența open-source."
+          "content": "Codul sursă al platformei 1on1 este disponibil sub GNU Affero General Public License v3 (AGPL v3) la github.com/aibaza/1on1. Serviciul găzduit la app.1on1.surcod.ro include infrastructură suplimentară, suport și servicii gestionate care nu sunt acoperite de licența open-source."
         },
         "liability": {
           "title": "8. Limitarea răspunderii",
@@ -132,7 +132,7 @@
         },
         "contact": {
           "title": "12. Contact",
-          "content": "Pentru întrebări despre acești Termeni: legal@1on1.ro"
+          "content": "Pentru întrebări despre acești Termeni: legal@1on1.surcod.ro"
         }
       }
     },
@@ -193,7 +193,7 @@
       "disclosure": {
         "title": "Divulgare responsabilă",
         "text": "Prețuim comunitatea de securitate. Dacă ai descoperit o vulnerabilitate, te rugăm să ne raportezi imediat. Ne angajăm la un răspuns rapid.",
-        "email": "security@1on1.ro"
+        "email": "security@1on1.surcod.ro"
       },
       "cta": {
         "title": "Întrebări despre securitate?",
