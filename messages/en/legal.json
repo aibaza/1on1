@@ -51,7 +51,7 @@
           "erase": "Request erasure of your data",
           "port": "Export your data in a portable format",
           "restrict": "Restrict or object to processing",
-          "contact": "To exercise these rights, contact us at privacy@1on1.surcod.ro. We will respond within 30 days."
+          "contact": "To exercise these rights, contact us at privacy@surcod.ro. We will respond within 30 days."
         },
         "selfHost": {
           "title": "7. Self-Hosting",
@@ -63,7 +63,7 @@
         },
         "contact": {
           "title": "9. Contact",
-          "content": "For privacy-related inquiries: privacy@1on1.surcod.ro"
+          "content": "For privacy-related inquiries: privacy@surcod.ro"
         }
       }
     },
@@ -132,7 +132,7 @@
         },
         "contact": {
           "title": "12. Contact",
-          "content": "For questions about these Terms: legal@1on1.surcod.ro"
+          "content": "For questions about these Terms: legal@surcod.ro"
         }
       }
     },
@@ -193,7 +193,7 @@
       "disclosure": {
         "title": "Responsible Disclosure",
         "text": "We value the security community. If you've discovered a vulnerability, please report it to us immediately. We commit to a rapid response.",
-        "email": "security@1on1.surcod.ro"
+        "email": "security@surcod.ro"
       },
       "cta": {
         "title": "Questions about security?",

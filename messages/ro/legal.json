@@ -51,7 +51,7 @@
           "erase": "Solicita ștergerea datelor",
           "port": "Exporta datele într-un format portabil",
           "restrict": "Restricționa sau obiecta la procesare",
-          "contact": "Pentru exercitarea acestor drepturi, contactați-ne la privacy@1on1.surcod.ro. Vom răspunde în 30 de zile."
+          "contact": "Pentru exercitarea acestor drepturi, contactați-ne la privacy@surcod.ro. Vom răspunde în 30 de zile."
         },
         "selfHost": {
           "title": "7. Self-hosting",
@@ -63,7 +63,7 @@
         },
         "contact": {
           "title": "9. Contact",
-          "content": "Pentru întrebări legate de confidențialitate: privacy@1on1.surcod.ro"
+          "content": "Pentru întrebări legate de confidențialitate: privacy@surcod.ro"
         }
       }
     },
@@ -132,7 +132,7 @@
         },
         "contact": {
           "title": "12. Contact",
-          "content": "Pentru întrebări despre acești Termeni: legal@1on1.surcod.ro"
+          "content": "Pentru întrebări despre acești Termeni: legal@surcod.ro"
         }
       }
     },
@@ -193,7 +193,7 @@
       "disclosure": {
         "title": "Divulgare responsabilă",
         "text": "Prețuim comunitatea de securitate. Dacă ai descoperit o vulnerabilitate, te rugăm să ne raportezi imediat. Ne angajăm la un răspuns rapid.",
-        "email": "security@1on1.surcod.ro"
+        "email": "security@surcod.ro"
       },
       "cta": {
         "title": "Întrebări despre securitate?",
