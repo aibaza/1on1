@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - Google/Microsoft OAuth login now links to existing accounts with the same email (was throwing "OAuthAccountNotLinked" for users who registered with email/password first)
+- Homepage Romanian translations: removed anglicisms, improved naturalness (check-in-uri→întâlniri, framework→pași structurați, follow-up→urmărire, rapoarte directe→subordonați direcți)
+- Homepage showcase panels replaced with real component replicas (series card, wizard pills, AI suggestions, health cards) using actual backend Tailwind classes and data shapes
 
 ### Changed
 - Renamed "Business" plan to "Enterprise" across entire codebase to align with DB enum (`plan: free, starter, pro, enterprise`)

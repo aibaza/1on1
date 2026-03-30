@@ -9,49 +9,63 @@
       "getStarted": "Get Started"
     },
     "hero": {
-      "title": "Turn unstructured check-ins into",
+      "title": "Turn your 1:1 meetings into",
       "titleHighlight": "guided, AI-enhanced",
       "titleEnd": "conversations.",
-      "subtitle": "Stop dreading the blank agenda. 1on1 curates every meeting into a meaningful growth session with real-time sentiment analysis and actionable outcomes.",
-      "cta": "Start Free Trial",
+      "subtitle": "Stop winging the agenda. 1on1 guides every session with structured questions, AI analysis, and concrete action items.",
+      "cta": "Try for Free",
       "ctaSecondary": "View on GitHub"
     },
     "heroCard": {
       "name": "Sarah Chen",
       "role": "Senior Engineer",
       "score": "4.2",
-      "pulseLabel": "Team Pulse",
-      "sentimentLabel": "Weekly Sentiment",
-      "sentimentTrend": "+12% vs last week",
-      "aiTitle": "AI Insight",
-      "aiText": "Sarah mentioned \"bottlenecks in PR review\" twice. Suggest discussing workload redistribution."
+      "sessionLabel": "Session #12",
+      "sentimentBlurb": "Strong engagement on career growth goals",
+      "scheduleText": "Weekly · Mondays 14:00",
+      "nextSession": "Tomorrow",
+      "startButton": "Start",
+      "agendaLabel": "Agenda"
     },
     "showcase": {
       "wizard": {
-        "title": "The Wizard",
-        "description": "A curated 4-step framework that ensures no vital topic is ever left unaddressed.",
-        "stepLabel": "Wellbeing",
-        "question": "Rate your current work-life balance this week.",
-        "nextStep": "Next Step"
+        "title": "The Guided Session",
+        "description": "Four structured steps that ensure no vital topic is ever left unaddressed.",
+        "step1": "Recap",
+        "step2": "How are you?",
+        "step3": "Retrospective",
+        "step4": "Work Environment",
+        "question": "How would you rate your work-life balance this week?",
+        "ratingLabel": "Your rating"
       },
       "ai": {
-        "title": "AI Insights",
-        "description": "Real-time coaching prompts that turn silent concerns into productive dialogues.",
-        "suggestion1Label": "Growth Suggestion",
-        "suggestion1Text": "Bridge the gap to Staff Engineer by leading the API migration project.",
-        "suggestion2Label": "Workload Alert",
-        "suggestion2Text": "12 active tasks assigned this week. High risk of burnout detected.",
-        "accept": "Accept",
-        "skip": "Skip"
+        "title": "AI Suggestions",
+        "description": "Real-time coaching that turns subtle signals into productive conversations.",
+        "suggestion1Title": "Career growth discussion",
+        "suggestion1Desc": "Suggest Sarah leads the API migration — a natural step toward Staff Engineer.",
+        "suggestion1Reasoning": "Sarah mentioned interest in tech lead path in last 3 sessions",
+        "suggestion1Assignee": "Manager",
+        "suggestion2Title": "Sprint workload redistribution",
+        "suggestion2Desc": "Review workload and redistribute non-critical tasks.",
+        "suggestion2Reasoning": "Workload satisfaction score dropped from 4.2 to 3.1",
+        "suggestion2Assignee": "Both"
       },
       "dashboard": {
         "title": "Team Dashboard",
-        "description": "High-level visibility into team health across all managed reporting lines.",
-        "healthLabel": "Health",
-        "healthValue": "4.1",
-        "actionsLabel": "Actions",
-        "actionsValue": "72%",
-        "alertText": "Jamie Park: Low sentiment alert"
+        "description": "Real-time visibility into team health across all reporting lines.",
+        "healthTitle": "Health Score",
+        "healthScore": "4.1",
+        "healthTrend": "+0.3",
+        "actionTitle": "Action Item Rate",
+        "actionRate": "72",
+        "distributionTitle": "Team Distribution",
+        "distributionHealthy": "5",
+        "distributionAttention": "2",
+        "distributionCritical": "1",
+        "healthyLabel": "Healthy",
+        "attentionLabel": "Attention",
+        "criticalLabel": "Critical",
+        "alertText": "Score drop detected for Jamie Park"
       }
     },
     "features": {
@@ -59,7 +73,7 @@
       "subtitle": "We've removed the technical friction so you can focus on the person across the screen.",
       "guided": {
         "title": "Guided, not blank",
-        "description": "Dynamic templates that adapt to the history of your previous 1:1 sessions automatically."
+        "description": "Dynamic templates that adapt automatically to the history of your previous sessions."
       },
       "ai": {
         "title": "AI that coaches",
@@ -67,7 +81,7 @@
       },
       "actionItems": {
         "title": "Action items with teeth",
-        "description": "Integrated task tracking that follows up on promises made during the meeting."
+        "description": "Integrated tracking that follows up on every promise made during the session."
       },
       "security": {
         "title": "Your data, your rules",
@@ -82,15 +96,15 @@
       "title": "Three steps to better meetings",
       "step1": {
         "title": "Set up",
-        "description": "Import your team and define your recurring cadence. Choose from expert-crafted templates or create your own."
+        "description": "Add your team and set the cadence. Choose from expert-crafted templates or create your own."
       },
       "step2": {
         "title": "Run sessions",
-        "description": "Follow the guided agenda and capture notes with AI assistance in real-time."
+        "description": "Follow the guided agenda and take notes with real-time AI assistance."
       },
       "step3": {
         "title": "Track results",
-        "description": "Review progress trends and follow up on automated action items across your team."
+        "description": "Analyze trends and follow up on action items generated from every session."
       }
     },
     "pricing": {
@@ -112,7 +126,7 @@
         "period": "/user/mo",
         "badge": "Popular",
         "features": {
-          "users": "Unlimited reports",
+          "users": "Unlimited users",
           "ai": "Full AI Analysis Suite",
           "sentiment": "Sentiment History"
         },
@@ -141,13 +155,13 @@
         "answer": "Yes, our core engine is open source on GitHub. Enterprise users get priority support and Docker containers optimized for production environments."
       },
       "q3": {
-        "question": "How does AI sentiment work?",
+        "question": "How does AI analysis work?",
         "answer": "Our AI analyzes responses and linguistic markers to detect shifts in morale over time, alerting you to potential burnout before it happens."
       }
     },
     "finalCta": {
       "title": "Ready to improve your team health?",
-      "subtitle": "Join managers who use 1on1 to build high-performance cultures through structured connection.",
+      "subtitle": "Join managers who build better teams through structured conversations.",
       "cta": "Create My Account",
       "ctaSecondary": "Talk to an Expert"
     },

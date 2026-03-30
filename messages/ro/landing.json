@@ -9,49 +9,63 @@
       "getStarted": "Începe acum"
     },
     "hero": {
-      "title": "Transformă check-in-urile nestructurate în",
-      "titleHighlight": "conversații ghidate",
-      "titleEnd": "cu AI.",
-      "subtitle": "Nu mai improviza agenda. 1on1 transformă fiecare întâlnire într-o sesiune de creștere cu analiză de sentiment în timp real și rezultate acționabile.",
-      "cta": "Începe perioada de probă",
+      "title": "Transformă întâlnirile 1:1 în",
+      "titleHighlight": "conversații ghidate,",
+      "titleEnd": "potențiate de AI.",
+      "subtitle": "Nu mai improviza agenda. 1on1 ghidează fiecare sesiune cu întrebări structurate, analiză AI și acțiuni concrete.",
+      "cta": "Încearcă gratuit",
       "ctaSecondary": "Vezi pe GitHub"
     },
     "heroCard": {
-      "name": "Sarah Chen",
+      "name": "Ana Popescu",
       "role": "Senior Engineer",
       "score": "4.2",
-      "pulseLabel": "Puls echipă",
-      "sentimentLabel": "Sentiment săptămânal",
-      "sentimentTrend": "+12% față de săpt. trecută",
-      "aiTitle": "Insight AI",
-      "aiText": "Sarah a menționat \"blocaje în review-ul PR-urilor\" de două ori. Sugerăm discutarea redistribuirii sarcinilor."
+      "sessionLabel": "Sesiunea #12",
+      "sentimentBlurb": "Angajament crescut pe obiectivele de dezvoltare profesională",
+      "scheduleText": "Săptămânal · Luni 14:00",
+      "nextSession": "Mâine",
+      "startButton": "Start",
+      "agendaLabel": "Agendă"
     },
     "showcase": {
       "wizard": {
-        "title": "Wizard-ul",
-        "description": "Un framework în 4 pași care asigură că niciun subiect vital nu rămâne nediscutat.",
-        "stepLabel": "Wellbeing",
-        "question": "Evaluează echilibrul muncă-viață personală din această săptămână.",
-        "nextStep": "Pasul următor"
+        "title": "Sesiunea ghidată",
+        "description": "Patru pași structurați care asigură că niciun subiect important nu rămâne nediscutat.",
+        "step1": "Recap",
+        "step2": "Cum te simți?",
+        "step3": "Retrospectivă",
+        "step4": "Mediul de lucru",
+        "question": "Cum evaluezi echilibrul muncă—viață personală din această săptămână?",
+        "ratingLabel": "Evaluarea ta"
       },
       "ai": {
-        "title": "Insights AI",
-        "description": "Sugestii de coaching în timp real care transformă preocupările tăcute în dialoguri productive.",
-        "suggestion1Label": "Sugestie de dezvoltare",
-        "suggestion1Text": "Apropierea de rolul de Staff Engineer prin conducerea proiectului de migrare API.",
-        "suggestion2Label": "Alertă sarcini",
-        "suggestion2Text": "12 sarcini active atribuite săptămâna aceasta. Risc ridicat de burnout detectat.",
-        "accept": "Acceptă",
-        "skip": "Omite"
+        "title": "Sugestii AI",
+        "description": "Coaching în timp real care transformă semnalele subtile în conversații productive.",
+        "suggestion1Title": "Discuție despre dezvoltare profesională",
+        "suggestion1Desc": "Propune-i Anei să conducă migrarea API — pas natural spre rolul de Staff Engineer.",
+        "suggestion1Reasoning": "Ana a menționat interesul pentru tech lead în ultimele 3 sesiuni",
+        "suggestion1Assignee": "Manager",
+        "suggestion2Title": "Redistribuire sarcini sprint",
+        "suggestion2Desc": "Analizează volumul de muncă și redistribuie sarcinile non-critice.",
+        "suggestion2Reasoning": "Scorul de satisfacție cu volumul de muncă a scăzut de la 4.2 la 3.1",
+        "suggestion2Assignee": "Ambii"
       },
       "dashboard": {
         "title": "Dashboard echipă",
-        "description": "Vizibilitate de nivel înalt asupra sănătății echipei pe toate liniile de raportare.",
-        "healthLabel": "Sănătate",
-        "healthValue": "4.1",
-        "actionsLabel": "Acțiuni",
-        "actionsValue": "72%",
-        "alertText": "Jamie Park: Alertă sentiment scăzut"
+        "description": "Vizibilitate în timp real asupra sănătății echipei, pe toate liniile de raportare.",
+        "healthTitle": "Scor sănătate",
+        "healthScore": "4.1",
+        "healthTrend": "+0.3",
+        "actionTitle": "Rata acțiunilor",
+        "actionRate": "72",
+        "distributionTitle": "Distribuție echipă",
+        "distributionHealthy": "5",
+        "distributionAttention": "2",
+        "distributionCritical": "1",
+        "healthyLabel": "Sănătos",
+        "attentionLabel": "Atenție",
+        "criticalLabel": "Critic",
+        "alertText": "Scor în scădere detectat pentru Jamie Park"
       }
     },
     "features": {
@@ -59,7 +73,7 @@
       "subtitle": "Am eliminat fricțiunea tehnică pentru a te concentra pe persoana de vizavi.",
       "guided": {
         "title": "Ghidat, nu gol",
-        "description": "Șabloane dinamice care se adaptează automat la istoricul sesiunilor tale anterioare."
+        "description": "Șabloane dinamice care se adaptează automat la istoricul sesiunilor tale."
       },
       "ai": {
         "title": "AI care antrenează",
@@ -67,7 +81,7 @@
       },
       "actionItems": {
         "title": "Acțiuni cu forță",
-        "description": "Urmărirea integrată a sarcinilor care dă follow-up promisiunilor din sesiune."
+        "description": "Urmărire integrată care ține cont de fiecare promisiune din sesiune."
       },
       "security": {
         "title": "Datele tale, regulile tale",
@@ -82,15 +96,15 @@
       "title": "Trei pași către sesiuni mai bune",
       "step1": {
         "title": "Configurare",
-        "description": "Importă echipa și definește cadența recurentă. Alege din șabloane create de experți sau creează-ți propriile."
+        "description": "Adaugă echipa și stabilește frecvența. Alege din șabloane create de experți sau creează-ți propriile."
       },
       "step2": {
         "title": "Desfășurare",
-        "description": "Urmează agenda ghidată și captează note cu asistență AI în timp real."
+        "description": "Urmează agenda ghidată și notează cu asistență AI în timp real."
       },
       "step3": {
         "title": "Urmărire",
-        "description": "Analizează tendințele de progres și urmărește acțiunile automate din echipă."
+        "description": "Analizează tendințele și urmărește acțiunile generate din fiecare sesiune."
       }
     },
     "pricing": {
@@ -100,7 +114,7 @@
         "name": "Gratuit",
         "price": "0",
         "features": {
-          "users": "Până la 5 rapoarte directe",
+          "users": "Până la 5 subordonați direcți",
           "templates": "Șabloane de bază",
           "noAi": "Fără AI Insights"
         },
@@ -112,7 +126,7 @@
         "period": "/utilizator/lună",
         "badge": "Popular",
         "features": {
-          "users": "Rapoarte nelimitate",
+          "users": "Utilizatori nelimitați",
           "ai": "Suită completă AI",
           "sentiment": "Istoric sentiment"
         },
@@ -134,20 +148,20 @@
       "title": "Întrebări frecvente",
       "q1": {
         "question": "Cât de sigure sunt datele mele?",
-        "answer": "Folosim criptare end-to-end pentru toate notele de sesiune. Pentru medii cu cerințe ridicate de conformitate, planul Enterprise permite hostarea întregii soluții pe serverele proprii."
+        "answer": "Folosim criptare end-to-end pentru toate notele de sesiune. Pentru medii cu cerințe stricte de conformitate, planul Enterprise permite hostarea întregii soluții pe serverele proprii."
       },
       "q2": {
         "question": "Pot să fac self-host cu versiunea open-source?",
         "answer": "Da, motorul principal este open source pe GitHub. Utilizatorii Enterprise primesc suport prioritar și containere Docker optimizate pentru producție."
       },
       "q3": {
-        "question": "Cum funcționează sentimentul AI?",
-        "answer": "AI-ul nostru analizează răspunsurile și marcatorii lingvistici pentru a detecta schimbări de morale în timp, alertându-te asupra burnout-ului potențial înainte să se întâmple."
+        "question": "Cum funcționează analiza AI?",
+        "answer": "AI-ul nostru analizează răspunsurile și marcatorii lingvistici pentru a detecta schimbări de dispoziție în timp, alertându-te asupra burnout-ului potențial înainte să se întâmple."
       }
     },
     "finalCta": {
       "title": "Pregătit să îmbunătățești sănătatea echipei?",
-      "subtitle": "Alătură-te managerilor care folosesc 1on1 pentru a construi culturi performante prin conexiune structurată.",
+      "subtitle": "Alătură-te managerilor care construiesc echipe mai bune prin conversații structurate.",
       "cta": "Creează-ți contul",
       "ctaSecondary": "Vorbește cu un expert"
     },

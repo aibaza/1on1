@@ -29,12 +29,12 @@ export async function MarketingNav({ activeLink }: MarketingNavProps = {}) {
           <Logo className="h-8" />
         </Link>
         <div className="hidden md:flex items-center space-x-8">
-          <a className={linkClass("features")} href="/#features">
+          <Link className={linkClass("features")} href="/#features">
             {t("nav.features")}
-          </a>
-          <a className={linkClass("pricing")} href="/#pricing">
+          </Link>
+          <Link className={linkClass("pricing")} href="/#pricing">
             {t("nav.pricing")}
-          </a>
+          </Link>
           <Link className={linkClass("security")} href="/security">
             {t("nav.security")}
           </Link>
