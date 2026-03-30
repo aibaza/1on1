@@ -55,12 +55,12 @@ export default async function SecurityPage() {
         {/* Key Principles */}
         <section className="max-w-7xl mx-auto px-8 mb-32">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { key: "encryption", Icon: Lock, color: "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white" },
-              { key: "isolation", Icon: Database, color: "bg-[var(--editorial-tertiary)]/10 text-[var(--editorial-tertiary)] group-hover:bg-[var(--editorial-tertiary)] group-hover:text-white" },
-              { key: "rbac", Icon: Users, color: "bg-muted text-muted-foreground group-hover:bg-foreground group-hover:text-background" },
-              { key: "openSource", Icon: Code, color: "bg-muted text-muted-foreground group-hover:bg-foreground group-hover:text-background" },
-            ].map(({ key, Icon, color }) => (
+            {([
+              ["encryption", Lock, "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white"],
+              ["isolation", Database, "bg-[var(--editorial-tertiary)]/10 text-[var(--editorial-tertiary)] group-hover:bg-[var(--editorial-tertiary)] group-hover:text-white"],
+              ["rbac", Users, "bg-muted text-muted-foreground group-hover:bg-foreground group-hover:text-background"],
+              ["openSource", Code, "bg-muted text-muted-foreground group-hover:bg-foreground group-hover:text-background"],
+            ] as const).map(([key, Icon, color]) => (
               <div key={key} className="p-8 rounded-xl bg-card border border-border/10 shadow-sm hover:shadow-md transition-shadow group">
                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-6 transition-colors ${color}`}>
                   <Icon className="h-5 w-5" />
@@ -190,12 +190,12 @@ export default async function SecurityPage() {
             {t("compliance.title")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              { key: "gdpr", Icon: BadgeCheck },
-              { key: "residency", Icon: MapPin },
-              { key: "cookie", Icon: Cookie },
-              { key: "selfHost", Icon: Container },
-            ].map(({ key, Icon }) => (
+            {([
+              ["gdpr", BadgeCheck],
+              ["residency", MapPin],
+              ["cookie", Cookie],
+              ["selfHost", Container],
+            ] as const).map(([key, Icon]) => (
               <div key={key} className="flex gap-6">
                 <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[var(--editorial-surface-container-high)] flex items-center justify-center text-primary">
                   <Icon className="h-5 w-5" />
