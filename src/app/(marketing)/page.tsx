@@ -9,7 +9,9 @@ import {
   CheckCircle,
   Shield,
   BarChart3,
+  Sparkles,
   XCircle,
+  Check,
 } from "lucide-react";
 import { auth } from "@/lib/auth/config";
 import { MarketingNav } from "./_components/marketing-nav";
@@ -148,7 +150,7 @@ export default async function LandingPage() {
                 {t("features.security.description")}
               </p>
             </div>
-            <div className="p-8 rounded-3xl bg-card border border-border/10 dark:border-white/5 hover:shadow-xl transition-all md:col-span-2 lg:col-span-1">
+            <div className="p-8 rounded-3xl bg-card border border-border/10 dark:border-white/5 hover:shadow-xl transition-all">
               <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
                 <BarChart3 className="h-7 w-7 text-primary" />
               </div>
@@ -157,6 +159,17 @@ export default async function LandingPage() {
               </h3>
               <p className="text-muted-foreground leading-relaxed">
                 {t("features.teamHealth.description")}
+              </p>
+            </div>
+            <div className="p-8 rounded-3xl bg-card border border-border/10 dark:border-white/5 hover:shadow-xl transition-all">
+              <div className="w-14 h-14 rounded-2xl bg-[var(--editorial-tertiary)]/10 flex items-center justify-center mb-6">
+                <Sparkles className="h-7 w-7 text-[var(--editorial-tertiary)]" />
+              </div>
+              <h3 className="font-[family-name:var(--font-manrope)] text-xl font-bold mb-3">
+                {t("features.aiAssistant.title")}
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {t("features.aiAssistant.description")}
               </p>
             </div>
           </div>
@@ -222,17 +235,29 @@ export default async function LandingPage() {
               <div className="flex items-baseline mb-8">
                 <span className="text-4xl font-extrabold">&euro;{t("pricing.free.price")}</span>
               </div>
-              <ul className="space-y-4 mb-10 flex-grow">
+              <ul className="space-y-3 mb-10 flex-grow">
                 <li className="flex items-center gap-3 text-sm font-medium">
-                  <CheckCircle className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
                   {t("pricing.free.features.users")}
                 </li>
                 <li className="flex items-center gap-3 text-sm font-medium">
-                  <CheckCircle className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  {t("pricing.free.features.managers")}
+                </li>
+                <li className="flex items-center gap-3 text-sm font-medium">
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
                   {t("pricing.free.features.templates")}
                 </li>
-                <li className="flex items-center gap-3 text-sm font-medium text-muted-foreground">
-                  <XCircle className="h-5 w-5 flex-shrink-0" />
+                <li className="flex items-center gap-3 text-sm font-medium">
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  {t("pricing.free.features.actionItems")}
+                </li>
+                <li className="flex items-center gap-3 text-sm font-medium">
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  {t("pricing.free.features.analytics")}
+                </li>
+                <li className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <XCircle className="h-4 w-4 flex-shrink-0" />
                   {t("pricing.free.features.noAi")}
                 </li>
               </ul>
@@ -256,18 +281,30 @@ export default async function LandingPage() {
                   {t("pricing.pro.period")}
                 </span>
               </div>
-              <ul className="space-y-4 mb-10 flex-grow">
+              <ul className="space-y-3 mb-10 flex-grow">
                 <li className="flex items-center gap-3 text-sm font-medium">
-                  <CheckCircle className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
                   {t("pricing.pro.features.users")}
                 </li>
                 <li className="flex items-center gap-3 text-sm font-medium">
-                  <CheckCircle className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  {t("pricing.pro.features.templates")}
+                </li>
+                <li className="flex items-center gap-3 text-sm font-medium font-bold text-primary">
+                  <Sparkles className="h-4 w-4 flex-shrink-0" />
                   {t("pricing.pro.features.ai")}
                 </li>
                 <li className="flex items-center gap-3 text-sm font-medium">
-                  <CheckCircle className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
                   {t("pricing.pro.features.sentiment")}
+                </li>
+                <li className="flex items-center gap-3 text-sm font-medium">
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  {t("pricing.pro.features.analytics")}
+                </li>
+                <li className="flex items-center gap-3 text-sm font-medium">
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  {t("pricing.pro.features.calendar")}
                 </li>
               </ul>
               <Link
@@ -287,18 +324,30 @@ export default async function LandingPage() {
                   {t("pricing.enterprise.period")}
                 </span>
               </div>
-              <ul className="space-y-4 mb-10 flex-grow">
+              <ul className="space-y-3 mb-10 flex-grow">
                 <li className="flex items-center gap-3 text-sm font-medium">
-                  <CheckCircle className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  {t("pricing.enterprise.features.everything")}
+                </li>
+                <li className="flex items-center gap-3 text-sm font-medium">
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
                   {t("pricing.enterprise.features.selfHost")}
                 </li>
                 <li className="flex items-center gap-3 text-sm font-medium">
-                  <CheckCircle className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
                   {t("pricing.enterprise.features.sso")}
                 </li>
                 <li className="flex items-center gap-3 text-sm font-medium">
-                  <CheckCircle className="h-5 w-5 text-[var(--editorial-tertiary)] flex-shrink-0" />
-                  {t("pricing.enterprise.features.retention")}
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  {t("pricing.enterprise.features.encryption")}
+                </li>
+                <li className="flex items-center gap-3 text-sm font-medium">
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  {t("pricing.enterprise.features.audit")}
+                </li>
+                <li className="flex items-center gap-3 text-sm font-medium">
+                  <Check className="h-4 w-4 text-[var(--editorial-tertiary)] flex-shrink-0" />
+                  {t("pricing.enterprise.features.support")}
                 </li>
               </ul>
               <Link

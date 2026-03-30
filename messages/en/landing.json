@@ -90,6 +90,10 @@
       "teamHealth": {
         "title": "Team health at a glance",
         "description": "Aggregated metrics that help you spot systemic issues before they lead to churn."
+      },
+      "aiAssistant": {
+        "title": "AI assistant for forms",
+        "description": "A specialized AI helps you build and optimize your session wizard forms, tailored to your team's needs."
       }
     },
     "howItWorks": {
@@ -115,7 +119,10 @@
         "price": "0",
         "features": {
           "users": "Up to 5 direct reports",
-          "templates": "Basic agenda templates",
+          "managers": "1 manager",
+          "templates": "3 session templates",
+          "actionItems": "Shared action items",
+          "analytics": "Basic analytics",
           "noAi": "No AI Insights"
         },
         "cta": "Get Started"
@@ -127,8 +134,11 @@
         "badge": "Popular",
         "features": {
           "users": "Unlimited users",
-          "ai": "Full AI Analysis Suite",
-          "sentiment": "Sentiment History"
+          "templates": "Unlimited templates",
+          "ai": "AI summaries + action suggestions",
+          "sentiment": "Sentiment analysis & trends",
+          "analytics": "Full team dashboard",
+          "calendar": "Google Calendar integration"
         },
         "cta": "Go Pro"
       },
@@ -137,9 +147,12 @@
         "price": "5",
         "period": "/user/mo",
         "features": {
+          "everything": "Everything in Pro",
           "selfHost": "Self-hosting (Docker)",
           "sso": "SSO & SAML",
-          "retention": "Custom Data Retention"
+          "encryption": "E2E encrypted private notes",
+          "audit": "Full audit log",
+          "support": "Dedicated support"
         },
         "cta": "Contact Sales"
       }

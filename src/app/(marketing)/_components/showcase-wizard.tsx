@@ -4,12 +4,13 @@ import { useTranslations } from "next-intl";
 import { Check, Star } from "lucide-react";
 
 /**
- * Static replica of wizard mobile carousel for landing page showcase.
- * Matches the pill/card UI from wizard-mobile-carousel.tsx.
+ * Static replica of wizard session for landing page showcase.
+ * Shows template-based steps (variable count, not fixed 4).
  */
 export function ShowcaseWizard() {
   const t = useTranslations("landing.showcase.wizard");
 
+  // Example steps from a template — count is variable
   const steps = [
     { label: t("step1"), completed: true },
     { label: t("step2"), completed: false, active: true },
@@ -18,48 +19,52 @@ export function ShowcaseWizard() {
   ];
 
   return (
-    <div className="bg-card p-6 rounded-3xl shadow-sm dark:shadow-none dark:ring-1 dark:ring-white/5 flex flex-col items-center text-center">
-      {/* Phone frame */}
-      <div className="mb-6 w-full max-w-[300px]">
-        {/* Step pills — matching wizard-mobile-carousel */}
-        <div className="flex gap-2 mb-5 overflow-hidden">
+    <div className="bg-card p-6 rounded-3xl shadow-sm dark:shadow-none dark:ring-1 dark:ring-white/5 flex flex-col">
+      {/* Wizard content */}
+      <div className="mb-6 w-full">
+        {/* Step pills — horizontal scroll, matching wizard-shell pill row */}
+        <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1">
           {steps.map((step, i) => (
-            <button
+            <div
               key={i}
-              className={`flex-1 flex flex-col items-center gap-1 py-2.5 px-1 rounded-xl text-[10px] font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all shrink-0 ${
                 step.active
-                  ? "bg-primary text-white shadow-md"
+                  ? "bg-primary text-white shadow-sm"
                   : step.completed
-                    ? "bg-[var(--editorial-surface-container-low)] text-foreground"
+                    ? "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400"
                     : "bg-[var(--editorial-surface-container-low)] text-muted-foreground/60"
               }`}
             >
-              {step.completed ? (
-                <Check className="h-3 w-3" />
-              ) : (
-                <span className={`w-1.5 h-1.5 rounded-full ${step.active ? "bg-white" : "bg-muted-foreground/30"}`} />
-              )}
-              <span className="truncate w-full">{step.label}</span>
-            </button>
+              {step.completed && <Check className="h-3 w-3" />}
+              {step.active && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
+              {!step.completed && !step.active && <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30" />}
+              {step.label}
+            </div>
           ))}
+          {/* Hint that more steps can exist */}
+          <div className="flex items-center px-2 text-muted-foreground/30 text-xs shrink-0">
+            ···
+          </div>
         </div>
 
         {/* Active step card — rating question */}
-        <div className="bg-[var(--editorial-surface-container-low)] rounded-2xl p-5">
-          <p className="text-sm text-foreground font-medium mb-5 leading-relaxed">
+        <div className="bg-[var(--editorial-surface-container-low)] rounded-xl p-5">
+          <p className="text-sm text-foreground font-medium mb-4 leading-relaxed">
             {t("question")}
           </p>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-2">
-            {t("ratingLabel")}
-          </p>
-          <div className="flex justify-center gap-1.5 mb-1">
-            {[1, 2, 3, 4].map((i) => (
-              <Star
-                key={i}
-                className="h-7 w-7 text-amber-400 fill-amber-400 drop-shadow-sm"
-              />
-            ))}
-            <Star className="h-7 w-7 text-muted-foreground/25" />
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold shrink-0">
+              {t("ratingLabel")}
+            </span>
+            <div className="flex gap-1">
+              {[1, 2, 3, 4].map((i) => (
+                <Star
+                  key={i}
+                  className="h-6 w-6 fill-[var(--color-warning,#f59e0b)] text-[var(--color-warning,#f59e0b)] cursor-pointer hover:scale-110 transition-transform"
+                />
+              ))}
+              <Star className="h-6 w-6 text-muted-foreground/25 cursor-pointer hover:text-[var(--color-warning,#f59e0b)] transition-colors" />
+            </div>
           </div>
         </div>
       </div>

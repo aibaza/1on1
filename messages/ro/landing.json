@@ -10,8 +10,8 @@
     },
     "hero": {
       "title": "Transformă întâlnirile 1:1 în",
-      "titleHighlight": "conversații ghidate,",
-      "titleEnd": "potențiate de AI.",
+      "titleHighlight": "conversații ghidate",
+      "titleEnd": "de un AI dedicat.",
       "subtitle": "Nu mai improviza agenda. 1on1 ghidează fiecare sesiune cu întrebări structurate, analiză AI și acțiuni concrete.",
       "cta": "Încearcă gratuit",
       "ctaSecondary": "Vezi pe GitHub"
@@ -90,6 +90,10 @@
       "teamHealth": {
         "title": "Sănătatea echipei dintr-o privire",
         "description": "Metrici agregate care te ajută să identifici problemele sistemice înainte să conducă la plecare."
+      },
+      "aiAssistant": {
+        "title": "Asistent AI pentru formulare",
+        "description": "Un AI specializat în sesiuni 1:1 te ajută să îți construiești și optimizezi formularele wizard, adaptate echipei tale."
       }
     },
     "howItWorks": {
@@ -115,7 +119,10 @@
         "price": "0",
         "features": {
           "users": "Până la 5 subordonați direcți",
-          "templates": "Șabloane de bază",
+          "managers": "1 manager",
+          "templates": "3 șabloane de sesiune",
+          "actionItems": "Acțiuni partajate",
+          "analytics": "Analize de bază",
           "noAi": "Fără AI Insights"
         },
         "cta": "Începe gratuit"
@@ -127,8 +134,11 @@
         "badge": "Popular",
         "features": {
           "users": "Utilizatori nelimitați",
-          "ai": "Suită completă AI",
-          "sentiment": "Istoric sentiment"
+          "templates": "Șabloane nelimitate",
+          "ai": "Rezumate AI + sugestii de acțiuni",
+          "sentiment": "Analiză de sentiment și tendințe",
+          "analytics": "Dashboard complet echipă",
+          "calendar": "Integrare Google Calendar"
         },
         "cta": "Alege Pro"
       },
@@ -137,9 +147,12 @@
         "price": "5",
         "period": "/utilizator/lună",
         "features": {
+          "everything": "Tot ce include Pro",
           "selfHost": "Self-hosting (Docker)",
           "sso": "SSO & SAML",
-          "retention": "Retenție date personalizată"
+          "encryption": "Criptare E2E note private",
+          "audit": "Jurnal de audit complet",
+          "support": "Suport dedicat"
         },
         "cta": "Contactează vânzări"
       }
