@@ -3,7 +3,7 @@
     "lastUpdated": "Last updated: March 30, 2026",
     "privacy": {
       "title": "Privacy Policy",
-      "intro": "This Privacy Policy explains how 1on1 (\"we\", \"us\", \"our\") collects, uses, and protects your personal data when you use our platform at app.1on1.surcod.ro and related services.",
+      "intro": "This Privacy Policy explains how 1on1 (\"we\", \"us\", \"our\") collects, uses, and protects your personal data when you use our platform at 1on1.works and related services.",
       "sections": {
         "dataWeCollect": {
           "title": "1. Data We Collect",
@@ -112,7 +112,7 @@
         },
         "openSource": {
           "title": "7. Open Source",
-          "content": "The 1on1 platform source code is available under the GNU Affero General Public License v3 (AGPL v3) at github.com/aibaza/1on1. The hosted service at app.1on1.surcod.ro includes additional infrastructure, support, and managed services not covered by the open-source license."
+          "content": "The 1on1 platform source code is available under the GNU Affero General Public License v3 (AGPL v3) at github.com/aibaza/1on1. The hosted service at 1on1.works includes additional infrastructure, support, and managed services not covered by the open-source license."
         },
         "liability": {
           "title": "8. Limitation of Liability",

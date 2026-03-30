@@ -3,7 +3,7 @@
     "lastUpdated": "Ultima actualizare: 30 martie 2026",
     "privacy": {
       "title": "Politica de confidențialitate",
-      "intro": "Această Politică de confidențialitate explică modul în care 1on1 (\"noi\") colectează, utilizează și protejează datele dumneavoastră personale atunci când folosiți platforma noastră la app.1on1.surcod.ro și serviciile asociate.",
+      "intro": "Această Politică de confidențialitate explică modul în care 1on1 (\"noi\") colectează, utilizează și protejează datele dumneavoastră personale atunci când folosiți platforma noastră la 1on1.works și serviciile asociate.",
       "sections": {
         "dataWeCollect": {
           "title": "1. Datele pe care le colectăm",
@@ -112,7 +112,7 @@
         },
         "openSource": {
           "title": "7. Open source",
-          "content": "Codul sursă al platformei 1on1 este disponibil sub GNU Affero General Public License v3 (AGPL v3) la github.com/aibaza/1on1. Serviciul găzduit la app.1on1.surcod.ro include infrastructură suplimentară, suport și servicii gestionate care nu sunt acoperite de licența open-source."
+          "content": "Codul sursă al platformei 1on1 este disponibil sub GNU Affero General Public License v3 (AGPL v3) la github.com/aibaza/1on1. Serviciul găzduit la 1on1.works include infrastructură suplimentară, suport și servicii gestionate care nu sunt acoperite de licența open-source."
         },
         "liability": {
           "title": "8. Limitarea răspunderii",
