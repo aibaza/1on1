@@ -1,10 +1,20 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { Globe } from "lucide-react";
 
 export function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition();
+  const [currentLocale, setCurrentLocale] = useState("en");
+
+  // Read locale from cookie only on client to avoid hydration mismatch
+  useEffect(() => {
+    const cookie = document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("NEXT_LOCALE="))
+      ?.split("=")[1];
+    if (cookie) setCurrentLocale(cookie);
+  }, []);
 
   function switchLocale(locale: string) {
     startTransition(() => {
@@ -12,15 +22,6 @@ export function LanguageSwitcher() {
       window.location.reload();
     });
   }
-
-  // Read current locale from cookie
-  const currentLocale =
-    (typeof document !== "undefined" &&
-      document.cookie
-        .split("; ")
-        .find((c) => c.startsWith("NEXT_LOCALE="))
-        ?.split("=")[1]) ||
-    "en";
 
   return (
     <div className="flex items-center gap-0.5 rounded-lg border border-border/50 px-2 py-1">
