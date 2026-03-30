@@ -36,14 +36,14 @@ export default async function LandingPage() {
     <div className="bg-[var(--background)] font-[family-name:var(--font-inter)] text-foreground antialiased">
       {/* Navigation — fixed on homepage for scroll */}
       <div className="fixed top-0 w-full z-50">
-        <MarketingNav />
+        <MarketingNav activeLink="features" />
       </div>
 
       <main className="pt-32">
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-16 items-center mb-32">
+        <section className="max-w-7xl mx-auto px-8 grid lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-16 items-center mb-32">
           <div>
-            <h1 className="font-[family-name:var(--font-manrope)] text-5xl md:text-6xl font-extrabold text-foreground leading-[1.1] mb-6 tracking-tight">
+            <h1 className="font-[family-name:var(--font-manrope)] text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-foreground leading-[1.1] mb-6 tracking-tight">
               {t("hero.title")}{" "}
               <span className="text-[var(--editorial-primary-container)]">
                 {t("hero.titleHighlight")}
@@ -107,13 +107,16 @@ export default async function LandingPage() {
                     {t("heroCard.sentimentTrend")}
                   </span>
                 </div>
-                <div className="h-12 flex items-end gap-1">
+                <div className="h-14 flex items-end gap-1">
+                  <div className="flex-1 bg-[var(--editorial-tertiary)]/15 rounded-t-sm h-2/5" />
                   <div className="flex-1 bg-[var(--editorial-tertiary)]/20 rounded-t-sm h-1/2" />
                   <div className="flex-1 bg-[var(--editorial-tertiary)]/20 rounded-t-sm h-2/3" />
-                  <div className="flex-1 bg-[var(--editorial-tertiary)]/30 rounded-t-sm h-1/2" />
+                  <div className="flex-1 bg-[var(--editorial-tertiary)]/25 rounded-t-sm h-[45%]" />
+                  <div className="flex-1 bg-[var(--editorial-tertiary)]/30 rounded-t-sm h-3/5" />
                   <div className="flex-1 bg-[var(--editorial-tertiary)]/40 rounded-t-sm h-3/4" />
+                  <div className="flex-1 bg-[var(--editorial-tertiary)]/50 rounded-t-sm h-[85%]" />
                   <div className="flex-1 bg-[var(--editorial-tertiary)]/60 rounded-t-sm h-full" />
-                  <div className="flex-1 bg-primary rounded-t-sm h-5/6" />
+                  <div className="flex-1 bg-primary rounded-t-sm h-[90%]" />
                 </div>
               </div>
 
@@ -138,8 +141,8 @@ export default async function LandingPage() {
           <div className="max-w-7xl mx-auto px-8">
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Panel A: The Wizard */}
-              <div className="bg-card p-8 rounded-[2.5rem] flex flex-col items-center text-center shadow-sm dark:shadow-none dark:ring-1 dark:ring-white/5">
-                <div className="mb-8 p-6 bg-slate-50 dark:bg-slate-900 rounded-[3rem] w-full max-w-[280px] border-[6px] border-foreground/5">
+              <div className="bg-card p-8 rounded-3xl flex flex-col items-center text-center shadow-sm dark:shadow-none dark:ring-1 dark:ring-white/5">
+                <div className="mb-8 p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl w-full max-w-[280px] border-[6px] border-foreground/5">
                   {/* Step indicators */}
                   <div className="flex justify-between items-center mb-6 px-2">
                     <div className="w-2 h-2 rounded-full bg-primary" />
@@ -175,7 +178,7 @@ export default async function LandingPage() {
               </div>
 
               {/* Panel B: AI Insights */}
-              <div className="bg-card p-8 rounded-[2.5rem] shadow-sm dark:shadow-none dark:ring-1 dark:ring-white/5">
+              <div className="bg-card p-8 rounded-3xl shadow-sm dark:shadow-none dark:ring-1 dark:ring-white/5">
                 <div className="mb-8 space-y-4">
                   <div className="bg-[var(--editorial-surface-container-low)] p-4 rounded-2xl border-l-4 border-primary">
                     <p className="text-xs font-bold text-primary mb-1">
@@ -213,7 +216,7 @@ export default async function LandingPage() {
               </div>
 
               {/* Panel C: Team Dashboard */}
-              <div className="bg-card p-8 rounded-[2.5rem] shadow-sm dark:shadow-none dark:ring-1 dark:ring-white/5">
+              <div className="bg-card p-8 rounded-3xl shadow-sm dark:shadow-none dark:ring-1 dark:ring-white/5">
                 <div className="grid grid-cols-2 gap-4 mb-8">
                   <div className="bg-[var(--editorial-tertiary)]/5 p-4 rounded-2xl text-center">
                     <p className="text-[10px] font-bold text-[var(--editorial-tertiary)] uppercase">
@@ -263,7 +266,9 @@ export default async function LandingPage() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="p-8 rounded-3xl bg-card border border-border/10 dark:border-white/5 hover:shadow-xl transition-all">
-              <PenLine className="h-8 w-8 text-primary mb-6" />
+              <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
+                <PenLine className="h-7 w-7 text-primary" />
+              </div>
               <h3 className="font-[family-name:var(--font-manrope)] text-xl font-bold mb-3">
                 {t("features.guided.title")}
               </h3>
@@ -272,7 +277,9 @@ export default async function LandingPage() {
               </p>
             </div>
             <div className="p-8 rounded-3xl bg-card border border-border/10 dark:border-white/5 hover:shadow-xl transition-all">
-              <Brain className="h-8 w-8 text-primary mb-6" />
+              <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
+                <Brain className="h-7 w-7 text-primary" />
+              </div>
               <h3 className="font-[family-name:var(--font-manrope)] text-xl font-bold mb-3">
                 {t("features.ai.title")}
               </h3>
@@ -281,7 +288,9 @@ export default async function LandingPage() {
               </p>
             </div>
             <div className="p-8 rounded-3xl bg-card border border-border/10 dark:border-white/5 hover:shadow-xl transition-all">
-              <CheckCircle className="h-8 w-8 text-primary mb-6" />
+              <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
+                <CheckCircle className="h-7 w-7 text-primary" />
+              </div>
               <h3 className="font-[family-name:var(--font-manrope)] text-xl font-bold mb-3">
                 {t("features.actionItems.title")}
               </h3>
@@ -290,7 +299,9 @@ export default async function LandingPage() {
               </p>
             </div>
             <div className="p-8 rounded-3xl bg-card border border-border/10 dark:border-white/5 hover:shadow-xl transition-all">
-              <Shield className="h-8 w-8 text-primary mb-6" />
+              <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
+                <Shield className="h-7 w-7 text-primary" />
+              </div>
               <h3 className="font-[family-name:var(--font-manrope)] text-xl font-bold mb-3">
                 {t("features.security.title")}
               </h3>
@@ -299,7 +310,9 @@ export default async function LandingPage() {
               </p>
             </div>
             <div className="p-8 rounded-3xl bg-card border border-border/10 dark:border-white/5 hover:shadow-xl transition-all md:col-span-2 lg:col-span-1">
-              <BarChart3 className="h-8 w-8 text-primary mb-6" />
+              <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
+                <BarChart3 className="h-7 w-7 text-primary" />
+              </div>
               <h3 className="font-[family-name:var(--font-manrope)] text-xl font-bold mb-3">
                 {t("features.teamHealth.title")}
               </h3>
@@ -365,7 +378,7 @@ export default async function LandingPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {/* Free */}
-            <div className="bg-[var(--editorial-surface-container-low)] p-10 rounded-[2.5rem] border border-border/10 flex flex-col">
+            <div className="bg-[var(--editorial-surface-container-low)] p-10 rounded-3xl border border-border/10 flex flex-col">
               <h3 className="font-bold text-xl mb-2">{t("pricing.free.name")}</h3>
               <div className="flex items-baseline mb-8">
                 <span className="text-4xl font-extrabold">&euro;{t("pricing.free.price")}</span>
@@ -393,7 +406,7 @@ export default async function LandingPage() {
             </div>
 
             {/* Pro */}
-            <div className="bg-card p-10 rounded-[2.5rem] border-2 border-primary shadow-2xl dark:shadow-none dark:ring-1 dark:ring-primary/30 flex flex-col relative overflow-hidden scale-100 md:scale-105 z-10">
+            <div className="bg-card p-10 rounded-3xl border-2 border-primary shadow-2xl dark:shadow-none dark:ring-1 dark:ring-primary/30 flex flex-col relative overflow-hidden scale-100 md:scale-105 z-10">
               <div className="absolute top-0 right-0 bg-primary text-white px-6 py-1 rounded-bl-2xl text-xs font-bold uppercase tracking-widest">
                 {t("pricing.pro.badge")}
               </div>
@@ -427,7 +440,7 @@ export default async function LandingPage() {
             </div>
 
             {/* Enterprise */}
-            <div className="bg-[var(--editorial-surface-container-low)] p-10 rounded-[2.5rem] border border-border/10 flex flex-col">
+            <div className="bg-[var(--editorial-surface-container-low)] p-10 rounded-3xl border border-border/10 flex flex-col">
               <h3 className="font-bold text-xl mb-2">{t("pricing.enterprise.name")}</h3>
               <div className="flex items-baseline mb-8">
                 <span className="text-4xl font-extrabold">&euro;{t("pricing.enterprise.price")}</span>
@@ -490,7 +503,7 @@ export default async function LandingPage() {
 
         {/* Final CTA Section */}
         <section className="py-32 px-8 text-center bg-white dark:bg-slate-950">
-          <div className="max-w-4xl mx-auto bg-gradient-to-br from-primary to-[var(--editorial-primary-container)] p-16 rounded-[3rem] text-white shadow-2xl">
+          <div className="max-w-4xl mx-auto bg-gradient-to-br from-primary to-[var(--editorial-primary-container)] p-16 rounded-3xl text-white shadow-2xl">
             <h2 className="font-[family-name:var(--font-manrope)] text-4xl md:text-5xl font-bold mb-6">
               {t("finalCta.title")}
             </h2>

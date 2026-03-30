@@ -5,12 +5,22 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileNav } from "./mobile-nav";
 import { LanguageSwitcher } from "./language-switcher";
 
+interface MarketingNavProps {
+  /** Which nav link to highlight as active */
+  activeLink?: "features" | "pricing" | "security";
+}
+
 /**
  * Full marketing navigation bar — used on homepage, pricing, auth pages,
  * and any other public-facing page.
  */
-export async function MarketingNav() {
+export async function MarketingNav({ activeLink }: MarketingNavProps = {}) {
   const t = await getTranslations("landing");
+
+  const linkClass = (key: string) =>
+    key === activeLink
+      ? "text-foreground font-semibold border-b-2 border-primary font-[family-name:var(--font-manrope)] text-sm tracking-tight transition-colors"
+      : "text-muted-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:text-primary transition-colors";
 
   return (
     <nav className="w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm dark:shadow-none">
@@ -19,22 +29,13 @@ export async function MarketingNav() {
           <Logo className="h-8" />
         </Link>
         <div className="hidden md:flex items-center space-x-8">
-          <a
-            className="text-muted-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:text-primary transition-colors"
-            href="/#features"
-          >
+          <a className={linkClass("features")} href="/#features">
             {t("nav.features")}
           </a>
-          <a
-            className="text-muted-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:text-primary transition-colors"
-            href="/#pricing"
-          >
+          <a className={linkClass("pricing")} href="/#pricing">
             {t("nav.pricing")}
           </a>
-          <Link
-            className="text-muted-foreground font-[family-name:var(--font-manrope)] text-sm font-medium tracking-tight hover:text-primary transition-colors"
-            href="/security"
-          >
+          <Link className={linkClass("security")} href="/security">
             {t("nav.security")}
           </Link>
           <a
