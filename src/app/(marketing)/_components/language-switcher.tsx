@@ -1,20 +1,24 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useTransition, useSyncExternalStore } from "react";
 import { Globe } from "lucide-react";
+
+function getLocaleFromCookie(): string {
+  if (typeof document === "undefined") return "en";
+  return (
+    document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("NEXT_LOCALE="))
+      ?.split("=")[1] ?? "en"
+  );
+}
+
+// Cookie doesn't emit change events, so subscribe is a no-op
+const subscribe = () => () => {};
 
 export function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition();
-  const [currentLocale, setCurrentLocale] = useState("en");
-
-  // Read locale from cookie only on client to avoid hydration mismatch
-  useEffect(() => {
-    const cookie = document.cookie
-      .split("; ")
-      .find((c) => c.startsWith("NEXT_LOCALE="))
-      ?.split("=")[1];
-    if (cookie) setCurrentLocale(cookie);
-  }, []);
+  const currentLocale = useSyncExternalStore(subscribe, getLocaleFromCookie, () => "en");
 
   function switchLocale(locale: string) {
     startTransition(() => {
