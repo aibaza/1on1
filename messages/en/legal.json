@@ -135,6 +135,72 @@
           "content": "For questions about these Terms: legal@1on1.ro"
         }
       }
+    },
+    "security": {
+      "title": "Security at 1on1",
+      "badge": "Trust & Integrity",
+      "subtitle": "Our commitment to protecting your team's most sensitive conversations. We build with a security-first mindset to ensure your data remains yours alone.",
+      "principles": {
+        "encryption": {
+          "title": "End-to-end encryption",
+          "description": "AES-256-GCM encryption for all private notes, ensuring only meeting participants can read them."
+        },
+        "isolation": {
+          "title": "Tenant isolation",
+          "description": "Row-level security (RLS) at the database layer prevents any cross-tenant data leakage."
+        },
+        "rbac": {
+          "title": "Role-based access",
+          "description": "Granular RBAC controls to manage exactly who can view, edit, or delete meeting records."
+        },
+        "openSource": {
+          "title": "Open source",
+          "description": "Full code auditability and self-hosting options for organizations requiring maximum sovereignty."
+        }
+      },
+      "details": {
+        "title": "Deep Technical Safeguards",
+        "subtitle": "We maintain rigorous engineering standards across our entire infrastructure to protect your operational integrity.",
+        "encryptionTitle": "Encryption at rest & in transit",
+        "encryptionText": "All private notes are encrypted using AES-256-GCM with per-tenant keys derived via HKDF. In-transit data is protected by TLS 1.3, ensuring secure connections between your browser and our servers.",
+        "encryptionTag1": "AES-256-GCM",
+        "encryptionTag2": "TLS 1.3",
+        "multiTenancyTitle": "Multi-tenancy",
+        "multiTenancyText": "Every database table with tenant data includes tenant_id. PostgreSQL Row-Level Security policies enforce isolation at the database level as a safety net beyond application-level filtering.",
+        "authTitle": "Authentication",
+        "authText": "Powered by Auth.js v5 with JWT strategy. Supports Google OAuth, Microsoft OAuth, and email/password with bcrypt hashing. Session cookies are HTTP-only, Secure, and SameSite=Strict.",
+        "authzTitle": "Authorization (RBAC)",
+        "authzText": "Three roles — admin, manager, member. Resource-level checks verify the user is actually the manager or report on a given series/session, not just the right role.",
+        "aiTitle": "AI Data Handling",
+        "aiText": "Session content sent to Anthropic Claude API for summaries and suggestions. We do not use customer data to train AI models. AI processing happens in real-time only — zero data retention by the AI provider.",
+        "infraTitle": "Infrastructure & Hosting",
+        "infraSubtitle": "Global performance without compromising regional security requirements.",
+        "infraVercel": "Edge Compute",
+        "infraNeon": "PostgreSQL",
+        "infraEU": "EU Region"
+      },
+      "compliance": {
+        "title": "Compliance & Privacy",
+        "gdprTitle": "GDPR-ready",
+        "gdprText": "Full support for data portability (export), right to erasure (deletion), and ready-to-sign Data Processing Agreements (DPA).",
+        "residencyTitle": "Data residency",
+        "residencyText": "Host your data in EU regions. We prioritize local data residency requirements for enterprise customers.",
+        "cookieTitle": "Cookie policy",
+        "cookieText": "We only use essential cookies necessary for the platform to function — authentication session and locale preference. No marketing trackers.",
+        "selfHostTitle": "Self-hosting",
+        "selfHostText": "Enterprise tier includes Docker deployment for organizations requiring complete physical sovereignty over their meeting data."
+      },
+      "disclosure": {
+        "title": "Responsible Disclosure",
+        "text": "We value the security community. If you've discovered a vulnerability, please report it to us immediately. We commit to a rapid response.",
+        "email": "security@1on1.ro"
+      },
+      "cta": {
+        "title": "Questions about security?",
+        "subtitle": "Our team is ready to provide the technical documentation your IT department needs.",
+        "contact": "Contact Us",
+        "privacy": "View Privacy Policy"
+      }
     }
   }
 }

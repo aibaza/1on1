@@ -135,6 +135,72 @@
           "content": "Pentru întrebări despre acești Termeni: legal@1on1.ro"
         }
       }
+    },
+    "security": {
+      "title": "Securitate la 1on1",
+      "badge": "Încredere și integritate",
+      "subtitle": "Angajamentul nostru de a proteja cele mai sensibile conversații ale echipei tale. Construim cu securitatea pe primul loc pentru ca datele tale să rămână ale tale.",
+      "principles": {
+        "encryption": {
+          "title": "Criptare end-to-end",
+          "description": "Criptare AES-256-GCM pentru toate notele private, asigurând că doar participanții la sesiune le pot citi."
+        },
+        "isolation": {
+          "title": "Izolarea tenant-urilor",
+          "description": "Securitate la nivel de rând (RLS) în baza de date previne orice scurgere de date între organizații."
+        },
+        "rbac": {
+          "title": "Acces bazat pe roluri",
+          "description": "Controale RBAC granulare pentru a gestiona exact cine poate vedea, edita sau șterge înregistrările sesiunilor."
+        },
+        "openSource": {
+          "title": "Open source",
+          "description": "Auditabilitate completă a codului și opțiuni de self-hosting pentru organizații care necesită suveranitate maximă."
+        }
+      },
+      "details": {
+        "title": "Măsuri tehnice de protecție",
+        "subtitle": "Menținem standarde riguroase de inginerie în întreaga infrastructură pentru a proteja integritatea operațională.",
+        "encryptionTitle": "Criptare în repaus și în tranzit",
+        "encryptionText": "Toate notele private sunt criptate cu AES-256-GCM cu chei per-tenant derivate prin HKDF. Datele în tranzit sunt protejate prin TLS 1.3, asigurând conexiuni securizate între browser și serverele noastre.",
+        "encryptionTag1": "AES-256-GCM",
+        "encryptionTag2": "TLS 1.3",
+        "multiTenancyTitle": "Multi-tenancy",
+        "multiTenancyText": "Fiecare tabel din baza de date include tenant_id. Politicile PostgreSQL Row-Level Security asigură izolarea la nivel de bază de date, ca rețea de siguranță peste filtrarea din aplicație.",
+        "authTitle": "Autentificare",
+        "authText": "Bazat pe Auth.js v5 cu strategie JWT. Suportă Google OAuth, Microsoft OAuth și email/parolă cu hashing bcrypt. Cookie-urile de sesiune sunt HTTP-only, Secure și SameSite=Strict.",
+        "authzTitle": "Autorizare (RBAC)",
+        "authzText": "Trei roluri — admin, manager, membru. Verificări la nivel de resursă confirmă că utilizatorul este managerul sau subordonatul pe o anumită serie/sesiune, nu doar că are rolul corect.",
+        "aiTitle": "Gestionarea datelor AI",
+        "aiText": "Conținutul sesiunilor este trimis către API-ul Anthropic Claude pentru rezumate și sugestii. Nu folosim datele clienților pentru antrenarea modelelor AI. Procesarea se face în timp real — zero retenție de date de către furnizorul AI.",
+        "infraTitle": "Infrastructură și hosting",
+        "infraSubtitle": "Performanță globală fără compromisuri pe cerințele regionale de securitate.",
+        "infraVercel": "Edge Compute",
+        "infraNeon": "PostgreSQL",
+        "infraEU": "Regiune UE"
+      },
+      "compliance": {
+        "title": "Conformitate și confidențialitate",
+        "gdprTitle": "Conform GDPR",
+        "gdprText": "Suport complet pentru portabilitatea datelor (export), dreptul la ștergere și Acorduri de Procesare a Datelor (DPA) gata de semnat.",
+        "residencyTitle": "Rezidența datelor",
+        "residencyText": "Găzduiește datele în regiuni UE. Prioritizăm cerințele locale de rezidență a datelor pentru clienții enterprise.",
+        "cookieTitle": "Politica de cookie-uri",
+        "cookieText": "Folosim doar cookie-uri esențiale necesare funcționării platformei — sesiune de autentificare și preferință de limbă. Fără trackere de marketing.",
+        "selfHostTitle": "Self-hosting",
+        "selfHostText": "Planul Enterprise include deployment Docker pentru organizații care necesită suveranitate fizică completă asupra datelor de sesiune."
+      },
+      "disclosure": {
+        "title": "Divulgare responsabilă",
+        "text": "Prețuim comunitatea de securitate. Dacă ai descoperit o vulnerabilitate, te rugăm să ne raportezi imediat. Ne angajăm la un răspuns rapid.",
+        "email": "security@1on1.ro"
+      },
+      "cta": {
+        "title": "Întrebări despre securitate?",
+        "subtitle": "Echipa noastră este pregătită să ofere documentația tehnică de care departamentul IT are nevoie.",
+        "contact": "Contactează-ne",
+        "privacy": "Vezi politica de confidențialitate"
+      }
     }
   }
 }

@@ -19,7 +19,7 @@ export function ShowcaseSeriesCard() {
     cadence: "weekly",
     defaultTemplateName: null,
     status: "active",
-    nextSessionAt: new Date(Date.now() + 86400000).toISOString(),
+    nextSessionAt: "2026-04-01T14:00:00Z",
     preferredDay: "mon",
     preferredTime: "14:00",
     manager: { id: "showcase-manager-001", firstName: "Ciprian", lastName: "Surmont" },
@@ -36,7 +36,7 @@ export function ShowcaseSeriesCard() {
       status: "completed",
       sessionNumber: 12,
       sessionScore: "4.2",
-      scheduledAt: new Date(Date.now() - 7 * 86400000).toISOString(),
+      scheduledAt: "2026-03-25T14:00:00Z",
       talkingPointCount: 3,
     },
     latestSummary: {

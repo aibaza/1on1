@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Homepage Romanian translations: removed anglicisms, improved naturalness (check-in-uri→întâlniri, framework→pași structurați, follow-up→urmărire, rapoarte directe→subordonați direcți)
 - Homepage showcase panels replaced with real component replicas (series card, wizard pills, AI suggestions, health cards) using actual backend Tailwind classes and data shapes
 
+### Added
+- Security page (`/security`) with encryption details, tenant isolation, RBAC, AI data handling, infrastructure, GDPR compliance, responsible disclosure (EN + RO)
+
 ### Changed
 - Renamed "Business" plan to "Enterprise" across entire codebase to align with DB enum (`plan: free, starter, pro, enterprise`)
   - Updated billing plan slug, seed data, migration SQL, i18n (EN + RO), pricing components, landing page, registration flow, feature comparison, upgrade prompts, founder controls, auth validation, and test descriptions
