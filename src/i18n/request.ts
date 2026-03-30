@@ -34,6 +34,7 @@ export default getRequestConfig(async () => {
     ...(await import(`../../messages/${locale}/account.json`)).default,
     ...(await import(`../../messages/${locale}/billing.json`)).default,
     ...(await import(`../../messages/${locale}/landing.json`)).default,
+    ...(await import(`../../messages/${locale}/legal.json`)).default,
   };
 
   return {
