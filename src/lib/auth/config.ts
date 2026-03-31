@@ -32,6 +32,10 @@ const config = {
     error: "/login",
   },
   providers: [
+    // allowDangerousEmailAccountLinking is required for the invite flow:
+    // users are created via invite (credentials), then may sign in with OAuth.
+    // This is safe because signInCallback blocks OAuth for non-existing users,
+    // so only pre-invited users can link, and OAuth providers verify email ownership.
     Google({ allowDangerousEmailAccountLinking: true }),
     MicrosoftEntraID({ allowDangerousEmailAccountLinking: true }),
     credentialsProvider,

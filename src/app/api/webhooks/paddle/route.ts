@@ -69,80 +69,102 @@ export async function POST(request: Request) {
   // Cast data to a generic record — the sync functions handle mapping internally
   const data = event.data as unknown as Record<string, unknown>;
 
+  // Process the business-critical sync operation first.
+  // If sync fails, return 500 so Paddle retries.
+  // Event recording is best-effort — a failure there should not block the sync.
+  type BillingEventType =
+    | "subscription_created"
+    | "subscription_updated"
+    | "subscription_canceled"
+    | "payment_succeeded"
+    | "payment_failed";
+
+  let billingEventInfo: {
+    customerId: string | null;
+    subscriptionId: string | null;
+    eventType: BillingEventType;
+  } | null = null;
+
   try {
     switch (eventType) {
       case EventName.SubscriptionCreated: {
         await syncSubscription(data, adminDb);
-        await recordBillingEvent(
-          data.customerId as string,
-          data.id as string,
-          "subscription_created",
-          paddleEventId,
-          data
-        );
+        billingEventInfo = {
+          customerId: data.customerId as string,
+          subscriptionId: data.id as string,
+          eventType: "subscription_created",
+        };
         break;
       }
 
       case EventName.SubscriptionUpdated: {
         await syncSubscription(data, adminDb);
-        await recordBillingEvent(
-          data.customerId as string,
-          data.id as string,
-          "subscription_updated",
-          paddleEventId,
-          data
-        );
+        billingEventInfo = {
+          customerId: data.customerId as string,
+          subscriptionId: data.id as string,
+          eventType: "subscription_updated",
+        };
         break;
       }
 
       case EventName.SubscriptionCanceled: {
         await syncSubscription(data, adminDb);
-        await recordBillingEvent(
-          data.customerId as string,
-          data.id as string,
-          "subscription_canceled",
-          paddleEventId,
-          data
-        );
+        billingEventInfo = {
+          customerId: data.customerId as string,
+          subscriptionId: data.id as string,
+          eventType: "subscription_canceled",
+        };
         break;
       }
 
       case EventName.TransactionCompleted: {
         await syncTransaction(data, "paid", adminDb);
-        await recordBillingEvent(
-          (data.customerId as string) ?? null,
-          (data.subscriptionId as string) ?? null,
-          "payment_succeeded",
-          paddleEventId,
-          data
-        );
+        billingEventInfo = {
+          customerId: (data.customerId as string) ?? null,
+          subscriptionId: (data.subscriptionId as string) ?? null,
+          eventType: "payment_succeeded",
+        };
         break;
       }
 
       case EventName.TransactionPaymentFailed: {
         await syncTransaction(data, "past_due", adminDb);
-        await recordBillingEvent(
-          (data.customerId as string) ?? null,
-          (data.subscriptionId as string) ?? null,
-          "payment_failed",
-          paddleEventId,
-          data
-        );
+        billingEventInfo = {
+          customerId: (data.customerId as string) ?? null,
+          subscriptionId: (data.subscriptionId as string) ?? null,
+          eventType: "payment_failed",
+        };
         break;
       }
 
       default:
-        // Unhandled event type — acknowledge but don't process
         console.log(`[webhook/paddle] Unhandled event type: ${eventType}`);
         return NextResponse.json({ status: "ignored" });
     }
   } catch (err) {
     console.error(`[webhook/paddle] Error processing ${eventType}:`, err);
-    // Return 500 so Paddle retries
     return NextResponse.json(
       { error: "Processing failed" },
       { status: 500 }
     );
+  }
+
+  // Best-effort event recording — don't fail the webhook if this errors
+  if (billingEventInfo) {
+    try {
+      await recordBillingEvent(
+        billingEventInfo.customerId,
+        billingEventInfo.subscriptionId,
+        billingEventInfo.eventType,
+        paddleEventId,
+        data
+      );
+    } catch (err) {
+      console.error(
+        `[webhook/paddle] Failed to record billing event for ${eventType}:`,
+        err
+      );
+    }
   }
 
   return NextResponse.json({ status: "processed" });

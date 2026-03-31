@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { auth } from "@/lib/auth/config";
 import { adminDb } from "@/lib/db";
+import { withTenantContext } from "@/lib/db/tenant-context";
+import { logAuditEvent } from "@/lib/audit/log";
 
 const COOKIE_NAME = "1on1_impersonate";
 const COOKIE_MAX_AGE = 8 * 60 * 60; // 8 hours in seconds
@@ -56,6 +58,22 @@ export async function POST(request: Request) {
     maxAge: COOKIE_MAX_AGE,
   });
 
+  // Audit log: record impersonation start
+  await withTenantContext(
+    session.user.tenantId,
+    session.user.id,
+    async (tx) => {
+      await logAuditEvent(tx, {
+        tenantId: session.user.tenantId,
+        actorId: session.user.id,
+        action: "impersonation_started",
+        resourceType: "user",
+        resourceId: userId,
+        metadata: { targetUserId: userId },
+      });
+    }
+  );
+
   return NextResponse.json({ ok: true });
 }
 
@@ -66,6 +84,8 @@ export async function DELETE() {
   }
 
   const cookieStore = await cookies();
+  const previousTarget = cookieStore.get(COOKIE_NAME)?.value;
+
   cookieStore.set(COOKIE_NAME, "", {
     httpOnly: true,
     secure: true,
@@ -73,6 +93,24 @@ export async function DELETE() {
     path: "/",
     maxAge: 0,
   });
+
+  // Audit log: record impersonation stop
+  // Use the real admin ID (impersonatedBy.id if currently impersonating, otherwise user.id)
+  const realAdminId = session.user.impersonatedBy?.id ?? session.user.id;
+  await withTenantContext(
+    session.user.tenantId,
+    realAdminId,
+    async (tx) => {
+      await logAuditEvent(tx, {
+        tenantId: session.user.tenantId,
+        actorId: realAdminId,
+        action: "impersonation_stopped",
+        resourceType: "user",
+        resourceId: previousTarget ?? undefined,
+        metadata: previousTarget ? { targetUserId: previousTarget } : {},
+      });
+    }
+  );
 
   return NextResponse.json({ ok: true });
 }

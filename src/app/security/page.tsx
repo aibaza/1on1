@@ -238,7 +238,7 @@ export default async function SecurityPage() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
-              href="mailto:security@surcod.ro"
+              href="mailto:security@1on1.works"
               className="px-8 py-4 bg-primary text-white rounded-xl font-bold shadow-xl hover:opacity-90 transition-all text-center"
             >
               {t("cta.contact")}

@@ -5,6 +5,7 @@ import { adminDb } from "@/lib/db";
 import { calendarConnections } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { registerCalendarWebhook } from "@/lib/calendar/webhook";
+import { encryptToken } from "@/lib/encryption/tokens";
 
 /**
  * GET /api/calendar/callback
@@ -75,56 +76,40 @@ export async function GET(request: Request) {
       )
       .limit(1);
 
+    let connectionId: string;
+
     if (existing.length > 0) {
+      connectionId = existing[0].id;
       await adminDb
         .update(calendarConnections)
         .set({
-          accessToken: tokens.access_token,
-          refreshToken: tokens.refresh_token,
+          accessToken: encryptToken(tokens.access_token, connectionId),
+          refreshToken: encryptToken(tokens.refresh_token, connectionId),
           expiresAt,
           providerEmail,
           enabled: true,
           updatedAt: new Date(),
         })
-        .where(eq(calendarConnections.id, existing[0].id));
+        .where(eq(calendarConnections.id, connectionId));
     } else {
+      // Generate ID upfront so we can use it as encryption context
+      connectionId = crypto.randomUUID();
       await adminDb.insert(calendarConnections).values({
+        id: connectionId,
         userId: session.user.id,
         provider: "google",
         providerEmail,
-        accessToken: tokens.access_token,
-        refreshToken: tokens.refresh_token,
+        accessToken: encryptToken(tokens.access_token, connectionId),
+        refreshToken: encryptToken(tokens.refresh_token, connectionId),
         expiresAt,
       });
     }
 
     // Register push notification webhook for inbound sync (non-blocking)
-    const connId = existing.length > 0 ? existing[0].id : undefined;
-    if (connId && tokens.access_token) {
-      registerCalendarWebhook(connId, tokens.access_token, "primary").catch(
+    if (tokens.access_token) {
+      registerCalendarWebhook(connectionId, tokens.access_token, "primary").catch(
         (err) => console.error("Failed to register calendar webhook:", err)
       );
-    } else if (tokens.access_token) {
-      // Newly inserted — fetch the ID
-      const [newConn] = await adminDb
-        .select({ id: calendarConnections.id })
-        .from(calendarConnections)
-        .where(
-          and(
-            eq(calendarConnections.userId, session.user.id),
-            eq(calendarConnections.provider, "google")
-          )
-        )
-        .limit(1);
-      if (newConn) {
-        registerCalendarWebhook(
-          newConn.id,
-          tokens.access_token,
-          "primary"
-        ).catch((err) =>
-          console.error("Failed to register calendar webhook:", err)
-        );
-      }
     }
 
     return NextResponse.redirect(

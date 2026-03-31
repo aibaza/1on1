@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth/config";
 import { adminDb } from "@/lib/db";
 import { calendarConnections } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { decryptToken } from "@/lib/encryption/tokens";
 
 /**
  * POST /api/calendar/disconnect
@@ -35,6 +36,8 @@ export async function POST() {
       );
     }
 
+    const accessToken = decryptToken(conn.accessToken, conn.id);
+
     // Stop webhook channel (best effort)
     if (conn.webhookChannelId && conn.webhookResourceId) {
       try {
@@ -42,7 +45,7 @@ export async function POST() {
           "@/lib/calendar/webhook"
         );
         await unregisterCalendarWebhook(
-          conn.accessToken,
+          accessToken,
           conn.webhookChannelId,
           conn.webhookResourceId
         );
@@ -57,8 +60,8 @@ export async function POST() {
         process.env.AUTH_GOOGLE_ID,
         process.env.AUTH_GOOGLE_SECRET
       );
-      oauth2.setCredentials({ access_token: conn.accessToken });
-      await oauth2.revokeToken(conn.accessToken);
+      oauth2.setCredentials({ access_token: accessToken });
+      await oauth2.revokeToken(accessToken);
     } catch {
       // Token may already be revoked — continue with deletion
     }

@@ -7,6 +7,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Fixed
+- **Security**: Eliminated `sql.raw()` usage in search API — tsConfig now passed as parameterized `::regconfig` cast instead of string interpolation
+- **Security**: Added security headers to all responses (X-Content-Type-Options, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy) via middleware
+- **Security**: Admin impersonation start/stop now logged to audit trail
+- **Security**: Calendar OAuth tokens (access + refresh) encrypted at rest with AES-256-GCM, backward-compatible with existing plaintext tokens
+- **Security**: Paddle webhook separates sync from event recording — recording failure no longer triggers unnecessary retries
+- Update all email references from `@surcod.ro` to `@1on1.works` (privacy, legal, security pages EN + RO, mailto links, default EMAIL_FROM)
 - Google/Microsoft OAuth login now links to existing accounts with the same email (was throwing "OAuthAccountNotLinked" for users who registered with email/password first)
 - Homepage Romanian translations: removed anglicisms, improved naturalness (check-in-uri→întâlniri, framework→pași structurați, follow-up→urmărire, rapoarte directe→subordonați direcți)
 - Homepage showcase panels replaced with real component replicas (series card, wizard pills, AI suggestions, health cards) using actual backend Tailwind classes and data shapes

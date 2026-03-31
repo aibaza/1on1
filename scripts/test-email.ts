@@ -16,7 +16,7 @@ const transport = createTransport({
     : {}),
 });
 
-const from = process.env.EMAIL_FROM || "1on1 <noreply@example.com>";
+const from = process.env.EMAIL_FROM || "1on1 <noreply@1on1.works>";
 
 const aiSummary = {
   overallSentiment: "positive",

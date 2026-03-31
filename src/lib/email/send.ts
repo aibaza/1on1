@@ -32,7 +32,7 @@ export function getTransport() {
 }
 
 export function getEmailFrom(): string {
-  return process.env.EMAIL_FROM || "1on1 <noreply@example.com>";
+  return process.env.EMAIL_FROM || "1on1 <noreply@1on1.works>";
 }
 
 /**

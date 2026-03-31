@@ -2,6 +2,7 @@ import { google } from "googleapis";
 import { eq } from "drizzle-orm";
 import { adminDb } from "@/lib/db";
 import { calendarConnections } from "@/lib/db/schema";
+import { encryptToken, decryptToken } from "@/lib/encryption/tokens";
 
 /**
  * Returns a valid access token for a calendar connection,
@@ -27,15 +28,18 @@ export async function getValidAccessToken(
     throw new Error(`Calendar connection ${connectionId} is disabled`);
   }
 
+  const accessToken = decryptToken(conn.accessToken, connectionId);
+  const refreshTokenVal = decryptToken(conn.refreshToken, connectionId);
+
   // Token still valid (with 5-minute buffer)
   const bufferMs = 5 * 60 * 1000;
   if (conn.expiresAt.getTime() > Date.now() + bufferMs) {
-    return conn.accessToken;
+    return accessToken;
   }
 
   // Refresh the token
   if (conn.provider === "google") {
-    return refreshGoogleToken(connectionId, conn.refreshToken);
+    return refreshGoogleToken(connectionId, refreshTokenVal);
   }
 
   throw new Error(`Token refresh not implemented for provider: ${conn.provider}`);
@@ -70,8 +74,11 @@ async function refreshGoogleToken(
   await adminDb
     .update(calendarConnections)
     .set({
-      accessToken: credentials.access_token,
-      refreshToken: credentials.refresh_token ?? refreshToken,
+      accessToken: encryptToken(credentials.access_token, connectionId),
+      refreshToken: encryptToken(
+        credentials.refresh_token ?? refreshToken,
+        connectionId
+      ),
       expiresAt,
       updatedAt: new Date(),
     })

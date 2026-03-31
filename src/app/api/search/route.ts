@@ -115,14 +115,14 @@ async function searchSessions(
       s.session_number,
       s.series_id,
       s.scheduled_at,
-      ts_headline(${sql.raw(`'${tsConfig}'`)}, tp.content, websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query}),
+      ts_headline(${tsConfig}::regconfig, tp.content, websearch_to_tsquery(${tsConfig}::regconfig, ${query}),
         'MaxWords=20,MinWords=10,MaxFragments=1') AS snippet,
-      ts_rank(to_tsvector(${sql.raw(`'${tsConfig}'`)}, tp.content), websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})) AS rank
+      ts_rank(to_tsvector(${tsConfig}::regconfig, tp.content), websearch_to_tsquery(${tsConfig}::regconfig, ${query})) AS rank
     FROM talking_point tp
     JOIN session s ON tp.session_id = s.id
     WHERE s.tenant_id = ${tenantId}
       AND s.series_id IN ${seriesIds}
-      AND to_tsvector(${sql.raw(`'${tsConfig}'`)}, tp.content) @@ websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
+      AND to_tsvector(${tsConfig}::regconfig, tp.content) @@ websearch_to_tsquery(${tsConfig}::regconfig, ${query})
     ORDER BY rank DESC
     LIMIT ${limit * 3}
   `);
@@ -134,15 +134,15 @@ async function searchSessions(
       s.session_number,
       s.series_id,
       s.scheduled_at,
-      ts_headline(${sql.raw(`'${tsConfig}'`)}, sa.answer_text, websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query}),
+      ts_headline(${tsConfig}::regconfig, sa.answer_text, websearch_to_tsquery(${tsConfig}::regconfig, ${query}),
         'MaxWords=20,MinWords=10,MaxFragments=1') AS snippet,
-      ts_rank(to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce(sa.answer_text, '')), websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})) AS rank
+      ts_rank(to_tsvector(${tsConfig}::regconfig, coalesce(sa.answer_text, '')), websearch_to_tsquery(${tsConfig}::regconfig, ${query})) AS rank
     FROM session_answer sa
     JOIN session s ON sa.session_id = s.id
     WHERE s.tenant_id = ${tenantId}
       AND s.series_id IN ${seriesIds}
       AND sa.answer_text IS NOT NULL
-      AND to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce(sa.answer_text, '')) @@ websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
+      AND to_tsvector(${tsConfig}::regconfig, coalesce(sa.answer_text, '')) @@ websearch_to_tsquery(${tsConfig}::regconfig, ${query})
     ORDER BY rank DESC
     LIMIT ${limit * 3}
   `);
@@ -154,21 +154,21 @@ async function searchSessions(
       s.session_number,
       s.series_id,
       s.scheduled_at,
-      ts_headline(${sql.raw(`'${tsConfig}'`)},
+      ts_headline(${tsConfig}::regconfig,
         (SELECT string_agg(value, ' ') FROM jsonb_each_text(s.shared_notes)),
-        websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query}),
+        websearch_to_tsquery(${tsConfig}::regconfig, ${query}),
         'MaxWords=20,MinWords=10,MaxFragments=1') AS snippet,
       ts_rank(
-        to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce((SELECT string_agg(value, ' ') FROM jsonb_each_text(s.shared_notes)), '')),
-        websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
+        to_tsvector(${tsConfig}::regconfig, coalesce((SELECT string_agg(value, ' ') FROM jsonb_each_text(s.shared_notes)), '')),
+        websearch_to_tsquery(${tsConfig}::regconfig, ${query})
       ) AS rank
     FROM session s
     WHERE s.tenant_id = ${tenantId}
       AND s.series_id IN ${seriesIds}
       AND s.shared_notes IS NOT NULL
       AND s.shared_notes::text <> 'null'
-      AND to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce((SELECT string_agg(value, ' ') FROM jsonb_each_text(s.shared_notes)), ''))
-        @@ websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
+      AND to_tsvector(${tsConfig}::regconfig, coalesce((SELECT string_agg(value, ' ') FROM jsonb_each_text(s.shared_notes)), ''))
+        @@ websearch_to_tsquery(${tsConfig}::regconfig, ${query})
     ORDER BY rank DESC
     LIMIT ${limit * 3}
   `);
@@ -279,20 +279,20 @@ async function searchActionItems(
       ai.status,
       ai.session_id,
       s.series_id,
-      ts_headline(${sql.raw(`'${tsConfig}'`)},
+      ts_headline(${tsConfig}::regconfig,
         coalesce(ai.title, '') || ' ' || coalesce(ai.description, ''),
-        websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query}),
+        websearch_to_tsquery(${tsConfig}::regconfig, ${query}),
         'MaxWords=20,MinWords=10,MaxFragments=1') AS snippet,
       ts_rank(
-        to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce(ai.title, '') || ' ' || coalesce(ai.description, '')),
-        websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
+        to_tsvector(${tsConfig}::regconfig, coalesce(ai.title, '') || ' ' || coalesce(ai.description, '')),
+        websearch_to_tsquery(${tsConfig}::regconfig, ${query})
       ) AS rank
     FROM action_item ai
     JOIN session s ON ai.session_id = s.id
     WHERE ai.tenant_id = ${tenantId}
       AND s.series_id IN ${seriesIds}
-      AND to_tsvector(${sql.raw(`'${tsConfig}'`)}, coalesce(ai.title, '') || ' ' || coalesce(ai.description, ''))
-        @@ websearch_to_tsquery(${sql.raw(`'${tsConfig}'`)}, ${query})
+      AND to_tsvector(${tsConfig}::regconfig, coalesce(ai.title, '') || ' ' || coalesce(ai.description, ''))
+        @@ websearch_to_tsquery(${tsConfig}::regconfig, ${query})
     ORDER BY rank DESC
     LIMIT ${limit}
   `);

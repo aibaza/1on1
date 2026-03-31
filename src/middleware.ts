@@ -22,25 +22,44 @@ function getClientIp(request: NextRequest): string {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const ip = getClientIp(request);
-  const limit = getLimit(pathname, request.method);
-  const key = `${ip}:${pathname.startsWith("/api/auth") ? "/api/auth" : pathname}`;
 
-  const { allowed, retryAfterMs } = checkRateLimit(key, limit, WINDOW_MS);
+  // Rate limiting only applies to API routes
+  if (pathname.startsWith("/api/")) {
+    const ip = getClientIp(request);
+    const limit = getLimit(pathname, request.method);
+    const key = `${ip}:${pathname.startsWith("/api/auth") ? "/api/auth" : pathname}`;
 
-  if (!allowed) {
-    return NextResponse.json(
-      { error: "Too many requests" },
-      {
-        status: 429,
-        headers: { "Retry-After": String(Math.ceil(retryAfterMs / 1000)) },
-      }
-    );
+    const { allowed, retryAfterMs } = checkRateLimit(key, limit, WINDOW_MS);
+
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        {
+          status: 429,
+          headers: { "Retry-After": String(Math.ceil(retryAfterMs / 1000)) },
+        }
+      );
+    }
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+
+  // Security headers
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set(
+    "Strict-Transport-Security",
+    "max-age=31536000; includeSubDomains"
+  );
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()"
+  );
+
+  return response;
 }
 
 export const config = {
-  matcher: ["/api/:path*"],
+  matcher: ["/api/:path*", "/((?!_next/static|_next/image|favicon.ico|monitoring).*)"],
 };
