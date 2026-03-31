@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
@@ -351,7 +352,7 @@ export async function PATCH(
 
     return NextResponse.json(result);
   } catch (error) {
-    if (error instanceof Error && error.name === "ZodError") {
+    if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: "Invalid input", details: error },
         { status: 400 }

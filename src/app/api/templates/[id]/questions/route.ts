@@ -110,7 +110,7 @@ export async function POST(request: Request, { params }: RouteContext) {
 
     return NextResponse.json(result.data, { status: 201 });
   } catch (error) {
-    if (error instanceof Error && error.name === "ZodError") {
+    if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: "Invalid input", details: error },
         { status: 400 }
