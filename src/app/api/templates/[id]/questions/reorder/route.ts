@@ -9,7 +9,7 @@ import {
   questionnaireTemplates,
   templateQuestions,
 } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql, inArray } from "drizzle-orm";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -84,12 +84,15 @@ export async function PATCH(request: Request, { params }: RouteContext) {
           };
         }
 
-        // Assign contiguous sort_order values
-        for (let i = 0; i < data.questionIds.length; i++) {
+        // Batch-assign contiguous sort_order values with a single CASE statement
+        if (data.questionIds.length > 0) {
+          const cases = data.questionIds
+            .map((qid, i) => sql`WHEN ${templateQuestions.id} = ${qid} THEN ${i}`)
+            .reduce((acc, c) => sql`${acc} ${c}`);
           await tx
             .update(templateQuestions)
-            .set({ sortOrder: i })
-            .where(eq(templateQuestions.id, data.questionIds[i]));
+            .set({ sortOrder: sql`CASE ${cases} END` })
+            .where(inArray(templateQuestions.id, data.questionIds));
         }
 
         // Update template updatedAt

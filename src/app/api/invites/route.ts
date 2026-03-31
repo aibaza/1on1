@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { randomBytes } from "crypto";
-import { isNull } from "drizzle-orm";
+import { isNull, inArray, and, eq } from "drizzle-orm";
 import { render } from "@react-email/render";
 import { auth } from "@/lib/auth/config";
 import { requireLevel } from "@/lib/auth/rbac";
@@ -8,7 +8,7 @@ import { checkSeatLimit } from "@/lib/billing/enforce";
 import { inviteUsersSchema } from "@/lib/validations/user";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { adminDb } from "@/lib/db";
-import { inviteTokens } from "@/lib/db/schema";
+import { inviteTokens, users } from "@/lib/db/schema";
 import { logAuditEvent } from "@/lib/audit/log";
 import { InviteEmail } from "@/lib/email/templates/invite";
 import { getTransport, getEmailFrom } from "@/lib/email/send";
@@ -75,31 +75,32 @@ export async function POST(request: Request) {
   let sent = 0;
   const skipped: { email: string; reason: string }[] = [];
 
-  for (const email of emails) {
-    // Check if user with this email already exists in tenant
-    const existingUser = await adminDb.query.users.findFirst({
-      where: (u, ops) =>
-        ops.and(ops.eq(u.tenantId, tenantId), ops.eq(u.email, email)),
-      columns: { id: true },
-    });
+  // Batch-check existing users and pending invites upfront (2 queries instead of 2N)
+  const existingUsers = await adminDb
+    .select({ email: users.email })
+    .from(users)
+    .where(and(eq(users.tenantId, tenantId), inArray(users.email, emails)));
+  const existingUserEmails = new Set(existingUsers.map((u) => u.email));
 
-    if (existingUser) {
+  const existingInvites = await adminDb
+    .select({ email: inviteTokens.email })
+    .from(inviteTokens)
+    .where(
+      and(
+        eq(inviteTokens.tenantId, tenantId),
+        inArray(inviteTokens.email, emails),
+        isNull(inviteTokens.acceptedAt)
+      )
+    );
+  const existingInviteEmails = new Set(existingInvites.map((i) => i.email));
+
+  for (const email of emails) {
+    if (existingUserEmails.has(email)) {
       skipped.push({ email, reason: "Already a member" });
       continue;
     }
 
-    // Check if active (non-accepted) invite already exists for this email in tenant
-    const existingInvite = await adminDb.query.inviteTokens.findFirst({
-      where: (i, ops) =>
-        ops.and(
-          ops.eq(i.tenantId, tenantId),
-          ops.eq(i.email, email),
-          isNull(i.acceptedAt)
-        ),
-      columns: { id: true },
-    });
-
-    if (existingInvite) {
+    if (existingInviteEmails.has(email)) {
       skipped.push({ email, reason: "Already invited" });
       continue;
     }
