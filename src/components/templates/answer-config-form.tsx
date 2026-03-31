@@ -136,6 +136,7 @@ function MultipleChoiceConfig({
       options,
       allow_multiple: allowMultiple,
     });
+    // Safe: onChange/answerConfig are parent-provided; including them causes infinite render loops
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options, allowMultiple]);
 

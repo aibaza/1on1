@@ -157,6 +157,7 @@ export function NotesEditor({
     if (debouncedShared !== initialSharedContent) {
       saveShared.mutate(debouncedShared);
     }
+    // Safe: saveShared/initialSharedContent are stable (mutation object + prop from parent)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedShared]);
 
@@ -170,6 +171,7 @@ export function NotesEditor({
     if (debouncedPrivate !== initialPrivateContent) {
       savePrivate.mutate(debouncedPrivate);
     }
+    // Safe: savePrivate/initialPrivateContent are stable (mutation object + prop from parent)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedPrivate]);
 

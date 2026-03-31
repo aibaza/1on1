@@ -393,6 +393,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         value: debouncedChange.value,
       });
     }
+    // Safe: saveAnswer is a stable mutation object from useMutation
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedChange]);
 

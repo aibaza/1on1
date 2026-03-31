@@ -82,6 +82,7 @@ export function ConditionalLogicForm({
         setValue(null);
       }
     }
+    // Safe: only reacts to targetQuestionId change, resets dependent state
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetQuestionId]);
 
@@ -107,6 +108,7 @@ export function ConditionalLogicForm({
         conditionalValue: value,
       });
     }
+    // Safe: onConditionChange is a parent callback, including it would cause infinite loops
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, targetQuestionId, operator, value]);
 
