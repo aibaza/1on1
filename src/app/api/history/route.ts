@@ -30,6 +30,16 @@ export async function GET(request: NextRequest) {
   const limitParam = searchParams.get("limit");
   const limit = Math.min(Math.max(parseInt(limitParam ?? "20", 10) || 20, 1), 50);
 
+  // Validate date params before use
+  const fromDate = from ? new Date(from) : null;
+  if (fromDate && isNaN(fromDate.getTime())) {
+    return NextResponse.json({ error: "Invalid 'from' date" }, { status: 400 });
+  }
+  const toDate = to ? new Date(to) : null;
+  if (toDate && isNaN(toDate.getTime())) {
+    return NextResponse.json({ error: "Invalid 'to' date" }, { status: 400 });
+  }
+
   try {
     const result = await withTenantContext(
       session.user.tenantId,
@@ -76,14 +86,14 @@ export async function GET(request: NextRequest) {
         if (status && (status === "completed" || status === "in_progress")) {
           conditions.push(eq(sessions.status, status));
         }
-        if (from) {
-          conditions.push(gte(sessions.scheduledAt, new Date(from)));
+        if (fromDate) {
+          conditions.push(gte(sessions.scheduledAt, fromDate));
         }
-        if (to) {
+        if (toDate) {
           // Include the entire end day
-          const toDate = new Date(to);
-          toDate.setDate(toDate.getDate() + 1);
-          conditions.push(lt(sessions.scheduledAt, toDate));
+          const endOfDay = new Date(toDate);
+          endOfDay.setDate(endOfDay.getDate() + 1);
+          conditions.push(lt(sessions.scheduledAt, endOfDay));
         }
         if (seriesId) {
           conditions.push(eq(sessions.seriesId, seriesId));

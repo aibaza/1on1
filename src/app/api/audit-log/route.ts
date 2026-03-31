@@ -23,6 +23,16 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "50", 10)));
   const offset = (page - 1) * limit;
 
+  // Validate date params before use
+  const fromDate = from ? new Date(from) : null;
+  if (fromDate && isNaN(fromDate.getTime())) {
+    return NextResponse.json({ error: "Invalid 'from' date" }, { status: 400 });
+  }
+  const toDate = to ? new Date(to) : null;
+  if (toDate && isNaN(toDate.getTime())) {
+    return NextResponse.json({ error: "Invalid 'to' date" }, { status: 400 });
+  }
+
   try {
     const result = await withTenantContext(
       session.user.tenantId,
@@ -34,14 +44,14 @@ export async function GET(request: NextRequest) {
         if (action) {
           conditions.push(eq(auditLog.action, action));
         }
-        if (from) {
-          conditions.push(gte(auditLog.createdAt, new Date(from)));
+        if (fromDate) {
+          conditions.push(gte(auditLog.createdAt, fromDate));
         }
-        if (to) {
+        if (toDate) {
           // Set to end of day
-          const toDate = new Date(to);
-          toDate.setHours(23, 59, 59, 999);
-          conditions.push(lte(auditLog.createdAt, toDate));
+          const endOfDay = new Date(toDate);
+          endOfDay.setHours(23, 59, 59, 999);
+          conditions.push(lte(auditLog.createdAt, endOfDay));
         }
         if (search) {
           const escaped = search.replace(/[%_\\]/g, "\\$&");
