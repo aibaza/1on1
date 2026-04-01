@@ -273,7 +273,7 @@ export function SideNav({ isSuperAdmin: isSuperAdminUser = false }: { isSuperAdm
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  href="/help"
                   className="flex items-center justify-center py-3 rounded-lg text-muted-foreground hover:text-primary transition-all"
                 >
                   <HelpCircle className="h-5 w-5 shrink-0" />
@@ -283,7 +283,7 @@ export function SideNav({ isSuperAdmin: isSuperAdminUser = false }: { isSuperAdm
             </Tooltip>
           ) : (
             <Link
-              href="#"
+              href="/help"
               className="flex items-center gap-3 px-4 py-3 rounded-lg font-headline font-semibold text-sm text-muted-foreground hover:text-primary transition-all"
             >
               <HelpCircle className="h-5 w-5 shrink-0" />
@@ -363,7 +363,7 @@ export function SideNav({ isSuperAdmin: isSuperAdminUser = false }: { isSuperAdm
                 <NavLink key={item.href} item={item} pathname={pathname} collapsed={false} onNavigate={() => setMobileOpen(false)} />
               ))}
               <Link
-                href="#"
+                href="/help"
                 className="flex items-center gap-3 px-4 py-3 rounded-lg font-headline font-semibold text-sm text-muted-foreground hover:text-primary transition-all"
               >
                 <HelpCircle className="h-5 w-5 shrink-0" />

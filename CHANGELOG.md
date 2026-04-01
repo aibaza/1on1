@@ -7,6 +7,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Help Center**: Complete in-app documentation at `/help` with role-based navigation (admin/manager/member see only relevant pages)
+  - 23 help articles in English and Romanian covering all features
+  - Sections: Getting Started, Sessions, Action Items, Templates, Analytics, People, Teams, Settings, Account
+  - Markdown-based content with screenshot illustrations, rendered via react-markdown
+  - Sidebar navigation filtered by user role, landing page with section cards
+  - Sidebar "Support" link now points to `/help` (was non-functional `#`)
 - Wizard sidebar: "View all" button on action items widget opens history dialog with all action items from the series (including completed/cancelled), grouped by person and session
 - Wizard sidebar: talking points history widget opens dialog with all talking points across sessions in the series, grouped by session with discussed/undiscussed status
 - New API endpoint `GET /api/sessions/[id]/series-history` returns full action items and talking points history for the series

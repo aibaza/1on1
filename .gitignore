@@ -28,6 +28,7 @@ e2e/.auth-uat/
 e2e/reports/
 e2e/screenshots/
 screenshots/
+!public/help/screenshots/
 e2e/avatar-debug.spec.ts
 e2e/avatar-screenshot.spec.ts
 e2e/*audit*.config.ts
