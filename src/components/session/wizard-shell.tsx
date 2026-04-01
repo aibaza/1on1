@@ -924,7 +924,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
   );
 
   return (
-    <>
+    <div className="flex flex-col h-full">
       <WizardTopBar
         seriesId={data.session.seriesId}
         sessionId={data.session.id}
@@ -938,7 +938,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
       />
 
       {/* Mobile: full-height card carousel */}
-      <div className="flex md:hidden flex-1 overflow-hidden h-[calc(100vh-4rem)]">
+      <div className="flex md:hidden flex-1 min-h-0 overflow-hidden">
         <WizardMobileCarousel
           steps={stepInfos}
           currentStep={state.currentStep}
@@ -949,7 +949,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
       </div>
 
       {/* Desktop: step sidebar | content | context widgets */}
-      <div className="hidden md:flex flex-1 overflow-hidden h-[calc(100vh-4rem)]">
+      <div className="hidden md:flex flex-1 min-h-0 overflow-hidden">
         {/* Left: step sidebar */}
         <WizardStepSidebar
           steps={stepInfos}
@@ -957,8 +957,8 @@ export function WizardShell({ sessionId }: WizardShellProps) {
           onStepChange={handleStepChange}
         />
 
-        {/* Center: form content area */}
-        <div className="flex-1 overflow-y-auto relative pb-24">
+        {/* Center: form content area — only this scrolls */}
+        <div className="flex-1 overflow-y-auto relative">
           <div
             className={cn(
               "transition-all duration-300 ease-in-out",
@@ -969,8 +969,8 @@ export function WizardShell({ sessionId }: WizardShellProps) {
           </div>
         </div>
 
-        {/* Right: context sidebar */}
-        <div className="hidden lg:block w-80 shrink-0 overflow-y-auto p-8 border-l border-border/10 bg-[var(--editorial-surface-container-low,var(--muted))]/30 space-y-8 pb-28">
+        {/* Right: context sidebar — scrolls independently */}
+        <div className="hidden lg:block w-80 shrink-0 overflow-y-auto p-8 border-l border-border/10 bg-[var(--editorial-surface-container-low,var(--muted))]/30 space-y-8">
           <FloatingContextWidgets
             currentStep={state.currentStep}
             currentCategory={currentSection?.name ?? null}
@@ -999,9 +999,9 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         />
       </div>
 
-      {/* Fixed bottom action bar (desktop) */}
+      {/* Bottom action bar — in-flow, pinned to bottom of flex layout */}
       {!isSummaryStep && (
-        <footer className="hidden md:flex fixed bottom-0 left-0 right-0 z-40 bg-[var(--background)]/80 backdrop-blur-xl border-t border-border/20">
+        <footer className="hidden md:flex shrink-0 bg-[var(--background)]/80 backdrop-blur-xl border-t border-border/20 z-40">
           <div className="max-w-4xl mx-auto w-full px-10 py-5 flex items-center justify-between">
             <button
               type="button"
@@ -1082,6 +1082,6 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         onOpenChange={setTalkingPointsHistoryOpen}
         talkingPoints={seriesHistoryData?.talkingPoints ?? []}
       />
-    </>
+    </div>
   );
 }

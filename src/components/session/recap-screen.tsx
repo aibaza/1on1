@@ -54,7 +54,7 @@ export function RecapScreen({
   const lastSession = hasPrevious ? previousSessions[0] : null;
 
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div>
       <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-extrabold tracking-tight font-headline">

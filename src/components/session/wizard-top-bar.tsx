@@ -65,7 +65,7 @@ export function WizardTopBar({
   });
 
   return (
-    <header className="flex h-16 items-center justify-between px-6 bg-[var(--background)]/80 backdrop-blur-xl shadow-sm">
+    <header className="flex h-16 shrink-0 items-center justify-between px-6 bg-[var(--background)]/80 backdrop-blur-xl shadow-sm z-10">
       {/* Left: Avatar + Report info + Save status */}
       <div className="flex items-center gap-4">
         <Avatar className="h-10 w-10">

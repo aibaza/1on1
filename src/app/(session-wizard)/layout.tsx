@@ -40,7 +40,7 @@ export default async function WizardLayout({
     <SessionProvider session={session}>
       <QueryProvider>
         <ThemeColorProvider colorTheme={colorTheme}>
-          <div className="flex min-h-screen flex-col bg-[var(--background)]">{children}</div>
+          <div className="flex h-screen flex-col overflow-hidden bg-[var(--background)]">{children}</div>
         </ThemeColorProvider>
         <Toaster />
       </QueryProvider>

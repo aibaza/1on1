@@ -26,7 +26,7 @@ export function WizardStepSidebar({
 
   return (
     <nav
-      className="hidden md:flex w-[240px] shrink-0 flex-col p-8 sticky top-20 h-[calc(100vh-10rem)] overflow-y-auto"
+      className="hidden md:flex w-[240px] shrink-0 flex-col p-8 overflow-y-auto"
       aria-label={t("wizardSteps")}
     >
       <div className="space-y-6">
