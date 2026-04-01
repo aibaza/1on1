@@ -16,6 +16,8 @@ import { RecapScreen } from "./recap-screen";
 import { SummaryScreen } from "./summary-screen";
 import { FloatingContextWidgets } from "./floating-context-widgets";
 import { QuestionHistoryDialog, type PreviousSession } from "./question-history-dialog";
+import { ActionItemsHistoryDialog } from "./action-items-history-dialog";
+import { TalkingPointsHistoryDialog } from "./talking-points-history-dialog";
 import { type AnswerValue } from "./question-widget";
 import { type TalkingPoint } from "./talking-point-list";
 import { type ActionItemData } from "./action-item-inline";
@@ -247,6 +249,10 @@ export function WizardShell({ sessionId }: WizardShellProps) {
   const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
   const [historyQuestionId, setHistoryQuestionId] = useState<string>("");
 
+  // --- Series history dialogs ---
+  const [actionItemsHistoryOpen, setActionItemsHistoryOpen] = useState(false);
+  const [talkingPointsHistoryOpen, setTalkingPointsHistoryOpen] = useState(false);
+
   // Fetch session data
   const { data, isLoading, error } = useQuery<SessionData>({
     queryKey: ["session", sessionId],
@@ -292,6 +298,46 @@ export function WizardShell({ sessionId }: WizardShellProps) {
       return res.json();
     },
     enabled: !!data,
+  });
+
+  // Fetch series history (lazy — only when a history dialog is opened)
+  const { data: seriesHistoryData } = useQuery<{
+    managerId: string;
+    reportId: string;
+    actionItems: Array<{
+      id: string;
+      title: string;
+      status: string;
+      dueDate: string | null;
+      category: string | null;
+      assigneeId: string;
+      assignee: { firstName: string; lastName: string } | null;
+      sessionNumber: number;
+      sessionDate: string | null;
+      completedAt: string | null;
+      createdAt: string;
+    }>;
+    talkingPoints: Array<{
+      id: string;
+      content: string;
+      category: string | null;
+      isDiscussed: boolean;
+      discussedAt: string | null;
+      authorId: string;
+      author: { firstName: string; lastName: string } | null;
+      sessionNumber: number;
+      sessionDate: string | null;
+      carriedFromSessionId: string | null;
+      createdAt: string;
+    }>;
+  }>({
+    queryKey: ["session", sessionId, "series-history"],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/series-history`);
+      if (!res.ok) throw new Error("Failed to load series history");
+      return res.json();
+    },
+    enabled: !!data && (actionItemsHistoryOpen || talkingPointsHistoryOpen),
   });
 
   // Populate private notes from fetch
@@ -889,6 +935,9 @@ export function WizardShell({ sessionId }: WizardShellProps) {
             openActionItems={openActionItemsForContext}
             sessionScores={sessionScores}
             onQuestionHistoryOpen={handleQuestionHistoryOpen}
+            onActionItemsHistoryOpen={() => setActionItemsHistoryOpen(true)}
+            onTalkingPointsHistoryOpen={() => setTalkingPointsHistoryOpen(true)}
+            hasTalkingPoints={Object.values(talkingPointsByCategory).some((arr) => arr.length > 0)}
           />
         </div>
       </div>
@@ -960,6 +1009,32 @@ export function WizardShell({ sessionId }: WizardShellProps) {
           previousSessions={previousSessionsForContext}
         />
       )}
+
+      {/* Action items history dialog */}
+      <ActionItemsHistoryDialog
+        open={actionItemsHistoryOpen}
+        onOpenChange={setActionItemsHistoryOpen}
+        actionItems={seriesHistoryData?.actionItems ?? []}
+        managerId={data?.series.managerId ?? ""}
+        reportId={data?.series.reportId ?? ""}
+        managerName={
+          data?.series.manager
+            ? `${data.series.manager.firstName} ${data.series.manager.lastName}`
+            : ""
+        }
+        reportName={
+          data?.series.report
+            ? `${data.series.report.firstName} ${data.series.report.lastName}`
+            : ""
+        }
+      />
+
+      {/* Talking points history dialog */}
+      <TalkingPointsHistoryDialog
+        open={talkingPointsHistoryOpen}
+        onOpenChange={setTalkingPointsHistoryOpen}
+        talkingPoints={seriesHistoryData?.talkingPoints ?? []}
+      />
     </>
   );
 }

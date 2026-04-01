@@ -10,6 +10,7 @@ import {
   FileText,
   History,
   ListChecks,
+  MessageSquareText,
   TrendingUp,
   Layers,
 } from "lucide-react";
@@ -45,6 +46,9 @@ export interface FloatingContextWidgetsProps {
   }>;
   sessionScores: number[];
   onQuestionHistoryOpen: (questionId: string) => void;
+  onActionItemsHistoryOpen?: () => void;
+  onTalkingPointsHistoryOpen?: () => void;
+  hasTalkingPoints?: boolean;
 }
 
 // --- Helpers (moved from context-panel.tsx) ---
@@ -168,9 +172,11 @@ function ScoreTrendWidget({ sessionScores }: { sessionScores: number[] }) {
 function ActionItemsWidget({
   openActionItems,
   currentCategory,
+  onViewAll,
 }: {
   openActionItems: FloatingContextWidgetsProps["openActionItems"];
   currentCategory: string | null;
+  onViewAll?: () => void;
 }) {
   const t = useTranslations("sessions");
   const format = useFormatter();
@@ -248,6 +254,15 @@ function ActionItemsWidget({
             </div>
           ))}
         </div>
+      )}
+      {onViewAll && (
+        <button
+          type="button"
+          onClick={onViewAll}
+          className="mt-2 w-full text-center text-[11px] font-medium text-primary hover:underline cursor-pointer"
+        >
+          {t("context.viewAll")}
+        </button>
       )}
     </WidgetCard>
   );
@@ -403,6 +418,26 @@ function SummaryStatsWidget({
 
 // --- Main Component ---
 
+function TalkingPointsHistoryWidget({
+  onViewAll,
+}: {
+  onViewAll: () => void;
+}) {
+  const t = useTranslations("sessions");
+
+  return (
+    <WidgetCard icon={MessageSquareText} title={t("historyDialog.allTalkingPoints")}>
+      <button
+        type="button"
+        onClick={onViewAll}
+        className="w-full text-center text-[11px] font-medium text-primary hover:underline cursor-pointer"
+      >
+        {t("context.viewAll")}
+      </button>
+    </WidgetCard>
+  );
+}
+
 function WidgetContent(props: FloatingContextWidgetsProps) {
   const t = useTranslations("sessions");
   const {
@@ -412,6 +447,9 @@ function WidgetContent(props: FloatingContextWidgetsProps) {
     openActionItems,
     sessionScores,
     onQuestionHistoryOpen,
+    onActionItemsHistoryOpen,
+    onTalkingPointsHistoryOpen,
+    hasTalkingPoints,
   } = props;
 
   const isRecap = currentStep === 0 || currentCategory === null;
@@ -436,7 +474,13 @@ function WidgetContent(props: FloatingContextWidgetsProps) {
       <ActionItemsWidget
         openActionItems={openActionItems}
         currentCategory={isRecap ? null : currentCategory}
+        onViewAll={onActionItemsHistoryOpen}
       />
+
+      {/* Talking Points History */}
+      {hasTalkingPoints && onTalkingPointsHistoryOpen && (
+        <TalkingPointsHistoryWidget onViewAll={onTalkingPointsHistoryOpen} />
+      )}
 
       {/* Score Trend (only when enough data) */}
       {sessionScores.length >= 2 && (

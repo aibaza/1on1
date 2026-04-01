@@ -6,7 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Wizard sidebar: "View all" button on action items widget opens history dialog with all action items from the series (including completed/cancelled), grouped by person and session
+- Wizard sidebar: talking points history widget opens dialog with all talking points across sessions in the series, grouped by session with discussed/undiscussed status
+- New API endpoint `GET /api/sessions/[id]/series-history` returns full action items and talking points history for the series
+
 ### Fixed
+- Email template overflow: added `table-layout: fixed` and `word-break` to session summary email cards preventing long text from breaking layout
+- Email sender address: updated `EMAIL_FROM` from `1on1@surcod.ro` to `noreply@1on1.works` in `.env`, `.env.preview`, and Vercel production/preview environments
 - **Security**: Eliminated `sql.raw()` usage in search API — tsConfig now passed as parameterized `::regconfig` cast instead of string interpolation
 - **Security**: Added security headers to all responses (X-Content-Type-Options, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy) via middleware
 - **Security**: Admin impersonation start/stop now logged to audit trail

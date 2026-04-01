@@ -352,7 +352,19 @@
       "weekAgo": "1 week ago",
       "weeksAgo": "{count} weeks ago",
       "monthAgo": "1 month ago",
-      "monthsAgo": "{count} months ago"
+      "monthsAgo": "{count} months ago",
+      "viewAll": "View all"
+    },
+    "historyDialog": {
+      "allActionItems": "Action Items History",
+      "actionItemsDesc": "All action items from this series, including completed and cancelled.",
+      "allTalkingPoints": "Talking Points History",
+      "talkingPointsDesc": "All talking points across sessions in this series.",
+      "open": "open",
+      "done": "done",
+      "completedOn": "completed {date}",
+      "carried": "carried forward",
+      "noTalkingPoints": "No talking points in this series yet."
     },
     "notFound": {
       "title": "Session not found",

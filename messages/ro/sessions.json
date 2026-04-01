@@ -352,7 +352,19 @@
       "weekAgo": "acum 1 săptămână",
       "weeksAgo": "acum {count} săptămâni",
       "monthAgo": "acum 1 lună",
-      "monthsAgo": "acum {count} luni"
+      "monthsAgo": "acum {count} luni",
+      "viewAll": "Vezi tot"
+    },
+    "historyDialog": {
+      "allActionItems": "Istoricul acțiunilor",
+      "actionItemsDesc": "Toate acțiunile din această serie, inclusiv cele finalizate și anulate.",
+      "allTalkingPoints": "Istoricul punctelor de discuție",
+      "talkingPointsDesc": "Toate punctele de discuție din sesiunile acestei serii.",
+      "open": "deschise",
+      "done": "finalizate",
+      "completedOn": "finalizat {date}",
+      "carried": "preluat din sesiunea anterioară",
+      "noTalkingPoints": "Niciun punct de discuție în această serie."
     },
     "notFound": {
       "title": "Sesiunea nu a fost găsită",
