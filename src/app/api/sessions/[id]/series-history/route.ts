@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { withTenantContext } from "@/lib/db/tenant-context";
@@ -9,7 +10,7 @@ import {
   talkingPoints,
   users,
 } from "@/lib/db/schema";
-import { eq, and, desc, asc, inArray } from "drizzle-orm";
+import { eq, and, desc, asc, inArray, sql } from "drizzle-orm";
 
 /**
  * GET /api/sessions/[id]/series-history
@@ -232,6 +233,157 @@ export async function GET(
     console.error("Failed to fetch series history:", error);
     return NextResponse.json(
       { error: "Failed to fetch series history" },
+      { status: 500 }
+    );
+  }
+}
+
+const toggleActionItemSchema = z.object({
+  actionItemId: z.string().uuid(),
+  status: z.enum(["open", "in_progress", "completed", "cancelled"]),
+});
+
+/**
+ * PATCH /api/sessions/[id]/series-history
+ *
+ * Toggle an action item's status within the series.
+ * Allows updating items from any session in the series (not just current).
+ */
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const { id: sessionId } = await params;
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  try {
+    const data = toggleActionItemSchema.parse(body);
+
+    const result = await withTenantContext(
+      session.user.tenantId,
+      session.user.id,
+      async (tx) => {
+        // Verify session exists and get series
+        const sessionRows = await tx
+          .select({ id: sessions.id, seriesId: sessions.seriesId })
+          .from(sessions)
+          .where(
+            and(
+              eq(sessions.id, sessionId),
+              eq(sessions.tenantId, session.user.tenantId)
+            )
+          )
+          .limit(1);
+
+        if (sessionRows.length === 0) {
+          return { error: "NOT_FOUND" as const };
+        }
+
+        // Verify participant
+        const seriesRows = await tx
+          .select({
+            managerId: meetingSeries.managerId,
+            reportId: meetingSeries.reportId,
+          })
+          .from(meetingSeries)
+          .where(eq(meetingSeries.id, sessionRows[0].seriesId))
+          .limit(1);
+
+        if (seriesRows.length === 0) {
+          return { error: "NOT_FOUND" as const };
+        }
+
+        if (
+          !isAdmin(session.user.level) &&
+          !isSeriesParticipant(session.user.id, seriesRows[0])
+        ) {
+          return { error: "FORBIDDEN" as const };
+        }
+
+        // Verify the action item belongs to this series
+        const [item] = await tx
+          .select({
+            id: actionItems.id,
+            sessionId: actionItems.sessionId,
+          })
+          .from(actionItems)
+          .innerJoin(sessions, eq(actionItems.sessionId, sessions.id))
+          .where(
+            and(
+              eq(actionItems.id, data.actionItemId),
+              eq(sessions.seriesId, sessionRows[0].seriesId),
+              eq(actionItems.tenantId, session.user.tenantId)
+            )
+          )
+          .limit(1);
+
+        if (!item) {
+          return { error: "ITEM_NOT_FOUND" as const };
+        }
+
+        // Update the action item
+        const updateSet: Record<string, unknown> = {
+          status: data.status,
+          updatedAt: sql`now()`,
+        };
+        if (data.status === "completed") {
+          updateSet.completedAt = sql`now()`;
+        } else {
+          updateSet.completedAt = null;
+        }
+
+        const [updated] = await tx
+          .update(actionItems)
+          .set(updateSet)
+          .where(eq(actionItems.id, data.actionItemId))
+          .returning({
+            id: actionItems.id,
+            status: actionItems.status,
+            completedAt: actionItems.completedAt,
+          });
+
+        return {
+          actionItem: {
+            id: updated.id,
+            status: updated.status,
+            completedAt: updated.completedAt?.toISOString() ?? null,
+          },
+        };
+      }
+    );
+
+    if ("error" in result && !("actionItem" in result)) {
+      switch (result.error) {
+        case "NOT_FOUND":
+        case "ITEM_NOT_FOUND":
+          return NextResponse.json({ error: "Not found" }, { status: 404 });
+        case "FORBIDDEN":
+          return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+
+    return NextResponse.json(result);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Invalid input", details: error },
+        { status: 400 }
+      );
+    }
+    console.error("Failed to toggle action item:", error);
+    return NextResponse.json(
+      { error: "Failed to toggle action item" },
       { status: 500 }
     );
   }

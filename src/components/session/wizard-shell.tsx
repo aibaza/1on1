@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -429,6 +429,46 @@ export function WizardShell({ sessionId }: WizardShellProps) {
     },
   });
 
+  // Toggle action item status (works across all sessions in the series)
+  const queryClient = useQueryClient();
+  const toggleActionItem = useMutation({
+    mutationFn: async ({
+      actionItemId,
+      status,
+    }: {
+      actionItemId: string;
+      status: string;
+    }) => {
+      const res = await fetch(`/api/sessions/${sessionId}/series-history`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ actionItemId, status }),
+      });
+      if (!res.ok) throw new Error("Failed to toggle action item");
+      return res.json();
+    },
+    onSuccess: () => {
+      // Invalidate all relevant queries to refresh the UI
+      queryClient.invalidateQueries({ queryKey: ["session", sessionId] });
+      queryClient.invalidateQueries({
+        queryKey: ["session", sessionId, "series-history"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["session", sessionId, "action-items"],
+      });
+    },
+  });
+
+  const handleToggleActionItem = useCallback(
+    (actionItemId: string, currentStatus: string) => {
+      const newStatus = currentStatus === "completed" ? "open" : "completed";
+      toggleActionItem.mutate({ actionItemId, status: newStatus });
+    },
+    // Safe: toggleActionItem is a stable mutation object from useMutation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   // Debounced saving: track last changed answer
   const debouncedChange = useDebounce(lastChangedRef.current, 500);
 
@@ -764,6 +804,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
       return {
         id: ai.id,
         title: ai.title,
+        assigneeId: ai.assigneeId,
         assignee: assignee ?? { firstName: "Unknown", lastName: "" },
         dueDate: ai.dueDate,
         status: ai.status,
@@ -842,6 +883,8 @@ export function WizardShell({ sessionId }: WizardShellProps) {
           reportName={reportName}
           previousSessions={data.previousSessions}
           openActionItems={data.openActionItems}
+          currentUserId={authSession?.user?.id ?? ""}
+          onToggleActionItem={handleToggleActionItem}
         />
       ) : isSummaryStep ? (
         <SummaryScreen
@@ -938,6 +981,8 @@ export function WizardShell({ sessionId }: WizardShellProps) {
             onActionItemsHistoryOpen={() => setActionItemsHistoryOpen(true)}
             onTalkingPointsHistoryOpen={() => setTalkingPointsHistoryOpen(true)}
             hasTalkingPoints={Object.values(talkingPointsByCategory).some((arr) => arr.length > 0)}
+            currentUserId={authSession?.user?.id ?? ""}
+            onToggleActionItem={handleToggleActionItem}
           />
         </div>
       </div>
@@ -1027,6 +1072,8 @@ export function WizardShell({ sessionId }: WizardShellProps) {
             ? `${data.series.report.firstName} ${data.series.report.lastName}`
             : ""
         }
+        currentUserId={authSession?.user?.id ?? ""}
+        onToggleActionItem={handleToggleActionItem}
       />
 
       {/* Talking points history dialog */}

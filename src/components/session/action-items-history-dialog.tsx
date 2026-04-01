@@ -42,6 +42,8 @@ interface ActionItemsHistoryDialogProps {
   reportId: string;
   managerName: string;
   reportName: string;
+  currentUserId?: string;
+  onToggleActionItem?: (actionItemId: string, currentStatus: string) => void;
 }
 
 const STATUS_ICON: Record<string, typeof Circle> = {
@@ -77,10 +79,14 @@ function PersonSection({
   name,
   items,
   defaultOpen,
+  currentUserId,
+  onToggleActionItem,
 }: {
   name: string;
   items: SeriesActionItem[];
   defaultOpen: boolean;
+  currentUserId?: string;
+  onToggleActionItem?: (actionItemId: string, currentStatus: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const t = useTranslations("sessions");
@@ -145,6 +151,10 @@ function PersonSection({
                   const overdue = isOverdue(item.dueDate, item.status);
                   const isDone =
                     item.status === "completed" || item.status === "cancelled";
+                  const canToggle =
+                    !!onToggleActionItem &&
+                    !!currentUserId &&
+                    item.assigneeId === currentUserId;
                   return (
                     <li
                       key={item.id}
@@ -156,7 +166,17 @@ function PersonSection({
                         overdue && !isDone && "border-l-2 border-l-destructive/60"
                       )}
                     >
-                      <StatusIcon status={item.status} />
+                      {canToggle ? (
+                        <button
+                          type="button"
+                          onClick={() => onToggleActionItem(item.id, item.status)}
+                          className="shrink-0 cursor-pointer hover:scale-110 transition-transform"
+                        >
+                          <StatusIcon status={item.status} />
+                        </button>
+                      ) : (
+                        <StatusIcon status={item.status} />
+                      )}
                       <div className="min-w-0 flex-1">
                         <p
                           className={cn(
@@ -215,6 +235,8 @@ export function ActionItemsHistoryDialog({
   reportId,
   managerName,
   reportName,
+  currentUserId,
+  onToggleActionItem,
 }: ActionItemsHistoryDialogProps) {
   const t = useTranslations("sessions");
 
@@ -246,6 +268,8 @@ export function ActionItemsHistoryDialog({
               name={reportName}
               items={reportItems}
               defaultOpen
+              currentUserId={currentUserId}
+              onToggleActionItem={onToggleActionItem}
             />
           )}
           {managerItems.length > 0 && (
@@ -253,6 +277,8 @@ export function ActionItemsHistoryDialog({
               name={managerName}
               items={managerItems}
               defaultOpen={reportItems.length === 0}
+              currentUserId={currentUserId}
+              onToggleActionItem={onToggleActionItem}
             />
           )}
           {reportItems.length === 0 && managerItems.length === 0 && (

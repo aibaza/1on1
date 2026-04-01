@@ -4,8 +4,10 @@ import { useMemo, useState } from "react";
 import { useTranslations, useFormatter } from "next-intl";
 import { sanitizeHtml } from "@/lib/utils/sanitize";
 import {
+  CheckCircle2,
   ChevronDown,
   ChevronRight,
+  Circle,
   Clock,
   FileText,
   History,
@@ -37,6 +39,7 @@ export interface FloatingContextWidgetsProps {
   openActionItems: Array<{
     id: string;
     title: string;
+    assigneeId?: string;
     assignee: { firstName: string; lastName: string };
     dueDate: string | null;
     status: string;
@@ -49,6 +52,8 @@ export interface FloatingContextWidgetsProps {
   onActionItemsHistoryOpen?: () => void;
   onTalkingPointsHistoryOpen?: () => void;
   hasTalkingPoints?: boolean;
+  currentUserId?: string;
+  onToggleActionItem?: (actionItemId: string, currentStatus: string) => void;
 }
 
 // --- Helpers (moved from context-panel.tsx) ---
@@ -173,10 +178,14 @@ function ActionItemsWidget({
   openActionItems,
   currentCategory,
   onViewAll,
+  currentUserId,
+  onToggleActionItem,
 }: {
   openActionItems: FloatingContextWidgetsProps["openActionItems"];
   currentCategory: string | null;
   onViewAll?: () => void;
+  currentUserId?: string;
+  onToggleActionItem?: (actionItemId: string, currentStatus: string) => void;
 }) {
   const t = useTranslations("sessions");
   const format = useFormatter();
@@ -218,6 +227,10 @@ function ActionItemsWidget({
                 {items.map((item) => {
                   const overdue = isItemOverdue(item.dueDate, item.status);
                   const age = item.createdAt ? formatAge(item.createdAt, t) : null;
+                  const canToggle =
+                    !!onToggleActionItem &&
+                    !!currentUserId &&
+                    item.assigneeId === currentUserId;
                   return (
                     <li
                       key={item.id}
@@ -226,6 +239,17 @@ function ActionItemsWidget({
                         overdue && "border-l-2 border-l-destructive/60"
                       )}
                     >
+                      {canToggle ? (
+                        <button
+                          type="button"
+                          onClick={() => onToggleActionItem(item.id, item.status)}
+                          className="shrink-0 mt-0.5 cursor-pointer hover:scale-110 transition-transform"
+                        >
+                          <Circle className="size-3.5 text-muted-foreground/60" />
+                        </button>
+                      ) : (
+                        <Circle className="size-3.5 shrink-0 mt-0.5 text-muted-foreground/30" />
+                      )}
                       <div className="min-w-0 flex-1">
                         <p className="font-medium leading-tight">{item.title}</p>
                         <p className="text-muted-foreground">
@@ -450,6 +474,8 @@ function WidgetContent(props: FloatingContextWidgetsProps) {
     onActionItemsHistoryOpen,
     onTalkingPointsHistoryOpen,
     hasTalkingPoints,
+    currentUserId,
+    onToggleActionItem,
   } = props;
 
   const isRecap = currentStep === 0 || currentCategory === null;
@@ -475,6 +501,8 @@ function WidgetContent(props: FloatingContextWidgetsProps) {
         openActionItems={openActionItems}
         currentCategory={isRecap ? null : currentCategory}
         onViewAll={onActionItemsHistoryOpen}
+        currentUserId={currentUserId}
+        onToggleActionItem={onToggleActionItem}
       />
 
       {/* Talking Points History */}

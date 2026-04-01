@@ -37,12 +37,16 @@ interface RecapScreenProps {
   reportName: string;
   previousSessions: PreviousSession[];
   openActionItems: ActionItem[];
+  currentUserId?: string;
+  onToggleActionItem?: (actionItemId: string, currentStatus: string) => void;
 }
 
 export function RecapScreen({
   reportName,
   previousSessions,
   openActionItems,
+  currentUserId,
+  onToggleActionItem,
 }: RecapScreenProps) {
   const t = useTranslations("sessions.recap");
   const format = useFormatter();
@@ -146,47 +150,63 @@ export function RecapScreen({
                 </div>
                 <div className="px-6 pb-6">
                   <ul className="space-y-2">
-                    {openActionItems.map((item) => (
-                      <li key={item.id} className="flex items-start gap-2">
-                        {item.status === "in_progress" ? (
-                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                        ) : (
-                          <Circle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                        )}
-                        <div className="flex-1">
-                          <p className="text-sm">{item.title}</p>
-                          <div className="flex items-center gap-2">
-                            <Badge
-                              variant={
-                                item.status === "in_progress"
-                                  ? "default"
-                                  : "secondary"
-                              }
-                              className="text-xs"
-                            >
-                              {item.status === "in_progress"
-                                ? t("statusInProgress")
-                                : t("statusOpen")}
-                            </Badge>
-                            {item.dueDate && (
-                              <span className="text-xs text-muted-foreground">
-                                {t("dueDateLabel", {
-                                  date: format.dateTime(new Date(item.dueDate), {
-                                    month: "short",
-                                    day: "numeric",
-                                  }),
-                                })}
-                              </span>
+                    {openActionItems.map((item) => {
+                      const canToggle =
+                        !!onToggleActionItem &&
+                        !!currentUserId &&
+                        item.assigneeId === currentUserId;
+                      return (
+                        <li key={item.id} className="flex items-start gap-2">
+                          <button
+                            type="button"
+                            disabled={!canToggle}
+                            onClick={() =>
+                              canToggle &&
+                              onToggleActionItem(item.id, item.status)
+                            }
+                            className={canToggle ? "cursor-pointer hover:scale-110 transition-transform" : ""}
+                          >
+                            {item.status === "in_progress" ? (
+                              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                            ) : (
+                              <Circle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                             )}
-                            {item.category && (
-                              <span className="text-xs text-muted-foreground">
-                                {item.category}
-                              </span>
-                            )}
+                          </button>
+                          <div className="flex-1">
+                            <p className="text-sm">{item.title}</p>
+                            <div className="flex items-center gap-2">
+                              <Badge
+                                variant={
+                                  item.status === "in_progress"
+                                    ? "default"
+                                    : "secondary"
+                                }
+                                className="text-xs"
+                              >
+                                {item.status === "in_progress"
+                                  ? t("statusInProgress")
+                                  : t("statusOpen")}
+                              </Badge>
+                              {item.dueDate && (
+                                <span className="text-xs text-muted-foreground">
+                                  {t("dueDateLabel", {
+                                    date: format.dateTime(new Date(item.dueDate), {
+                                      month: "short",
+                                      day: "numeric",
+                                    }),
+                                  })}
+                                </span>
+                              )}
+                              {item.category && (
+                                <span className="text-xs text-muted-foreground">
+                                  {item.category}
+                                </span>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </li>
-                    ))}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               </div>
