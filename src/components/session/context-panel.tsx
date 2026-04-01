@@ -28,7 +28,7 @@ import type { PreviousSession } from "./question-history-dialog";
 export interface OpenActionItem {
   id: string;
   title: string;
-  assigneeId?: string;
+  assigneeId: string;
   assignee: { firstName: string; lastName: string };
   dueDate: string | null;
   status: string;

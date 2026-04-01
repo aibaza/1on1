@@ -881,8 +881,11 @@ export function WizardShell({ sessionId }: WizardShellProps) {
       {isRecapStep ? (
         <RecapScreen
           reportName={reportName}
+          managerName={data.series.manager ? `${data.series.manager.firstName} ${data.series.manager.lastName}` : ""}
+          managerId={data.series.managerId}
+          reportId={data.series.reportId}
           previousSessions={data.previousSessions}
-          openActionItems={data.openActionItems}
+          openActionItems={openActionItemsForContext}
           currentUserId={authSession?.user?.id ?? ""}
           onToggleActionItem={handleToggleActionItem}
         />

@@ -4,10 +4,8 @@ import { useMemo, useState } from "react";
 import { useTranslations, useFormatter } from "next-intl";
 import { sanitizeHtml } from "@/lib/utils/sanitize";
 import {
-  CheckCircle2,
   ChevronDown,
   ChevronRight,
-  Circle,
   Clock,
   FileText,
   History,
@@ -27,6 +25,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { ScoreSparkline } from "./score-sparkline";
+import { ActionItemRow } from "./action-item-list";
 import type { PreviousSession } from "./question-history-dialog";
 
 // Re-export for convenience
@@ -39,7 +38,7 @@ export interface FloatingContextWidgetsProps {
   openActionItems: Array<{
     id: string;
     title: string;
-    assigneeId?: string;
+    assigneeId: string;
     assignee: { firstName: string; lastName: string };
     dueDate: string | null;
     status: string;
@@ -188,7 +187,6 @@ function ActionItemsWidget({
   onToggleActionItem?: (actionItemId: string, currentStatus: string) => void;
 }) {
   const t = useTranslations("sessions");
-  const format = useFormatter();
   const filteredItems = useMemo(() => {
     if (!currentCategory) return openActionItems;
     return openActionItems.filter((item) => item.category === currentCategory);
@@ -224,56 +222,15 @@ function ActionItemsWidget({
                 {t("context.fromSession", { number: sessionNum })}
               </p>
               <ul className="space-y-1">
-                {items.map((item) => {
-                  const overdue = isItemOverdue(item.dueDate, item.status);
-                  const age = item.createdAt ? formatAge(item.createdAt, t) : null;
-                  const canToggle =
-                    !!onToggleActionItem &&
-                    !!currentUserId &&
-                    item.assigneeId === currentUserId;
-                  return (
-                    <li
-                      key={item.id}
-                      className={cn(
-                        "flex items-start gap-2 rounded-xl border border-[var(--editorial-outline-variant,var(--border))]/50 px-2 py-1.5 text-xs",
-                        overdue && "border-l-2 border-l-destructive/60"
-                      )}
-                    >
-                      {canToggle ? (
-                        <button
-                          type="button"
-                          onClick={() => onToggleActionItem(item.id, item.status)}
-                          className="shrink-0 mt-0.5 cursor-pointer hover:scale-110 transition-transform"
-                        >
-                          <Circle className="size-3.5 text-muted-foreground/60" />
-                        </button>
-                      ) : (
-                        <Circle className="size-3.5 shrink-0 mt-0.5 text-muted-foreground/30" />
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <p className="font-medium leading-tight">{item.title}</p>
-                        <p className="text-muted-foreground">
-                          {item.assignee.firstName} {item.assignee.lastName}
-                          {item.dueDate && (
-                            <span className="ml-1">
-                              &middot; {t("context.due", { date: format.dateTime(new Date(item.dueDate), { month: "short", day: "numeric" }) })}
-                            </span>
-                          )}
-                          {overdue && (
-                            <span className="ml-1 text-destructive font-medium">
-                              &middot; {t("context.overdue")}
-                            </span>
-                          )}
-                          {age && (
-                            <span className="ml-1 opacity-60">
-                              &middot; {age}
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    </li>
-                  );
-                })}
+                {items.map((item) => (
+                  <ActionItemRow
+                    key={item.id}
+                    item={item}
+                    currentUserId={currentUserId}
+                    onToggle={onToggleActionItem}
+                    compact
+                  />
+                ))}
               </ul>
             </div>
           ))}

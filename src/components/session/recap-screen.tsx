@@ -1,11 +1,15 @@
 "use client";
 
+import { useMemo } from "react";
 import { useTranslations, useFormatter } from "next-intl";
 import { contentToHtml } from "@/lib/session/tiptap-render";
 import { sanitizeHtml } from "@/lib/utils/sanitize";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, CheckCircle2, Circle, Clock } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 import { StarRating } from "@/components/ui/star-rating";
+import {
+  ActionItemPersonGroup,
+  type ActionItemEntry,
+} from "./action-item-list";
 
 interface PreviousSession {
   id: string;
@@ -23,26 +27,22 @@ interface PreviousSession {
   }>;
 }
 
-interface ActionItem {
-  id: string;
-  title: string;
-  status: string;
-  dueDate: string | null;
-  category: string | null;
-  assigneeId: string;
-  createdAt: string;
-}
-
 interface RecapScreenProps {
   reportName: string;
+  managerName: string;
+  managerId: string;
+  reportId: string;
   previousSessions: PreviousSession[];
-  openActionItems: ActionItem[];
+  openActionItems: ActionItemEntry[];
   currentUserId?: string;
   onToggleActionItem?: (actionItemId: string, currentStatus: string) => void;
 }
 
 export function RecapScreen({
   reportName,
+  managerName,
+  managerId,
+  reportId,
   previousSessions,
   openActionItems,
   currentUserId,
@@ -52,6 +52,16 @@ export function RecapScreen({
   const format = useFormatter();
   const hasPrevious = previousSessions.length > 0;
   const lastSession = hasPrevious ? previousSessions[0] : null;
+
+  // Split items by person
+  const reportItems = useMemo(
+    () => openActionItems.filter((ai) => ai.assigneeId === reportId),
+    [openActionItems, reportId]
+  );
+  const managerItems = useMemo(
+    () => openActionItems.filter((ai) => ai.assigneeId === managerId),
+    [openActionItems, managerId]
+  );
 
   return (
     <div>
@@ -143,71 +153,30 @@ export function RecapScreen({
 
             {openActionItems.length > 0 && (
               <div className="bg-card rounded-2xl border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-                <div className="px-6 pt-6 pb-2">
+                <div className="px-5 pt-5 pb-2">
                   <h3 className="text-base font-bold font-headline">
                     {t("openActionItems")}
                   </h3>
                 </div>
-                <div className="px-6 pb-6">
-                  <ul className="space-y-2">
-                    {openActionItems.map((item) => {
-                      const canToggle =
-                        !!onToggleActionItem &&
-                        !!currentUserId &&
-                        item.assigneeId === currentUserId;
-                      return (
-                        <li key={item.id} className="flex items-start gap-2">
-                          <button
-                            type="button"
-                            disabled={!canToggle}
-                            onClick={() =>
-                              canToggle &&
-                              onToggleActionItem(item.id, item.status)
-                            }
-                            className={canToggle ? "cursor-pointer hover:scale-110 transition-transform" : ""}
-                          >
-                            {item.status === "in_progress" ? (
-                              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                            ) : (
-                              <Circle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                            )}
-                          </button>
-                          <div className="flex-1">
-                            <p className="text-sm">{item.title}</p>
-                            <div className="flex items-center gap-2">
-                              <Badge
-                                variant={
-                                  item.status === "in_progress"
-                                    ? "default"
-                                    : "secondary"
-                                }
-                                className="text-xs"
-                              >
-                                {item.status === "in_progress"
-                                  ? t("statusInProgress")
-                                  : t("statusOpen")}
-                              </Badge>
-                              {item.dueDate && (
-                                <span className="text-xs text-muted-foreground">
-                                  {t("dueDateLabel", {
-                                    date: format.dateTime(new Date(item.dueDate), {
-                                      month: "short",
-                                      day: "numeric",
-                                    }),
-                                  })}
-                                </span>
-                              )}
-                              {item.category && (
-                                <span className="text-xs text-muted-foreground">
-                                  {item.category}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                <div className="px-5 pb-4">
+                  {reportItems.length > 0 && (
+                    <ActionItemPersonGroup
+                      name={reportName}
+                      items={reportItems}
+                      showSessionGroups
+                      currentUserId={currentUserId}
+                      onToggle={onToggleActionItem}
+                    />
+                  )}
+                  {managerItems.length > 0 && (
+                    <ActionItemPersonGroup
+                      name={managerName}
+                      items={managerItems}
+                      showSessionGroups
+                      currentUserId={currentUserId}
+                      onToggle={onToggleActionItem}
+                    />
+                  )}
                 </div>
               </div>
             )}
