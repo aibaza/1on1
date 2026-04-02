@@ -1,13 +1,13 @@
-Editorul AI genereaza un template complet de intalnire pornind de la o scurta descriere a obiectivelor tale. In loc sa construiesti sectiuni si intrebari manual, descrii ce vrei sa obtii si AI-ul creeaza o structura gata de utilizare.
+Editorul AI iti permite sa generezi un template complet de intalnire printr-o interfata de chat. In loc sa construiesti sectiuni si intrebari manual, descrii obiectivele intalnirii si AI-ul creeaza o structura gata de utilizare.
 
 ![AI editor](template-ai-editor.jpg)
 
 ## Cum functioneaza
 
 1. Mergi la pagina **Templates** si apasa **Create with AI**.
-2. Descrie obiectivele intalniri in campul de text. Fii specific despre subiectele pe care vrei sa le acoperi, tonul intalniri si ce rezultate conteaza pentru tine.
+2. In interfata de chat, descrie obiectivele intalnirii. Fii specific despre subiectele pe care vrei sa le acoperi, tonul intalnirii si ce rezultate conteaza pentru tine.
 3. Apasa **Generate**. AI-ul produce un template complet cu sectiuni, intrebari si tipuri de raspunsuri sugerate.
-4. Revizuieste rezultatul. Il poti folosi ca atare sau poti face modificari.
+4. Revizuieste template-ul generat. Il poti folosi ca atare, poti edita sectiuni si intrebari individuale, sau poti regenera cu o descriere diferita.
 
 ## Scrierea unui prompt bun
 

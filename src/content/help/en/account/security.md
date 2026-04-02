@@ -17,15 +17,15 @@ You can link external accounts to sign in with a single click instead of enterin
 
 ### Link an account
 
-1. Under **Connected Accounts**, click **Connect** next to Google or Microsoft.
-2. You are redirected to the provider's sign-in page.
-3. Authorize 1on1 to access your basic profile information.
+1. Go to the **Account** page.
+2. In the **Connected Accounts** section, click **Connect Google** or **Connect Microsoft**.
+3. You are redirected to the provider's OAuth sign-in page. Authorize 1on1 to access your basic profile information.
 4. After authorization, the account appears as connected.
 
 ### Unlink an account
 
-1. Find the connected account under **Connected Accounts**.
-2. Click **Disconnect**.
+1. In the **Connected Accounts** section, find the account you want to remove.
+2. Click **Disconnect** next to it.
 3. Confirm the action.
 
 You can only disconnect an OAuth account if you have another sign-in method available (password or another connected account). This prevents you from losing access.

@@ -2,7 +2,7 @@
 export const helpContent: Record<string, string> = {
   "en/account/profile": `Your profile controls how you appear to others in 1on1 and your personal preferences. All roles can access their profile from **Account > Profile**.
 
-![Profile](account-settings.jpg)
+![Profile settings](account-settings.jpg)
 
 ## Update your name
 
@@ -55,15 +55,15 @@ You can link external accounts to sign in with a single click instead of enterin
 
 ### Link an account
 
-1. Under **Connected Accounts**, click **Connect** next to Google or Microsoft.
-2. You are redirected to the provider's sign-in page.
-3. Authorize 1on1 to access your basic profile information.
+1. Go to the **Account** page.
+2. In the **Connected Accounts** section, click **Connect Google** or **Connect Microsoft**.
+3. You are redirected to the provider's OAuth sign-in page. Authorize 1on1 to access your basic profile information.
 4. After authorization, the account appears as connected.
 
 ### Unlink an account
 
-1. Find the connected account under **Connected Accounts**.
-2. Click **Disconnect**.
+1. In the **Connected Accounts** section, find the account you want to remove.
+2. Click **Disconnect** next to it.
 3. Confirm the action.
 
 You can only disconnect an OAuth account if you have another sign-in method available (password or another connected account). This prevents you from losing access.
@@ -309,7 +309,7 @@ What you see on the **Dashboard** depends on your role.
 
 ## Sidebar menu
 
-The sidebar is your primary way to move between sections. Click the hamburger icon at the top to collapse it into icons-only mode, giving you more space for content.
+The sidebar is your primary way to move between sections. Click the hamburger icon at the top to collapse it into icons-only mode, giving you more space for content. You can also use the **toggle button** at the bottom of the sidebar to collapse or expand it at any time.
 
 The menu items you see depend on your role:
 
@@ -384,7 +384,7 @@ Your experience in 1on1 depends on your role. The sidebar, available features, a
 1. Navigate to **People** in the sidebar.
 2. Click the **Invite** button in the top right.
 3. Enter one or more email addresses. You can type them individually or paste a comma-separated list.
-4. Select a **role** for the invited users (member or manager).
+4. Select a **role** for the invited users using the role selector in the invite modal. You can choose **member** or **manager**. The role determines what the person can access after they join.
 5. Optionally assign them to a **team**.
 6. Click **Send invitations**.
 
@@ -521,7 +521,11 @@ Open the series settings by clicking the three-dot menu on the series card and s
 
 ![Session summary](session-summary.jpg)
 
-## What the summary contains
+## What the summary page shows
+
+### Session score
+
+An overall score for the session, calculated from the numeric answers (ratings and mood questions). This score feeds into the analytics dashboards and trend charts.
 
 ### Key takeaways
 
@@ -531,13 +535,21 @@ A concise overview of the most important points discussed during the session, dr
 
 Topics where scores dropped compared to previous sessions or where answers suggest potential issues. These help you spot problems early.
 
+### Action items created
+
+A list of all action items that were created during the session, with assignees and due dates. You can click any item to view or edit it.
+
 ### Coaching suggestions (manager only)
 
 Actionable recommendations for the manager based on the report's answers. These are only visible to the manager and are not shared with the team member.
 
-### Risk indicators
+### Risk indicators (manager only)
 
 Flags that highlight patterns worth monitoring, such as declining engagement, repeated blockers, or unresolved action items from past sessions.
+
+### Sentiment analysis (manager only)
+
+An AI-generated assessment of the report's overall sentiment during the session, based on the tone and content of their answers and notes.
 
 ## Viewing the summary
 
@@ -554,46 +566,63 @@ Managers additionally receive the coaching suggestions in their email.
 
 ## Who can see what
 
-- **Both participants** see key takeaways, areas of concern, and risk indicators.
-- **Managers only** see coaching suggestions.
+- **Both participants** see the session score, key takeaways, areas of concern, and action items created.
+- **Managers only** see coaching suggestions, risk indicators, and sentiment analysis.
 - **Admins** can view any session summary across the company.
 `,
-  "en/sessions/wizard": `The meeting wizard guides you through a 1:1 session step by step. Each step corresponds to a category from the session template.
-
-![Meeting wizard](session-wizard.jpg)
+  "en/sessions/wizard": `The meeting wizard guides you through a 1:1 session step by step. Each step corresponds to a category from the session template, with a recap at the start and a summary at the end.
 
 ## Wizard steps
 
 ### 1. Recap
 
-The first step shows a summary of your previous session: key takeaways, open action items, and any follow-ups. Review these together before moving forward.
+The first step lets you review what happened in your previous session together. It displays key takeaways, open action items, and any follow-ups that were flagged. Go through these together before moving into the current session.
+
+![Recap step](session-wizard-recap.jpg)
+
+Use this step to check whether previous action items were completed and to set context for the conversation ahead.
 
 ### 2. Category steps
 
-Each subsequent step presents questions from a template category (e.g., "How are you feeling?", "Retrospective", "Work environment"). For each question:
+Each subsequent step presents questions from a template category (e.g., "How are you feeling?", "Retrospective", "Work environment"). The questions vary based on the template assigned to the meeting series.
 
-- Select a score or type your answer, depending on the question type.
-- Add **notes** using the rich text editor for additional context.
-- Use **talking points** to flag topics you want to discuss during the meeting.
+![Category step](session-wizard-category.jpg)
 
-Your answers are saved automatically as you go. You can move between steps freely -- nothing is lost.
+For each question you can:
+
+- **Select a score or type your answer**, depending on the question type (rating 1-5, rating 1-10, mood scale, yes/no, or free text).
+- **Add notes** using the rich text editor below the answer field. Notes capture additional context, examples, or discussion points.
+- **Create talking points** to flag specific topics you want to discuss during the meeting. These appear as a checkable list you can mark as "discussed" during the conversation.
+- **Create action items** directly from a category step if something comes up that needs follow-up.
+
+Your answers are saved automatically as you go. You can move between steps freely -- nothing is lost. Both the manager and the report can fill in answers during the session.
 
 ### 3. Summary
 
-The final step shows an overview of all your answers. Review everything, then click **Complete Session** to finish. Once completed, AI generates a session summary.
+The final step shows an overview of all your answers across every category. Review everything together, then click **Complete Session** to finish. Once completed, AI generates a structured session summary with key takeaways, areas of concern, and coaching suggestions.
+
+![Summary step](session-wizard-summary.jpg)
+
+Complete all steps before clicking **Complete Session** for the best AI summary. The more data the AI has to work with, the more useful the generated insights will be.
 
 ## Context panel
 
-Click the **layers icon** to open the sidebar context panel. It gives you quick access to:
+Click the **layers icon** at the bottom-right of the wizard to open the context panel (right sidebar). It gives you quick access to supporting information without leaving the current step.
 
-- **Action items** -- create, view, and check off tasks without leaving the wizard.
-- **AI nudges** -- real-time suggestions based on your answers so far.
-- **Score trends** -- how this person's scores compare to previous sessions (visible when there are 2+ past sessions).
+![Context panel](session-wizard-context.jpg)
+
+The context panel shows:
+
+- **Open action items** -- all outstanding action items from previous sessions, so you can review progress and mark items as complete during the meeting.
+- **Score trend** -- a chart showing how this person's scores have changed over previous sessions. This section appears when there are 2 or more past sessions.
+- **Previous notes** -- notes from earlier sessions that provide context for the current conversation.
+- **Previous answers** -- the person's answers from prior sessions for the same questions, helping you spot changes and trends.
 
 ## Tips
 
 - Both the manager and the report can fill in answers during the session.
 - You can leave and resume a session at any time -- progress is saved automatically.
+- Use the context panel to reference previous sessions without switching pages.
 - Complete all steps before clicking **Complete Session** for the best AI summary.
 `,
   "en/settings/audit-log": `The audit log records every significant action in your company account. Use it to monitor security events, track configuration changes, and investigate issues. Only admins can access the audit log.
@@ -644,7 +673,6 @@ Log entries are retained based on your plan. Pro plans keep 90 days of history. 
 Go to **Settings > Billing** to see your active plan, billing cycle, and the number of seats in use. The available plans are:
 
 - **Free** -- Up to 3 users, core meeting features.
-- **Starter** -- For small teams, includes templates and action item tracking.
 - **Pro** -- Adds AI insights, advanced analytics, and priority support.
 - **Enterprise** -- Custom pricing with SSO, dedicated support, and audit log retention.
 
@@ -734,11 +762,17 @@ The team is immediately available in analytics and filters across the applicatio
 
 ## Team detail page
 
+Click on any team to open its detail page.
+
+![Team detail](teams-detail.jpg)
+
 The team detail page shows:
 
 - **Members list** -- all people in the team with their roles and last session dates.
 - **Team analytics** -- aggregated score trends, engagement rates, and action item completion for the team. This is the same data available in the team analytics report.
 - **Recent sessions** -- a feed of the latest sessions conducted within the team.
+
+To rename a team, click the **team name** at the top of the detail page. It becomes an editable field -- type the new name and press Enter or click away to save.
 
 ## Deleting a team
 
@@ -746,16 +780,16 @@ Admins can delete a team from the team detail page by clicking **Delete team**. 
 
 Only admins can create, edit, or delete teams. Managers can view their own teams and access team-level analytics.
 `,
-  "en/templates/ai-editor": `The AI template editor generates a complete meeting template from a short description of your goals. Instead of building sections and questions manually, you describe what you want to achieve and the AI creates a ready-to-use structure.
+  "en/templates/ai-editor": `The AI template editor lets you generate a complete meeting template through a chat interface. Instead of building sections and questions manually, you describe your meeting goals and the AI creates a ready-to-use structure.
 
 ![AI editor](template-ai-editor.jpg)
 
 ## How it works
 
 1. Go to the **Templates** page and click **Create with AI**.
-2. Describe your meeting goals in the text field. Be specific about the topics you want to cover, the tone of the meeting, and what outcomes matter to you.
+2. In the chat interface, describe your meeting goals. Be specific about the topics you want to cover, the tone of the meeting, and what outcomes matter to you.
 3. Click **Generate**. The AI produces a complete template with sections, questions, and suggested answer types.
-4. Review the result. You can use it as-is or make changes.
+4. Review the generated template. You can use it as-is, edit individual sections and questions, or regenerate with a different description.
 
 ## Writing a good prompt
 
@@ -869,7 +903,7 @@ Template creation and editing is restricted to **managers** and **admins**. Memb
 `,
   "ro/account/profile": `Profilul tau controleaza modul in care apari pentru ceilalti in 1on1 si preferintele tale personale. Toate rolurile pot accesa profilul din **Cont > Profil**.
 
-![Profil](account-profile.jpg)
+![Setari profil](account-settings.jpg)
 
 ## Actualizeaza-ti numele
 
@@ -922,15 +956,15 @@ Poti asocia conturi externe pentru a te autentifica cu un singur click in loc sa
 
 ### Asociaza un cont
 
-1. In sectiunea **Conturi Conectate**, apasa **Conecteaza** langa Google sau Microsoft.
-2. Esti redirectionat catre pagina de autentificare a furnizorului.
-3. Autorizeaza 1on1 sa acceseze informatiile tale de baza de profil.
+1. Mergi la pagina **Cont**.
+2. In sectiunea **Conturi Conectate**, apasa **Connect Google** sau **Connect Microsoft**.
+3. Esti redirectionat catre pagina de autentificare OAuth a furnizorului. Autorizeaza 1on1 sa acceseze informatiile tale de baza de profil.
 4. Dupa autorizare, contul apare ca fiind conectat.
 
 ### Disociaza un cont
 
-1. Gaseste contul conectat in sectiunea **Conturi Conectate**.
-2. Apasa **Deconecteaza**.
+1. In sectiunea **Conturi Conectate**, gaseste contul pe care vrei sa-l elimini.
+2. Apasa **Disconnect** langa acesta.
 3. Confirma actiunea.
 
 Poti deconecta un cont OAuth doar daca ai o alta metoda de autentificare disponibila (parola sau alt cont conectat). Acest lucru previne pierderea accesului.
@@ -1176,7 +1210,7 @@ Ce vezi pe **Dashboard** depinde de rolul tau.
 
 ## Meniul lateral
 
-Meniul lateral e principalul mod de a naviga intre sectiuni. Da click pe iconita de meniu din colt pentru a-l restrange la mod iconite, eliberand spatiu pentru continut.
+Meniul lateral e principalul mod de a naviga intre sectiuni. Da click pe iconita de meniu din colt pentru a-l restrange la mod iconite, eliberand spatiu pentru continut. Poti folosi si **butonul de comutare** din partea de jos a meniului lateral pentru a-l restrange sau extinde oricand.
 
 Ce vezi in meniu depinde de rolul tau:
 
@@ -1251,9 +1285,9 @@ Ce vezi in 1on1 depinde de rolul tau. Meniul lateral, functiile disponibile si a
 1. Navighează la **Persoane** din bara laterală.
 2. Apasă butonul **Invită** din dreapta sus.
 3. Introdu una sau mai multe adrese de email. Poți să le tastezi individual sau să lipești o listă separată prin virgulă.
-4. Selectează un **rol** pentru utilizatorii invitați (membru sau manager).
-5. Opțional, atribuie-i unui **echipe**.
-6. Apasă **Trimite invitațiile**.
+4. Selecteaza un **rol** folosind selectorul de rol din modalul de invitatie. Poti alege **membru** sau **manager**. Rolul determina ce poate accesa persoana dupa ce se alatura.
+5. Optional, atribuie-i unei **echipe**.
+6. Apasa **Trimite invitatiile**.
 
 Fiecare persoană primește un email cu un link unic de invitație. Linkul expiră după 7 zile.
 
@@ -1388,7 +1422,11 @@ Deschide setarile seriei prin meniul cu trei puncte de pe cardul seriei si selec
 
 ![Session summary](session-summary.jpg)
 
-## Ce contine rezumatul
+## Ce afiseaza pagina de rezumat
+
+### Scorul sesiunii
+
+Un scor general al sesiunii, calculat din raspunsurile numerice (rating-uri si intrebari de dispozitie). Acest scor alimenteaza dashboard-urile de analytics si graficele de tendinte.
 
 ### Concluzii principale
 
@@ -1398,13 +1436,21 @@ O sinteza a celor mai importante puncte discutate in sesiune, extrase din raspun
 
 Subiecte unde scorurile au scazut fata de sesiunile anterioare sau unde raspunsurile sugereaza posibile probleme. Te ajuta sa identifici problemele din timp.
 
+### Actiuni create
+
+O lista cu toate actiunile create in timpul sesiunii, cu responsabili si date limita. Poti apasa pe orice element pentru a-l vedea sau edita.
+
 ### Sugestii de coaching (doar pentru manager)
 
 Recomandari concrete pentru manager bazate pe raspunsurile subordonatului. Sunt vizibile doar pentru manager si nu sunt impartasite cu membrul echipei.
 
-### Indicatori de risc
+### Indicatori de risc (doar pentru manager)
 
 Semnale care evidentiaza tipare ce merita monitorizate, cum ar fi scaderea implicarii, blocaje repetate sau actiuni nerezolvate din sesiunile anterioare.
+
+### Analiza sentimentului (doar pentru manager)
+
+O evaluare generata de AI a sentimentului general al subordonatului in timpul sesiunii, bazata pe tonul si continutul raspunsurilor si notelor.
 
 ## Vizualizarea rezumatului
 
@@ -1421,46 +1467,63 @@ Managerii primesc suplimentar sugestiile de coaching in email.
 
 ## Cine vede ce
 
-- **Ambii participanti** vad concluziile principale, zonele de atentie si indicatorii de risc.
-- **Doar managerii** vad sugestiile de coaching.
+- **Ambii participanti** vad scorul sesiunii, concluziile principale, zonele de atentie si actiunile create.
+- **Doar managerii** vad sugestiile de coaching, indicatorii de risc si analiza sentimentului.
 - **Adminii** pot vizualiza orice rezumat de sesiune din companie.
 `,
-  "ro/sessions/wizard": `Wizard-ul te ghideaza pas cu pas printr-o sesiune 1:1. Fiecare pas corespunde unei categorii din template-ul sesiunii.
-
-![Meeting wizard](session-wizard.jpg)
+  "ro/sessions/wizard": `Wizard-ul te ghideaza pas cu pas printr-o sesiune 1:1. Fiecare pas corespunde unei categorii din template-ul sesiunii, cu o recapitulare la inceput si un sumar la final.
 
 ## Pasii wizard-ului
 
 ### 1. Recapitulare
 
-Primul pas arata un rezumat al sesiunii anterioare: concluzii principale, actiuni deschise si follow-up-uri. Treceti-le in revista impreuna inainte de a continua.
+Primul pas iti permite sa revizuiesti ce s-a intamplat la sesiunea anterioara. Afiseaza concluziile principale, actiunile deschise si follow-up-urile semnalate. Treceti-le in revista impreuna inainte de a intra in sesiunea curenta.
+
+![Pas recapitulare](session-wizard-recap.jpg)
+
+Foloseste acest pas pentru a verifica daca actiunile anterioare au fost finalizate si pentru a seta contextul conversatiei.
 
 ### 2. Pasi pe categorii
 
-Fiecare pas urmator prezinta intrebari dintr-o categorie a template-ului (de ex. "Cum te simti?", "Retrospectiva", "Mediul de lucru"). Pentru fiecare intrebare:
+Fiecare pas urmator prezinta intrebari dintr-o categorie a template-ului (de ex. "Cum te simti?", "Retrospectiva", "Mediul de lucru"). Intrebarile variaza in functie de template-ul atribuit seriei de intalniri.
 
-- Selecteaza un scor sau scrie raspunsul, in functie de tipul intrebarii.
-- Adauga **note** folosind editorul de text pentru context suplimentar.
-- Foloseste **punctele de discutie** pentru a marca subiecte pe care vrei sa le abordezi in intalnire.
+![Pas categorie](session-wizard-category.jpg)
 
-Raspunsurile se salveaza automat pe masura ce completezi. Poti naviga liber intre pasi -- nu se pierde nimic.
+Pentru fiecare intrebare poti:
+
+- **Selecta un scor sau scrie raspunsul**, in functie de tipul intrebarii (rating 1-5, rating 1-10, scala de dispozitie, da/nu sau text liber).
+- **Adauga note** folosind editorul de text de sub campul de raspuns. Notele captureaza context suplimentar, exemple sau puncte de discutie.
+- **Crea puncte de discutie** pentru a marca subiecte specifice pe care vrei sa le abordezi in intalnire. Acestea apar ca o lista cu checkbox-uri pe care le poti marca ca "discutat".
+- **Crea actiuni** direct dintr-un pas de categorie daca apare ceva ce necesita follow-up.
+
+Raspunsurile se salveaza automat pe masura ce completezi. Poti naviga liber intre pasi -- nu se pierde nimic. Atat managerul cat si subordonatul pot completa raspunsuri in timpul sesiunii.
 
 ### 3. Sumar
 
-Ultimul pas arata o privire de ansamblu asupra tuturor raspunsurilor. Revizuieste totul, apoi apasa **Finalizeaza Sesiunea**. Dupa finalizare, AI-ul genereaza un rezumat al sesiunii.
+Ultimul pas arata o privire de ansamblu asupra tuturor raspunsurilor din toate categoriile. Revizuieste totul impreuna, apoi apasa **Finalizeaza Sesiunea**. Dupa finalizare, AI-ul genereaza un rezumat structurat cu concluzii principale, zone de atentie si sugestii de coaching.
+
+![Pas sumar](session-wizard-summary.jpg)
+
+Completeaza toti pasii inainte de a apasa **Finalizeaza Sesiunea** pentru cel mai bun rezumat AI. Cu cat AI-ul are mai multe date, cu atat informatiile generate sunt mai utile.
 
 ## Panoul contextual
 
-Apasa **iconita de straturi** pentru a deschide panoul lateral. Aici ai acces rapid la:
+Apasa **iconita de straturi** din dreapta-jos a wizard-ului pentru a deschide panoul contextual (bara laterala dreapta). Iti ofera acces rapid la informatii de suport fara sa parasesti pasul curent.
 
-- **Actiuni** -- creeaza, vizualizeaza si bifeaza sarcini fara sa parasesti wizard-ul.
-- **Sugestii AI** -- recomandari in timp real pe baza raspunsurilor de pana acum.
-- **Tendinte scoruri** -- cum se compara scorurile persoanei cu sesiunile anterioare (vizibil cand exista 2+ sesiuni trecute).
+![Panou contextual](session-wizard-context.jpg)
+
+Panoul contextual afiseaza:
+
+- **Actiuni deschise** -- toate actiunile nerezolvate din sesiunile anterioare, pentru a putea revizui progresul si marca elementele ca finalizate in timpul intalnirii.
+- **Tendinta scorurilor** -- un grafic care arata cum au evoluat scorurile persoanei in sesiunile anterioare. Aceasta sectiune apare cand exista 2 sau mai multe sesiuni trecute.
+- **Note anterioare** -- notele din sesiunile anterioare care ofera context pentru conversatia curenta.
+- **Raspunsuri anterioare** -- raspunsurile persoanei din sesiunile anterioare la aceleasi intrebari, ajutandu-te sa identifici schimbari si tendinte.
 
 ## Sfaturi
 
 - Atat managerul cat si subordonatul pot completa raspunsuri in timpul sesiunii.
 - Poti parasi si relua o sesiune oricand -- progresul se salveaza automat.
+- Foloseste panoul contextual pentru a consulta sesiunile anterioare fara a schimba pagina.
 - Completeaza toti pasii inainte de a apasa **Finalizeaza Sesiunea** pentru cel mai bun rezumat AI.
 `,
   "ro/settings/audit-log": `Jurnalul de audit inregistreaza fiecare actiune semnificativa din contul companiei tale. Foloseste-l pentru a monitoriza evenimentele de securitate, a urmari modificarile de configurare si a investiga probleme. Doar administratorii au acces la jurnalul de audit.
@@ -1511,7 +1574,6 @@ Inregistrarile din jurnal sunt pastrate in functie de planul tau. Planurile Pro 
 Mergi la **Setari > Facturare** pentru a vedea planul activ, ciclul de facturare si numarul de locuri utilizate. Planurile disponibile sunt:
 
 - **Free** -- Pana la 3 utilizatori, functionalitati de baza pentru intalniri.
-- **Starter** -- Pentru echipe mici, include sabloane si urmarirea punctelor de actiune.
 - **Pro** -- Adauga informatii AI, analize avansate si suport prioritar.
 - **Enterprise** -- Pret personalizat cu SSO, suport dedicat si retentie extinsa a jurnalului de audit.
 
@@ -1601,11 +1663,17 @@ Echipa este imediat disponibilă în analize și filtre în toată aplicația.
 
 ## Pagina de detalii a echipei
 
-Pagina de detalii afișează:
+Apasa pe orice echipa pentru a deschide pagina de detalii.
 
-- **Lista membrilor** -- toți membrii echipei cu rolurile lor și datele ultimelor sesiuni.
-- **Analize de echipă** -- tendințe agregate de scor, rate de implicare și finalizare a acțiunilor.
-- **Sesiuni recente** -- un flux cu ultimele sesiuni din echipă.
+![Detalii echipa](teams-detail.jpg)
+
+Pagina de detalii afiseaza:
+
+- **Lista membrilor** -- toti membrii echipei cu rolurile lor si datele ultimelor sesiuni.
+- **Analize de echipa** -- tendinte agregate de scor, rate de implicare si finalizare a actiunilor.
+- **Sesiuni recente** -- un flux cu ultimele sesiuni din echipa.
+
+Pentru a redenumi o echipa, apasa pe **numele echipei** din partea de sus a paginii de detalii. Acesta devine un camp editabil -- scrie noul nume si apasa Enter sau da click in alta parte pentru a salva.
 
 ## Ștergerea unei echipe
 
@@ -1613,16 +1681,16 @@ Administratorii pot șterge o echipă apăsând **Șterge echipa**. Aceasta elim
 
 Doar administratorii pot crea, edita sau șterge echipe. Managerii pot vizualiza propriile echipe și accesa analizele de echipă.
 `,
-  "ro/templates/ai-editor": `Editorul AI genereaza un template complet de intalnire pornind de la o scurta descriere a obiectivelor tale. In loc sa construiesti sectiuni si intrebari manual, descrii ce vrei sa obtii si AI-ul creeaza o structura gata de utilizare.
+  "ro/templates/ai-editor": `Editorul AI iti permite sa generezi un template complet de intalnire printr-o interfata de chat. In loc sa construiesti sectiuni si intrebari manual, descrii obiectivele intalnirii si AI-ul creeaza o structura gata de utilizare.
 
 ![AI editor](template-ai-editor.jpg)
 
 ## Cum functioneaza
 
 1. Mergi la pagina **Templates** si apasa **Create with AI**.
-2. Descrie obiectivele intalniri in campul de text. Fii specific despre subiectele pe care vrei sa le acoperi, tonul intalniri si ce rezultate conteaza pentru tine.
+2. In interfata de chat, descrie obiectivele intalnirii. Fii specific despre subiectele pe care vrei sa le acoperi, tonul intalnirii si ce rezultate conteaza pentru tine.
 3. Apasa **Generate**. AI-ul produce un template complet cu sectiuni, intrebari si tipuri de raspunsuri sugerate.
-4. Revizuieste rezultatul. Il poti folosi ca atare sau poti face modificari.
+4. Revizuieste template-ul generat. Il poti folosi ca atare, poti edita sectiuni si intrebari individuale, sau poti regenera cu o descriere diferita.
 
 ## Scrierea unui prompt bun
 

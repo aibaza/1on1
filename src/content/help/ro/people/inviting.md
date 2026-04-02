@@ -7,9 +7,9 @@ Administratorii pot invita persoane noi în organizație trimițând invitații 
 1. Navighează la **Persoane** din bara laterală.
 2. Apasă butonul **Invită** din dreapta sus.
 3. Introdu una sau mai multe adrese de email. Poți să le tastezi individual sau să lipești o listă separată prin virgulă.
-4. Selectează un **rol** pentru utilizatorii invitați (membru sau manager).
-5. Opțional, atribuie-i unui **echipe**.
-6. Apasă **Trimite invitațiile**.
+4. Selecteaza un **rol** folosind selectorul de rol din modalul de invitatie. Poti alege **membru** sau **manager**. Rolul determina ce poate accesa persoana dupa ce se alatura.
+5. Optional, atribuie-i unei **echipe**.
+6. Apasa **Trimite invitatiile**.
 
 Fiecare persoană primește un email cu un link unic de invitație. Linkul expiră după 7 zile.
 

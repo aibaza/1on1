@@ -28,11 +28,17 @@ Echipa este imediat disponibilă în analize și filtre în toată aplicația.
 
 ## Pagina de detalii a echipei
 
-Pagina de detalii afișează:
+Apasa pe orice echipa pentru a deschide pagina de detalii.
 
-- **Lista membrilor** -- toți membrii echipei cu rolurile lor și datele ultimelor sesiuni.
-- **Analize de echipă** -- tendințe agregate de scor, rate de implicare și finalizare a acțiunilor.
-- **Sesiuni recente** -- un flux cu ultimele sesiuni din echipă.
+![Detalii echipa](teams-detail.jpg)
+
+Pagina de detalii afiseaza:
+
+- **Lista membrilor** -- toti membrii echipei cu rolurile lor si datele ultimelor sesiuni.
+- **Analize de echipa** -- tendinte agregate de scor, rate de implicare si finalizare a actiunilor.
+- **Sesiuni recente** -- un flux cu ultimele sesiuni din echipa.
+
+Pentru a redenumi o echipa, apasa pe **numele echipei** din partea de sus a paginii de detalii. Acesta devine un camp editabil -- scrie noul nume si apasa Enter sau da click in alta parte pentru a salva.
 
 ## Ștergerea unei echipe
 

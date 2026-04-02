@@ -4,7 +4,7 @@
 
 ## Sidebar menu
 
-The sidebar is your primary way to move between sections. Click the hamburger icon at the top to collapse it into icons-only mode, giving you more space for content.
+The sidebar is your primary way to move between sections. Click the hamburger icon at the top to collapse it into icons-only mode, giving you more space for content. You can also use the **toggle button** at the bottom of the sidebar to collapse or expand it at any time.
 
 The menu items you see depend on your role:
 

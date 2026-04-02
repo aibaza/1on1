@@ -6,24 +6,23 @@ interface HelpContentProps {
 }
 
 export function HelpContent({ content, locale }: HelpContentProps) {
-  // Rewrite bare image refs like `![alt](foo.jpg)` to locale-aware paths.
-  // Light images are served by default; dark mode uses CSS to swap via
-  // a <picture> element with prefers-color-scheme media query.
   const lightBase = `/help/screenshots/${locale}/light`;
   const darkBase = `/help/screenshots/${locale}/dark`;
 
   const html = marked.parse(content, { async: false }) as string;
 
-  // Replace <img> tags with <picture> for dark mode support
+  // Replace <img> tags with dual light/dark images using CSS class visibility.
+  // Tailwind uses .dark class on html, not prefers-color-scheme media query.
   const withDarkMode = html.replace(
     /<img\s+src="([^"]+\.jpg)"\s+alt="([^"]*)"\s*\/?>/g,
     (_, src, alt) => {
-      // If src is already absolute, leave it
-      if (src.startsWith("/") || src.startsWith("http")) return `<img src="${src}" alt="${alt}" />`;
-      return `<picture>
-        <source srcset="${darkBase}/${src}" media="(prefers-color-scheme: dark)" />
-        <img src="${lightBase}/${src}" alt="${alt}" loading="lazy" />
-      </picture>`;
+      if (src.startsWith("/") || src.startsWith("http")) {
+        return `<img src="${src}" alt="${alt}" loading="lazy" />`;
+      }
+      return `<span class="help-screenshot">
+        <img src="${lightBase}/${src}" alt="${alt}" loading="lazy" class="dark:hidden" />
+        <img src="${darkBase}/${src}" alt="${alt}" loading="lazy" class="hidden dark:block" />
+      </span>`;
     }
   );
 

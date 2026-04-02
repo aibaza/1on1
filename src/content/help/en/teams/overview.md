@@ -28,11 +28,17 @@ The team is immediately available in analytics and filters across the applicatio
 
 ## Team detail page
 
+Click on any team to open its detail page.
+
+![Team detail](teams-detail.jpg)
+
 The team detail page shows:
 
 - **Members list** -- all people in the team with their roles and last session dates.
 - **Team analytics** -- aggregated score trends, engagement rates, and action item completion for the team. This is the same data available in the team analytics report.
 - **Recent sessions** -- a feed of the latest sessions conducted within the team.
+
+To rename a team, click the **team name** at the top of the detail page. It becomes an editable field -- type the new name and press Enter or click away to save.
 
 ## Deleting a team
 

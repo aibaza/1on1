@@ -2,7 +2,11 @@ Dupa ce finalizezi o sesiune, AI-ul analizeaza raspunsurile si genereaza un rezu
 
 ![Session summary](session-summary.jpg)
 
-## Ce contine rezumatul
+## Ce afiseaza pagina de rezumat
+
+### Scorul sesiunii
+
+Un scor general al sesiunii, calculat din raspunsurile numerice (rating-uri si intrebari de dispozitie). Acest scor alimenteaza dashboard-urile de analytics si graficele de tendinte.
 
 ### Concluzii principale
 
@@ -12,13 +16,21 @@ O sinteza a celor mai importante puncte discutate in sesiune, extrase din raspun
 
 Subiecte unde scorurile au scazut fata de sesiunile anterioare sau unde raspunsurile sugereaza posibile probleme. Te ajuta sa identifici problemele din timp.
 
+### Actiuni create
+
+O lista cu toate actiunile create in timpul sesiunii, cu responsabili si date limita. Poti apasa pe orice element pentru a-l vedea sau edita.
+
 ### Sugestii de coaching (doar pentru manager)
 
 Recomandari concrete pentru manager bazate pe raspunsurile subordonatului. Sunt vizibile doar pentru manager si nu sunt impartasite cu membrul echipei.
 
-### Indicatori de risc
+### Indicatori de risc (doar pentru manager)
 
 Semnale care evidentiaza tipare ce merita monitorizate, cum ar fi scaderea implicarii, blocaje repetate sau actiuni nerezolvate din sesiunile anterioare.
+
+### Analiza sentimentului (doar pentru manager)
+
+O evaluare generata de AI a sentimentului general al subordonatului in timpul sesiunii, bazata pe tonul si continutul raspunsurilor si notelor.
 
 ## Vizualizarea rezumatului
 
@@ -35,6 +47,6 @@ Managerii primesc suplimentar sugestiile de coaching in email.
 
 ## Cine vede ce
 
-- **Ambii participanti** vad concluziile principale, zonele de atentie si indicatorii de risc.
-- **Doar managerii** vad sugestiile de coaching.
+- **Ambii participanti** vad scorul sesiunii, concluziile principale, zonele de atentie si actiunile create.
+- **Doar managerii** vad sugestiile de coaching, indicatorii de risc si analiza sentimentului.
 - **Adminii** pot vizualiza orice rezumat de sesiune din companie.

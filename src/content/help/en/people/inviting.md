@@ -7,7 +7,7 @@ Admins can invite new people to the organization by sending email invitations. I
 1. Navigate to **People** in the sidebar.
 2. Click the **Invite** button in the top right.
 3. Enter one or more email addresses. You can type them individually or paste a comma-separated list.
-4. Select a **role** for the invited users (member or manager).
+4. Select a **role** for the invited users using the role selector in the invite modal. You can choose **member** or **manager**. The role determines what the person can access after they join.
 5. Optionally assign them to a **team**.
 6. Click **Send invitations**.
 

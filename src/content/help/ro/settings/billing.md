@@ -7,7 +7,6 @@ Pagina de facturare permite administratorilor sa gestioneze abonamentul companie
 Mergi la **Setari > Facturare** pentru a vedea planul activ, ciclul de facturare si numarul de locuri utilizate. Planurile disponibile sunt:
 
 - **Free** -- Pana la 3 utilizatori, functionalitati de baza pentru intalniri.
-- **Starter** -- Pentru echipe mici, include sabloane si urmarirea punctelor de actiune.
 - **Pro** -- Adauga informatii AI, analize avansate si suport prioritar.
 - **Enterprise** -- Pret personalizat cu SSO, suport dedicat si retentie extinsa a jurnalului de audit.
 

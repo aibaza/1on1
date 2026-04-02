@@ -1,13 +1,13 @@
-The AI template editor generates a complete meeting template from a short description of your goals. Instead of building sections and questions manually, you describe what you want to achieve and the AI creates a ready-to-use structure.
+The AI template editor lets you generate a complete meeting template through a chat interface. Instead of building sections and questions manually, you describe your meeting goals and the AI creates a ready-to-use structure.
 
 ![AI editor](template-ai-editor.jpg)
 
 ## How it works
 
 1. Go to the **Templates** page and click **Create with AI**.
-2. Describe your meeting goals in the text field. Be specific about the topics you want to cover, the tone of the meeting, and what outcomes matter to you.
+2. In the chat interface, describe your meeting goals. Be specific about the topics you want to cover, the tone of the meeting, and what outcomes matter to you.
 3. Click **Generate**. The AI produces a complete template with sections, questions, and suggested answer types.
-4. Review the result. You can use it as-is or make changes.
+4. Review the generated template. You can use it as-is, edit individual sections and questions, or regenerate with a different description.
 
 ## Writing a good prompt
 

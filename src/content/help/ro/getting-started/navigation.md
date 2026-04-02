@@ -4,7 +4,7 @@
 
 ## Meniul lateral
 
-Meniul lateral e principalul mod de a naviga intre sectiuni. Da click pe iconita de meniu din colt pentru a-l restrange la mod iconite, eliberand spatiu pentru continut.
+Meniul lateral e principalul mod de a naviga intre sectiuni. Da click pe iconita de meniu din colt pentru a-l restrange la mod iconite, eliberand spatiu pentru continut. Poti folosi si **butonul de comutare** din partea de jos a meniului lateral pentru a-l restrange sau extinde oricand.
 
 Ce vezi in meniu depinde de rolul tau:
 

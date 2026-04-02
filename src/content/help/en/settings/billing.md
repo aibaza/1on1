@@ -7,7 +7,6 @@ The billing page lets admins manage the company subscription, view invoices, and
 Go to **Settings > Billing** to see your active plan, billing cycle, and the number of seats in use. The available plans are:
 
 - **Free** -- Up to 3 users, core meeting features.
-- **Starter** -- For small teams, includes templates and action item tracking.
 - **Pro** -- Adds AI insights, advanced analytics, and priority support.
 - **Enterprise** -- Custom pricing with SSO, dedicated support, and audit log retention.
 
