@@ -1,6 +1,6 @@
 Profilul tau controleaza modul in care apari pentru ceilalti in 1on1 si preferintele tale personale. Toate rolurile pot accesa profilul din **Cont > Profil**.
 
-![Profil](ro/account-profile.jpg)
+![Profil](en/account-profile.jpg)
 
 ## Actualizeaza-ti numele
 

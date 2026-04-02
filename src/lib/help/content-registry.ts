@@ -869,7 +869,7 @@ Template creation and editing is restricted to **managers** and **admins**. Memb
 `,
   "ro/account/profile": `Profilul tau controleaza modul in care apari pentru ceilalti in 1on1 si preferintele tale personale. Toate rolurile pot accesa profilul din **Cont > Profil**.
 
-![Profil](ro/account-profile.jpg)
+![Profil](en/account-profile.jpg)
 
 ## Actualizeaza-ti numele
 
@@ -905,7 +905,7 @@ Activeaza sau dezactiveaza fiecare tip de notificare, apoi apasa **Salveaza Modi
 `,
   "ro/account/security": `Pagina de securitate iti permite sa gestionezi parola si conturile de autentificare conectate. Mergi la **Cont > Securitate** pentru a accesa aceste setari.
 
-![Securitate](ro/account-security.jpg)
+![Securitate](en/account-security.jpg)
 
 ## Schimba-ti parola
 
@@ -1127,7 +1127,7 @@ Adminii pot vedea rapoartele oricarei echipe. Managerii vad doar rapoartele echi
 `,
   "ro/getting-started/first-login": `Dupa ce primesti email-ul de invitatie, da click pe link pentru a accesa 1on1 prima data. Iata la ce sa te astepti.
 
-![Pagina de autentificare](ro/login-page.jpg)
+![Pagina de autentificare](en/login-page.jpg)
 
 ## Verificarea email-ului
 
@@ -1172,7 +1172,7 @@ Ce vezi pe **Dashboard** depinde de rolul tau.
 `,
   "ro/getting-started/navigation": `1on1 foloseste un layout cu meniu lateral pliabil, o bara superioara pentru cautare si actiuni rapide, si panouri contextuale care apar cand e nevoie.
 
-![Navigare meniu lateral](ro/sidebar-navigation.jpg)
+![Navigare meniu lateral](en/sidebar-navigation.jpg)
 
 ## Meniul lateral
 
@@ -1225,7 +1225,7 @@ Apasa **?** pe orice pagina pentru a vedea scurtaturile disponibile. Cele mai fo
 
 - **Vizualizezi analize** la nivel individual si de echipa, pentru a observa tendinte in implicare, sentiment si respectarea angajamentelor.
 
-![Prezentare generala Dashboard](ro/dashboard-overview.jpg)
+![Prezentare generala Dashboard](en/dashboard-overview.jpg)
 
 ## Cum functioneaza
 
@@ -1465,7 +1465,7 @@ Apasa **iconita de straturi** pentru a deschide panoul lateral. Aici ai acces ra
 `,
   "ro/settings/audit-log": `Jurnalul de audit inregistreaza fiecare actiune semnificativa din contul companiei tale. Foloseste-l pentru a monitoriza evenimentele de securitate, a urmari modificarile de configurare si a investiga probleme. Doar administratorii au acces la jurnalul de audit.
 
-![Jurnal de audit](ro/settings-audit-log.jpg)
+![Jurnal de audit](en/settings-audit-log.jpg)
 
 ## Ce se inregistreaza
 
@@ -1504,7 +1504,7 @@ Inregistrarile din jurnal sunt pastrate in functie de planul tau. Planurile Pro 
 `,
   "ro/settings/billing": `Pagina de facturare permite administratorilor sa gestioneze abonamentul companiei, sa vizualizeze facturile si sa actualizeze datele de plata. 1on1 foloseste Paddle pentru procesarea securizata a platilor.
 
-![Facturare](ro/settings-billing.jpg)
+![Facturare](en/settings-billing.jpg)
 
 ## Vizualizeaza planul curent
 
@@ -1542,7 +1542,7 @@ Contul ramane activ pana la sfarsitul perioadei platite. Dupa aceea, revine la p
 `,
   "ro/settings/company": `Setarile companiei controleaza valorile implicite pentru intreaga organizatie. Doar administratorii au acces la aceasta pagina.
 
-![Setari companie](ro/settings-company.jpg)
+![Setari companie](en/settings-company.jpg)
 
 ## Schimba numele companiei
 

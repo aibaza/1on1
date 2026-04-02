@@ -10,7 +10,7 @@
 
 - **Vizualizezi analize** la nivel individual si de echipa, pentru a observa tendinte in implicare, sentiment si respectarea angajamentelor.
 
-![Prezentare generala Dashboard](ro/dashboard-overview.jpg)
+![Prezentare generala Dashboard](en/dashboard-overview.jpg)
 
 ## Cum functioneaza
 
