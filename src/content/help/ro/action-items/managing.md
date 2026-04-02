@@ -1,42 +1,42 @@
-Sarcinile sunt create in timpul sesiunilor si urmarite de la o intalnire la alta. Te ajuta sa transformi conversatia in actiuni concrete.
+Acțiunile sunt create în timpul sesiunilor 1:1 și urmărite de la o întâlnire la alta. Te ajută să transformi conversația în pași concreți.
 
-## Crearea unui action item
+## Crearea unei acțiuni
 
-Creezi action items in timpul unei sesiuni, in wizard-ul de intalnire.
+Acțiunile se creează **în wizardul de ședință** în timpul unei sesiuni — nu din pagina de Acțiuni. Astfel rămân legate de contextul discuției.
 
-1. Deschide sectiunea **Action Items** din sidebar-ul wizard-ului.
-2. Apasa **Add action item**.
-3. Introdu un titlu clar si specific care descrie ce trebuie facut.
+1. În timpul unei sesiuni, derulează la secțiunea **Acțiuni** din pasul de categorie.
+2. Apasă **Adaugă acțiune**.
+3. Introdu un titlu clar și specific care descrie ce trebuie făcut.
 4. Alege un **responsabil** — fie managerul, fie raportul direct.
-5. Seteaza o **data limita**. Alege o data inainte de sau la urmatoarea sesiune programata.
-6. Apasa **Save**.
+5. Setează o **dată limită**. Alege o dată înainte de sau la următoarea sesiune programată.
+6. Apasă **Salvează**.
 
-![Create action item](action-item-create.jpg)
+![Acțiuni în wizard](action-item-create.jpg)
 
-Elementul este salvat imediat si legat de sesiunea curenta.
+Elementul este salvat imediat și legat de sesiunea și categoria curentă.
 
-## Atribuirea catre persoane
+## Atribuirea către persoane
 
-Fiecare action item este atribuit unei singure persoane — fie managerul, fie raportul direct din acea serie de intalniri. Persoana responsabila trebuie sa finalizeze sarcina inainte de data limita.
+Fiecare acțiune este atribuită unei singure persoane — fie managerul, fie raportul direct din seria de întâlniri. Persoana responsabilă trebuie să finalizeze sarcina înainte de data limită.
 
-Doar managerul poate crea si atribui action items in timpul unei sesiuni. Membrii pot vedea sarcinile atribuite lor si pot actualiza statusul.
+Ambii participanți pot crea acțiuni în timpul unei sesiuni.
 
-## Setarea datelor limita
+## Setarea datelor limită
 
-Alege o data limita realista. Sistemul evidentiaza sarcinile intarziate atat pe pagina de action items, cat si in wizard-ul de sesiune, deci termenele depasite sunt vizibile in urmatoarea intalnire.
+Alege o dată limită realistă. Sistemul evidențiază sarcinile întârziate atât pe pagina de Acțiuni, cât și în wizardul de sesiune, deci termenele depășite sunt vizibile în următoarea întâlnire.
 
 ## Marcarea ca finalizat
 
-Pentru a actualiza statusul unui action item:
+Poți actualiza statusul acțiunilor tale proprii din mai multe locuri:
 
-1. Mergi la pagina **Action Items** sau deschide wizard-ul de sesiune.
-2. Gaseste elementul si apasa pe **dropdown-ul de status**.
-3. Selecteaza **In Progress**, **Completed** sau **Cancelled**.
+- **Pagina Acțiuni** — apasă pe iconul de status de lângă element.
+- **Wizardul de ședință** — în pasul de Recapitulare sau panoul contextual din sidebar, apasă pe iconul cerc.
+- **Dialogul de istoric** — deschide "Vezi tot" din widget-ul sidebar și bifează elementele de acolo.
 
-Schimbarile de status sunt inregistrate si vizibile in istoricul sesiunilor.
+Opțiuni de status: **Deschis**, **În progres**, **Finalizat** sau **Anulat**.
 
-## Urmarirea intre sesiuni
+## Urmărirea între sesiuni
 
-Sarcinile deschise se reporteaza automat. Cand incepi o sesiune noua, wizard-ul arata toate sarcinile nerezolvate din intalnirile anterioare, astfel incat puteti revizui progresul impreuna.
+Acțiunile deschise se reportează automat. Când începi o sesiune nouă, wizardul arată toate sarcinile nerezolvate din întâlnirile anterioare, astfel încât puteți revizui progresul împreună.
 
-Sarcinile finalizate raman in istoric pentru referinta, dar nu mai apar in lista activa.
+Acțiunile finalizate rămân în istoric pentru referință, dar nu mai apar în lista activă.

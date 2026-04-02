@@ -1,39 +1,39 @@
-Action items are created during sessions and tracked across meetings. They help you turn conversation into concrete follow-up.
+Action items are created during 1:1 sessions and tracked across meetings. They help you turn conversation into concrete follow-up.
 
 ## Creating an action item
 
-You create action items during a session in the meeting wizard.
+Action items are created **inside the meeting wizard** during a session — not from the Action Items page. This keeps them tied to the discussion context.
 
-1. Open the **Action Items** section in the wizard sidebar.
+1. During a session, scroll to the **Action Items** section within a category step.
 2. Click **Add action item**.
 3. Enter a clear, specific title that describes what needs to happen.
 4. Choose an **assignee** — either the manager or the report.
 5. Set a **due date**. Pick a date before or on the next scheduled session.
 6. Click **Save**.
 
-![Create action item](action-item-create.jpg)
+![Action items in the wizard](action-item-create.jpg)
 
-The item is immediately saved and linked to the current session.
+The item is immediately saved and linked to the current session and category.
 
 ## Assigning to people
 
 Each action item is assigned to one person — either the manager or the report in that meeting series. The assignee is responsible for completing the task before the due date.
 
-Only the manager can create and assign action items during a session. Members can view their assigned items and update the status.
+Both participants can create action items during a session.
 
 ## Setting due dates
 
-Choose a realistic due date. The system highlights overdue items on both the action items page and in the session wizard, so missed deadlines are visible in your next meeting.
+Choose a realistic due date. The system highlights overdue items on both the Action Items page and in the session wizard, so missed deadlines are visible in your next meeting.
 
 ## Marking as complete
 
-To update the status of an action item:
+You can update the status of your own action items from multiple places:
 
-1. Go to the **Action Items** page or open a session wizard.
-2. Find the item and click the **status dropdown**.
-3. Select **In Progress**, **Completed**, or **Cancelled**.
+- **Action Items page** — click the status icon next to the item.
+- **Meeting wizard** — in the Recap step or the sidebar context panel, click the circle icon.
+- **History dialog** — open "View all" in the sidebar widget and toggle items there.
 
-Status changes are logged and visible in the session history.
+Status options: **Open**, **In Progress**, **Completed**, or **Cancelled**.
 
 ## Tracking across sessions
 
