@@ -2,7 +2,7 @@
 
 Pagina **Action Items** iti ofera o vedere completa a tuturor sarcinilor create in cadrul sesiunilor tale de one-on-one. Foloseste-o ca sa te asiguri ca nimic nu e uitat intre intalniri.
 
-![Action items](en/action-items.jpg)
+![Action items](en/action-items-list.jpg)
 
 ## Ce vezi pe aceasta pagina
 

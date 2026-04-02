@@ -1,8 +1,8 @@
 # Cum programezi intalniri 1:1
 
-Ca manager sau admin, creezi un **series de intalniri** pentru a stabili 1:1-uri recurente cu un coleg. Fiecare series defineste cu cine te intalnesti, cat de des si ce template folosesti.
+Ca manager sau admin, creezi un **serie de întâlniri** pentru a stabili 1:1-uri recurente cu un coleg. Fiecare series defineste cu cine te intalnesti, cat de des si ce template folosesti.
 
-## Crearea unui series de intalniri
+## Crearea unui serie de întâlniri
 
 1. Mergi la **Sesiuni** in bara laterala si apasa **Serie noua**.
 2. Selecteaza **colegul** cu care vrei sa te intalnesti.
@@ -10,7 +10,7 @@ Ca manager sau admin, creezi un **series de intalniri** pentru a stabili 1:1-uri
 4. Alege un **template** care defineste intrebarile pentru fiecare sesiune. Poti folosi un template predefinit sau unul creat de echipa ta.
 5. Apasa **Creeaza Serie** pentru a salva.
 
-![Create series](en/session-create.jpg)
+![Create series](en/session-create-form.jpg)
 
 Seria apare acum pe dashboard. Sesiunile se genereaza automat pe baza cadentei alese.
 

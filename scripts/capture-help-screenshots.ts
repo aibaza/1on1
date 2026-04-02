@@ -45,8 +45,8 @@ const DEVICE_SCALE_FACTOR = 2;
 /** Extra settle time (ms) after load for JS rendering / animations */
 const SETTLE_MS = 2000;
 
-/** Per-page navigation timeout */
-const NAV_TIMEOUT = 20_000;
+/** Per-page navigation timeout (generous for dev server cold-starts) */
+const NAV_TIMEOUT = 30_000;
 
 // ---------------------------------------------------------------------------
 // Page definitions

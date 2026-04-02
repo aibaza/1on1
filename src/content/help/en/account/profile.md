@@ -2,7 +2,7 @@
 
 Your profile controls how you appear to others in 1on1 and your personal preferences. All roles can access their profile from **Account > Profile**.
 
-![Profile](en/account-profile.jpg)
+![Profile](en/account-settings.jpg)
 
 ## Update your name
 
