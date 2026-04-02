@@ -2,7 +2,7 @@
 export const helpContent: Record<string, string> = {
   "en/account/profile": `Your profile controls how you appear to others in 1on1 and your personal preferences. All roles can access their profile from **Account > Profile**.
 
-![Profile](en/account-settings.jpg)
+![Profile](account-settings.jpg)
 
 ## Update your name
 
@@ -38,7 +38,7 @@ Toggle each notification type on or off, then click **Save Changes**.
 `,
   "en/account/security": `The security page lets you manage your password and connected sign-in accounts. Go to **Account > Security** to access these settings.
 
-![Security](en/account-security.jpg)
+![Security](account-security.jpg)
 
 ## Change your password
 
@@ -85,7 +85,7 @@ You create action items during a session in the meeting wizard.
 5. Set a **due date**. Pick a date before or on the next scheduled session.
 6. Click **Save**.
 
-![Create action item](en/action-item-create.jpg)
+![Create action item](action-item-create.jpg)
 
 The item is immediately saved and linked to the current session.
 
@@ -117,7 +117,7 @@ Completed items remain in the history for reference but no longer appear in the 
 `,
   "en/action-items/overview": `The **Action Items** page gives you a single view of every task created during your one-on-one sessions. Use it to stay on top of commitments between meetings.
 
-![Action items](en/action-items-list.jpg)
+![Action items](action-items-list.jpg)
 
 ## What you see
 
@@ -159,7 +159,7 @@ Overdue items are highlighted so you can spot them at a glance. Review this page
 `,
   "en/analytics/dashboard": `The analytics dashboard gives you a high-level view of how your one-on-one meetings are going across your team. You can spot trends, identify areas that need attention, and track engagement over time.
 
-![Analytics](en/analytics-dashboard.jpg)
+![Analytics](analytics-dashboard.jpg)
 
 ## Key metrics
 
@@ -193,7 +193,7 @@ Admins see data for the entire organization. Managers see data for their direct 
 `,
   "en/analytics/individual": `Individual reports show a single person's meeting history, score trends, and engagement metrics. Use them to prepare for upcoming sessions or to review how someone is progressing over time.
 
-![Individual analytics](en/analytics-individual.jpg)
+![Individual analytics](analytics-individual.jpg)
 
 ## Viewing an individual report
 
@@ -222,7 +222,7 @@ Admins can view individual reports for anyone in the organization. Managers can 
 `,
   "en/analytics/team": `Team reports aggregate meeting data across all members of a team, giving you a birds-eye view of team health and engagement patterns.
 
-![Team analytics](en/analytics-team.jpg)
+![Team analytics](analytics-team.jpg)
 
 ## Viewing a team report
 
@@ -260,7 +260,7 @@ Admins can view reports for any team. Managers see reports only for teams they m
 `,
   "en/getting-started/first-login": `After you receive your invitation email, click the link to access 1on1 for the first time. Here is what to expect.
 
-![Login page](en/login-page.jpg)
+![Login page](login-page.jpg)
 
 ## Verify your email
 
@@ -305,7 +305,7 @@ What you see on the **Dashboard** depends on your role.
 `,
   "en/getting-started/navigation": `1on1 uses a sidebar layout with a collapsible menu, a top bar for search and quick actions, and contextual panels that appear when needed.
 
-![Sidebar navigation](en/sidebar-navigation.jpg)
+![Sidebar navigation](sidebar-navigation.jpg)
 
 ## Sidebar menu
 
@@ -358,7 +358,7 @@ Press **?** on any page to see available keyboard shortcuts. Common ones include
 
 - **View analytics** across individuals and teams to spot patterns in engagement, sentiment, and follow-through over time.
 
-![Dashboard overview](en/dashboard-overview.jpg)
+![Dashboard overview](dashboard-overview.jpg)
 
 ## How it works
 
@@ -377,7 +377,7 @@ Your experience in 1on1 depends on your role. The sidebar, available features, a
 `,
   "en/people/inviting": `Admins can invite new people to the organization by sending email invitations. Invited users receive a link to create their account and join the company workspace.
 
-![Invite people](en/people-invite.jpg)
+![Invite people](people-invite.jpg)
 
 ## Sending invitations
 
@@ -417,7 +417,7 @@ Only admins can send invitations. Managers and members do not have access to thi
 `,
   "en/people/managing": `The **People** page shows everyone in your organization. Managers see their direct reports. Admins see all users across the company.
 
-![People](en/people-management.jpg)
+![People](people-management.jpg)
 
 ## Browsing the directory
 
@@ -449,7 +449,7 @@ Members do not have access to the People directory.
 `,
   "en/sessions/history": `The session history page lets you look back at all completed 1:1 sessions. Use it to track progress, spot trends, and revisit past discussions.
 
-![Session history](en/session-history.jpg)
+![Session history](session-history.jpg)
 
 ## Accessing session history
 
@@ -495,7 +495,7 @@ Hover over any data point to see the exact score and date.
 4. Pick a **template** that defines the questions for each session. You can use a built-in template or one your team has created.
 5. Click **Create Series** to save.
 
-![Create series](en/session-create-form.jpg)
+![Create series](session-create-form.jpg)
 
 The series now appears on your dashboard. Sessions are generated automatically based on the cadence you chose.
 
@@ -519,7 +519,7 @@ Open the series settings by clicking the three-dot menu on the series card and s
 `,
   "en/sessions/summary": `After you complete a session, AI analyzes the answers and generates a structured summary. This page explains what the summary includes and how to use it.
 
-![Session summary](en/session-summary.jpg)
+![Session summary](session-summary.jpg)
 
 ## What the summary contains
 
@@ -560,7 +560,7 @@ Managers additionally receive the coaching suggestions in their email.
 `,
   "en/sessions/wizard": `The meeting wizard guides you through a 1:1 session step by step. Each step corresponds to a category from the session template.
 
-![Meeting wizard](en/session-wizard.jpg)
+![Meeting wizard](session-wizard.jpg)
 
 ## Wizard steps
 
@@ -598,7 +598,7 @@ Click the **layers icon** to open the sidebar context panel. It gives you quick 
 `,
   "en/settings/audit-log": `The audit log records every significant action in your company account. Use it to monitor security events, track configuration changes, and investigate issues. Only admins can access the audit log.
 
-![Audit log](en/settings-audit-log.jpg)
+![Audit log](settings-audit-log.jpg)
 
 ## What gets logged
 
@@ -637,7 +637,7 @@ Log entries are retained based on your plan. Pro plans keep 90 days of history. 
 `,
   "en/settings/billing": `The billing page lets admins manage the company subscription, view invoices, and update payment details. 1on1 uses Paddle for secure payment processing.
 
-![Billing](en/settings-billing.jpg)
+![Billing](settings-billing.jpg)
 
 ## View your current plan
 
@@ -675,7 +675,7 @@ Your account remains active until the end of the paid period. After that, it rev
 `,
   "en/settings/company": `Company settings control the global defaults for your organization. Only admins can access this page.
 
-![Company settings](en/settings-company.jpg)
+![Company settings](settings-company.jpg)
 
 ## Change your company name
 
@@ -706,7 +706,7 @@ Company name and theme changes apply immediately for all users. Timezone and lan
 `,
   "en/teams/overview": `Teams group people together under a manager. They provide structure for analytics, make it easier to track meeting health across a group, and help admins organize the company.
 
-![Teams](en/teams-list.jpg)
+![Teams](teams-list.jpg)
 
 ## Viewing teams
 
@@ -748,7 +748,7 @@ Only admins can create, edit, or delete teams. Managers can view their own teams
 `,
   "en/templates/ai-editor": `The AI template editor generates a complete meeting template from a short description of your goals. Instead of building sections and questions manually, you describe what you want to achieve and the AI creates a ready-to-use structure.
 
-![AI editor](en/template-ai-editor.jpg)
+![AI editor](template-ai-editor.jpg)
 
 ## How it works
 
@@ -791,7 +791,7 @@ If the result does not match what you need, update your description and click **
 2. Click **Create template**.
 3. Enter a **name** and optional **description** for your template.
 
-![Create template](en/template-create.jpg)
+![Create template](template-create.jpg)
 
 ## Adding sections
 
@@ -831,7 +831,7 @@ Click **Save** when you are done. The template is immediately available for use 
 `,
   "en/templates/overview": `Templates define the structure of your one-on-one meetings. Each template contains sections with questions that guide the conversation through a consistent format.
 
-![Templates](en/templates-list.jpg)
+![Templates](templates-list.jpg)
 
 ## Template library
 
@@ -869,7 +869,7 @@ Template creation and editing is restricted to **managers** and **admins**. Memb
 `,
   "ro/account/profile": `Profilul tau controleaza modul in care apari pentru ceilalti in 1on1 si preferintele tale personale. Toate rolurile pot accesa profilul din **Cont > Profil**.
 
-![Profil](en/account-profile.jpg)
+![Profil](account-profile.jpg)
 
 ## Actualizeaza-ti numele
 
@@ -905,7 +905,7 @@ Activeaza sau dezactiveaza fiecare tip de notificare, apoi apasa **Salveaza Modi
 `,
   "ro/account/security": `Pagina de securitate iti permite sa gestionezi parola si conturile de autentificare conectate. Mergi la **Cont > Securitate** pentru a accesa aceste setari.
 
-![Securitate](en/account-security.jpg)
+![Securitate](account-security.jpg)
 
 ## Schimba-ti parola
 
@@ -952,7 +952,7 @@ Creezi action items in timpul unei sesiuni, in wizard-ul de intalnire.
 5. Seteaza o **data limita**. Alege o data inainte de sau la urmatoarea sesiune programata.
 6. Apasa **Save**.
 
-![Create action item](en/action-item-create.jpg)
+![Create action item](action-item-create.jpg)
 
 Elementul este salvat imediat si legat de sesiunea curenta.
 
@@ -984,7 +984,7 @@ Sarcinile finalizate raman in istoric pentru referinta, dar nu mai apar in lista
 `,
   "ro/action-items/overview": `Pagina **Action Items** iti ofera o vedere completa a tuturor sarcinilor create in cadrul sesiunilor tale de one-on-one. Foloseste-o ca sa te asiguri ca nimic nu e uitat intre intalniri.
 
-![Action items](en/action-items-list.jpg)
+![Action items](action-items-list.jpg)
 
 ## Ce vezi pe aceasta pagina
 
@@ -1026,7 +1026,7 @@ Sarcinile intarziate sunt evidentiate pentru a le observa rapid. Verifica aceast
 `,
   "ro/analytics/dashboard": `Panoul de analitice iti ofera o imagine de ansamblu asupra intalnirilor one-on-one din echipa ta. Poti identifica tendinte, observa zone care necesita atentie si urmari nivelul de implicare in timp.
 
-![Analytics](en/analytics-dashboard.jpg)
+![Analytics](analytics-dashboard.jpg)
 
 ## Metrici principale
 
@@ -1060,7 +1060,7 @@ Adminii vad datele pentru intreaga organizatie. Managerii vad doar datele subord
 `,
   "ro/analytics/individual": `Rapoartele individuale arata istoricul de sesiuni, tendintele scorurilor si metricile de implicare ale unei persoane. Foloseste-le pentru a te pregati de urmatoarea sesiune sau pentru a vedea cum evolueaza cineva in timp.
 
-![Individual analytics](en/analytics-individual.jpg)
+![Individual analytics](analytics-individual.jpg)
 
 ## Cum accesezi un raport individual
 
@@ -1089,7 +1089,7 @@ Adminii pot vedea rapoartele individuale ale oricui din organizatie. Managerii p
 `,
   "ro/analytics/team": `Rapoartele de echipa agrega datele intalnirilor pentru toti membrii unei echipe, oferindu-ti o perspectiva de ansamblu asupra sanatatii si nivelului de implicare al echipei.
 
-![Team analytics](en/analytics-team.jpg)
+![Team analytics](analytics-team.jpg)
 
 ## Cum accesezi un raport de echipa
 
@@ -1127,7 +1127,7 @@ Adminii pot vedea rapoartele oricarei echipe. Managerii vad doar rapoartele echi
 `,
   "ro/getting-started/first-login": `Dupa ce primesti email-ul de invitatie, da click pe link pentru a accesa 1on1 prima data. Iata la ce sa te astepti.
 
-![Pagina de autentificare](en/login-page.jpg)
+![Pagina de autentificare](login-page.jpg)
 
 ## Verificarea email-ului
 
@@ -1172,7 +1172,7 @@ Ce vezi pe **Dashboard** depinde de rolul tau.
 `,
   "ro/getting-started/navigation": `1on1 foloseste un layout cu meniu lateral pliabil, o bara superioara pentru cautare si actiuni rapide, si panouri contextuale care apar cand e nevoie.
 
-![Navigare meniu lateral](en/sidebar-navigation.jpg)
+![Navigare meniu lateral](sidebar-navigation.jpg)
 
 ## Meniul lateral
 
@@ -1225,7 +1225,7 @@ Apasa **?** pe orice pagina pentru a vedea scurtaturile disponibile. Cele mai fo
 
 - **Vizualizezi analize** la nivel individual si de echipa, pentru a observa tendinte in implicare, sentiment si respectarea angajamentelor.
 
-![Prezentare generala Dashboard](en/dashboard-overview.jpg)
+![Prezentare generala Dashboard](dashboard-overview.jpg)
 
 ## Cum functioneaza
 
@@ -1244,7 +1244,7 @@ Ce vezi in 1on1 depinde de rolul tau. Meniul lateral, functiile disponibile si a
 `,
   "ro/people/inviting": `Administratorii pot invita persoane noi în organizație trimițând invitații pe email. Persoanele invitate primesc un link pentru a-și crea contul și a se alătura spațiului de lucru.
 
-![Invită persoane](en/people-invite.jpg)
+![Invită persoane](people-invite.jpg)
 
 ## Trimiterea invitațiilor
 
@@ -1284,7 +1284,7 @@ Doar administratorii pot trimite invitații. Managerii și membrii nu au acces l
 `,
   "ro/people/managing": `Pagina **Persoane** afiseaza toti utilizatorii din organizatia ta. Managerii isi vad subordonatii directi. Adminii vad toate persoanele din companie.
 
-![People](en/people-management.jpg)
+![People](people-management.jpg)
 
 ## Navigarea in director
 
@@ -1316,7 +1316,7 @@ Membrii nu au acces la directorul de persoane.
 `,
   "ro/sessions/history": `Pagina de istoric iti permite sa revezi toate sesiunile 1:1 finalizate. Foloseste-o pentru a urmari progresul, a identifica tendinte si a revizita discutii din trecut.
 
-![Session history](en/session-history.jpg)
+![Session history](session-history.jpg)
 
 ## Accesarea istoricului
 
@@ -1362,7 +1362,7 @@ Treci cu mouse-ul peste orice punct pentru a vedea scorul exact si data.
 4. Alege un **template** care defineste intrebarile pentru fiecare sesiune. Poti folosi un template predefinit sau unul creat de echipa ta.
 5. Apasa **Creeaza Serie** pentru a salva.
 
-![Create series](en/session-create-form.jpg)
+![Create series](session-create-form.jpg)
 
 Seria apare acum pe dashboard. Sesiunile se genereaza automat pe baza cadentei alese.
 
@@ -1386,7 +1386,7 @@ Deschide setarile seriei prin meniul cu trei puncte de pe cardul seriei si selec
 `,
   "ro/sessions/summary": `Dupa ce finalizezi o sesiune, AI-ul analizeaza raspunsurile si genereaza un rezumat structurat. Aici afli ce contine si cum il folosesti.
 
-![Session summary](en/session-summary.jpg)
+![Session summary](session-summary.jpg)
 
 ## Ce contine rezumatul
 
@@ -1427,7 +1427,7 @@ Managerii primesc suplimentar sugestiile de coaching in email.
 `,
   "ro/sessions/wizard": `Wizard-ul te ghideaza pas cu pas printr-o sesiune 1:1. Fiecare pas corespunde unei categorii din template-ul sesiunii.
 
-![Meeting wizard](en/session-wizard.jpg)
+![Meeting wizard](session-wizard.jpg)
 
 ## Pasii wizard-ului
 
@@ -1465,7 +1465,7 @@ Apasa **iconita de straturi** pentru a deschide panoul lateral. Aici ai acces ra
 `,
   "ro/settings/audit-log": `Jurnalul de audit inregistreaza fiecare actiune semnificativa din contul companiei tale. Foloseste-l pentru a monitoriza evenimentele de securitate, a urmari modificarile de configurare si a investiga probleme. Doar administratorii au acces la jurnalul de audit.
 
-![Jurnal de audit](en/settings-audit-log.jpg)
+![Jurnal de audit](settings-audit-log.jpg)
 
 ## Ce se inregistreaza
 
@@ -1504,7 +1504,7 @@ Inregistrarile din jurnal sunt pastrate in functie de planul tau. Planurile Pro 
 `,
   "ro/settings/billing": `Pagina de facturare permite administratorilor sa gestioneze abonamentul companiei, sa vizualizeze facturile si sa actualizeze datele de plata. 1on1 foloseste Paddle pentru procesarea securizata a platilor.
 
-![Facturare](en/settings-billing.jpg)
+![Facturare](settings-billing.jpg)
 
 ## Vizualizeaza planul curent
 
@@ -1542,7 +1542,7 @@ Contul ramane activ pana la sfarsitul perioadei platite. Dupa aceea, revine la p
 `,
   "ro/settings/company": `Setarile companiei controleaza valorile implicite pentru intreaga organizatie. Doar administratorii au acces la aceasta pagina.
 
-![Setari companie](en/settings-company.jpg)
+![Setari companie](settings-company.jpg)
 
 ## Schimba numele companiei
 
@@ -1573,7 +1573,7 @@ Schimbarile de nume si tema se aplica imediat pentru toti utilizatorii. Valorile
 `,
   "ro/teams/overview": `Echipele grupează persoanele sub un manager. Oferă structură pentru analize, facilitează urmărirea stării ședințelor și ajută administratorii să organizeze compania.
 
-![Echipe](en/teams-list.jpg)
+![Echipe](teams-list.jpg)
 
 ## Vizualizarea echipelor
 
@@ -1615,7 +1615,7 @@ Doar administratorii pot crea, edita sau șterge echipe. Managerii pot vizualiza
 `,
   "ro/templates/ai-editor": `Editorul AI genereaza un template complet de intalnire pornind de la o scurta descriere a obiectivelor tale. In loc sa construiesti sectiuni si intrebari manual, descrii ce vrei sa obtii si AI-ul creeaza o structura gata de utilizare.
 
-![AI editor](en/template-ai-editor.jpg)
+![AI editor](template-ai-editor.jpg)
 
 ## Cum functioneaza
 
@@ -1658,7 +1658,7 @@ Daca rezultatul nu corespunde cu ce ai nevoie, actualizeaza descrierea si apasa 
 2. Apasa **Create template**.
 3. Introdu un **nume** si optional o **descriere** pentru template.
 
-![Create template](en/template-create.jpg)
+![Create template](template-create.jpg)
 
 ## Adaugarea sectiunilor
 
@@ -1698,7 +1698,7 @@ Apasa **Save** cand ai terminat. Template-ul este disponibil imediat pentru util
 `,
   "ro/templates/overview": `Template-urile definesc structura intalnirilor tale de one-on-one. Fiecare template contine sectiuni cu intrebari care ghideaza conversatia printr-un format consistent.
 
-![Templates](en/templates-list.jpg)
+![Templates](templates-list.jpg)
 
 ## Biblioteca de template-uri
 

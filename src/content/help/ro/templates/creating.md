@@ -6,7 +6,7 @@ Construieste un template personalizat care sa se potriveasca structurii intalnir
 2. Apasa **Create template**.
 3. Introdu un **nume** si optional o **descriere** pentru template.
 
-![Create template](en/template-create.jpg)
+![Create template](template-create.jpg)
 
 ## Adaugarea sectiunilor
 

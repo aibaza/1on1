@@ -49,7 +49,7 @@ export default async function HelpArticlePage({ params }: HelpArticlePageProps) 
           {t(page.titleKey)}
         </h1>
 
-        <HelpContent content={content} />
+        <HelpContent content={content} locale={locale} />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 Rapoartele de echipa agrega datele intalnirilor pentru toti membrii unei echipe, oferindu-ti o perspectiva de ansamblu asupra sanatatii si nivelului de implicare al echipei.
 
-![Team analytics](en/analytics-team.jpg)
+![Team analytics](analytics-team.jpg)
 
 ## Cum accesezi un raport de echipa
 

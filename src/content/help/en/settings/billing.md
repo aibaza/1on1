@@ -1,6 +1,6 @@
 The billing page lets admins manage the company subscription, view invoices, and update payment details. 1on1 uses Paddle for secure payment processing.
 
-![Billing](en/settings-billing.jpg)
+![Billing](settings-billing.jpg)
 
 ## View your current plan
 

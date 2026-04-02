@@ -1,6 +1,6 @@
 The **People** page shows everyone in your organization. Managers see their direct reports. Admins see all users across the company.
 
-![People](en/people-management.jpg)
+![People](people-management.jpg)
 
 ## Browsing the directory
 

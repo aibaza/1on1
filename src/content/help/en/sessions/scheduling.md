@@ -8,7 +8,7 @@ As a manager or admin, you create a **meeting series** to set up recurring 1:1s 
 4. Pick a **template** that defines the questions for each session. You can use a built-in template or one your team has created.
 5. Click **Create Series** to save.
 
-![Create series](en/session-create-form.jpg)
+![Create series](session-create-form.jpg)
 
 The series now appears on your dashboard. Sessions are generated automatically based on the cadence you chose.
 

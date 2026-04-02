@@ -10,7 +10,7 @@
 
 - **View analytics** across individuals and teams to spot patterns in engagement, sentiment, and follow-through over time.
 
-![Dashboard overview](en/dashboard-overview.jpg)
+![Dashboard overview](dashboard-overview.jpg)
 
 ## How it works
 

@@ -1,6 +1,6 @@
 Editorul AI genereaza un template complet de intalnire pornind de la o scurta descriere a obiectivelor tale. In loc sa construiesti sectiuni si intrebari manual, descrii ce vrei sa obtii si AI-ul creeaza o structura gata de utilizare.
 
-![AI editor](en/template-ai-editor.jpg)
+![AI editor](template-ai-editor.jpg)
 
 ## Cum functioneaza
 

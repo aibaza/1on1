@@ -1,6 +1,6 @@
 The AI template editor generates a complete meeting template from a short description of your goals. Instead of building sections and questions manually, you describe what you want to achieve and the AI creates a ready-to-use structure.
 
-![AI editor](en/template-ai-editor.jpg)
+![AI editor](template-ai-editor.jpg)
 
 ## How it works
 

@@ -8,7 +8,7 @@ Ca manager sau admin, creezi un **serie de întâlniri** pentru a stabili 1:1-ur
 4. Alege un **template** care defineste intrebarile pentru fiecare sesiune. Poti folosi un template predefinit sau unul creat de echipa ta.
 5. Apasa **Creeaza Serie** pentru a salva.
 
-![Create series](en/session-create-form.jpg)
+![Create series](session-create-form.jpg)
 
 Seria apare acum pe dashboard. Sesiunile se genereaza automat pe baza cadentei alese.
 

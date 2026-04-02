@@ -1,6 +1,6 @@
 Company settings control the global defaults for your organization. Only admins can access this page.
 
-![Company settings](en/settings-company.jpg)
+![Company settings](settings-company.jpg)
 
 ## Change your company name
 

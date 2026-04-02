@@ -6,7 +6,7 @@ Build a custom template to match the structure of your one-on-one meetings. You 
 2. Click **Create template**.
 3. Enter a **name** and optional **description** for your template.
 
-![Create template](en/template-create.jpg)
+![Create template](template-create.jpg)
 
 ## Adding sections
 

@@ -1,6 +1,6 @@
 Setarile companiei controleaza valorile implicite pentru intreaga organizatie. Doar administratorii au acces la aceasta pagina.
 
-![Setari companie](en/settings-company.jpg)
+![Setari companie](settings-company.jpg)
 
 ## Schimba numele companiei
 

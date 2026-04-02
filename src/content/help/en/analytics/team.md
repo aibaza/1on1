@@ -1,6 +1,6 @@
 Team reports aggregate meeting data across all members of a team, giving you a birds-eye view of team health and engagement patterns.
 
-![Team analytics](en/analytics-team.jpg)
+![Team analytics](analytics-team.jpg)
 
 ## Viewing a team report
 

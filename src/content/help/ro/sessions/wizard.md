@@ -1,6 +1,6 @@
 Wizard-ul te ghideaza pas cu pas printr-o sesiune 1:1. Fiecare pas corespunde unei categorii din template-ul sesiunii.
 
-![Meeting wizard](en/session-wizard.jpg)
+![Meeting wizard](session-wizard.jpg)
 
 ## Pasii wizard-ului
 

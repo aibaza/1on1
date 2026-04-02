@@ -1,6 +1,6 @@
 Template-urile definesc structura intalnirilor tale de one-on-one. Fiecare template contine sectiuni cu intrebari care ghideaza conversatia printr-un format consistent.
 
-![Templates](en/templates-list.jpg)
+![Templates](templates-list.jpg)
 
 ## Biblioteca de template-uri
 

@@ -1,6 +1,6 @@
 Templates define the structure of your one-on-one meetings. Each template contains sections with questions that guide the conversation through a consistent format.
 
-![Templates](en/templates-list.jpg)
+![Templates](templates-list.jpg)
 
 ## Template library
 

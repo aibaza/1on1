@@ -1,6 +1,6 @@
 Dupa ce finalizezi o sesiune, AI-ul analizeaza raspunsurile si genereaza un rezumat structurat. Aici afli ce contine si cum il folosesti.
 
-![Session summary](en/session-summary.jpg)
+![Session summary](session-summary.jpg)
 
 ## Ce contine rezumatul
 

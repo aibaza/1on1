@@ -11,7 +11,7 @@ Creezi action items in timpul unei sesiuni, in wizard-ul de intalnire.
 5. Seteaza o **data limita**. Alege o data inainte de sau la urmatoarea sesiune programata.
 6. Apasa **Save**.
 
-![Create action item](en/action-item-create.jpg)
+![Create action item](action-item-create.jpg)
 
 Elementul este salvat imediat si legat de sesiunea curenta.
 

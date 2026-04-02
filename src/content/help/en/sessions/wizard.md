@@ -1,6 +1,6 @@
 The meeting wizard guides you through a 1:1 session step by step. Each step corresponds to a category from the session template.
 
-![Meeting wizard](en/session-wizard.jpg)
+![Meeting wizard](session-wizard.jpg)
 
 ## Wizard steps
 

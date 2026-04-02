@@ -11,7 +11,7 @@ You create action items during a session in the meeting wizard.
 5. Set a **due date**. Pick a date before or on the next scheduled session.
 6. Click **Save**.
 
-![Create action item](en/action-item-create.jpg)
+![Create action item](action-item-create.jpg)
 
 The item is immediately saved and linked to the current session.
 

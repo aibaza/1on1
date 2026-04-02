@@ -1,6 +1,6 @@
 Pagina **Persoane** afiseaza toti utilizatorii din organizatia ta. Managerii isi vad subordonatii directi. Adminii vad toate persoanele din companie.
 
-![People](en/people-management.jpg)
+![People](people-management.jpg)
 
 ## Navigarea in director
 

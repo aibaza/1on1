@@ -1,6 +1,6 @@
 Dupa ce primesti email-ul de invitatie, da click pe link pentru a accesa 1on1 prima data. Iata la ce sa te astepti.
 
-![Pagina de autentificare](en/login-page.jpg)
+![Pagina de autentificare](login-page.jpg)
 
 ## Verificarea email-ului
 
