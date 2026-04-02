@@ -29,8 +29,8 @@ export default async function HelpArticlePage({ params }: HelpArticlePageProps) 
   if (!page) notFound();
   if (page.roles && !page.roles.includes(role)) notFound();
 
-  // Load markdown content
-  const content = await loadHelpContent(slugPath, locale);
+  // Load markdown content (synchronous — pre-bundled at build time)
+  const content = loadHelpContent(slugPath, locale);
   if (!content) notFound();
 
   return (
