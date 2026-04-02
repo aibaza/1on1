@@ -1,5 +1,3 @@
-# Jurnal de audit
-
 Jurnalul de audit inregistreaza fiecare actiune semnificativa din contul companiei tale. Foloseste-l pentru a monitoriza evenimentele de securitate, a urmari modificarile de configurare si a investiga probleme. Doar administratorii au acces la jurnalul de audit.
 
 ![Jurnal de audit](ro/settings-audit-log.jpg)

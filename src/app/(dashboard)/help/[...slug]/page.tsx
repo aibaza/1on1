@@ -38,18 +38,16 @@ export default async function HelpArticlePage({ params }: HelpArticlePageProps) 
       <HelpSidebar role={role} />
 
       <div className="flex-1 min-w-0 max-w-3xl">
-        <div className="mb-6">
-          <Link
-            href="/help"
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-          >
-            <ChevronLeft className="size-4" />
-            {t("backToHelp")}
-          </Link>
-          <h1 className="text-2xl font-extrabold tracking-tight font-headline">
-            {t(page.titleKey)}
-          </h1>
-        </div>
+        <Link
+          href="/help"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ChevronLeft className="size-4" />
+          {t("backToHelp")}
+        </Link>
+        <h1 className="text-2xl font-extrabold tracking-tight font-headline mt-4 mb-8">
+          {t(page.titleKey)}
+        </h1>
 
         <HelpContent content={content} />
       </div>

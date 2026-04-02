@@ -1,5 +1,3 @@
-# First Login
-
 After you receive your invitation email, click the link to access 1on1 for the first time. Here is what to expect.
 
 ![Login page](en/login-page.jpg)

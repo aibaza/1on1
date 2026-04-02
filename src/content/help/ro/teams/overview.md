@@ -1,5 +1,3 @@
-# Gestionarea echipelor
-
 Echipele grupează persoanele sub un manager. Oferă structură pentru analize, facilitează urmărirea stării ședințelor și ajută administratorii să organizeze compania.
 
 ![Echipe](en/teams-list.jpg)

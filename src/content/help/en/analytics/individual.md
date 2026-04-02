@@ -1,5 +1,3 @@
-# Individual Reports
-
 Individual reports show a single person's meeting history, score trends, and engagement metrics. Use them to prepare for upcoming sessions or to review how someone is progressing over time.
 
 ![Individual analytics](en/analytics-individual.jpg)

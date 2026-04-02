@@ -1,5 +1,3 @@
-# Navigare
-
 1on1 foloseste un layout cu meniu lateral pliabil, o bara superioara pentru cautare si actiuni rapide, si panouri contextuale care apar cand e nevoie.
 
 ![Navigare meniu lateral](ro/sidebar-navigation.jpg)

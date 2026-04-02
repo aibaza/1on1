@@ -1,5 +1,3 @@
-# Managing Action Items
-
 Action items are created during sessions and tracked across meetings. They help you turn conversation into concrete follow-up.
 
 ## Creating an action item

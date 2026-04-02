@@ -1,5 +1,3 @@
-# Analytics Dashboard
-
 The analytics dashboard gives you a high-level view of how your one-on-one meetings are going across your team. You can spot trends, identify areas that need attention, and track engagement over time.
 
 ![Analytics](en/analytics-dashboard.jpg)

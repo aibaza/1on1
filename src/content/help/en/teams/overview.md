@@ -1,5 +1,3 @@
-# Managing Teams
-
 Teams group people together under a manager. They provide structure for analytics, make it easier to track meeting health across a group, and help admins organize the company.
 
 ![Teams](en/teams-list.jpg)

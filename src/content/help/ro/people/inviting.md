@@ -1,5 +1,3 @@
-# Invitarea membrilor în echipă
-
 Administratorii pot invita persoane noi în organizație trimițând invitații pe email. Persoanele invitate primesc un link pentru a-și crea contul și a se alătura spațiului de lucru.
 
 ![Invită persoane](en/people-invite.jpg)

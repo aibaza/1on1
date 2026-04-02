@@ -1,5 +1,3 @@
-# Security
-
 The security page lets you manage your password and connected sign-in accounts. Go to **Account > Security** to access these settings.
 
 ![Security](en/account-security.jpg)

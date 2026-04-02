@@ -1,5 +1,3 @@
-# Crearea unui Template
-
 Construieste un template personalizat care sa se potriveasca structurii intalnirilor tale de one-on-one. Tu controlezi sectiunile, intrebarile si tipurile de raspunsuri.
 
 ## Pornirea unui template nou

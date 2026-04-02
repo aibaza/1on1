@@ -1,5 +1,3 @@
-# How to schedule 1:1 meetings
-
 As a manager or admin, you create a **meeting series** to set up recurring 1:1s with a team member. Each series defines who you meet, how often, and which template to use.
 
 ## Creating a meeting series

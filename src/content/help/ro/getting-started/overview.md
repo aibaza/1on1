@@ -1,5 +1,3 @@
-# Prezentare generala
-
 1on1 te ajuta sa conduci intalniri one-on-one structurate care duc la rezultate concrete. In loc de conversatii ad-hoc, urmezi un format consistent care construieste incredere, scoate la suprafata problemele devreme si urmareste progresul in timp.
 
 ## Ce poti face

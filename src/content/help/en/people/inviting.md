@@ -1,5 +1,3 @@
-# Inviting Team Members
-
 Admins can invite new people to the organization by sending email invitations. Invited users receive a link to create their account and join the company workspace.
 
 ![Invite people](en/people-invite.jpg)

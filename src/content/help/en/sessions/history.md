@@ -1,5 +1,3 @@
-# How to browse session history
-
 The session history page lets you look back at all completed 1:1 sessions. Use it to track progress, spot trends, and revisit past discussions.
 
 ![Session history](en/session-history.jpg)

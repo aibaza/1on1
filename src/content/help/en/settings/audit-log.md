@@ -1,5 +1,3 @@
-# Audit Log
-
 The audit log records every significant action in your company account. Use it to monitor security events, track configuration changes, and investigate issues. Only admins can access the audit log.
 
 ![Audit log](en/settings-audit-log.jpg)

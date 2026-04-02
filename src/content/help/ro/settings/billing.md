@@ -1,5 +1,3 @@
-# Facturare
-
 Pagina de facturare permite administratorilor sa gestioneze abonamentul companiei, sa vizualizeze facturile si sa actualizeze datele de plata. 1on1 foloseste Paddle pentru procesarea securizata a platilor.
 
 ![Facturare](ro/settings-billing.jpg)

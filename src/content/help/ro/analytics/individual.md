@@ -1,5 +1,3 @@
-# Rapoarte individuale
-
 Rapoartele individuale arata istoricul de sesiuni, tendintele scorurilor si metricile de implicare ale unei persoane. Foloseste-le pentru a te pregati de urmatoarea sesiune sau pentru a vedea cum evolueaza cineva in timp.
 
 ![Individual analytics](en/analytics-individual.jpg)

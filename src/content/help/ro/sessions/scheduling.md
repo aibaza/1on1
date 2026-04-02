@@ -1,5 +1,3 @@
-# Cum programezi intalniri 1:1
-
 Ca manager sau admin, creezi un **serie de întâlniri** pentru a stabili 1:1-uri recurente cu un coleg. Fiecare series defineste cu cine te intalnesti, cat de des si ce template folosesti.
 
 ## Crearea unui serie de întâlniri

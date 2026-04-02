@@ -1,5 +1,3 @@
-# Platform Overview
-
 1on1 helps you run structured one-on-one meetings that drive real outcomes. Instead of ad-hoc conversations, you follow a consistent format that builds trust, surfaces issues early, and tracks progress over time.
 
 ## What you can do

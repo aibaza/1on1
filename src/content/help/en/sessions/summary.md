@@ -1,5 +1,3 @@
-# How to review a session summary
-
 After you complete a session, AI analyzes the answers and generates a structured summary. This page explains what the summary includes and how to use it.
 
 ![Session summary](en/session-summary.jpg)

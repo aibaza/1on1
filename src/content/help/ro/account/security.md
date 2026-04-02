@@ -1,5 +1,3 @@
-# Securitate
-
 Pagina de securitate iti permite sa gestionezi parola si conturile de autentificare conectate. Mergi la **Cont > Securitate** pentru a accesa aceste setari.
 
 ![Securitate](ro/account-security.jpg)

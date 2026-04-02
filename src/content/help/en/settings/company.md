@@ -1,5 +1,3 @@
-# Company Settings
-
 Company settings control the global defaults for your organization. Only admins can access this page.
 
 ![Company settings](en/settings-company.jpg)

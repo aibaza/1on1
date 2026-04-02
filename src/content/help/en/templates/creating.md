@@ -1,5 +1,3 @@
-# Creating a Template
-
 Build a custom template to match the structure of your one-on-one meetings. You control the sections, questions, and answer types.
 
 ## Starting a new template

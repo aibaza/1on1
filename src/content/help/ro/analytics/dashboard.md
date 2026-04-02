@@ -1,5 +1,3 @@
-# Panoul de analitice
-
 Panoul de analitice iti ofera o imagine de ansamblu asupra intalnirilor one-on-one din echipa ta. Poti identifica tendinte, observa zone care necesita atentie si urmari nivelul de implicare in timp.
 
 ![Analytics](en/analytics-dashboard.jpg)

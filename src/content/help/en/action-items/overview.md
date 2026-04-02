@@ -1,5 +1,3 @@
-# Action Items Overview
-
 The **Action Items** page gives you a single view of every task created during your one-on-one sessions. Use it to stay on top of commitments between meetings.
 
 ![Action items](en/action-items-list.jpg)

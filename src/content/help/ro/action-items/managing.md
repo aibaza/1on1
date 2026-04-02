@@ -1,5 +1,3 @@
-# Gestionarea Action Items
-
 Sarcinile sunt create in timpul sesiunilor si urmarite de la o intalnire la alta. Te ajuta sa transformi conversatia in actiuni concrete.
 
 ## Crearea unui action item

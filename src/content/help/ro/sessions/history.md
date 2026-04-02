@@ -1,5 +1,3 @@
-# Cum navighezi istoricul sesiunilor
-
 Pagina de istoric iti permite sa revezi toate sesiunile 1:1 finalizate. Foloseste-o pentru a urmari progresul, a identifica tendinte si a revizita discutii din trecut.
 
 ![Session history](en/session-history.jpg)

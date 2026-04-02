@@ -1,5 +1,3 @@
-# Navigation
-
 1on1 uses a sidebar layout with a collapsible menu, a top bar for search and quick actions, and contextual panels that appear when needed.
 
 ![Sidebar navigation](en/sidebar-navigation.jpg)
