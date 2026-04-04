@@ -19,6 +19,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { DatePicker } from "@/components/ui/date-picker";
 
 // --- Types ---
 
@@ -330,23 +331,19 @@ export function EditorialHistoryPage({
         </div>
 
         {/* Date range */}
-        <div className="flex items-center bg-[var(--editorial-surface-container-low,var(--muted))] rounded-lg px-3 py-1.5 gap-2">
-          <input
-            type="date"
-            className="bg-transparent border-none text-sm font-medium focus:ring-0 p-0 w-32 cursor-pointer outline-none"
+        <div className="flex items-center gap-2">
+          <DatePicker
             value={fromDate}
-            onChange={(e) =>
-              applyFilters(statusFilter, e.target.value, toDate, seriesFilter)
-            }
+            onChange={(val) => applyFilters(statusFilter, val, toDate, seriesFilter)}
+            placeholder={t("from")}
+            className="w-[150px]"
           />
           <span className="text-muted-foreground/60 text-xs">{t("to")}</span>
-          <input
-            type="date"
-            className="bg-transparent border-none text-sm font-medium focus:ring-0 p-0 w-32 cursor-pointer outline-none"
+          <DatePicker
             value={toDate}
-            onChange={(e) =>
-              applyFilters(statusFilter, fromDate, e.target.value, seriesFilter)
-            }
+            onChange={(val) => applyFilters(statusFilter, fromDate, val, seriesFilter)}
+            placeholder={t("to")}
+            className="w-[150px]"
           />
         </div>
 

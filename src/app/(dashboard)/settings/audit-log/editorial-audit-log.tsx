@@ -4,6 +4,7 @@ import { Fragment, useState } from "react";
 import { useTranslations, useFormatter } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { Search, ChevronDown, ChevronRight, ChevronLeft, Download, Info } from "lucide-react";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface AuditEntry {
@@ -117,8 +118,8 @@ export function EditorialAuditLog() {
     <div className="space-y-8">
       {/* Filter Bar */}
       <div className="bg-card rounded-xl p-6 border border-[var(--editorial-outline-variant,var(--border))]/50 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-        <div className="grid grid-cols-12 gap-4 items-end">
-          <div className="col-span-12 md:col-span-4">
+        <div className="flex flex-wrap gap-4 items-end">
+          <div className="flex-1 min-w-[180px]">
             <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
               {t("auditLog.searchPlaceholder")}
             </label>
@@ -129,18 +130,18 @@ export function EditorialAuditLog() {
                 value={searchInput}
                 onChange={(e) => { setSearchInput(e.target.value); setPage(1); }}
                 placeholder={t("auditLog.searchPlaceholder")}
-                className="w-full bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg py-3 pl-10 text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+                className="w-full h-[38px] rounded-xl border border-input bg-background px-3 pl-10 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </div>
-          <div className="col-span-6 md:col-span-3">
+          <div className="min-w-[160px]">
             <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
               {t("auditLog.actionType")}
             </label>
             <select
               value={action}
               onChange={(e) => { setAction(e.target.value); setPage(1); }}
-              className="w-full bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none cursor-pointer"
+              className="w-full h-[38px] rounded-xl border border-input bg-background px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
             >
               <option value="all">{t("auditLog.allActions")}</option>
               {ACTION_TYPES.map((a) => (
@@ -148,29 +149,34 @@ export function EditorialAuditLog() {
               ))}
             </select>
           </div>
-          <div className="col-span-6 md:col-span-3">
-            <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
-              {t("auditLog.dateRange")}
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="date"
+          <div className="flex gap-4 items-end">
+            <div className="min-w-[130px]">
+              <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                {t("auditLog.from")}
+              </label>
+              <DatePicker
                 value={fromDate}
-                onChange={(e) => { setFromDate(e.target.value); setPage(1); }}
-                className="flex-1 bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg py-3 px-3 text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+                onChange={(val) => { setFromDate(val); setPage(1); }}
+                placeholder={t("auditLog.from")}
+                className="w-full h-[38px]"
               />
-              <input
-                type="date"
+            </div>
+            <div className="min-w-[130px]">
+              <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                {t("auditLog.to")}
+              </label>
+              <DatePicker
                 value={toDate}
-                onChange={(e) => { setToDate(e.target.value); setPage(1); }}
-                className="flex-1 bg-[var(--editorial-surface-container-low,var(--muted))] border-none rounded-lg py-3 px-3 text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+                onChange={(val) => { setToDate(val); setPage(1); }}
+                placeholder={t("auditLog.to")}
+                className="w-full h-[38px]"
               />
             </div>
           </div>
-          <div className="col-span-12 md:col-span-2">
+          <div>
             <button
               type="button"
-              className="w-full text-white font-headline font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-95"
+              className="h-[38px] text-white font-headline font-bold px-5 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-95"
               style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--editorial-primary-container, var(--primary)) 100%)" }}
             >
               <Download className="h-4 w-4" />

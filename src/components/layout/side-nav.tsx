@@ -21,7 +21,10 @@ import {
   ListChecks,
   History,
   CreditCard,
+  ScrollText,
   ShieldCheck,
+  ChevronDown,
+  Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -44,7 +47,20 @@ interface NavItem {
   minRole?: "admin" | "manager";
 }
 
-function canSeeItem(level: string, item: NavItem): boolean {
+interface NavGroup {
+  label: string;
+  icon: typeof LayoutDashboard;
+  minRole?: "admin" | "manager";
+  children: NavItem[];
+}
+
+type NavEntry = NavItem | NavGroup;
+
+function isNavGroup(entry: NavEntry): entry is NavGroup {
+  return "children" in entry;
+}
+
+function canSeeItem(level: string, item: { minRole?: "admin" | "manager" }): boolean {
   if (!item.minRole) return true;
   if (item.minRole === "admin") return level === "admin";
   if (item.minRole === "manager") return level === "admin" || level === "manager";
@@ -54,6 +70,10 @@ function canSeeItem(level: string, item: NavItem): boolean {
 function isActive(pathname: string, item: NavItem): boolean {
   if (pathname === item.href || pathname.startsWith(item.href + "/")) return true;
   return item.matchAlso?.some((p) => pathname.startsWith(p)) ?? false;
+}
+
+function isGroupActive(pathname: string, group: NavGroup): boolean {
+  return group.children.some((child) => isActive(pathname, child));
 }
 
 function NavLink({
@@ -101,6 +121,93 @@ function NavLink({
   return link;
 }
 
+function NavGroupLink({
+  group,
+  pathname,
+  collapsed,
+  userLevel,
+  onNavigate,
+}: {
+  group: NavGroup;
+  pathname: string;
+  collapsed: boolean;
+  userLevel: string;
+  onNavigate?: () => void;
+}) {
+  const active = isGroupActive(pathname, group);
+  const [open, setOpen] = useState(active);
+  const Icon = group.icon;
+  const visibleChildren = group.children.filter((child) => canSeeItem(userLevel, child));
+
+  if (visibleChildren.length === 0) return null;
+
+  if (collapsed) {
+    // When collapsed, show just the icon — clicking goes to first child
+    const firstChild = visibleChildren[0];
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            href={firstChild.href}
+            className={cn(
+              "flex items-center justify-center py-3 rounded-lg transition-all font-headline font-semibold text-sm",
+              active
+                ? "bg-white dark:bg-[var(--sidebar-accent)] text-primary dark:text-[var(--sidebar-accent-foreground)] font-bold shadow-sm"
+                : "text-muted-foreground hover:text-primary"
+            )}
+          >
+            <Icon className="h-5 w-5 shrink-0" />
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent side="right" sideOffset={8}>{group.label}</TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={cn(
+          "flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-headline font-semibold text-sm w-full",
+          active
+            ? "text-primary font-bold"
+            : "text-muted-foreground hover:text-primary"
+        )}
+      >
+        <Icon className="h-5 w-5 shrink-0" />
+        <span className="flex-1 text-left">{group.label}</span>
+        <ChevronDown className={cn("h-4 w-4 shrink-0 transition-transform", open && "rotate-180")} />
+      </button>
+      {open && (
+        <div className="ml-7 pl-3 border-l border-border/30 space-y-0.5 mb-1">
+          {visibleChildren.map((child) => {
+            const childActive = isActive(pathname, child);
+            const ChildIcon = child.icon;
+            return (
+              <Link
+                key={child.href}
+                href={child.href}
+                onClick={onNavigate}
+                className={cn(
+                  "flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all text-[13px]",
+                  childActive
+                    ? "bg-white dark:bg-[var(--sidebar-accent)] text-primary font-semibold shadow-sm"
+                    : "text-muted-foreground hover:text-primary"
+                )}
+              >
+                <ChildIcon className="h-4 w-4 shrink-0" />
+                <span>{child.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function SideNav({ isSuperAdmin: isSuperAdminUser = false }: { isSuperAdmin?: boolean } = {}) {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -146,16 +253,24 @@ export function SideNav({ isSuperAdmin: isSuperAdminUser = false }: { isSuperAdm
     { label: t("analytics"), href: "/analytics", icon: BarChart3, matchAlso: ["/analytics"], minRole: "manager" },
   ];
 
-  const bottomNavItems: NavItem[] = [
-    { label: t("templates"), href: "/templates", icon: FileText, minRole: "manager" },
-    { label: t("people"), href: "/people", icon: Users, minRole: "manager" },
-    { label: t("teams"), href: "/teams", icon: UsersRound, matchAlso: ["/teams"], minRole: "manager" },
-    { label: t("company"), href: "/settings/company", icon: Settings, minRole: "admin" },
+  const bottomNavEntries: NavEntry[] = [
+    {
+      label: t("company"),
+      icon: Building2,
+      minRole: "manager",
+      children: [
+        { label: t("templates"), href: "/templates", icon: FileText, minRole: "manager" },
+        { label: t("people"), href: "/people", icon: Users, minRole: "manager" },
+        { label: t("teams"), href: "/teams", icon: UsersRound, matchAlso: ["/teams"], minRole: "manager" },
+        { label: t("settings"), href: "/settings/company", icon: Settings, minRole: "admin" },
+      ],
+    },
     { label: t("billing"), href: "/settings/billing", icon: CreditCard, minRole: "admin" },
+    { label: t("auditLog"), href: "/settings/audit-log", icon: ScrollText, minRole: "admin" },
   ];
 
   const visibleMain = mainNavItems.filter((item) => canSeeItem(userLevel, item));
-  const visibleBottom = bottomNavItems.filter((item) => canSeeItem(userLevel, item));
+  const visibleBottom = bottomNavEntries.filter((entry) => canSeeItem(userLevel, entry));
 
   const sidebarWidth = collapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED;
 
@@ -233,9 +348,13 @@ export function SideNav({ isSuperAdmin: isSuperAdminUser = false }: { isSuperAdm
           "mt-auto pt-4 border-t border-[var(--editorial-outline-variant,var(--border))]/20 space-y-1",
           collapsed ? "px-3" : "px-2"
         )}>
-          {visibleBottom.map((item) => (
-            <NavLink key={item.href} item={item} pathname={pathname} collapsed={collapsed} />
-          ))}
+          {visibleBottom.map((entry) =>
+            isNavGroup(entry) ? (
+              <NavGroupLink key={entry.label} group={entry} pathname={pathname} collapsed={collapsed} userLevel={userLevel} />
+            ) : (
+              <NavLink key={entry.href} item={entry} pathname={pathname} collapsed={collapsed} />
+            )
+          )}
           {isSuperAdminUser && (
             collapsed ? (
               <Tooltip>
@@ -359,9 +478,13 @@ export function SideNav({ isSuperAdmin: isSuperAdminUser = false }: { isSuperAdm
               </Link>
             </div>
             <div className="px-2 mt-auto pt-4 border-t border-[var(--editorial-outline-variant,var(--border))]/20 space-y-1">
-              {visibleBottom.map((item) => (
-                <NavLink key={item.href} item={item} pathname={pathname} collapsed={false} onNavigate={() => setMobileOpen(false)} />
-              ))}
+              {visibleBottom.map((entry) =>
+                isNavGroup(entry) ? (
+                  <NavGroupLink key={entry.label} group={entry} pathname={pathname} collapsed={false} userLevel={userLevel} onNavigate={() => setMobileOpen(false)} />
+                ) : (
+                  <NavLink key={(entry as NavItem).href} item={entry as NavItem} pathname={pathname} collapsed={false} onNavigate={() => setMobileOpen(false)} />
+                )
+              )}
               <Link
                 href="/help"
                 className="flex items-center gap-3 px-4 py-3 rounded-lg font-headline font-semibold text-sm text-muted-foreground hover:text-primary transition-all"
