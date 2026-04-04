@@ -455,7 +455,7 @@ export function EditorialSeriesForm({ userGroups, templates, editData }: Editori
               <CalendarIcon className="h-5 w-5 text-muted-foreground" />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="p-0" align="start">
+          <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
               selected={nextSessionDate ? new Date(nextSessionDate + "T12:00:00") : undefined}

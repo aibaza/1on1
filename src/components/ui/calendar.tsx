@@ -33,7 +33,7 @@ function Calendar({
           buttonVariants({ variant: "outline" }),
           "size-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute right-1"
         ),
-        month_grid: "border-collapse",
+        month_grid: "border-collapse w-[252px]",
         weekdays: "flex",
         weekday:
           "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
