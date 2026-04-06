@@ -89,6 +89,7 @@ export async function PUT(request: Request) {
             defaultDurationMinutes: data.defaultDurationMinutes,
             preferredLanguage: data.preferredLanguage ?? "en",
             colorTheme: data.colorTheme ?? existingSettings.colorTheme ?? "neutral",
+            companyContext: data.companyContext ?? existingSettings.companyContext ?? "",
           },
           updatedAt: new Date(),
         };
