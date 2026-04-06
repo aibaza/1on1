@@ -64,15 +64,16 @@ interface SeriesDetailData {
 interface SeriesDetailProps {
   series: SeriesDetailData;
   currentUserId: string;
+  currentUserLevel?: string;
 }
 
-export function SeriesDetail({ series, currentUserId }: SeriesDetailProps) {
+export function SeriesDetail({ series, currentUserId, currentUserLevel }: SeriesDetailProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const t = useTranslations("sessions");
   const format = useFormatter();
   const { showApiError } = useApiErrorToast();
-  const isManager = series.manager?.id === currentUserId;
+  const isManager = series.manager?.id === currentUserId || currentUserLevel === "admin";
   const [editOpen, setEditOpen] = useState(false);
   const hasInProgress = series.sessions.some(
     (s) => s.status === "in_progress"

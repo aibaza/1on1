@@ -138,13 +138,14 @@ export default async function SeriesDetailPage({
       <EditorialSeriesDetail
         series={seriesData}
         currentUserId={session.user.id}
+        currentUserLevel={session.user.level}
       />
     );
   }
 
   return (
     <div className="mx-auto max-w-3xl">
-      <SeriesDetail series={seriesData} currentUserId={session.user.id} />
+      <SeriesDetail series={seriesData} currentUserId={session.user.id} currentUserLevel={session.user.level} />
     </div>
   );
 }

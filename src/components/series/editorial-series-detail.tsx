@@ -57,6 +57,7 @@ interface SeriesData {
 interface EditorialSeriesDetailProps {
   series: SeriesData;
   currentUserId: string;
+  currentUserLevel?: string;
 }
 
 function getInitials(first: string, last: string): string {
@@ -68,13 +69,13 @@ function toNum(v: string | number | null): number | null {
   return typeof v === "string" ? parseFloat(v) : v;
 }
 
-export function EditorialSeriesDetail({ series, currentUserId }: EditorialSeriesDetailProps) {
+export function EditorialSeriesDetail({ series, currentUserId, currentUserLevel }: EditorialSeriesDetailProps) {
   const t = useTranslations("sessions");
   const format = useFormatter();
   const router = useRouter();
   const [agendaOpen, setAgendaOpen] = useState(false);
 
-  const isManager = currentUserId === series.managerId;
+  const isManager = currentUserId === series.managerId || currentUserLevel === "admin";
   const person = isManager ? series.report : series.manager;
   const personName = person ? `${person.firstName} ${person.lastName}` : "Unknown";
   const aiSummary = series.latestAiSummary as AISummary | null;
