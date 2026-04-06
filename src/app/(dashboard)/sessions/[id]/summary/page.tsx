@@ -77,7 +77,8 @@ export default async function SessionSummaryPage({
         return { error: "FORBIDDEN" as const };
       }
 
-      const isManager = session.user.id === series.managerId;
+      // Admin sees manager perspective; report sees their own perspective
+      const isManager = session.user.id === series.managerId || session.user.level === "admin";
 
       // Fetch manager and report names + derive team from managerId
       const [managerUser, reportUser] = await Promise.all([
