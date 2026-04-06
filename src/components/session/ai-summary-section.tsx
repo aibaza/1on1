@@ -314,17 +314,17 @@ export function AISummarySection({
             </p>
           </div>
 
-          {/* Patterns */}
-          {addendum.patterns.length > 0 && (
+          {/* Risk Indicators */}
+          {addendum.riskIndicators && addendum.riskIndicators.length > 0 && (
             <div className="mb-3">
-              <h4 className="text-sm font-medium mb-1">{t("patterns")}</h4>
+              <h4 className="text-sm font-medium mb-1">{t("riskIndicators")}</h4>
               <ul className="space-y-1 pl-5">
-                {addendum.patterns.map((pattern, i) => (
+                {addendum.riskIndicators.map((risk, i) => (
                   <li
                     key={i}
                     className="text-sm text-muted-foreground list-disc"
                   >
-                    {pattern}
+                    {risk}
                   </li>
                 ))}
               </ul>

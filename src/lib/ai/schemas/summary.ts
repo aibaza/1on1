@@ -15,6 +15,9 @@ export const summarySchema = z.object({
       })
     )
     .describe("Only sections with substantive answers — skip score-only sections"),
+  areasOfConcern: z
+    .array(z.string())
+    .describe("0-3 genuine blockers or issues needing clarification"),
   followUpItems: z
     .array(z.string())
     .describe("Only items explicitly mentioned or clearly needed"),

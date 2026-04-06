@@ -149,8 +149,7 @@ export async function sendPostSessionSummaryEmails(params: {
     ? {
         overallSentiment: session.aiSummary.overallSentiment,
         keyTakeaways: session.aiSummary.keyTakeaways,
-        // Template expects areasOfConcern; derive from follow-up items
-        areasOfConcern: session.aiSummary.followUpItems ?? [],
+        areasOfConcern: session.aiSummary.areasOfConcern ?? [],
       }
     : null;
 
@@ -159,8 +158,7 @@ export async function sendPostSessionSummaryEmails(params: {
     ? {
         sentimentAnalysis: session.aiManagerAddendum.sentimentAnalysis,
         coachingSuggestions: session.aiManagerAddendum.coachingSuggestions ?? [],
-        // Template expects riskIndicators; derive from patterns
-        riskIndicators: session.aiManagerAddendum.patterns ?? [],
+        riskIndicators: session.aiManagerAddendum.riskIndicators ?? [],
       }
     : null;
 

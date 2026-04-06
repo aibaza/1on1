@@ -79,13 +79,14 @@ export async function runAIPipelineDirect(input: PipelineInput): Promise<void> {
       cardBlurb: unified.publicSummary.cardBlurb,
       keyTakeaways: unified.metrics.keyTakeaways,
       discussionHighlights: unified.publicSummary.discussionHighlights,
+      areasOfConcern: unified.publicSummary.areasOfConcern,
       followUpItems: unified.publicSummary.followUpItems,
       overallSentiment: unified.metrics.overallSentiment,
     };
 
     const addendumForStorage: AIManagerAddendum = {
       sentimentAnalysis: unified.managerAddendum.sentimentAnalysis,
-      patterns: unified.managerAddendum.patterns,
+      riskIndicators: unified.managerAddendum.riskIndicators,
       coachingSuggestions: unified.managerAddendum.coachingSuggestions,
       followUpPriority: unified.managerAddendum.followUpPriority,
     };

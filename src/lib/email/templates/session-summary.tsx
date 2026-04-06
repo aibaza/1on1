@@ -286,7 +286,7 @@ export function SessionSummaryEmail({
                   {labels.managerInsights}
                 </p>
                 <p style={{ fontFamily: F.inter, fontSize: "16px", lineHeight: "1.7", color: "#c5d1ff", margin: "0 0 20px 0" }}>
-                  &ldquo;{aiAddendum.sentimentAnalysis}&rdquo;
+                  {aiAddendum.sentimentAnalysis}
                 </p>
                 {managerName && (
                   <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "16px" }}>

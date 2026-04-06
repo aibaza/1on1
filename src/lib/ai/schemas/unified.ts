@@ -12,7 +12,7 @@ export const unifiedAISchema = z.object({
       .describe("Overall session tone based on answers, mood, and engagement"),
     keyTakeaways: z
       .array(z.string())
-      .describe("2-5 key takeaways, each max 10 words"),
+      .describe("2-5 key takeaways, each max 15 words. Each must reference a specific answer or data point from the session. No em dashes or emoji."),
     objectiveRating: z
       .number()
       .describe(
@@ -32,6 +32,9 @@ export const unifiedAISchema = z.object({
         })
       )
       .describe("Only sections with substantive answers — skip score-only sections"),
+    areasOfConcern: z
+      .array(z.string())
+      .describe("0-3 genuine blockers or issues needing clarification. Only include real problems backed by data. Empty array if none."),
     followUpItems: z
       .array(z.string())
       .describe("Only items explicitly mentioned or clearly needed"),
@@ -58,13 +61,13 @@ export const unifiedAISchema = z.object({
   managerAddendum: z.object({
     sentimentAnalysis: z
       .string()
-      .describe("1-2 sentences on report's engagement and emotional state"),
-    patterns: z
+      .describe("1-2 sentences on report's engagement and emotional state. Write as objective assessment, not a quote."),
+    riskIndicators: z
       .array(z.string())
-      .describe("Recurring themes across sessions, a few words each — only if data supports it"),
+      .describe("0-3 genuine risks to engagement, retention, or performance. Only include actual risks backed by session data. Empty array if no risks."),
     coachingSuggestions: z
       .array(z.string())
-      .describe("1 sentence each, max 3 — actionable coaching tips"),
+      .describe("1 sentence each, max 3 — actionable coaching tips. No em dashes or emoji."),
     followUpPriority: z
       .enum(["low", "medium", "high"])
       .describe("How urgently to follow up"),

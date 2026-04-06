@@ -2416,6 +2416,7 @@ async function seedAliceData() {
       { category: 'Performance', summary: 'Successfully shipped 3 features this sprint. Code review turnaround improved from 48h to 12h average.' },
       { category: 'Check In', summary: 'Discussed upcoming architecture review. Bob prepared technical proposal for microservices migration.' },
     ],
+    areasOfConcern: [],
     followUpItems: [
       'Review hiring pipeline for senior engineer role',
       'Connect Bob with mentoring program coordinator',
@@ -2437,6 +2438,7 @@ async function seedAliceData() {
       { category: 'Performance', summary: 'Led successful Q2 feature launch. Received positive feedback from product team.' },
       { category: 'Check In', summary: 'Discussed leadership development. Bob wants to improve his public speaking for upcoming conference.' },
     ],
+    areasOfConcern: [],
     followUpItems: [
       'Prepare new hire onboarding checklist',
       'Discuss conference talk proposal',
@@ -2458,6 +2460,7 @@ async function seedAliceData() {
       { category: 'Performance', summary: 'Shipping consistently but at personal cost. Quality remains high.' },
       { category: 'Check In', summary: 'Flagged that Dave is ready for more responsibility. Wants to delegate API ownership.' },
     ],
+    areasOfConcern: [],
     followUpItems: [
       'Discuss workload reduction strategies',
       'Review Dave delegation plan',
@@ -2479,6 +2482,7 @@ async function seedAliceData() {
       { category: 'Performance', summary: 'Led 3 successful user research sessions this month. Insights directly informed roadmap.' },
       { category: 'Check In', summary: 'Discussed expanding user research program. Carol proposed a quarterly research sprint format.' },
     ],
+    areasOfConcern: [],
     followUpItems: [
       'Review quarterly research sprint proposal',
       'Introduce Carol to UX lead at partner company',
@@ -2500,6 +2504,7 @@ async function seedAliceData() {
       { category: 'Performance', summary: 'Research program generating valuable insights. Stakeholder buy-in increasing.' },
       { category: 'Check In', summary: 'Discussed Frank performance concerns. Carol working on a development plan for him.' },
     ],
+    areasOfConcern: [],
     followUpItems: [
       'Review Q4 scope and capacity plan',
       'Check on Frank development progress',
@@ -2509,8 +2514,8 @@ async function seedAliceData() {
   };
 
   const addendumBob = {
-    sentimentAnalysis: 'Bob remains highly engaged and productive. Watch for early burnout signals — increased late hours and skipped breaks.',
-    patterns: ['Consistent high delivery', 'Growing leadership confidence', 'Work-life balance declining'],
+    sentimentAnalysis: 'Bob remains highly engaged and productive. Watch for early burnout signals, including increased late hours and skipped breaks.',
+    riskIndicators: ['Work-life balance declining, potential burnout risk'],
     coachingSuggestions: [
       'Help Bob establish firm boundaries on working hours',
       'Encourage more delegation to Dave who is ready for ownership',
@@ -2521,7 +2526,7 @@ async function seedAliceData() {
 
   const addendumCarol = {
     sentimentAnalysis: 'Carol demonstrates strong product intuition and team care. Her proactive mentoring of junior PMs is a strength.',
-    patterns: ['Research-driven decision making', 'Strong mentoring instinct', 'Capacity planning awareness'],
+    riskIndicators: [],
     coachingSuggestions: [
       'Support Carol in pushing back on over-scoped Q4 plans',
       'Create visibility for her research program with exec team',
@@ -2832,6 +2837,7 @@ async function seedAliceData() {
         cardBlurb: 'Good first session. Dave settling in well and eager to contribute.',
         keyTakeaways: ['Dave adapting quickly to codebase', 'Needs staging access', 'Sprint priorities aligned'],
         discussionHighlights: [{ category: 'Check In', summary: 'First 1on1. Dave positive about team culture and project scope.' }],
+        areasOfConcern: [],
         followUpItems: ['Set up staging access', 'Pair Dave with senior on first feature'],
         overallSentiment: 'positive' as const,
       },
@@ -2844,6 +2850,7 @@ async function seedAliceData() {
         cardBlurb: 'API refactor progressing well. Dave raised valid concerns about test coverage gaps.',
         keyTakeaways: ['API refactor on track', 'Test coverage needs improvement', 'Dave showing initiative'],
         discussionHighlights: [{ category: 'Performance', summary: 'Good progress on API refactor. Dave identified critical test gaps proactively.' }],
+        areasOfConcern: [],
         followUpItems: ['Review test coverage strategy', 'Set up CI parallelization'],
         overallSentiment: 'positive' as const,
       },
@@ -2856,6 +2863,7 @@ async function seedAliceData() {
         cardBlurb: 'Career growth discussion. Dave interested in tech lead path and feature ownership.',
         keyTakeaways: ['Dave wants tech lead growth path', 'Feature project leadership interest', 'Strong technical foundation'],
         discussionHighlights: [{ category: 'Check In', summary: 'Dave expressed desire to lead next feature project. Discussed tech lead expectations.' }],
+        areasOfConcern: [],
         followUpItems: ['Share tech lead expectations doc', 'Identify feature for Dave to lead'],
         overallSentiment: 'positive' as const,
       },
@@ -2868,6 +2876,7 @@ async function seedAliceData() {
         cardBlurb: 'Eve ramping up on frontend. Good foundation but needs more component library experience.',
         keyTakeaways: ['Frontend ramp-up progressing', 'Component library guidance needed', 'Positive attitude'],
         discussionHighlights: [{ category: 'Performance', summary: 'Eve making steady progress on frontend work. Discussed component library patterns.' }],
+        areasOfConcern: [],
         followUpItems: ['Share component library docs', 'Pair Eve with senior frontend dev'],
         overallSentiment: 'positive' as const,
       },
@@ -2878,8 +2887,9 @@ async function seedAliceData() {
       id: SESSION_EVE_2_ID,
       aiSummary: {
         cardBlurb: 'Dashboard redesign going well. Eve keen on accessibility testing — strong growth signal.',
-        keyTakeaways: ['Dashboard redesign on schedule', 'Accessibility interest — growth area', 'Increasing confidence'],
+        keyTakeaways: ['Dashboard redesign on schedule', 'Accessibility interest is a growth area', 'Increasing confidence'],
         discussionHighlights: [{ category: 'Performance', summary: 'Great progress on dashboard. Eve proactively exploring accessibility testing.' }],
+        areasOfConcern: [],
         followUpItems: ['Set up accessibility testing tools', 'Review dashboard with design team'],
         overallSentiment: 'positive' as const,
       },

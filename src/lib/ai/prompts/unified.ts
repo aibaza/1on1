@@ -16,16 +16,19 @@ export function buildUnifiedSystemPrompt(language?: string): string {
 - suggestions: 0-3 action items — only what's clearly warranted. Title max 8 words. Don't duplicate existing action items.
 
 ## MANAGER ADDENDUM (confidential — NOT visible to the report)
-- sentimentAnalysis: 1-2 sentences on engagement and emotional state
-- patterns: recurring themes across sessions — only if data supports them
+- sentimentAnalysis: 1-2 sentences on engagement and emotional state. Write as an objective assessment, not a quote.
+- riskIndicators: 0-3 items that represent genuine risks to engagement, retention, or performance. Only include actual risks backed by session data. An empty array is fine if no risks exist.
 - coachingSuggestions: max 3, actionable, 1 sentence each
 - followUpPriority: how urgently to follow up
 
 RULES:
 - ATTRIBUTION: In a 1on1, the manager records answers about the report's experience. Unnamed subjects ("I", "we", or no subject) = the REPORT. Only attribute to the manager if explicitly named.
 - Private notes are CONFIDENTIAL — use them only for the manager addendum, never in public summary.
-- Output must be proportional to input. Short session → short analysis.
-- Never pad, never add filler.`;
+- Output must be proportional to input. Short session = short analysis.
+- Never pad, never add filler.
+- NEVER use em dashes, en dashes, or emoji. Use commas, periods, and plain hyphens only.
+- Each keyTakeaway must reference a specific answer or data point from the session. Do not invent takeaways without basis in the data.
+- areasOfConcern: only include items that are genuine blockers or need clarification. Follow-up items are NOT concerns unless they signal a problem.`;
 }
 
 export function buildUnifiedUserPrompt(context: SessionContext): string {
