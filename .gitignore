@@ -29,6 +29,7 @@ e2e/reports/
 e2e/screenshots/
 screenshots/
 !public/help/screenshots/
+!src/app/api/feedback/screenshots/
 e2e/avatar-debug.spec.ts
 e2e/avatar-screenshot.spec.ts
 e2e/*audit*.config.ts
