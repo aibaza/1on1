@@ -24,6 +24,8 @@
     "support": "Help",
     "collapse": "Collapse",
     "searchRecords": "Search records...",
-    "adminBilling": "Admin Billing"
+    "adminBilling": "Admin Billing",
+    "adminFeedback": "Feedback",
+    "myFeedback": "My feedback"
   }
 }

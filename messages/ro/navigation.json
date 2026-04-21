@@ -24,6 +24,8 @@
     "support": "Ajutor",
     "collapse": "Restrânge",
     "searchRecords": "Caută înregistrări...",
-    "adminBilling": "Admin facturare"
+    "adminBilling": "Admin facturare",
+    "adminFeedback": "Feedback",
+    "myFeedback": "Feedback-ul meu"
   }
 }

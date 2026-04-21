@@ -25,6 +25,8 @@ import {
   ShieldCheck,
   ChevronDown,
   Building2,
+  MessageSquareWarning,
+  Inbox,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -357,34 +359,99 @@ export function SideNav({ isSuperAdmin: isSuperAdminUser = false }: { isSuperAdm
           )}
           {isSuperAdminUser && (
             collapsed ? (
+              <>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href="/admin/billing"
+                      className={cn(
+                        "flex items-center justify-center py-3 rounded-lg transition-all",
+                        pathname === "/admin/billing"
+                          ? "bg-primary/10 text-primary"
+                          : "text-amber-500 hover:text-amber-400 hover:bg-amber-500/10"
+                      )}
+                    >
+                      <ShieldCheck className="h-5 w-5 shrink-0" />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" sideOffset={8}>{t("adminBilling")}</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href="/admin/feedback"
+                      className={cn(
+                        "flex items-center justify-center py-3 rounded-lg transition-all",
+                        pathname.startsWith("/admin/feedback")
+                          ? "bg-primary/10 text-primary"
+                          : "text-amber-500 hover:text-amber-400 hover:bg-amber-500/10"
+                      )}
+                    >
+                      <MessageSquareWarning className="h-5 w-5 shrink-0" />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" sideOffset={8}>{t("adminFeedback")}</TooltipContent>
+                </Tooltip>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/admin/billing"
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all border border-dashed",
+                    pathname === "/admin/billing"
+                      ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                      : "text-amber-500/70 hover:text-amber-500 hover:bg-amber-500/10 border-amber-500/20"
+                  )}
+                >
+                  <ShieldCheck className="h-5 w-5 shrink-0" />
+                  {t("adminBilling")}
+                </Link>
+                <Link
+                  href="/admin/feedback"
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all border border-dashed",
+                    pathname.startsWith("/admin/feedback")
+                      ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                      : "text-amber-500/70 hover:text-amber-500 hover:bg-amber-500/10 border-amber-500/20"
+                  )}
+                >
+                  <MessageSquareWarning className="h-5 w-5 shrink-0" />
+                  {t("adminFeedback")}
+                </Link>
+              </>
+            )
+          )}
+          {!isSuperAdminUser && (
+            collapsed ? (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
-                    href="/admin/billing"
+                    href="/feedback/mine"
                     className={cn(
                       "flex items-center justify-center py-3 rounded-lg transition-all",
-                      pathname === "/admin/billing"
+                      pathname.startsWith("/feedback/mine")
                         ? "bg-primary/10 text-primary"
-                        : "text-amber-500 hover:text-amber-400 hover:bg-amber-500/10"
+                        : "text-muted-foreground hover:text-primary"
                     )}
                   >
-                    <ShieldCheck className="h-5 w-5 shrink-0" />
+                    <Inbox className="h-5 w-5 shrink-0" />
                   </Link>
                 </TooltipTrigger>
-                <TooltipContent side="right" sideOffset={8}>{t("adminBilling")}</TooltipContent>
+                <TooltipContent side="right" sideOffset={8}>{t("myFeedback")}</TooltipContent>
               </Tooltip>
             ) : (
               <Link
-                href="/admin/billing"
+                href="/feedback/mine"
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all border border-dashed",
-                  pathname === "/admin/billing"
-                    ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
-                    : "text-amber-500/70 hover:text-amber-500 hover:bg-amber-500/10 border-amber-500/20"
+                  "flex items-center gap-3 px-4 py-3 rounded-lg font-headline font-semibold text-sm transition-all",
+                  pathname.startsWith("/feedback/mine")
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:text-primary"
                 )}
               >
-                <ShieldCheck className="h-5 w-5 shrink-0" />
-                {t("adminBilling")}
+                <Inbox className="h-5 w-5 shrink-0" />
+                <span>{t("myFeedback")}</span>
               </Link>
             )
           )}
@@ -484,6 +551,51 @@ export function SideNav({ isSuperAdmin: isSuperAdminUser = false }: { isSuperAdm
                 ) : (
                   <NavLink key={(entry as NavItem).href} item={entry as NavItem} pathname={pathname} collapsed={false} onNavigate={() => setMobileOpen(false)} />
                 )
+              )}
+              {isSuperAdminUser && (
+                <>
+                  <Link
+                    href="/admin/billing"
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all border border-dashed",
+                      pathname === "/admin/billing"
+                        ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                        : "text-amber-500/70 hover:text-amber-500 hover:bg-amber-500/10 border-amber-500/20"
+                    )}
+                  >
+                    <ShieldCheck className="h-5 w-5 shrink-0" />
+                    {t("adminBilling")}
+                  </Link>
+                  <Link
+                    href="/admin/feedback"
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all border border-dashed",
+                      pathname.startsWith("/admin/feedback")
+                        ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                        : "text-amber-500/70 hover:text-amber-500 hover:bg-amber-500/10 border-amber-500/20"
+                    )}
+                  >
+                    <MessageSquareWarning className="h-5 w-5 shrink-0" />
+                    {t("adminFeedback")}
+                  </Link>
+                </>
+              )}
+              {!isSuperAdminUser && (
+                <Link
+                  href="/feedback/mine"
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-lg font-headline font-semibold text-sm transition-all",
+                    pathname.startsWith("/feedback/mine")
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-primary"
+                  )}
+                >
+                  <Inbox className="h-5 w-5 shrink-0" />
+                  <span>{t("myFeedback")}</span>
+                </Link>
               )}
               <Link
                 href="/help"

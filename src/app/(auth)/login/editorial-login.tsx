@@ -122,7 +122,11 @@ export function EditorialLogin() {
           </div>
 
           {/* Login form */}
-          <form action={handleSubmit} className="space-y-6">
+          <form
+            action={handleSubmit}
+            className="space-y-6"
+            suppressHydrationWarning
+          >
             {(error || errorMessage) && (
               <div className="rounded-xl px-4 py-3 text-sm font-medium"
                 style={{ background: "rgba(186, 26, 26, 0.08)", color: "#ba1a1a" }}>

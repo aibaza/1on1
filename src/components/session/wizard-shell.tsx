@@ -627,7 +627,6 @@ export function WizardShell({ sessionId }: WizardShellProps) {
       requestAnimationFrame(() => {
         dispatch({ type: "SET_STEP", step });
         prevStepRef.current = step;
-        desktopScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
         // Clear transition after enter animation completes
         setTimeout(() => {
           setIsTransitioning(false);
@@ -693,6 +692,31 @@ export function WizardShell({ sessionId }: WizardShellProps) {
       navigateToStep(state.currentStep + 1);
     }
   }, [state.currentStep, totalSteps, navigateToStep, validateCurrentStep]);
+
+  // Scroll content to top on every step change. We hit every candidate
+  // scroll container because the actual overflow owner depends on layout state
+  // (desktop sidebar scroller, mobile carousel scroller, any scrollable ancestor,
+  // and the document itself as a last resort).
+  useEffect(() => {
+    const scrollAllToTop = () => {
+      desktopScrollRef.current?.scrollTo({ top: 0 });
+      // Walk up from the desktop ref and reset any overflowing ancestor —
+      // also covers the mobile branch since both mount under the same tree.
+      let node: HTMLElement | null = desktopScrollRef.current;
+      while (node) {
+        if (node.scrollTop > 0) node.scrollTop = 0;
+        node = node.parentElement;
+      }
+      // Also reset any element currently scrolled under the wizard root.
+      document.querySelectorAll<HTMLElement>('[data-wizard-scroll]').forEach((el) => {
+        if (el.scrollTop > 0) el.scrollTop = 0;
+      });
+      window.scrollTo({ top: 0 });
+    };
+    // Run after paint so the new step's DOM is mounted
+    scrollAllToTop();
+    requestAnimationFrame(scrollAllToTop);
+  }, [state.currentStep]);
 
   // Keyboard shortcuts: Left/Right arrow keys for navigation
   useEffect(() => {
@@ -963,7 +987,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         />
 
         {/* Center: form content area — only this scrolls */}
-        <div ref={desktopScrollRef} className="flex-1 overflow-y-auto relative">
+        <div ref={desktopScrollRef} data-wizard-scroll className="flex-1 overflow-y-auto relative">
           <div
             className={cn(
               "transition-all duration-300 ease-in-out",

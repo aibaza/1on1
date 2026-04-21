@@ -9,6 +9,7 @@ import { ImpersonationBanner } from "@/components/admin/impersonation-banner";
 import { TrialBanner } from "@/components/billing/trial-banner";
 import { Toaster } from "@/components/ui/sonner";
 import { CommandPalette } from "@/components/search/command-palette";
+import { FeedbackFab } from "@/components/feedback/feedback-fab";
 import { ThemeColorProvider } from "@/components/theme-color-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { withTenantContext } from "@/lib/db/tenant-context";
@@ -95,7 +96,10 @@ export default async function DashboardLayout({
                   Skip to content
                 </a>
                 <SideNav isSuperAdmin={isSuperAdmin(session.user?.email)} />
-                <div className="md:ml-[var(--sidebar-width,256px)] transition-[margin] duration-300">
+                <div
+                  className="md:ml-[var(--sidebar-width,256px)] transition-[margin] duration-300"
+                  suppressHydrationWarning
+                >
                   <EditorialTopBar avatarUrl={userAvatarUrl} />
                   <main id="main-content" className="pt-20 md:pt-24 pb-20 px-4 md:px-10">
                     <div className="max-w-7xl mx-auto">
@@ -117,6 +121,7 @@ export default async function DashboardLayout({
                 </main>
               </div>
             )}
+            <FeedbackFab />
           </TooltipProvider>
         </ThemeColorProvider>
         <CommandPalette />

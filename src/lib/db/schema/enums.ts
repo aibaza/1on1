@@ -146,3 +146,35 @@ export const billingEventTypeEnum = pgEnum("billing_event_type", [
   "trial_started", "trial_ended", "trial_converted",
   "plan_changed", "refund_issued",
 ]);
+
+export const feedbackTypeEnum = pgEnum("feedback_type", [
+  "bug",
+  "suggestion",
+]);
+
+export const feedbackStatusEnum = pgEnum("feedback_status", [
+  "new",
+  "triaged",
+  "in_progress",
+  "awaiting_user",
+  "resolved",
+  "closed",
+]);
+
+export const feedbackPriorityEnum = pgEnum("feedback_priority", [
+  "low",
+  "medium",
+  "high",
+  "critical",
+]);
+
+export const feedbackCloseReasonEnum = pgEnum("feedback_close_reason", [
+  "duplicate",
+  "wont_fix",
+  "invalid",
+]);
+
+export const feedbackAuthorTypeEnum = pgEnum("feedback_author_type", [
+  "reporter",
+  "platform_admin",
+]);

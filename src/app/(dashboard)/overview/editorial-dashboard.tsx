@@ -99,10 +99,10 @@ export function EditorialDashboard({
       {/* 1. Welcome Header */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <p className="text-muted-foreground font-medium mb-1">
+          <p className="text-muted-foreground font-medium mb-1" suppressHydrationWarning>
             {format.dateTime(new Date(), { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
           </p>
-          <h2 className="text-4xl font-extrabold text-foreground tracking-tight font-headline">
+          <h2 className="text-4xl font-extrabold text-foreground tracking-tight font-headline" suppressHydrationWarning>
             {t(`editorial.${getGreetingKey()}`)}, {firstName}
           </h2>
           <Link

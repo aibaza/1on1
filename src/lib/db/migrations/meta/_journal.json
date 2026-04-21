@@ -183,6 +183,20 @@
       "when": 1774400000000,
       "tag": "0025_calendar_integration",
       "breakpoints": false
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1774500000000,
+      "tag": "0026_feedback_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1774500100000,
+      "tag": "0027_feedback_rls",
+      "breakpoints": true
     }
   ]
 }

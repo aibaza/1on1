@@ -53,6 +53,7 @@ export default async function RootLayout({
     <html lang={locale} data-design={designPref} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${manrope.variable} ${inter.variable} antialiased`}
+        suppressHydrationWarning
       >
         <NextIntlClientProvider>
           <ThemeProvider>{children}</ThemeProvider>

@@ -71,6 +71,44 @@
       "body": "Un răspuns din ședința ta 1on1 #{sessionNumber} cu {otherPartyName} a fost corectat. Conținutul răspunsului nu este inclus în acest email din motive de confidențialitate — apasă mai jos pentru a vizualiza sesiunea.",
       "buttonLabel": "Vezi sesiunea",
       "footer": "Acest email a fost trimis de 1on1"
+    },
+    "feedbackNewReport": {
+      "subject": "[FB-{ticketNumber}] {type}: {title}",
+      "heading": "Feedback nou de la {reporterName}",
+      "greeting": "Un utilizator a trimis feedback prin raportor-ul din aplicație.",
+      "ticketLabel": "Tichet",
+      "typeLabel": "Tip",
+      "titleLabel": "Titlu",
+      "descriptionLabel": "Descriere",
+      "pageUrlLabel": "URL pagină",
+      "viewportLabel": "Viewport",
+      "userAgentLabel": "User Agent",
+      "tenantLabel": "Tenant",
+      "reporterLabel": "Raportat de",
+      "screenshotLabel": "Captură de ecran",
+      "screenshotAttached": "Atașată ca fișier.",
+      "replyHint": "Răspunde direct la acest email pentru a-i răspunde raportorului.",
+      "viewInApp": "Deschide în consola de admin",
+      "footer": "Acest email a fost trimis de 1on1",
+      "types": {
+        "bug": "Raportare bug",
+        "suggestion": "Sugestie"
+      }
+    },
+    "feedbackAdminReply": {
+      "subject": "Re: [FB-{ticketNumber}] {title}",
+      "heading": "Răspuns de la echipa 1on1",
+      "greeting": "Salut {reporterName},",
+      "body": "Am adăugat o actualizare la raportul tău {ticketLabel}:",
+      "viewThread": "Deschide conversația",
+      "footer": "Dacă ai detalii suplimentare, poți răspunde în aplicație sau direct la acest email."
+    },
+    "feedbackUserReply": {
+      "subject": "Re: [FB-{ticketNumber}] {title}",
+      "heading": "Răspuns nou de la {reporterName}",
+      "greeting": "Raportorul a adăugat un mesaj nou la tichetul {ticketLabel}.",
+      "viewInApp": "Deschide în consola de admin",
+      "footer": "Acest email a fost trimis de 1on1"
     }
   }
 }

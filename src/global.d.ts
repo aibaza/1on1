@@ -18,6 +18,7 @@ import type en_account from "../messages/en/account.json";
 import type en_billing from "../messages/en/billing.json";
 import type en_landing from "../messages/en/landing.json";
 import type en_legal from "../messages/en/legal.json";
+import type en_feedback from "../messages/en/feedback.json";
 
 type Messages = typeof en_common &
   typeof en_auth &
@@ -38,7 +39,8 @@ type Messages = typeof en_common &
   typeof en_account &
   typeof en_billing &
   typeof en_landing &
-  typeof en_legal;
+  typeof en_legal &
+  typeof en_feedback;
 
 declare module "next-intl" {
   interface AppConfig {

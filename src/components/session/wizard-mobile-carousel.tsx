@@ -59,7 +59,12 @@ export function WizardMobileCarousel({
   const currentStepInfo = steps[currentStep];
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    const scrollToTop = () => {
+      scrollRef.current?.scrollTo({ top: 0 });
+      if (scrollRef.current) scrollRef.current.scrollTop = 0;
+    };
+    scrollToTop();
+    requestAnimationFrame(scrollToTop);
   }, [currentStep]);
 
   return (
@@ -69,7 +74,7 @@ export function WizardMobileCarousel({
       onTouchEnd={handleTouchEnd}
     >
       {/* Content area — full width, takes all remaining space */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto">
+      <div ref={scrollRef} data-wizard-scroll className="flex-1 overflow-y-auto">
         {children}
       </div>
 

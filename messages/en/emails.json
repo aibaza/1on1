@@ -71,6 +71,44 @@
       "body": "An answer in your 1on1 session #{sessionNumber} with {otherPartyName} has been corrected. No answer content is included in this email for privacy — click below to view the session.",
       "buttonLabel": "View Session",
       "footer": "This email was sent by 1on1"
+    },
+    "feedbackNewReport": {
+      "subject": "[FB-{ticketNumber}] {type}: {title}",
+      "heading": "New feedback from {reporterName}",
+      "greeting": "A user has submitted feedback via the in-app reporter.",
+      "ticketLabel": "Ticket",
+      "typeLabel": "Type",
+      "titleLabel": "Title",
+      "descriptionLabel": "Description",
+      "pageUrlLabel": "Page URL",
+      "viewportLabel": "Viewport",
+      "userAgentLabel": "User Agent",
+      "tenantLabel": "Tenant",
+      "reporterLabel": "Reporter",
+      "screenshotLabel": "Screenshot",
+      "screenshotAttached": "Attached as file.",
+      "replyHint": "Reply directly to this email to respond to the reporter.",
+      "viewInApp": "Open in admin console",
+      "footer": "This email was sent by 1on1",
+      "types": {
+        "bug": "Bug",
+        "suggestion": "Suggestion"
+      }
+    },
+    "feedbackAdminReply": {
+      "subject": "Re: [FB-{ticketNumber}] {title}",
+      "heading": "Reply from the 1on1 team",
+      "greeting": "Hi {reporterName},",
+      "body": "We've added an update to your report {ticketLabel}:",
+      "viewThread": "Open conversation",
+      "footer": "If you have further details, you can reply in the app or directly to this email."
+    },
+    "feedbackUserReply": {
+      "subject": "Re: [FB-{ticketNumber}] {title}",
+      "heading": "New reply from {reporterName}",
+      "greeting": "The reporter has added a new message to ticket {ticketLabel}.",
+      "viewInApp": "Open in admin console",
+      "footer": "This email was sent by 1on1"
     }
   }
 }

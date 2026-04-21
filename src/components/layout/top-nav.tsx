@@ -16,7 +16,11 @@ import {
   Settings,
   CreditCard,
   Menu,
+  ShieldCheck,
+  MessageSquareWarning,
+  Inbox,
 } from "lucide-react";
+import { isSuperAdmin } from "@/lib/auth/super-admin";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/logo";
 import { SearchTrigger } from "@/components/search/command-palette";
@@ -27,6 +31,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -53,6 +59,7 @@ function getPrimaryNavItems(t: ReturnType<typeof useTranslations<"navigation">>)
     { label: t("sessions"), href: "/sessions", icon: CalendarDays, matchAlso: ["/sessions"] },
     { label: t("actionItems"), href: "/action-items", icon: ListChecks },
     { label: t("history"), href: "/history", icon: History },
+    { label: t("myFeedback"), href: "/feedback/mine", icon: Inbox },
     { label: t("analytics"), href: "/analytics", icon: BarChart3, matchAlso: ["/analytics"], minRole: "manager" },
   ];
 }
@@ -96,9 +103,31 @@ export function TopNav({ avatarUrl }: { avatarUrl?: string | null }) {
   const primaryNavItems = getPrimaryNavItems(t);
   const settingsNavItems = getSettingsNavItems(t);
 
-  const visiblePrimary = primaryNavItems.filter((item) => canSeeItem(userLevel, item));
+  const isSuperAdminUser = isSuperAdmin(session?.user?.email);
+
+  const visiblePrimary = primaryNavItems.filter((item) => {
+    // Super-admins see the cross-tenant Feedback link in the Platform section;
+    // regular users see "My feedback" here instead.
+    if (item.href === "/feedback/mine" && isSuperAdminUser) return false;
+    return canSeeItem(userLevel, item);
+  });
   const visibleSettings = settingsNavItems.filter((item) => canSeeItem(userLevel, item));
   const settingsActive = isSettingsActive(pathname, visibleSettings);
+
+  const showSuperAdmin = isSuperAdminUser;
+  const superAdminItems: NavItem[] = showSuperAdmin
+    ? [
+        { label: t("adminBilling"), href: "/admin/billing", icon: ShieldCheck },
+        {
+          label: t("adminFeedback"),
+          href: "/admin/feedback",
+          icon: MessageSquareWarning,
+        },
+      ]
+    : [];
+  const superAdminActive = superAdminItems.some((item) =>
+    isPathActive(pathname, item)
+  );
 
   return (
     <header className="sticky top-0 z-50 flex h-14 items-center border-b bg-background px-4 lg:px-6">
@@ -169,6 +198,35 @@ export function TopNav({ avatarUrl }: { avatarUrl?: string | null }) {
                 })}
               </>
             )}
+
+            {superAdminItems.length > 0 && (
+              <>
+                <div className="mt-4 mb-1 px-3">
+                  <span className="text-xs font-medium uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                    Platform
+                  </span>
+                </div>
+                {superAdminItems.map((item) => {
+                  const active = isPathActive(pathname, item);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                        active
+                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                          : "text-amber-500/80 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400"
+                      )}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </>
+            )}
           </nav>
         </SheetContent>
       </Sheet>
@@ -219,6 +277,54 @@ export function TopNav({ avatarUrl }: { avatarUrl?: string | null }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               {visibleSettings.map((item) => (
+                <DropdownMenuItem key={item.href} asChild>
+                  <Link href={item.href} className="flex items-center gap-2">
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+              {superAdminItems.length > 0 && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel className="text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                    Platform
+                  </DropdownMenuLabel>
+                  {superAdminItems.map((item) => (
+                    <DropdownMenuItem key={item.href} asChild>
+                      <Link
+                        href={item.href}
+                        className="flex items-center gap-2 text-amber-600 focus:text-amber-600 dark:text-amber-400 dark:focus:text-amber-400"
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+
+        {/* Standalone super-admin entry when Settings dropdown isn't visible */}
+        {visibleSettings.length === 0 && superAdminItems.length > 0 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className={cn(
+                  "flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                  superAdminActive
+                    ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                    : "text-amber-500/80 hover:text-amber-600 dark:hover:text-amber-400"
+                )}
+              >
+                <ShieldCheck className="mr-1 h-4 w-4" />
+                Platform
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {superAdminItems.map((item) => (
                 <DropdownMenuItem key={item.href} asChild>
                   <Link href={item.href} className="flex items-center gap-2">
                     <item.icon className="h-4 w-4" />

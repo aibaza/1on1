@@ -6,6 +6,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.3.0] — 2026-04-21
+
+### Added
+- **In-app feedback & ticketing system**: users can report bugs and suggestions from any authenticated screen via a floating action button; optional auto-captured screenshot via `html2canvas-pro`; reports become tickets with status + conversation thread.
+  - Reporter experience at `/feedback/mine` — master-detail layout: ticket list on the left, selected ticket detail on the right with bubble-style thread, inline screenshot, reopen flow (`Still broken`) when a ticket is marked resolved.
+  - Platform-admin triage queue at `/admin/feedback` (super-admin only, cross-tenant) — filterable list, detail with controls panel (status/priority/assignee/tags/resolve/close), public replies + internal notes.
+  - Sidebar entry **above Help**: regular users see "My feedback" → `/feedback/mine`, super-admins see the amber "Feedback" link → `/admin/feedback` (cross-tenant).
+  - Email notifications: new ticket → `support@1on1.works` with inline screenshot + reply-to reporter; admin public reply → reporter with link to the ticket; reporter reply → support inbox. Internal notes never email.
+  - Private Vercel Blob store for screenshots (proxied via `/api/feedback/screenshots/[id]` with auth).
+  - 5 reports/hour/user rate limit.
+  - Full English + Romanian translations for UI and emails.
+- Wizard: scroll all overflow ancestors to top when changing steps (more reliable fallback for nested scroll containers on both desktop and mobile).
+
+### Fixed
+- Hydration warnings caused by password-manager browser extensions (NordPass etc.) that inject `data-np-*` attributes pre-hydration: added `suppressHydrationWarning` on affected root-level wrappers (body, dashboard wrapper, login form, series form).
+- Overview greeting hydration mismatch when server and client clocks land on either side of a time-of-day threshold (morning/afternoon/evening): suppressed on the greeting header + date paragraph.
+
+### Database
+- New migrations `0026_feedback_schema.sql` (tables `feedback_report`, `feedback_message`, 5 enums, ticket sequence) and `0027_feedback_rls.sql` (tenant-isolation RLS policies + grants). **Run `bunx drizzle-kit migrate` against the production database before deploying.**
+
+### Environment
+- New env vars:
+  - `BLOB_READ_WRITE_TOKEN` (required) — Vercel Blob token for screenshot storage.
+  - `FEEDBACK_EMAIL_TO` (optional, defaults to `support@1on1.works`) — inbox for new-ticket notifications.
+  - `FEEDBACK_NOTIFICATION_LOCALE` (optional, defaults to `en`) — locale for emails sent to the platform inbox.
+
 ## [2.2.1] — 2026-04-21
 
 ### Fixed

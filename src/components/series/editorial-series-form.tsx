@@ -214,6 +214,7 @@ export function EditorialSeriesForm({ userGroups, templates, editData }: Editori
     <form
       onSubmit={form.handleSubmit((values) => saveMutation.mutate(values))}
       className="space-y-10"
+      suppressHydrationWarning
     >
       {/* Section 1: The Who (Hero) */}
       <section className="bg-card p-8 rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.02)] border border-[var(--editorial-outline-variant,var(--border))]/50 hover:shadow-md transition-shadow">

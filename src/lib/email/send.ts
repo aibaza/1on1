@@ -43,11 +43,20 @@ export function getEmailFrom(): string {
 // BCC address for dev/preview environments — receives a copy of every email
 const DEV_BCC = process.env.VERCEL_ENV !== "production" ? "ciprian.dobrea@gmail.com" : undefined;
 
+export interface SendEmailAttachment {
+  filename: string;
+  content: Buffer | string;
+  contentType?: string;
+  cid?: string;
+}
+
 export async function sendEmail(opts: {
   from: string;
   to: string;
   subject: string;
   html: string;
+  replyTo?: string;
+  attachments?: SendEmailAttachment[];
 }) {
   // For test addresses, redirect entirely to dev BCC instead of original recipient
   if (opts.to.endsWith(".example.com")) {
