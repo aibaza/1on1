@@ -211,7 +211,7 @@ export function TemplateEditor({ template, userLevel }: TemplateEditorProps) {
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     formState: { errors },
   } = useForm<TemplateFormValues>({
     resolver: zodResolver(createTemplateSchema),
@@ -284,7 +284,7 @@ export function TemplateEditor({ template, userLevel }: TemplateEditorProps) {
     },
     onSuccess: async (newTemplate) => {
       if (sections.length > 0) {
-        const formValues = watch();
+        const formValues = getValues();
         await saveMutation.mutateAsync({
           templateId: newTemplate.id,
           body: {

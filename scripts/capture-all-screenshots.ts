@@ -325,7 +325,7 @@ async function captureSet(
 
     // 7. Category step
     console.log("  [7] session-wizard-category");
-    let moved = await safeClick(
+    const moved = await safeClick(
       page,
       'button:has-text("Next"), button:has-text("Următorul"), button[aria-label*="next"]'
     );
