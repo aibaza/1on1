@@ -19,6 +19,7 @@ import {
 import { sendVerificationEmail, sendPasswordResetEmail } from "@/lib/email/send";
 import { randomBytes } from "crypto";
 import { headers } from "next/headers";
+import { ZodError } from "zod";
 
 async function getBaseUrl(): Promise<string> {
   const h = await headers();
@@ -278,7 +279,12 @@ export async function resetPasswordAction(formData: FormData) {
       .where(eq(passwordResetTokens.userId, tokenRecord.userId));
 
     return { success: true };
-  } catch {
+  } catch (err) {
+    if (err instanceof ZodError) {
+      const first = err.issues[0];
+      return { error: first?.message ?? "Invalid input." };
+    }
+    console.error("resetPasswordAction failed:", err);
     return { error: "Password reset failed. Please try again." };
   }
 }
