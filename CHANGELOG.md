@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.2.0] — 2026-04-21
+
+### Fixed
+- Wizard: scroll content area to top when changing steps (desktop + mobile)
+- Series detail shows wrong perspective for admin viewers
+- Session summary shows wrong names for admin viewers
+- Company manifesto/context not persisted — field missing from settings update
+- AI email quality — proper risk/concern fields, no em dashes
+- Calendar date picker — compact size, centered days, nav in header, consistent weekday/day widths
+- Help center — typography, screenshots, RO references, server component error, content bundling
+
 ### Added
 - **Help Center**: Complete in-app documentation at `/help` with role-based navigation (admin/manager/member see only relevant pages)
   - 23 help articles in English and Romanian covering all features

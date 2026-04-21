@@ -224,6 +224,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
   const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const prevStepRef = useRef(0);
+  const desktopScrollRef = useRef<HTMLDivElement>(null);
 
   const initializedRef = useRef(false);
   // Track the latest changed answer for debounced saving
@@ -626,6 +627,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
       requestAnimationFrame(() => {
         dispatch({ type: "SET_STEP", step });
         prevStepRef.current = step;
+        desktopScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
         // Clear transition after enter animation completes
         setTimeout(() => {
           setIsTransitioning(false);
@@ -961,7 +963,7 @@ export function WizardShell({ sessionId }: WizardShellProps) {
         />
 
         {/* Center: form content area — only this scrolls */}
-        <div className="flex-1 overflow-y-auto relative">
+        <div ref={desktopScrollRef} className="flex-1 overflow-y-auto relative">
           <div
             className={cn(
               "transition-all duration-300 ease-in-out",
