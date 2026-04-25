@@ -79,6 +79,22 @@
       "noUserFound": "No user found.",
       "updated": "Manager updated"
     },
+    "transferAll": {
+      "sectionTitle": "Transfer managed series",
+      "sectionDescription": "Move all {count, plural, one {# active series} other {# active series}} owned by this manager to a different one. Each report will also be moved under the new manager in the org hierarchy.",
+      "button": "Transfer all series",
+      "dialogTitle": "Transfer all managed series",
+      "description": "{count, plural, one {# active series} other {# active series}} currently owned by {fromManager} will be reassigned. The reports will also be moved under the new manager.",
+      "selectManager": "New manager",
+      "pickManagerPlaceholder": "Select a manager...",
+      "searchPlaceholder": "Search by name...",
+      "noUserFound": "No matching user.",
+      "warning": "Sessions, notes and action items stay attached to each series. Pending email reminders are rescheduled for the new manager.",
+      "confirm": "Transfer all",
+      "transferring": "Transferring...",
+      "cancel": "Cancel",
+      "successBulk": "{count, plural, one {# series transferred} other {# series transferred}}"
+    },
     "memberPicker": {
       "title": "Add Members",
       "description": "Select users to add to this team.",

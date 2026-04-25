@@ -19,9 +19,7 @@ import {
 } from "@/lib/db/schema";
 import { eq, and, asc, inArray, sql, desc } from "drizzle-orm";
 import { decryptNote, type EncryptedPayload } from "@/lib/encryption/private-notes";
-import { SessionSummaryView } from "@/components/session/session-summary-view";
 import { EditorialSessionSummary } from "@/components/session/editorial-session-summary";
-import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function SessionSummaryPage({
   params,
@@ -491,8 +489,6 @@ export default async function SessionSummaryPage({
     notFound();
   }
 
-  const designPref = await getDesignPreference();
-
   // Build session history for editorial view
   const sessionHistory = data.siblingSessionsRaw.map((s) => {
     let aiSnippet: string | null = null;
@@ -526,39 +522,9 @@ export default async function SessionSummaryPage({
     .where(eq(tenants.id, session.user.tenantId));
   const hasAiAccess = tenantRow ? canAccessFeature(tenantRow, "ai") : false;
 
-  if (designPref === "editorial") {
-    return (
-      <EditorialSessionSummary
-        hasAiAccess={hasAiAccess}
-        sessionId={data.sessionId}
-        sessionNumber={data.sessionNumber}
-        scheduledAt={data.scheduledAt}
-        completedAt={data.completedAt}
-        sessionScore={data.sessionScore}
-        durationMinutes={data.durationMinutes}
-        status={data.status}
-        categories={data.categories}
-        isManager={data.isManager}
-        seriesId={data.seriesId}
-        aiStatus={data.aiStatus}
-        aiSummary={data.aiSummary}
-        aiAddendum={data.aiAddendum}
-        managerId={data.managerId}
-        reportId={data.reportId}
-        managerName={data.managerName}
-        reportName={data.reportName}
-        managerTeam={data.managerTeam}
-        reportTeam={data.reportTeam}
-        correctionsByAnswerId={data.correctionsByAnswerId}
-        allCorrections={data.allCorrections}
-        isAdmin={data.isAdmin}
-        sessionHistory={sessionHistory}
-      />
-    );
-  }
-
   return (
-    <SessionSummaryView
+    <EditorialSessionSummary
+      hasAiAccess={hasAiAccess}
       sessionId={data.sessionId}
       sessionNumber={data.sessionNumber}
       scheduledAt={data.scheduledAt}
@@ -581,6 +547,7 @@ export default async function SessionSummaryPage({
       correctionsByAnswerId={data.correctionsByAnswerId}
       allCorrections={data.allCorrections}
       isAdmin={data.isAdmin}
+      sessionHistory={sessionHistory}
     />
   );
 }

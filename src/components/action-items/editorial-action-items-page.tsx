@@ -28,7 +28,26 @@ import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import Link from "next/link";
-import type { ActionItemRow } from "./action-items-page";
+
+export interface ActionItemRow {
+  id: string;
+  title: string;
+  description: string | null;
+  status: string;
+  dueDate: string | null;
+  category: string | null;
+  assigneeId: string;
+  assigneeFirstName: string;
+  assigneeLastName: string;
+  createdAt: string;
+  sessionId: string;
+  sessionNumber: number;
+  seriesId: string;
+  reportId: string;
+  reportFirstName: string;
+  reportLastName: string;
+  managerId: string;
+}
 
 interface EditorialActionItemsPageProps {
   initialItems: ActionItemRow[];

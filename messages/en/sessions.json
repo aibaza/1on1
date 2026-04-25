@@ -83,6 +83,20 @@
       "save": "Save",
       "saving": "Saving..."
     },
+    "transfer": {
+      "button": "Transfer manager",
+      "dialogTitle": "Transfer this series to a new manager",
+      "description": "{report} currently reports to {currentManager} on this 1:1. Choose a new manager — the report will also be moved under them in the org hierarchy.",
+      "selectManager": "New manager",
+      "pickManagerPlaceholder": "Select a manager...",
+      "searchPlaceholder": "Search by name...",
+      "noUserFound": "No matching user.",
+      "warning": "Sessions, notes and action items stay attached to the series. Pending email reminders are rescheduled for the new manager.",
+      "confirm": "Transfer",
+      "transferring": "Transferring...",
+      "cancel": "Cancel",
+      "successSingle": "Series transferred"
+    },
     "timeline": {
       "noSessions": "No sessions yet. Start your first session above.",
       "sessionNumber": "Session #{number}",

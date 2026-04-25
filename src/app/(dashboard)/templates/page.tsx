@@ -9,9 +9,7 @@ import {
 } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
-import { TemplateList } from "@/components/templates/template-list";
 import { EditorialTemplateList } from "@/components/templates/editorial-template-list";
-import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function TemplatesPage() {
   const session = await auth();
@@ -90,33 +88,22 @@ export default async function TemplatesPage() {
     }
   );
 
-  const designPref = await getDesignPreference();
-  const isEditorial = designPref === "editorial";
-
   return (
-    <div className={isEditorial ? "space-y-10" : "space-y-6"}>
+    <div className="space-y-10">
       <div>
-        <h1 className={isEditorial ? "text-3xl font-extrabold tracking-tight font-headline" : "text-2xl font-semibold tracking-tight"}>
+        <h1 className="text-3xl font-extrabold tracking-tight font-headline">
           {t("title")}
         </h1>
-        <p className={isEditorial ? "text-muted-foreground text-base font-medium mt-2 max-w-xl leading-relaxed" : "text-sm text-muted-foreground"}>
+        <p className="text-muted-foreground text-base font-medium mt-2 max-w-xl leading-relaxed">
           {t("description")}
         </p>
       </div>
 
-      {isEditorial ? (
-        <EditorialTemplateList
-          initialTemplates={templates}
-          currentUserLevel={session.user.level}
-          contentLanguage={session.user.contentLanguage ?? "en"}
-        />
-      ) : (
-        <TemplateList
-          initialTemplates={templates}
-          currentUserLevel={session.user.level}
-          contentLanguage={session.user.contentLanguage ?? "en"}
-        />
-      )}
+      <EditorialTemplateList
+        initialTemplates={templates}
+        currentUserLevel={session.user.level}
+        contentLanguage={session.user.contentLanguage ?? "en"}
+      />
     </div>
   );
 }

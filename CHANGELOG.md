@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.5.0] — 2026-04-25
+
+### Removed
+- **Legacy "classic" design system removed entirely.** Editorial is now the only UI variant. Deleted: 17 page-level conditional branches, ~25 classic-only components (series-detail, edit-series-dialog, session-timeline, quick-stats, people-tabs, top-nav, history-page, action-items-page, template-list, session-summary-view, series-list, series-form, people-table, classic-login, plus several dashboard widgets and team/audit/company forms), the `design-preference` module, the `/api/design` toggle endpoint, and `globals-v2.css` (folded into `globals.css`). Removed the `data-design` attribute on `<html>` and the design-toggle plumbing in the user menu. Net diff: 52 files changed, +583/-7314.
+
+## [2.4.0] — 2026-04-25
+
+### Added
+- **Transfer meeting series to a new manager** — single (from series detail page, button next to Edit) and bulk (from people profile, "Transfer all series" for admins on a manager's profile). Each transfer also moves the report under the new manager in the org hierarchy (`users.manager_id`) inside the same transaction. Pending email reminders are rescheduled for the new manager and calendar events resync. Single transfer is allowed for admins or the current series manager; bulk transfer is admin-only. New audit actions: `series_transferred` and `manager_series_bulk_transferred`. New endpoints: `POST /api/series/[id]/transfer` and `POST /api/users/[id]/transfer-managed-series`.
+
 ## [2.3.0] — 2026-04-21
 
 ### Added

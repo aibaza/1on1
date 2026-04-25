@@ -20,8 +20,10 @@ import {
   Settings,
   Archive,
   ListTodo,
+  ArrowRightLeft,
 } from "lucide-react";
 import { EditorialAgendaDrawer } from "./editorial-agenda-drawer";
+import { TransferSeriesDialog } from "./transfer-series-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { StarRating } from "@/components/ui/star-rating";
@@ -74,8 +76,11 @@ export function EditorialSeriesDetail({ series, currentUserId, currentUserLevel 
   const format = useFormatter();
   const router = useRouter();
   const [agendaOpen, setAgendaOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
 
   const isManager = currentUserId === series.managerId || currentUserLevel === "admin";
+  const canTransfer =
+    currentUserLevel === "admin" || currentUserId === series.managerId;
   const person = isManager ? series.report : series.manager;
   const personName = person ? `${person.firstName} ${person.lastName}` : "Unknown";
   const aiSummary = series.latestAiSummary as AISummary | null;
@@ -180,6 +185,15 @@ export function EditorialSeriesDetail({ series, currentUserId, currentUserLevel 
                   <ListTodo className="h-4 w-4" /> {t("series.agenda")}
                 </button>
               )}
+              {canTransfer && (
+                <button
+                  type="button"
+                  onClick={() => setTransferOpen(true)}
+                  className="px-4 py-2.5 bg-muted text-foreground font-semibold rounded-xl hover:bg-accent transition-colors flex items-center gap-2 text-sm"
+                >
+                  <ArrowRightLeft className="h-4 w-4" /> {t("transfer.button")}
+                </button>
+              )}
               <button
                 type="button"
                 onClick={async () => {
@@ -196,6 +210,18 @@ export function EditorialSeriesDetail({ series, currentUserId, currentUserLevel 
           )}
         </div>
       </section>
+
+      {canTransfer && series.manager && series.report && (
+        <TransferSeriesDialog
+          open={transferOpen}
+          onOpenChange={setTransferOpen}
+          seriesId={series.id}
+          currentManagerId={series.manager.id}
+          currentManagerName={`${series.manager.firstName} ${series.manager.lastName}`}
+          reportId={series.report.id}
+          reportName={`${series.report.firstName} ${series.report.lastName}`}
+        />
+      )}
 
       {/* Bento Grid: AI Summary + Score */}
       <div className="grid grid-cols-12 gap-6 mb-10">

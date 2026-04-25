@@ -55,6 +55,12 @@ export const updateSeriesSchema = z.object({
   nextSessionAt: z.string().datetime().nullable().optional(),
 });
 
+// Transfer series to a new manager
+export const transferSeriesSchema = z.object({
+  newManagerId: uuid,
+});
+
 // Inferred types
 export type CreateSeriesInput = z.infer<typeof createSeriesSchema>;
 export type UpdateSeriesInput = z.infer<typeof updateSeriesSchema>;
+export type TransferSeriesInput = z.infer<typeof transferSeriesSchema>;
