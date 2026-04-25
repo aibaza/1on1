@@ -36,6 +36,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const COLLAPSE_BREAKPOINT = 1536; // collapsed under 2xl, expanded on wide screens
 const SIDEBAR_EXPANDED = 256; // w-64
@@ -144,25 +149,51 @@ function NavGroupLink({
   if (visibleChildren.length === 0) return null;
 
   if (collapsed) {
-    // When collapsed, show just the icon — clicking goes to first child
-    const firstChild = visibleChildren[0];
+    // When collapsed, show the icon as a popover trigger — children appear in a flyout
     return (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Link
-            href={firstChild.href}
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            aria-label={group.label}
             className={cn(
-              "flex items-center justify-center py-3 rounded-lg transition-all font-headline font-semibold text-sm",
+              "flex w-full items-center justify-center py-3 rounded-lg transition-all font-headline font-semibold text-sm",
               active
                 ? "bg-white dark:bg-[var(--sidebar-accent)] text-primary dark:text-[var(--sidebar-accent-foreground)] font-bold shadow-sm"
                 : "text-muted-foreground hover:text-primary"
             )}
           >
             <Icon className="h-5 w-5 shrink-0" />
-          </Link>
-        </TooltipTrigger>
-        <TooltipContent side="right" sideOffset={8}>{group.label}</TooltipContent>
-      </Tooltip>
+          </button>
+        </PopoverTrigger>
+        <PopoverContent side="right" align="start" sideOffset={8} className="w-56 p-1">
+          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            {group.label}
+          </div>
+          <div className="space-y-0.5">
+            {visibleChildren.map((child) => {
+              const childActive = isActive(pathname, child);
+              const ChildIcon = child.icon;
+              return (
+                <Link
+                  key={child.href}
+                  href={child.href}
+                  onClick={onNavigate}
+                  className={cn(
+                    "flex items-center gap-2.5 px-2 py-2 rounded-md transition-all text-sm",
+                    childActive
+                      ? "bg-accent text-primary font-semibold"
+                      : "text-foreground hover:bg-accent hover:text-primary"
+                  )}
+                >
+                  <ChildIcon className="h-4 w-4 shrink-0" />
+                  <span>{child.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </PopoverContent>
+      </Popover>
     );
   }
 
