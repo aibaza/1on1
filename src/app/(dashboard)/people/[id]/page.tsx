@@ -2,8 +2,8 @@ import { auth } from "@/lib/auth/config";
 import { redirect, notFound } from "next/navigation";
 import { getTranslations, getFormatter } from "next-intl/server";
 import { withTenantContext } from "@/lib/db/tenant-context";
-import { users } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { users, meetingSeries } from "@/lib/db/schema";
+import { eq, and, inArray, count } from "drizzle-orm";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProfileEditForm } from "./profile-edit-form";
+import { TransferAllSeriesDialog } from "@/components/people/transfer-all-series-dialog";
 
 function getInitials(firstName: string, lastName: string): string {
   return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
@@ -86,10 +87,27 @@ export default async function UserProfilePage({
           ? "active"
           : "pending";
 
+      // Count active/paused series managed by this user
+      let managedSeriesCount = 0;
+      if (user.level === "admin" || user.level === "manager") {
+        const [row] = await tx
+          .select({ value: count() })
+          .from(meetingSeries)
+          .where(
+            and(
+              eq(meetingSeries.tenantId, session.user.tenantId),
+              eq(meetingSeries.managerId, user.id),
+              inArray(meetingSeries.status, ["active", "paused"])
+            )
+          );
+        managedSeriesCount = row?.value ?? 0;
+      }
+
       return {
         ...user,
         managerName,
         status,
+        managedSeriesCount,
         teams: [] as { id: string; name: string }[],
       };
     }
@@ -190,6 +208,31 @@ export default async function UserProfilePage({
           </div>
         )}
       </div>
+
+      {/* Admin actions */}
+      {session.user.level === "admin" &&
+        !isSelf &&
+        (data.level === "admin" || data.level === "manager") &&
+        data.managedSeriesCount > 0 && (
+          <>
+            <Separator />
+            <div>
+              <h2 className="text-lg font-semibold">
+                {t("transferAll.sectionTitle")}
+              </h2>
+              <p className="mb-3 text-sm text-muted-foreground">
+                {t("transferAll.sectionDescription", {
+                  count: data.managedSeriesCount,
+                })}
+              </p>
+              <TransferAllSeriesDialog
+                fromManagerId={data.id}
+                fromManagerName={`${data.firstName} ${data.lastName}`}
+                activeSeriesCount={data.managedSeriesCount}
+              />
+            </div>
+          </>
+        )}
 
       {/* Edit section */}
       {canEdit && (

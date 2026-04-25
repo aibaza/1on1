@@ -79,6 +79,22 @@
       "noUserFound": "Niciun utilizator găsit.",
       "updated": "Manager actualizat"
     },
+    "transferAll": {
+      "sectionTitle": "Transferă seriile gestionate",
+      "sectionDescription": "Mută toate cele {count, plural, one {# serie activă} other {# serii active}} ale acestui manager către altul. Fiecare persoană va fi mutată și în subordinea noului manager.",
+      "button": "Transferă toate seriile",
+      "dialogTitle": "Transferă toate seriile gestionate",
+      "description": "{count, plural, one {# serie activă} other {# serii active}} ale lui {fromManager} vor fi reasignate. Persoanele aferente vor fi mutate în subordinea noului manager.",
+      "selectManager": "Manager nou",
+      "pickManagerPlaceholder": "Alege un manager...",
+      "searchPlaceholder": "Caută după nume...",
+      "noUserFound": "Niciun utilizator găsit.",
+      "warning": "Sesiunile, notele și action items rămân atașate fiecărei serii. Reminder-urile email pendinte sunt reprogramate pentru noul manager.",
+      "confirm": "Transferă tot",
+      "transferring": "Se transferă...",
+      "cancel": "Anulează",
+      "successBulk": "{count, plural, one {# serie transferată} other {# serii transferate}}"
+    },
     "memberPicker": {
       "title": "Adaugă membri",
       "description": "Selectează utilizatori pentru a-i adăuga în echipă.",

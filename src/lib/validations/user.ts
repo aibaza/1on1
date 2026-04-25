@@ -51,3 +51,7 @@ export const assignManagerSchema = z.object({
 export const updateLanguageSchema = z.object({
   language: z.enum(["en", "ro"]),
 });
+
+export const transferManagedSeriesSchema = z.object({
+  newManagerId: uuid,
+});

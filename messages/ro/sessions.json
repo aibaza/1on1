@@ -83,6 +83,20 @@
       "save": "Salvează",
       "saving": "Se salvează..."
     },
+    "transfer": {
+      "button": "Transferă manager",
+      "dialogTitle": "Transferă seria către un nou manager",
+      "description": "{report} raportează acum la {currentManager} pe acest 1:1. Alege un nou manager — persoana va fi mutată și în subordinea lui în structura organizațională.",
+      "selectManager": "Manager nou",
+      "pickManagerPlaceholder": "Alege un manager...",
+      "searchPlaceholder": "Caută după nume...",
+      "noUserFound": "Niciun utilizator găsit.",
+      "warning": "Sesiunile, notele și action items rămân atașate seriei. Reminder-urile email pendinte sunt reprogramate pentru noul manager.",
+      "confirm": "Transferă",
+      "transferring": "Se transferă...",
+      "cancel": "Anulează",
+      "successSingle": "Seria a fost transferată"
+    },
     "timeline": {
       "noSessions": "Nicio sesiune. Începe prima sesiune mai sus.",
       "sessionNumber": "Sesiunea #{number}",

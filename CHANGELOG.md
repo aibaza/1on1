@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.4.0] — 2026-04-25
+
+### Added
+- **Transfer meeting series to a new manager** — single (from series detail page, button next to Edit) and bulk (from people profile, "Transfer all series" for admins on a manager's profile). Each transfer also moves the report under the new manager in the org hierarchy (`users.manager_id`) inside the same transaction. Pending email reminders are rescheduled for the new manager and calendar events resync. Single transfer is allowed for admins or the current series manager; bulk transfer is admin-only. New audit actions: `series_transferred` and `manager_series_bulk_transferred`. New endpoints: `POST /api/series/[id]/transfer` and `POST /api/users/[id]/transfer-managed-series`.
+
 ## [2.3.0] — 2026-04-21
 
 ### Added

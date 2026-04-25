@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SessionTimeline } from "./session-timeline";
 import { EditSeriesDialog } from "./edit-series-dialog";
+import { TransferSeriesDialog } from "./transfer-series-dialog";
 import {
   Play,
   Pause,
@@ -21,6 +22,7 @@ import {
   Clock,
   Pencil,
   Settings,
+  ArrowRightLeft,
 } from "lucide-react";
 import { useTranslations, useFormatter } from "next-intl";
 
@@ -74,7 +76,10 @@ export function SeriesDetail({ series, currentUserId, currentUserLevel }: Series
   const format = useFormatter();
   const { showApiError } = useApiErrorToast();
   const isManager = series.manager?.id === currentUserId || currentUserLevel === "admin";
+  const canTransfer =
+    currentUserLevel === "admin" || series.manager?.id === currentUserId;
   const [editOpen, setEditOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
   const hasInProgress = series.sessions.some(
     (s) => s.status === "in_progress"
   );
@@ -253,6 +258,17 @@ export function SeriesDetail({ series, currentUserId, currentUserLevel }: Series
             {t("detail.editSeries")}
           </Button>
 
+          {canTransfer && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setTransferOpen(true)}
+            >
+              <ArrowRightLeft className="mr-1.5 h-3.5 w-3.5" />
+              {t("transfer.button")}
+            </Button>
+          )}
+
           <Button
             variant="outline"
             size="sm"
@@ -270,6 +286,18 @@ export function SeriesDetail({ series, currentUserId, currentUserLevel }: Series
           open={editOpen}
           onOpenChange={setEditOpen}
           series={series}
+        />
+      )}
+
+      {canTransfer && series.manager && series.report && (
+        <TransferSeriesDialog
+          open={transferOpen}
+          onOpenChange={setTransferOpen}
+          seriesId={series.id}
+          currentManagerId={series.manager.id}
+          currentManagerName={managerName}
+          reportId={series.report.id}
+          reportName={`${series.report.firstName} ${series.report.lastName}`}
         />
       )}
 
