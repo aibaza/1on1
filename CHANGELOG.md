@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- **Series cards: entire card is now a clickable link to the series detail page**, except for the Agenda and Start/Resume buttons which keep their own actions. Card hover highlights the border in primary color and shows a `cursor-pointer` so the affordance is obvious.
+
 ## [2.5.0] — 2026-04-25
 
 ### Removed
