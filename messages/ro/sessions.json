@@ -51,7 +51,8 @@
       "tooltipAgenda": "Puncte de discuție & agendă",
       "tooltipOverdue": "Sesiune restantă",
       "tooltipPaused": "Serie în pauză",
-      "tooltipArchived": "Serie arhivată"
+      "tooltipArchived": "Serie arhivată",
+      "openDetails": "Deschide detaliile pentru {name}"
     },
     "sections": {
       "myTeam": "Echipa mea",

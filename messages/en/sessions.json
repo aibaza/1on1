@@ -51,7 +51,8 @@
       "tooltipAgenda": "Talking points & agenda",
       "tooltipOverdue": "This session is overdue",
       "tooltipPaused": "Series is paused",
-      "tooltipArchived": "Series is archived"
+      "tooltipArchived": "Series is archived",
+      "openDetails": "Open details for {name}"
     },
     "sections": {
       "myTeam": "My Team",
