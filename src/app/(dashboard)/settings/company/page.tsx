@@ -3,10 +3,8 @@ import { redirect } from "next/navigation";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { tenants } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { CompanySettingsForm } from "./company-settings-form";
 import { EditorialSettingsForm } from "./editorial-settings-form";
 import { getTranslations } from "next-intl/server";
-import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function CompanySettingsPage() {
   const session = await auth();
@@ -46,9 +44,6 @@ export default async function CompanySettingsPage() {
     companyContext?: string;
   };
 
-  const designPref = await getDesignPreference();
-  const isEditorial = designPref === "editorial";
-
   const formData = {
     name: tenant.name,
     slug: tenant.slug,
@@ -56,35 +51,19 @@ export default async function CompanySettingsPage() {
     settings,
   };
 
-  if (isEditorial) {
-    return (
-      <div className="mx-auto max-w-3xl">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div>
-            <h1 className="text-3xl font-extrabold text-foreground tracking-tight font-headline">
-              {t("title")}
-            </h1>
-            <p className="text-muted-foreground text-base font-medium mt-2 max-w-xl leading-relaxed">
-              {t("description")}
-            </p>
-          </div>
-        </div>
-        <EditorialSettingsForm initialData={formData} />
-      </div>
-    );
-  }
-
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {t("title")}
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("description")}
-        </p>
+    <div className="mx-auto max-w-3xl">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+          <h1 className="text-3xl font-extrabold text-foreground tracking-tight font-headline">
+            {t("title")}
+          </h1>
+          <p className="text-muted-foreground text-base font-medium mt-2 max-w-xl leading-relaxed">
+            {t("description")}
+          </p>
+        </div>
       </div>
-      <CompanySettingsForm initialData={formData} />
+      <EditorialSettingsForm initialData={formData} />
     </div>
   );
 }

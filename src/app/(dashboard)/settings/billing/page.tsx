@@ -10,7 +10,6 @@ import {
 } from "@/lib/db/schema";
 import { eq, desc, and, count } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
-import { getDesignPreference } from "@/lib/design-preference.server";
 import { getPlanFeatures } from "@/lib/billing/plans";
 import { BillingSettingsClient } from "@/components/billing/billing-settings-client";
 
@@ -27,8 +26,6 @@ export default async function BillingSettingsPage() {
 
   const t = await getTranslations("billing.settings");
   const st = await getTranslations("settings");
-  const designPref = await getDesignPreference();
-  const isEditorial = designPref === "editorial";
 
   const data = await withTenantContext(
     session.user.tenantId,
@@ -172,39 +169,22 @@ export default async function BillingSettingsPage() {
     />
   );
 
-  if (isEditorial) {
-    return (
-      <div>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div>
-            <nav className="flex items-center gap-2 text-muted-foreground text-sm mb-4">
-              <span>{st("title")}</span>
-              <span className="text-xs">&rsaquo;</span>
-              <span className="text-foreground font-medium">{t("title")}</span>
-            </nav>
-            <h1 className="text-3xl font-extrabold text-foreground tracking-tight font-headline">
-              {t("title")}
-            </h1>
-            <p className="text-muted-foreground text-base font-medium mt-2 max-w-xl leading-relaxed">
-              {t("description")}
-            </p>
-          </div>
-        </div>
-        {content}
-      </div>
-    );
-  }
-
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-8">
-        <div className="text-sm text-muted-foreground mb-1">
-          {st("title")} &gt; {t("title")}
+    <div>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+          <nav className="flex items-center gap-2 text-muted-foreground text-sm mb-4">
+            <span>{st("title")}</span>
+            <span className="text-xs">&rsaquo;</span>
+            <span className="text-foreground font-medium">{t("title")}</span>
+          </nav>
+          <h1 className="text-3xl font-extrabold text-foreground tracking-tight font-headline">
+            {t("title")}
+          </h1>
+          <p className="text-muted-foreground text-base font-medium mt-2 max-w-xl leading-relaxed">
+            {t("description")}
+          </p>
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("description")}
-        </p>
       </div>
       {content}
     </div>

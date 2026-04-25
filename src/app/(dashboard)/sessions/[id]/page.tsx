@@ -4,9 +4,7 @@ import { withTenantContext } from "@/lib/db/tenant-context";
 import { isSeriesParticipant } from "@/lib/auth/rbac";
 import { meetingSeries, sessions, users } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
-import { SeriesDetail } from "@/components/series/series-detail";
 import { EditorialSeriesDetail } from "@/components/series/editorial-series-detail";
-import { getDesignPreference } from "@/lib/design-preference.server";
 
 export default async function SeriesDetailPage({
   params,
@@ -131,21 +129,11 @@ export default async function SeriesDetailPage({
 
   if (!seriesData) notFound();
 
-  const designPref = await getDesignPreference();
-
-  if (designPref === "editorial") {
-    return (
-      <EditorialSeriesDetail
-        series={seriesData}
-        currentUserId={session.user.id}
-        currentUserLevel={session.user.level}
-      />
-    );
-  }
-
   return (
-    <div className="mx-auto max-w-3xl">
-      <SeriesDetail series={seriesData} currentUserId={session.user.id} currentUserLevel={session.user.level} />
-    </div>
+    <EditorialSeriesDetail
+      series={seriesData}
+      currentUserId={session.user.id}
+      currentUserLevel={session.user.level}
+    />
   );
 }

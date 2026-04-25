@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect, useId } from "react";
+import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import { LogOut, Globe, Check, Paintbrush, User } from "lucide-react";
+import { LogOut, Globe, Check, User } from "lucide-react";
 import Link from "next/link";
-import { DESIGN_PREF_COOKIE, type DesignPreference } from "@/lib/design-preference";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemedAvatarImage } from "@/components/ui/themed-avatar-image";
 import { Badge } from "@/components/ui/badge";
@@ -22,11 +21,6 @@ import {
 const LANGUAGES = [
   { code: "en" as const, label: "English" },
   { code: "ro" as const, label: "Rom\u00e2n\u0103" },
-] as const;
-
-const DESIGNS = [
-  { code: "classic" as DesignPreference, label: "Classic" },
-  { code: "editorial" as DesignPreference, label: "Editorial (Beta)" },
 ] as const;
 
 function getInitials(name?: string | null): string {
@@ -52,17 +46,6 @@ export function UserMenu({ renderTrigger, avatarUrl: serverAvatarUrl }: UserMenu
   const user = session?.user;
   // useLocale reads the actual rendered locale (source of truth)
   const currentLang = useLocale();
-
-  // Read design preference from cookie after mount (avoids hydration mismatch)
-  const [currentDesign, setCurrentDesign] = useState<DesignPreference>("editorial");
-  useEffect(() => {
-    const match = document.cookie
-      .split("; ")
-      .find((c) => c.startsWith(`${DESIGN_PREF_COOKIE}=`));
-    if (match) {
-      setCurrentDesign(match.split("=")[1] as DesignPreference);
-    }
-  }, []);
 
   async function switchLanguage(lang: "en" | "ro") {
     if (lang === currentLang) return;

@@ -2,10 +2,8 @@ import { auth } from "@/lib/auth/config";
 import { SessionProvider } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { QueryProvider } from "@/providers/query-provider";
-import { TopNav } from "@/components/layout/top-nav";
 import { SideNav } from "@/components/layout/side-nav";
 import { EditorialTopBar } from "@/components/layout/editorial-top-bar";
-import { ImpersonationBanner } from "@/components/admin/impersonation-banner";
 import { TrialBanner } from "@/components/billing/trial-banner";
 import { Toaster } from "@/components/ui/sonner";
 import { CommandPalette } from "@/components/search/command-palette";
@@ -15,7 +13,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { tenants, users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { getDesignPreference } from "@/lib/design-preference.server";
 import { isInTrial, isTrialExpired, trialDaysRemaining } from "@/lib/billing/subscription";
 import { isSuperAdmin } from "@/lib/auth/super-admin";
 
@@ -82,45 +79,29 @@ export default async function DashboardLayout({
     // Fall back to defaults if fetch fails
   }
 
-  const designPref = await getDesignPreference();
-  const isEditorial = designPref === "editorial";
-
   return (
     <SessionProvider session={session}>
       <QueryProvider>
         <ThemeColorProvider colorTheme={colorTheme}>
           <TooltipProvider delayDuration={300}>
-            {isEditorial ? (
-              <div className="min-h-screen">
-                <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:text-sm focus:font-bold">
-                  Skip to content
-                </a>
-                <SideNav isSuperAdmin={isSuperAdmin(session.user?.email)} />
-                <div
-                  className="md:ml-[var(--sidebar-width,256px)] transition-[margin] duration-300"
-                  suppressHydrationWarning
-                >
-                  <EditorialTopBar avatarUrl={userAvatarUrl} />
-                  <main id="main-content" className="pt-20 md:pt-24 pb-20 px-4 md:px-10">
-                    <div className="max-w-7xl mx-auto">
-                      <TrialBanner daysRemaining={trialDays} isExpired={trialExpired} />
-                      <div className="animate-fade-in">{children}</div>
-                    </div>
-                  </main>
-                </div>
-              </div>
-            ) : (
-              <div className="min-h-screen flex flex-col">
-                <ImpersonationBanner />
-                <TopNav avatarUrl={userAvatarUrl} />
-                <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-                  <div className="mx-auto max-w-7xl">
+            <div className="min-h-screen">
+              <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:text-sm focus:font-bold">
+                Skip to content
+              </a>
+              <SideNav isSuperAdmin={isSuperAdmin(session.user?.email)} />
+              <div
+                className="md:ml-[var(--sidebar-width,256px)] transition-[margin] duration-300"
+                suppressHydrationWarning
+              >
+                <EditorialTopBar avatarUrl={userAvatarUrl} />
+                <main id="main-content" className="pt-20 md:pt-24 pb-20 px-4 md:px-10">
+                  <div className="max-w-7xl mx-auto">
                     <TrialBanner daysRemaining={trialDays} isExpired={trialExpired} />
                     <div className="animate-fade-in">{children}</div>
                   </div>
                 </main>
               </div>
-            )}
+            </div>
             <FeedbackFab />
           </TooltipProvider>
         </ThemeColorProvider>

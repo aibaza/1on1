@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.5.0] — 2026-04-25
+
+### Removed
+- **Legacy "classic" design system removed entirely.** Editorial is now the only UI variant. Deleted: 17 page-level conditional branches, ~25 classic-only components (series-detail, edit-series-dialog, session-timeline, quick-stats, people-tabs, top-nav, history-page, action-items-page, template-list, session-summary-view, series-list, series-form, people-table, classic-login, plus several dashboard widgets and team/audit/company forms), the `design-preference` module, the `/api/design` toggle endpoint, and `globals-v2.css` (folded into `globals.css`). Removed the `data-design` attribute on `<html>` and the design-toggle plumbing in the user menu. Net diff: 52 files changed, +583/-7314.
+
 ## [2.4.0] — 2026-04-25
 
 ### Added
