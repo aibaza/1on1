@@ -5,9 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/components/theme-provider";
-import { getDesignPreference } from "@/lib/design-preference.server";
 import "./globals.css";
-import "./globals-v2.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,10 +45,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getLocale();
-  const designPref = await getDesignPreference();
 
   return (
-    <html lang={locale} data-design={designPref} suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${manrope.variable} ${inter.variable} antialiased`}
         suppressHydrationWarning

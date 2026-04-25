@@ -3,21 +3,14 @@ import { redirect } from "next/navigation";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { users, inviteTokens } from "@/lib/db/schema";
 import { eq, and, gt, isNull, sql } from "drizzle-orm";
-import { getTranslations } from "next-intl/server";
-import { PeopleTabs } from "@/components/people/people-tabs";
-import { PeopleTable } from "@/components/people/people-table";
 import { EditorialPeopleList } from "@/components/people/editorial-people-list";
-import { InviteButton } from "@/components/people/invite-button";
 import { EditorialPeopleHeader } from "./editorial-people-header";
 import { TeamStructure } from "@/components/people/team-structure";
-import { getDesignPreference } from "@/lib/design-preference.server";
 import type { UserRow } from "@/components/people/people-table-columns";
 
 export default async function PeoplePage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
-
-  const t = await getTranslations("people");
 
   const data = await withTenantContext(
     session.user.tenantId,
@@ -134,47 +127,21 @@ export default async function PeoplePage() {
     }
   );
 
-  const designPref = await getDesignPreference();
-  const isEditorial = designPref === "editorial";
-
   return (
-    <div className={isEditorial ? "space-y-8" : "space-y-6"}>
-      {isEditorial ? (
-        <EditorialPeopleHeader
-          memberCount={data.users.length}
-          isAdmin={session.user.level === "admin"}
-        />
-      ) : (
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-            <p className="text-sm text-muted-foreground">{t("description")}</p>
-          </div>
-          {session.user.level === "admin" && <InviteButton />}
-        </div>
-      )}
+    <div className="space-y-8">
+      <EditorialPeopleHeader
+        memberCount={data.users.length}
+        isAdmin={session.user.level === "admin"}
+      />
 
-      {isEditorial ? (
-        <>
-          <EditorialPeopleList
-            initialData={data.users}
-            currentUserLevel={session.user.level}
-            currentUserId={session.user.id}
-            availableTeams={data.teams}
-          />
-          {(session.user.level === "admin" || session.user.level === "manager") && (
-            <TeamStructure users={data.users} currentUserId={session.user.id} currentUserLevel={session.user.level} />
-          )}
-        </>
-      ) : (
-        <PeopleTabs>
-          <PeopleTable
-            initialData={data.users}
-            currentUserLevel={session.user.level}
-            currentUserId={session.user.id}
-            availableTeams={data.teams}
-          />
-        </PeopleTabs>
+      <EditorialPeopleList
+        initialData={data.users}
+        currentUserLevel={session.user.level}
+        currentUserId={session.user.id}
+        availableTeams={data.teams}
+      />
+      {(session.user.level === "admin" || session.user.level === "manager") && (
+        <TeamStructure users={data.users} currentUserId={session.user.id} currentUserLevel={session.user.level} />
       )}
     </div>
   );

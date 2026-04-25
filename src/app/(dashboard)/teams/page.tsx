@@ -3,19 +3,11 @@ import { redirect } from "next/navigation";
 import { withTenantContext } from "@/lib/db/tenant-context";
 import { users } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
-import { getTranslations } from "next-intl/server";
-import { getDesignPreference } from "@/lib/design-preference.server";
-import { PeopleTabs } from "@/components/people/people-tabs";
-import { TeamsGrid } from "./teams-grid";
 import { EditorialTeamsGrid } from "./editorial-teams-grid";
 
 export default async function TeamsPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
-
-  const t = await getTranslations("people");
-  const designPref = await getDesignPreference();
-  const isEditorial = designPref === "editorial";
 
   const teams = await withTenantContext(
     session.user.tenantId,
@@ -51,20 +43,5 @@ export default async function TeamsPage() {
     }
   );
 
-  if (isEditorial) {
-    return <EditorialTeamsGrid initialTeams={teams} />;
-  }
-
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("description")}</p>
-      </div>
-
-      <PeopleTabs>
-        <TeamsGrid initialTeams={teams} />
-      </PeopleTabs>
-    </div>
-  );
+  return <EditorialTeamsGrid initialTeams={teams} />;
 }
